@@ -1,0 +1,182 @@
+[
+  {
+    "type": "image",
+    "src": "/hero/slide2.webp",
+    "title": [
+      "生命の鼓動に触れる、",
+      "秘密の緑の迷宮へ。"
+    ],
+    "location": "西表島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide3.webp",
+    "title": [
+      "波と風が彫り上げた、",
+      "地球へ繋がる秘密の扉。"
+    ],
+    "location": "小笠原諸島 (東京都)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide4.webp",
+    "title": [
+      "手つかずの自然が囁く、",
+      "まだ知らない私の物語。"
+    ],
+    "location": "小笠原諸島 (東京都)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide5.webp",
+    "title": [
+      "翼を休める鳥とともに、",
+      "世界の果てを見つめる。"
+    ],
+    "location": "小笠原諸島 (東京都)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide6.webp",
+    "title": [
+      "日本最後の夕日を待つ、",
+      "国境の風と冒険の予感。"
+    ],
+    "location": "与那国島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide7.webp",
+    "title": [
+      "島の優しい瞳と出逢う、",
+      "最西端のノスタルジー。"
+    ],
+    "location": "与那国島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide8.webp",
+    "title": [
+      "星降る夜に迷い込む、",
+      "宇宙と私が繋がる時間。"
+    ],
+    "location": "与那国島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide9.webp",
+    "title": [
+      "太陽が海に溶けゆく、",
+      "今日という日のドラマチックな終演。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide10.webp",
+    "title": [
+      "地球の息吹をなぞる、",
+      "圧倒的な大地の裂け目。"
+    ],
+    "location": "粟国島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide11.webp",
+    "title": [
+      "影絵のような夕景が、",
+      "探求心を静かに燃やす。"
+    ],
+    "location": "小笠原諸島 (東京都)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide12.webp",
+    "title": [
+      "見上げればそこにある、",
+      "光を散りばめた天球儀。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide13.webp",
+    "title": [
+      "地図を持たずに漕ぎ出す、",
+      "深い群青の彼方へ。"
+    ],
+    "location": "小笠原諸島 (東京都)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide14.webp",
+    "title": [
+      "海を駆ける橋の向こう、",
+      "新しい絶景が待っている。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide15.webp",
+    "title": [
+      "飾らない表情に惹かれる、",
+      "島だけの特別な出会い。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide16.webp",
+    "title": [
+      "ソーダ水の海へ飛び込む、",
+      "無邪気なあの頃のように。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide17.webp",
+    "title": [
+      "クリスタルの海に眠る、",
+      "忘れられた時間の欠片。"
+    ],
+    "location": "小笠原諸島 (東京都)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide18.webp",
+    "title": [
+      "潮の満ち引きが描く、",
+      "幻の白砂を歩く奇跡。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "image",
+    "src": "/hero/slide19.webp",
+    "title": [
+      "日常から切り離される、",
+      "青を分かつ一本の道。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "video",
+    "src": "/hero/slide20.mp4",
+    "title": [
+      "幻の白いイルカに出逢う、",
+      "奇跡が待つ蒼い海へ。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  },
+  {
+    "type": "video",
+    "src": "/hero/slide21.mp4",
+    "title": [
+      "風になり、海を越え、",
+      "未知なるパノラマへ飛び込む。"
+    ],
+    "location": "宮古島 (沖縄県)"
+  }
+]

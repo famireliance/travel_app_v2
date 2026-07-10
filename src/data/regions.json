@@ -1,0 +1,362 @@
+[
+  {
+    "id": "pseudo_hokkaido",
+    "name": "北の大地の島々",
+    "enName": "HOKKAIDO ISLANDS",
+    "area": "北海道地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_sanriku",
+    "name": "三陸海岸の離島",
+    "enName": "SANRIKU ISLANDS",
+    "area": "東北地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "oshika",
+    "name": "奥州・牡鹿の島々",
+    "enName": "OSHIKA",
+    "area": "東北地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "izu",
+    "name": "伊豆諸島",
+    "enName": "IZU ISLANDS",
+    "area": "関東地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "ogasawara",
+    "name": "小笠原諸島",
+    "enName": "OGASAWARA ISLANDS",
+    "area": "関東地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_kanto",
+    "name": "首都圏近海の離島",
+    "enName": "KANTO OTHERS",
+    "area": "関東地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_hokuriku",
+    "name": "日本海・北陸の島々",
+    "enName": "HOKURIKU",
+    "area": "北陸地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "aichi_santo",
+    "name": "三河湾の島々",
+    "enName": "AICHI SANTO",
+    "area": "東海地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "ieshima",
+    "name": "家島群島",
+    "enName": "IESHIMA",
+    "area": "近畿地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_awaji",
+    "name": "播磨灘の島々",
+    "enName": "AWAJI ISLANDS",
+    "area": "近畿地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_biwako",
+    "name": "琵琶湖に浮かぶ島々",
+    "enName": "BIWAKO",
+    "area": "近畿地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "kasaoka",
+    "name": "備讃瀬戸の島々",
+    "enName": "KASAOKA",
+    "area": "中国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "hagi",
+    "name": "響灘・長門の島々",
+    "enName": "HAGI",
+    "area": "中国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "oki",
+    "name": "隠岐諸島",
+    "enName": "OKI",
+    "area": "中国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_san_in",
+    "name": "山陰海岸の島々",
+    "enName": "SAN-IN ISLANDS",
+    "area": "中国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "suo_oshima",
+    "name": "防予諸島の島々",
+    "enName": "SUO OSHIMA",
+    "area": "中国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "kutsuna",
+    "name": "忽那諸島",
+    "enName": "KUTSUNA",
+    "area": "四国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "kamijima",
+    "name": "上島諸島",
+    "enName": "KAMIJIMA",
+    "area": "四国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "naoshima",
+    "name": "直島・小豆島（瀬戸内アート）",
+    "enName": "NAOSHIMA",
+    "area": "四国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "shiwaku",
+    "name": "塩飽諸島",
+    "enName": "SHIWAKU ISLANDS",
+    "area": "四国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "uwakai",
+    "name": "宇和海周辺",
+    "enName": "UWAKAI",
+    "area": "四国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_tokushima",
+    "name": "阿波の島々",
+    "enName": "TOKUSHIMA",
+    "area": "四国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_tosa",
+    "name": "土佐湾の島々",
+    "enName": "TOSA",
+    "area": "四国地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "amakusa",
+    "name": "天草諸島",
+    "enName": "AMAKUSA",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "amami",
+    "name": "奄美群島",
+    "enName": "AMAMI",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "bungo",
+    "name": "豊後水道の島々",
+    "enName": "BUNGO",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "chikuzen",
+    "name": "博多湾・筑前の島々",
+    "enName": "CHIKUZEN",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "genkai",
+    "name": "玄界灘の島々",
+    "enName": "GENKAI",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "goto",
+    "name": "五島列島",
+    "enName": "GOTO",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "hirado",
+    "name": "平戸・松浦の島々",
+    "enName": "HIRADO",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "iki",
+    "name": "壱岐諸島",
+    "enName": "IKI",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "minami_naka",
+    "name": "日向灘の島々",
+    "enName": "MINAMI NAKA",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "tokara",
+    "name": "トカラ列島",
+    "enName": "TOKARA ISLANDS",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "tsushima",
+    "name": "対馬",
+    "enName": "TSUSHIMA",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "osumi",
+    "name": "大隅群島",
+    "enName": "OSUMI ISLANDS",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "koshiki",
+    "name": "甑島列島",
+    "enName": "KOSHIKI ISLANDS",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_nagashima",
+    "name": "天草灘の島々",
+    "enName": "NAGASHIMA",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_saikai",
+    "name": "西海国立公園の島々",
+    "enName": "SAIKAI",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "pseudo_satsuma",
+    "name": "薩摩半島の島々",
+    "enName": "SATSUMA",
+    "area": "九州地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "daito",
+    "name": "大東諸島",
+    "enName": "DAITO",
+    "area": "沖縄地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "kerama",
+    "name": "慶良間諸島",
+    "enName": "KERAMA",
+    "area": "沖縄地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "miyako",
+    "name": "宮古列島",
+    "enName": "MIYAKO",
+    "area": "沖縄地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "okinawa_main",
+    "name": "琉球弧の島々",
+    "enName": "OKINAWA MAIN",
+    "area": "沖縄地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "yaeyama",
+    "name": "八重山諸島",
+    "enName": "YAEYAMA ISLANDS",
+    "area": "沖縄地方",
+    "visited": 0,
+    "total": 0
+  },
+  {
+    "id": "kume",
+    "name": "久米島周辺の島々",
+    "enName": "KUME ISLANDS",
+    "area": "沖縄地方",
+    "visited": 0,
+    "total": 0
+  }
+]
