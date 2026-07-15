@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Users, Navigation, Compass, CheckSquare, Star, Plus } from 'lucide-react';
+import { ArrowLeft, MapPin, Users, Navigation, Compass, CheckSquare, Star, Plus, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTravel } from '@/context/TravelContext';
+import CertificateModal from '@/components/CertificateModal';
 
 export default function IslandDetail() {
   const params = useParams();
@@ -14,7 +15,8 @@ export default function IslandDetail() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [island, setIsland] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const { islandStatuses, updateStatus } = useTravel();
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const { user, islandStatuses, updateStatus } = useTravel();
   const status = islandStatuses[islandId] || 'none';
 
   useEffect(() => {
@@ -147,6 +149,37 @@ export default function IslandDetail() {
             </div>
           </div>
         )}
+
+        {/* Certificate Card Banner (When Visited) */}
+        {status === 'visited' && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-16 bg-gradient-to-br from-amber-500/15 via-slate-900 to-amber-500/10 border-2 border-amber-500/50 rounded-3xl p-6 lg:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6"
+          >
+            <div className="flex items-center gap-4 text-center md:text-left">
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
+                <Award className="w-8 h-8" />
+              </div>
+              <div>
+                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[0.65rem] font-bold tracking-widest uppercase mb-1">
+                  Verified Visit
+                </span>
+                <h3 className="font-serif font-bold text-white text-xl">公式島旅到達証明書が発行可能です</h3>
+                <p className="text-xs text-slate-300 mt-1">
+                  全国432島制覇の証として、公式デザイン認定証を無料ダウンロード・シェアまたは紙証明書の郵送オーダーが可能です。
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsCertModalOpen(true)}
+              className="shrink-0 w-full md:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-sm tracking-widest shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2"
+            >
+              <Award className="w-4 h-4" />
+              証明書を見る・発行
+            </button>
+          </motion.div>
+        )}
       </div>
 
       {/* Floating Action Bar */}
@@ -162,7 +195,14 @@ export default function IslandDetail() {
         </button>
         <div className="w-[1px] h-8 bg-slate-200 mx-1"></div>
         <button 
-          onClick={() => updateStatus(islandId, status === 'visited' ? 'none' : 'visited')}
+          onClick={() => {
+            if (status === 'visited') {
+              updateStatus(islandId, 'none');
+            } else {
+              updateStatus(islandId, 'visited');
+              setIsCertModalOpen(true);
+            }
+          }}
           className={`flex-1 py-3 rounded-full flex items-center justify-center gap-2 text-sm font-bold tracking-widest transition-colors ${
             status === 'visited' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'
           }`}
@@ -172,6 +212,12 @@ export default function IslandDetail() {
         </button>
       </div>
 
+      <CertificateModal
+        isOpen={isCertModalOpen}
+        onClose={() => setIsCertModalOpen(false)}
+        island={island}
+        user={user}
+      />
     </main>
   );
 }
