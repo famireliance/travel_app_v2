@@ -11,22 +11,29 @@ interface TravelContextType {
   islandStatuses: Record<string, IslandStatus>;
   updateStatus: (islandId: string, status: IslandStatus) => void;
   totalVisited: number;
+  travelerName: string;
+  updateTravelerName: (name: string) => void;
 }
 
 const TravelContext = createContext<TravelContextType>({
   user: null,
   islandStatuses: {},
   updateStatus: () => {},
-  totalVisited: 0
+  totalVisited: 0,
+  travelerName: '島旅トラベラー',
+  updateTravelerName: () => {}
 });
 
 export function TravelProvider({ children }: { children: React.ReactNode }) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [user, setUser] = useState<any>(null);
   const [islandStatuses, setIslandStatuses] = useState<Record<string, IslandStatus>>({});
+  const [travelerName, setTravelerName] = useState<string>('島旅トラベラー');
 
   // Auth & Data Load
   useEffect(() => {
+    const savedName = localStorage.getItem('kiratabi_traveler_name');
+    if (savedName) setTravelerName(savedName);
     supabase.auth.getSession().then(({ data: { session } }) => {
       const currentUser = session?.user || null;
       setUser(currentUser);
@@ -119,10 +126,15 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateTravelerName = (name: string) => {
+    setTravelerName(name);
+    localStorage.setItem('kiratabi_traveler_name', name);
+  };
+
   const totalVisited = Object.values(islandStatuses).filter(s => s === 'visited').length;
 
   return (
-    <TravelContext.Provider value={{ user, islandStatuses, updateStatus, totalVisited }}>
+    <TravelContext.Provider value={{ user, islandStatuses, updateStatus, totalVisited, travelerName, updateTravelerName }}>
       {children}
     </TravelContext.Provider>
   );

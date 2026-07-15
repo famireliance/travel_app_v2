@@ -4,10 +4,10 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useRouter } from 'next/navigation';
-import L from 'leaflet';
+import { useTravel } from '@/context/TravelContext';
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface InteractiveMapProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   islands: any[];
   bounds?: [[number, number], [number, number]];
   zoom?: number;
@@ -26,6 +26,7 @@ const FitBounds = ({ bounds }: { bounds: [[number, number], [number, number]] })
 
 export default function InteractiveMap({ islands, bounds, zoom = 5 }: InteractiveMapProps) {
   const router = useRouter();
+  const { islandStatuses } = useTravel();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -61,16 +62,25 @@ export default function InteractiveMap({ islands, bounds, zoom = 5 }: Interactiv
         const lng = parseFloat(lngStr);
         if (isNaN(lat) || isNaN(lng)) return null;
 
+        const status = islandStatuses[island.id] || 'none';
+        const isVisited = status === 'visited';
+        const isPlanning = status === 'planning';
+
+        const markerColor = isVisited ? '#F59E0B' : isPlanning ? '#3B82F6' : '#FFFFFF';
+        const borderColor = isVisited ? '#92400E' : isPlanning ? '#1E3A8A' : '#0F4C81';
+        const markerRadius = isVisited ? 11 : isPlanning ? 9 : 6;
+        const markerWeight = isVisited ? 3.5 : isPlanning ? 2.5 : 2;
+
         return (
           <CircleMarker
             key={island.id}
             center={[lat, lng]}
-            radius={8}
+            radius={markerRadius}
             pathOptions={{ 
-              fillColor: 'white', 
+              fillColor: markerColor, 
               fillOpacity: 1, 
-              color: '#0F4C81', 
-              weight: 3 
+              color: borderColor, 
+              weight: markerWeight 
             }}
             eventHandlers={{
               click: () => {
@@ -79,7 +89,13 @@ export default function InteractiveMap({ islands, bounds, zoom = 5 }: Interactiv
             }}
           >
             <Tooltip direction="top" offset={[0, -10]} opacity={1} permanent={false}>
-              <span className="font-serif tracking-widest text-slate-800">{island.name}</span>
+              {isVisited ? (
+                <span className="font-serif tracking-widest text-amber-900 font-bold flex items-center gap-1">👑 【到達済】{island.name}</span>
+              ) : isPlanning ? (
+                <span className="font-serif tracking-widest text-blue-900 font-bold flex items-center gap-1">⭐️ 【行きたい】{island.name}</span>
+              ) : (
+                <span className="font-serif tracking-widest text-slate-800">{island.name}</span>
+              )}
             </Tooltip>
           </CircleMarker>
         );

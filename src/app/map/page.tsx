@@ -2,11 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Search, Compass } from 'lucide-react';
+import { ArrowLeft, Search, Compass, Award, Star, MapPin } from 'lucide-react';
 import MapClient from '@/components/Map/MapClient';
+import { useTravel } from '@/context/TravelContext';
 
 export default function GlobalMap() {
   const router = useRouter();
+  const { islandStatuses } = useTravel();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allIslands, setAllIslands] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,6 +38,9 @@ export default function GlobalMap() {
     </div>
   );
 
+  const visitedCount = Object.values(islandStatuses).filter(s => s === 'visited').length;
+  const planningCount = Object.values(islandStatuses).filter(s => s === 'planning').length;
+
   return (
     <main className="min-h-screen bg-[#F8FAFC] overflow-hidden fixed inset-0 flex flex-col font-sans">
       
@@ -61,6 +66,24 @@ export default function GlobalMap() {
       {/* Map Area */}
       <div className="flex-1 relative w-full h-full z-0">
         <MapClient islands={allIslands} zoom={5} bounds={[[24, 122], [46, 146]]} />
+      </div>
+
+      {/* Floating Legend & Filter Bar */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-xl border border-slate-700 px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-6 pointer-events-auto">
+        <div className="flex items-center gap-2 text-xs font-bold text-amber-400">
+          <span className="w-3 h-3 rounded-full bg-amber-500 inline-block border border-amber-300 shadow-sm" />
+          👑 行った島: <strong className="text-white text-sm font-serif">{visitedCount}</strong>
+        </div>
+        <div className="h-4 w-px bg-slate-700" />
+        <div className="flex items-center gap-2 text-xs font-bold text-blue-400">
+          <span className="w-3 h-3 rounded-full bg-blue-500 inline-block border border-blue-300 shadow-sm" />
+          ⭐️ 行きたい島: <strong className="text-white text-sm font-serif">{planningCount}</strong>
+        </div>
+        <div className="h-4 w-px bg-slate-700 hidden sm:block" />
+        <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-300">
+          <span className="w-3 h-3 rounded-full bg-white inline-block border border-slate-500 shadow-sm" />
+          📍 全国 <strong className="text-white text-sm font-serif">432</strong> 島
+        </div>
       </div>
     </main>
   );

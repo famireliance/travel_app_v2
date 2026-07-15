@@ -32,6 +32,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
         if (error) throw error;
         setMessage({ text: '確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。', type: 'success' });
       }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       setMessage({ text: error.message || '認証エラーが発生しました', type: 'error' });
     } finally {

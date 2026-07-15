@@ -140,8 +140,7 @@ export default function IslandDetail() {
                     val === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
                     'bg-slate-50 text-slate-400 border-slate-200'}`}
                 >
-                  {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-                  {val !== 'no' && <CheckSquare className="w-3 h-3" />}
+                  {flagIcons[key] || (val !== 'no' && <CheckSquare className="w-3 h-3" />)}
                   {key}
                   {val === 'no' && <span className="text-[0.6rem] ml-1">(なし)</span>}
                 </div>
@@ -158,58 +157,70 @@ export default function IslandDetail() {
             className="mb-16 bg-gradient-to-br from-amber-500/15 via-slate-900 to-amber-500/10 border-2 border-amber-500/50 rounded-3xl p-6 lg:p-8 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6"
           >
             <div className="flex items-center gap-4 text-center md:text-left">
-              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0">
-                <Award className="w-8 h-8" />
+              <div className="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
+                <Award className="w-7 h-7 animate-pulse" />
               </div>
               <div>
-                <span className="inline-block px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[0.65rem] font-bold tracking-widest uppercase mb-1">
-                  Verified Visit
+                <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[0.65rem] font-bold tracking-widest uppercase mb-1">
+                  OFFICIAL RECORD OF ARRIVAL
                 </span>
-                <h3 className="font-serif font-bold text-white text-xl">公式島旅到達証明書が発行可能です</h3>
-                <p className="text-xs text-slate-300 mt-1">
-                  全国432島制覇の証として、公式デザイン認定証を無料ダウンロード・シェアまたは紙証明書の郵送オーダーが可能です。
+                <h3 className="font-serif font-bold text-white text-xl">「{island.name}」到達認定</h3>
+                <p className="text-xs text-slate-300 mt-1 max-w-md">
+                  この島への到達記録が保存されています。公式のデジタル到達証明書および郵送オーダーを利用できます。
                 </p>
               </div>
             </div>
             <button
               onClick={() => setIsCertModalOpen(true)}
-              className="shrink-0 w-full md:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-sm tracking-widest shadow-lg transition-all hover:scale-105 flex items-center justify-center gap-2"
+              className="shrink-0 w-full md:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-xs tracking-widest shadow-xl flex items-center justify-center gap-2 transition-all hover:scale-105"
             >
               <Award className="w-4 h-4" />
-              証明書を見る・発行
+              公式証明書を見る・発行
             </button>
           </motion.div>
         )}
-      </div>
 
-      {/* Floating Action Bar */}
-      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white/90 backdrop-blur-xl p-2 rounded-full shadow-[0_10px_40px_rgb(0,0,0,0.1)] border border-slate-100 flex items-center justify-between z-50">
-        <button 
-          onClick={() => updateStatus(islandId, status === 'planning' ? 'none' : 'planning')}
-          className={`flex-1 py-3 rounded-full flex items-center justify-center gap-2 text-sm font-bold tracking-widest transition-colors ${
-            status === 'planning' ? 'bg-amber-100 text-amber-700' : 'text-slate-500 hover:bg-slate-50'
-          }`}
-        >
-          <Star className="w-4 h-4" strokeWidth={2} />
-          行きたい
-        </button>
-        <div className="w-[1px] h-8 bg-slate-200 mx-1"></div>
-        <button 
-          onClick={() => {
-            if (status === 'visited') {
-              updateStatus(islandId, 'none');
-            } else {
-              updateStatus(islandId, 'visited');
-              setIsCertModalOpen(true);
-            }
-          }}
-          className={`flex-1 py-3 rounded-full flex items-center justify-center gap-2 text-sm font-bold tracking-widest transition-colors ${
-            status === 'visited' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-500 hover:bg-slate-50'
-          }`}
-        >
-          <CheckSquare className="w-4 h-4" strokeWidth={2} />
-          行った！
-        </button>
+        {/* Island Details Table */}
+        <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 lg:p-8 mb-12">
+          <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-6 border-l-2 border-blue-500 pl-3">島の概要・アクセス情報</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
+            <div className="border-b border-slate-100 pb-4">
+              <span className="text-xs text-slate-400 tracking-wider block mb-1">所属地域 / 自治体</span>
+              <span className="font-serif text-slate-800 font-bold">{island.region_id || '日本'}</span>
+            </div>
+            <div className="border-b border-slate-100 pb-4">
+              <span className="text-xs text-slate-400 tracking-wider block mb-1">主なアクセス手段</span>
+              <span className="font-serif text-slate-800 font-bold">{island.access || 'フェリー / 高速船'}</span>
+            </div>
+            <div className="border-b border-slate-100 pb-4">
+              <span className="text-xs text-slate-400 tracking-wider block mb-1">周囲 / 面積</span>
+              <span className="font-serif text-slate-800 font-bold">{island.area || '詳細情報確認中'}</span>
+            </div>
+            <div className="border-b border-slate-100 pb-4">
+              <span className="text-xs text-slate-400 tracking-wider block mb-1">座標</span>
+              <span className="font-mono text-slate-600 text-sm">{island.coordinates || 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Action Buttons */}
+        <div className="fixed bottom-0 left-0 right-0 p-4 lg:p-6 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-center gap-4 z-40">
+          <button 
+            onClick={() => handleStatusChange('visited')}
+            className={`flex-1 max-w-xs py-4 rounded-2xl font-bold tracking-widest text-sm transition-all shadow-lg flex items-center justify-center gap-2
+              ${status === 'visited' ? 'bg-blue-600 text-white shadow-blue-500/25 scale-[1.02]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+          >
+            <CheckSquare className="w-4 h-4" /> 行った！ ({status === 'visited' ? '記録済' : '登録'})
+          </button>
+          
+          <button 
+            onClick={() => handleStatusChange('planning')}
+            className={`flex-1 max-w-xs py-4 rounded-2xl font-bold tracking-widest text-sm transition-all shadow-lg flex items-center justify-center gap-2
+              ${status === 'planning' ? 'bg-amber-500 text-white shadow-amber-500/25 scale-[1.02]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+          >
+            <Star className="w-4 h-4" /> 行きたい ({status === 'planning' ? '検討中' : '登録'})
+          </button>
+        </div>
       </div>
 
       <CertificateModal
@@ -223,6 +234,6 @@ export default function IslandDetail() {
 }
 
 // Additional lucide-react icons needed
-function BedDouble(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/></svg> }
-function Coffee(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg> }
-function Wifi(props: any) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> }
+function BedDouble(props: React.SVGProps<SVGSVGElement>) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/></svg> }
+function Coffee(props: React.SVGProps<SVGSVGElement>) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg> }
+function Wifi(props: React.SVGProps<SVGSVGElement>) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> }

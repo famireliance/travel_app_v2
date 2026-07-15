@@ -13,7 +13,10 @@ interface CertificateModalProps {
   user?: any;
 }
 
+import { useTravel } from '@/context/TravelContext';
+
 export default function CertificateModal({ isOpen, onClose, island, user }: CertificateModalProps) {
+  const { travelerName: contextTravelerName, updateTravelerName } = useTravel();
   const [travelerName, setTravelerName] = useState<string>('');
   const [visitDate, setVisitDate] = useState<string>('');
   const [customImage, setCustomImage] = useState<string | null>(null);
@@ -27,11 +30,11 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       const today = new Date();
       const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
       setVisitDate(dateStr);
-      setTravelerName(user?.email?.split('@')[0] || 'Voyager');
+      setTravelerName(contextTravelerName || user?.email?.split('@')[0] || '島旅トラベラー');
       setIsOrdering(false);
       setOrderSuccess(false);
     }
-  }, [isOpen, user]);
+  }, [isOpen, user, contextTravelerName]);
 
   // Handle Photo Upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -242,7 +245,10 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                     <input
                       type="text"
                       value={travelerName}
-                      onChange={(e) => setTravelerName(e.target.value)}
+                      onChange={(e) => {
+                        setTravelerName(e.target.value);
+                        updateTravelerName(e.target.value);
+                      }}
                       placeholder="お名前またはハンドルネーム"
                       className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500 transition-colors"
                     />
