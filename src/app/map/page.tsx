@@ -2,9 +2,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Search, Compass, Award, Star, MapPin } from 'lucide-react';
+import { ArrowLeft, Search, Compass } from 'lucide-react';
 import MapClient from '@/components/Map/MapClient';
+import SearchModal from '@/components/SearchModal';
 import { useTravel } from '@/context/TravelContext';
+import { getIslandDifficulty } from '@/lib/difficulty';
+import { fetchAllIslands } from '@/lib/supabase';
+import Breadcrumb from '@/components/Breadcrumb';
 
 export default function GlobalMap() {
   const router = useRouter();
@@ -12,21 +16,23 @@ export default function GlobalMap() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allIslands, setAllIslands] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [difficultyFilter, setDifficultyFilter] = useState<number | null>(null);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/islands?select=*`, {
-      headers: {
-        'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
-        'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-      }
-    })
-      .then(res => res.json())
+    fetchAllIslands()
       .then(islands => {
-        setAllIslands(islands || []);
+        if (!islands || islands.length === 0) {
+          setError(true);
+        } else {
+          setAllIslands(islands);
+        }
         setLoading(false);
       })
       .catch(err => {
         console.error("Failed to load map data", err);
+        setError(true);
         setLoading(false);
       });
   }, []);
@@ -38,8 +44,21 @@ export default function GlobalMap() {
     </div>
   );
 
+  if (error || allIslands.length === 0) return (
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-600 font-serif gap-4">
+      <p>マップデータの読み込みに失敗しました。</p>
+      <button onClick={() => router.push('/')} className="px-6 py-2 bg-blue-600 text-white rounded-xl">
+        トップへ戻る
+      </button>
+    </div>
+  );
+
   const visitedCount = Object.values(islandStatuses).filter(s => s === 'visited').length;
   const planningCount = Object.values(islandStatuses).filter(s => s === 'planning').length;
+  
+  const filteredIslands = difficultyFilter
+    ? allIslands.filter(isl => getIslandDifficulty(isl).level === difficultyFilter)
+    : allIslands;
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] overflow-hidden fixed inset-0 flex flex-col font-sans">
@@ -58,14 +77,46 @@ export default function GlobalMap() {
           <h1 className="font-serif font-bold text-2xl lg:text-4xl text-slate-900 tracking-widest drop-shadow-sm">全国の離島マップ</h1>
         </div>
         
-        <button className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto">
+        <button 
+          onClick={() => setIsSearchOpen(true)}
+          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
+        >
           <Search className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={1.5} />
         </button>
       </header>
 
+      {/* Breadcrumb Overlay */}
+      <div className="absolute top-28 lg:top-24 left-6 lg:left-12 z-[1000] pointer-events-auto">
+        <Breadcrumb 
+          items={[
+            { label: '日本全国離島マップ' }
+          ]} 
+          className="mb-0"
+        />
+      </div>
+
+      {/* Difficulty Tier Filter Bar */}
+      <div className="absolute top-28 lg:top-24 left-1/2 -translate-x-1/2 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200 px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 overflow-x-auto max-w-[95vw] pointer-events-auto">
+        <button 
+          onClick={() => setDifficultyFilter(null)} 
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${!difficultyFilter ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+        >
+          全島 ({allIslands.length})
+        </button>
+        {[1, 2, 3, 4, 5].map(lvl => (
+          <button 
+            key={lvl} 
+            onClick={() => setDifficultyFilter(lvl)} 
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === lvl ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            ★{lvl} {lvl === 5 ? 'レジェンド' : lvl === 4 ? '秘境島' : lvl === 3 ? 'アドベンチャー' : lvl === 2 ? 'スタンダード' : 'イージー'}
+          </button>
+        ))}
+      </div>
+
       {/* Map Area */}
       <div className="flex-1 relative w-full h-full z-0">
-        <MapClient islands={allIslands} zoom={5} bounds={[[24, 122], [46, 146]]} />
+        <MapClient islands={filteredIslands} zoom={5} bounds={[[24, 122], [46, 146]]} />
       </div>
 
       {/* Floating Legend & Filter Bar */}
@@ -82,9 +133,11 @@ export default function GlobalMap() {
         <div className="h-4 w-px bg-slate-700 hidden sm:block" />
         <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-300">
           <span className="w-3 h-3 rounded-full bg-white inline-block border border-slate-500 shadow-sm" />
-          📍 全国 <strong className="text-white text-sm font-serif">432</strong> 島
+          📍 表示中 <strong className="text-white text-sm font-serif">{filteredIslands.length}</strong> 島
         </div>
       </div>
+
+      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
     </main>
   );
 }

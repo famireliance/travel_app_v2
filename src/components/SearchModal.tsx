@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X, MapPin } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { fetchAllIslands } from '@/lib/supabase';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -12,6 +13,8 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [allIslands, setAllIslands] = useState<any[]>([]);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -19,36 +22,31 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
     if (!isOpen) {
       setQuery('');
       setResults([]);
+    } else if (allIslands.length === 0) {
+      setLoading(true);
+      fetchAllIslands()
+        .then(data => {
+          setAllIslands(data || []);
+          setLoading(false);
+        })
+        .catch(() => setLoading(false));
     }
-  }, [isOpen]);
+  }, [isOpen, allIslands.length]);
 
   useEffect(() => {
-    if (query.trim().length === 0) {
+    if (!query.trim()) {
       setResults([]);
       return;
     }
-
-    const timer = setTimeout(() => {
-      setLoading(true);
-      fetch(`${process.env.NEXT_PUBLIC_SUPABASE_URL}/rest/v1/islands?name=ilike.*${query}*&limit=10`, {
-        headers: {
-          'apikey': process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY as string,
-          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY}`
-        }
-      })
-      .then(res => res.json())
-      .then(data => {
-        setResults(data || []);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-    }, 300); // debounce
-
-    return () => clearTimeout(timer);
-  }, [query]);
+    const q = query.toLowerCase();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const filtered = allIslands.filter((i: any) => 
+      (i.name && i.name.toLowerCase().includes(q)) ||
+      (i.id && i.id.toLowerCase().includes(q)) ||
+      (i.prefecture && i.prefecture.toLowerCase().includes(q))
+    ).slice(0, 10);
+    setResults(filtered);
+  }, [query, allIslands]);
 
   return (
     <AnimatePresence>
