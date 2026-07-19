@@ -402,6 +402,15 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     visual: { icon: '✨', colorFrom: 'from-indigo-300', colorTo: 'to-purple-800', shadowColor: 'shadow-indigo-400/50', sparkleColor: 'text-indigo-100' },
     description: '日本最南端・波照間島の夜空に輝く南十字星の妖精。星降る夜にだけ姿を見せます。'
   },
+  {
+    id: 'fairy_ogasawara_chichijima',
+    name: 'ホエ（Hoe）',
+    theme: '小笠原のザトウクジラ',
+    island_id: '63', // 父島のID
+    rarity: 'EPIC',
+    visual: { icon: '🐋', colorFrom: 'from-blue-400', colorTo: 'to-indigo-800', shadowColor: 'shadow-blue-500/50', sparkleColor: 'text-blue-200' },
+    description: 'ボニンブルーの海を雄大に泳ぐザトウクジラの妖精。ダイナミックなジャンプで旅人を歓迎します。'
+  },
 
   // --- 架空コラボ版テスト（1体） ---
   {
