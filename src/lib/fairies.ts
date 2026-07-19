@@ -363,6 +363,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '沖縄の守り神シーサー',
     island_id: 'okinawa_main',
     rarity: 'RARE',
+    imageUrl: '/fairies/shisa.png',
     visual: { icon: '🦁', colorFrom: 'from-orange-500', colorTo: 'to-red-700', shadowColor: 'shadow-orange-600/50', sparkleColor: 'text-orange-300' },
     description: '沖縄の家々を守るシーサーから生まれた力強い妖精。悪い運気を追い払ってくれます。'
   },
@@ -372,6 +373,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '与那国馬と最西端の風',
     island_id: 'yonaguni',
     rarity: 'RARE',
+    imageUrl: '/fairies/yonaguni_horse.png',
     visual: { icon: '🐴', colorFrom: 'from-amber-400', colorTo: 'to-yellow-800', shadowColor: 'shadow-amber-500/50', sparkleColor: 'text-amber-200' },
     description: '日本最西端の与那国島で力強く生きる与那国馬の妖精。たくましい足腰を持っています。'
   },
@@ -381,6 +383,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '宮古馬とサトウキビ畑',
     island_id: 'miyako',
     rarity: 'RARE',
+    imageUrl: '/fairies/miyako_horse.png',
     visual: { icon: '🐎', colorFrom: 'from-yellow-200', colorTo: 'to-amber-600', shadowColor: 'shadow-yellow-400/50', sparkleColor: 'text-yellow-100' },
     description: '宮古島の風土と共に育った宮古馬の妖精。のんびりとした性格で癒やされます。'
   },
@@ -390,6 +393,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '雪の妖精シマエナガ',
     region_id: 'hokkaido',
     rarity: 'EPIC',
+    imageUrl: '/fairies/shimaenaga.png',
     visual: { icon: '🐦', colorFrom: 'from-slate-50', colorTo: 'to-slate-200', shadowColor: 'shadow-slate-300/50', sparkleColor: 'text-white' },
     description: '雪の妖精とも呼ばれるシマエナガの精霊。真っ白でふわふわな真ん丸の体をしています。'
   },
@@ -399,6 +403,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '波照間の南十字星',
     island_id: 'hateruma',
     rarity: 'EPIC',
+    imageUrl: '/fairies/hateruma_cross.png',
     visual: { icon: '✨', colorFrom: 'from-indigo-300', colorTo: 'to-purple-800', shadowColor: 'shadow-indigo-400/50', sparkleColor: 'text-indigo-100' },
     description: '日本最南端・波照間島の夜空に輝く南十字星の妖精。星降る夜にだけ姿を見せます。'
   },
@@ -408,6 +413,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '小笠原のザトウクジラ',
     island_id: '63', // 父島のID
     rarity: 'EPIC',
+    imageUrl: '/fairies/ogasawara_whale.png',
     visual: { icon: '🐋', colorFrom: 'from-blue-400', colorTo: 'to-indigo-800', shadowColor: 'shadow-blue-500/50', sparkleColor: 'text-blue-200' },
     description: 'ボニンブルーの海を雄大に泳ぐザトウクジラの妖精。ダイナミックなジャンプで旅人を歓迎します。'
   },
