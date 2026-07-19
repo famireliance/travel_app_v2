@@ -113,8 +113,8 @@ export default function FairyDiscoveryModal() {
                   animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
                   className={`relative flex items-center justify-center filter drop-shadow-2xl ${currentFairy.visual.shadowColor}`}
                 >
-                  {currentFairy.visual.imageUrl ? (
-                    <img src={currentFairy.visual.imageUrl} alt={currentFairy.name} className="w-48 h-48 object-contain" />
+                  {currentFairy.imageUrl ? (
+                    <img src={currentFairy.imageUrl} alt={currentFairy.name} className="w-48 h-48 object-contain mix-blend-multiply" />
                   ) : (
                     <span className="text-[120px]">{currentFairy.visual.icon}</span>
                   )}

@@ -295,16 +295,16 @@ export default function CompanionPage() {
                         <div className="flex-1 flex items-center justify-center relative z-10 my-4">
                           {isDiscovered ? (
                             <div className={`relative filter drop-shadow-xl ${fairy.visual.shadowColor} group-hover:scale-110 transition-transform duration-500`}>
-                              {fairy.visual.imageUrl ? (
-                                <img src={fairy.visual.imageUrl} alt={fairy.name} className="w-32 h-32 object-contain" />
+                              {fairy.imageUrl ? (
+                                <img src={fairy.imageUrl} alt={fairy.name} className="w-32 h-32 object-contain mix-blend-multiply" />
                               ) : (
                                 <span className="text-[80px] lg:text-[100px]">{fairy.visual.icon}</span>
                               )}
                             </div>
                           ) : (
                             <div className="relative filter blur-sm brightness-0 opacity-20 group-hover:blur-md transition-all">
-                              {fairy.visual.imageUrl ? (
-                                <img src={fairy.visual.imageUrl} alt="???" className="w-32 h-32 object-contain" />
+                              {fairy.imageUrl ? (
+                                <img src={fairy.imageUrl} alt="???" className="w-32 h-32 object-contain mix-blend-multiply" />
                               ) : (
                                 <span className="text-[80px] lg:text-[100px]">{fairy.visual.icon}</span>
                               )}
