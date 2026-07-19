@@ -393,6 +393,15 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     visual: { icon: '🐦', colorFrom: 'from-slate-50', colorTo: 'to-slate-200', shadowColor: 'shadow-slate-300/50', sparkleColor: 'text-white' },
     description: '雪の妖精とも呼ばれるシマエナガの精霊。真っ白でふわふわな真ん丸の体をしています。'
   },
+  {
+    id: 'fairy_hateruma_cross',
+    name: 'クロス (Cross)',
+    theme: '波照間の南十字星',
+    island_id: 'hateruma',
+    rarity: 'EPIC',
+    visual: { icon: '✨', colorFrom: 'from-indigo-300', colorTo: 'to-purple-800', shadowColor: 'shadow-indigo-400/50', sparkleColor: 'text-indigo-100' },
+    description: '日本最南端・波照間島の夜空に輝く南十字星の妖精。星降る夜にだけ姿を見せます。'
+  },
 
   // --- 架空コラボ版テスト（1体） ---
   {
