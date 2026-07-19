@@ -355,6 +355,44 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     visual: { icon: '🔥', colorFrom: 'from-red-600', colorTo: 'to-orange-900', shadowColor: 'shadow-red-600/50', sparkleColor: 'text-red-300' },
     description: '桜島の噴火と共に生まれる情熱の妖精。触ると少し熱い。'
   },
+  
+  // --- ご当地動物・伝承キャラクター追加 ---
+  {
+    id: 'fairy_okinawa_shisa',
+    name: 'シサ (Shisa)',
+    theme: '沖縄の守り神シーサー',
+    island_id: 'okinawa_main',
+    rarity: 'RARE',
+    visual: { icon: '🦁', colorFrom: 'from-orange-500', colorTo: 'to-red-700', shadowColor: 'shadow-orange-600/50', sparkleColor: 'text-orange-300' },
+    description: '沖縄の家々を守るシーサーから生まれた力強い妖精。悪い運気を追い払ってくれます。'
+  },
+  {
+    id: 'fairy_yonaguni_horse',
+    name: 'ヨナ (Yona)',
+    theme: '与那国馬と最西端の風',
+    island_id: 'yonaguni',
+    rarity: 'RARE',
+    visual: { icon: '🐴', colorFrom: 'from-amber-400', colorTo: 'to-yellow-800', shadowColor: 'shadow-amber-500/50', sparkleColor: 'text-amber-200' },
+    description: '日本最西端の与那国島で力強く生きる与那国馬の妖精。たくましい足腰を持っています。'
+  },
+  {
+    id: 'fairy_miyako_horse',
+    name: 'ミヤ (Miya)',
+    theme: '宮古馬とサトウキビ畑',
+    island_id: 'miyako',
+    rarity: 'RARE',
+    visual: { icon: '🐎', colorFrom: 'from-yellow-200', colorTo: 'to-amber-600', shadowColor: 'shadow-yellow-400/50', sparkleColor: 'text-yellow-100' },
+    description: '宮古島の風土と共に育った宮古馬の妖精。のんびりとした性格で癒やされます。'
+  },
+  {
+    id: 'fairy_hokkaido_shimaenaga',
+    name: 'エナ (Ena)',
+    theme: '雪の妖精シマエナガ',
+    region_id: 'hokkaido',
+    rarity: 'EPIC',
+    visual: { icon: '🐦', colorFrom: 'from-slate-50', colorTo: 'to-slate-200', shadowColor: 'shadow-slate-300/50', sparkleColor: 'text-white' },
+    description: '雪の妖精とも呼ばれるシマエナガの精霊。真っ白でふわふわな真ん丸の体をしています。'
+  },
 
   // --- 架空コラボ版テスト（1体） ---
   {
