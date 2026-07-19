@@ -30,6 +30,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🐬',
+      imageUrl: '/fairies/ruri.png',
       colorFrom: 'from-cyan-400',
       colorTo: 'to-blue-600',
       shadowColor: 'shadow-cyan-500/50',
@@ -45,6 +46,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🌺',
+      imageUrl: '/fairies/tida.png',
       colorFrom: 'from-rose-400',
       colorTo: 'to-orange-500',
       shadowColor: 'shadow-rose-500/50',
@@ -60,6 +62,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🌿',
+      imageUrl: '/fairies/shida.png',
       colorFrom: 'from-emerald-400',
       colorTo: 'to-teal-600',
       shadowColor: 'shadow-emerald-500/50',
@@ -75,6 +78,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'EPIC',
     visual: {
       icon: '🦋',
+      imageUrl: '/fairies/blue.png',
       colorFrom: 'from-sky-300',
       colorTo: 'to-blue-700',
       shadowColor: 'shadow-sky-500/60',
