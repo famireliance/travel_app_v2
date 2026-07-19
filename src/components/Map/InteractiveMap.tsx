@@ -63,12 +63,12 @@ export default function InteractiveMap({ islands, bounds, zoom = 5 }: Interactiv
         if (isNaN(lat) || isNaN(lng)) return null;
 
         const status = islandStatuses[island.id] || 'none';
-        const isVisited = status === 'visited';
+        const isVisited = status === 'visited' || status === 'verified_visited';
         const isPlanning = status === 'planning';
 
-        const markerColor = isVisited ? '#F59E0B' : isPlanning ? '#3B82F6' : '#FFFFFF';
-        const borderColor = isVisited ? '#92400E' : isPlanning ? '#1E3A8A' : '#0F4C81';
-        const markerRadius = isVisited ? 11 : isPlanning ? 9 : 6;
+        const markerColor = isVisited ? '#F59E0B' : isPlanning ? '#3B82F6' : '#94A3B8';
+        const borderColor = isVisited ? '#92400E' : isPlanning ? '#1E3A8A' : '#334155';
+        const markerRadius = isVisited ? 12 : isPlanning ? 10 : 8;
         const markerWeight = isVisited ? 3.5 : isPlanning ? 2.5 : 2;
 
         return (

@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Award, Bot, Shield, Check, ChevronRight, Lock, Heart, Droplets, Flame, Moon } from 'lucide-react';
+import { X, Sparkles, Award, Bot, Shield, Check, ChevronRight, Lock, Heart, Droplets, Flame, Moon, BookOpen } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
 import { COMPANION_CHARACTERS, CompanionId } from '@/lib/companion';
 import { getPlayerLevelInfo } from '@/lib/gamification';
@@ -13,6 +14,7 @@ interface CompanionModalProps {
 }
 
 export default function CompanionModal({ isOpen, onClose }: CompanionModalProps) {
+  const router = useRouter();
   const { totalXP, selectedCompanionId, updateCompanionId, companionChar, companionStage } = useTravel();
   const playerLvInfo = getPlayerLevelInfo(totalXP);
 
@@ -50,7 +52,7 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
           {/* Current Status Banner */}
           <div className="bg-slate-50 border-b border-slate-200/80 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 flex-shrink-0">
             <div className="flex items-center gap-4">
-              <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-3xl shadow-md border-2 border-white shrink-0`}>
+              <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-5xl shadow-md border-2 border-white shrink-0`}>
                 {companionStage.icon}
               </div>
               <div>
@@ -106,8 +108,8 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
                         </div>
                       )}
                       <div>
-                        <div className="flex items-start gap-3.5">
-                          <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${activeStage.badgeGradient} flex items-center justify-center text-3xl shadow-sm shrink-0 border border-white`}>
+                        <div className="flex items-start gap-4">
+                          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm shrink-0 border border-white`}>
                             {activeStage.icon}
                           </div>
                           <div className="pr-16">
@@ -181,8 +183,8 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
                           )}
                         </div>
 
-                        <div className="flex items-center gap-2.5 my-3">
-                          <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${st.badgeGradient} flex items-center justify-center text-xl shadow-sm border border-white shrink-0`}>
+                        <div className="flex items-center gap-3 my-3">
+                          <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${st.badgeGradient} flex items-center justify-center text-3xl shadow-sm border border-white shrink-0`}>
                             {st.icon}
                           </div>
                           <div>
@@ -213,15 +215,23 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
 
           {/* Footer */}
           <div className="bg-slate-50 border-t border-slate-200/80 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 flex-shrink-0">
-            <span className="text-xs text-slate-500">
+            <span className="text-xs text-slate-500 flex-1 hidden lg:block">
               💡 離島訪問記録をつけて経験値(XP)を獲得すると、パートナーキャラクターがさらなる段階へ進化します！
             </span>
-            <button
-              onClick={onClose}
-              className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-blue-900 text-white font-bold text-xs transition-all shadow-sm w-full sm:w-auto"
-            >
-              決定して戻る
-            </button>
+            <div className="flex gap-3 w-full sm:w-auto">
+              <button
+                onClick={() => { onClose(); router.push('/companion'); }}
+                className="px-4 py-2.5 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200 font-bold text-xs transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none"
+              >
+                <BookOpen className="w-3.5 h-3.5" /> 大図鑑を開く
+              </button>
+              <button
+                onClick={onClose}
+                className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-blue-900 text-white font-bold text-xs transition-all shadow-sm flex-1 sm:flex-none"
+              >
+                決定して閉じる
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>

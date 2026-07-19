@@ -7,9 +7,10 @@ import { fetchAllIslands } from '@/lib/supabase';
 interface SearchModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onSelectIsland?: (islandId: string) => void;
 }
 
-export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchModalProps) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,7 +92,11 @@ export default function SearchModal({ isOpen, onClose }: SearchModalProps) {
                       key={island.id}
                       onClick={() => {
                         onClose();
-                        router.push(`/island/${island.id}`);
+                        if (onSelectIsland) {
+                          onSelectIsland(island.id);
+                        } else {
+                          router.push(`/island/${island.id}`);
+                        }
                       }}
                       className="bg-white p-4 rounded-xl shadow-sm border border-slate-100 flex items-center justify-between cursor-pointer hover:border-blue-300 hover:shadow-md transition-all group"
                     >

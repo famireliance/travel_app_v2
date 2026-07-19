@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X } from 'lucide-react';
@@ -10,7 +10,8 @@ import SearchModal from '@/components/SearchModal';
 import AuthModal from '@/components/AuthModal';
 import CompanionModal from '@/components/CompanionModal';
 import { useTravel } from '@/context/TravelContext';
-import { fetchAllIslands } from '@/lib/supabase';
+import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
+import BannerCarousel from '@/components/BannerCarousel';
 
 const ALL_ISLANDS_COUNT = 432;
 
@@ -20,8 +21,14 @@ export default function Home() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isCompanionModalOpen, setIsCompanionModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
+  const categoryRef = useRef<HTMLDivElement>(null);
+  const regionRef = useRef<HTMLDivElement>(null);
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allIslands, setAllIslands] = useState<any[]>([]);
+  const [siteSettings, setSiteSettings] = useState<any>(null);
+  const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const { user, totalVisited, companionChar, companionStage, islandStatuses } = useTravel();
@@ -44,7 +51,29 @@ export default function Home() {
     fetchAllIslands().then(data => {
       if (data) setAllIslands(data);
     }).catch(() => {});
+    fetchSiteSettings().then(data => {
+      if (data) setSiteSettings(data);
+    });
+    fetchAdCampaigns().then(data => {
+      setAdCampaigns(data || []);
+    });
   }, []);
+
+  useEffect(() => {
+    if (selectedCategory && categoryRef.current) {
+      setTimeout(() => {
+        categoryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [selectedCategory]);
+
+  useEffect(() => {
+    if (selectedRegionId && regionRef.current) {
+      setTimeout(() => {
+        regionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+  }, [selectedRegionId]);
 
   // 【100%厳格検証済マスター】誤情報・推測抽出を排除し、実在施設・国際認定・国立公園実績が実証された島のみを抽出
   const selectedCategoryIslands = useMemo(() => {
@@ -139,10 +168,11 @@ export default function Home() {
             <Waves size={24} strokeWidth={1.5} />
           </motion.div>
           <motion.span 
-            className="font-serif font-bold text-base lg:text-lg tracking-[0.2em]"
+            className="font-serif font-bold text-sm lg:text-base tracking-[0.1em] flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5"
             style={{ color: navColor }}
           >
-            KIRATABI
+            <span>輝旅 島専科</span>
+            <span className="text-[0.65rem] lg:text-xs opacity-80">(kiratabi -shimasenka)</span>
           </motion.span>
         </div>
         
@@ -200,8 +230,13 @@ export default function Home() {
         )}
       </AnimatePresence>
 
+      {/* Global Campaign Banner (Carousel) */}
+      {isMounted && adCampaigns.length > 0 && (
+        <BannerCarousel campaigns={adCampaigns} marginTop="mt-[65px] lg:mt-[80px]" />
+      )}
+
       {/* Cinematic Hero Section */}
-      <div className="relative h-[85vh] lg:h-[90vh] w-full overflow-hidden flex flex-col justify-end items-center">
+      <div className={`relative ${adCampaigns.length > 0 ? 'h-[75vh]' : 'h-[85vh] lg:h-[90vh]'} w-full overflow-hidden flex flex-col justify-end items-center`}>
         {/* Subtle Ken Burns Effect */}
         <motion.div 
           className="absolute inset-0 z-0 h-[80vh] min-h-[600px] overflow-hidden bg-slate-900"
@@ -319,8 +354,8 @@ export default function Home() {
                 onClick={() => setIsCompanionModalOpen(true)}
                 className="mt-5 p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all cursor-pointer group/comp relative z-10 flex items-center justify-between"
               >
-                <div className="flex items-center gap-3">
-                  <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-2xl shadow-sm border border-white/60 shrink-0 group-hover/comp:scale-105 transition-transform`}>
+                <div className="flex items-center gap-4">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm border border-white/60 shrink-0 group-hover/comp:scale-105 transition-transform`}>
                     {companionStage.icon}
                   </div>
                   <div>
@@ -345,8 +380,44 @@ export default function Home() {
         </motion.div>
       </div>
 
+      {/* Featured & Popular Islands Section */}
+      {isMounted && allIslands.filter(i => i.is_featured).length > 0 && (
+        <div className="px-8 lg:px-12 pt-20 lg:pt-28 pb-10 bg-white">
+          <div className="mb-10 flex items-center justify-between max-w-7xl mx-auto">
+            <div>
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-amber-500 mb-2">FEATURED DESTINATIONS</p>
+              <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest flex items-center gap-2">
+                <Star className="text-amber-400 fill-amber-400 w-6 h-6 lg:w-8 lg:h-8" />
+                ピックアップ・人気の島
+              </h2>
+            </div>
+          </div>
+          <div className="flex gap-6 overflow-x-auto pb-8 hide-scrollbar max-w-7xl mx-auto snap-x">
+            {allIslands.filter(i => i.is_featured).map((island, idx) => (
+              <div 
+                key={`featured-${island.id}-${idx}`}
+                onClick={() => router.push(`/island/${island.id}`)}
+                className="w-[280px] sm:w-[320px] shrink-0 snap-start bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden cursor-pointer group hover:shadow-xl hover:shadow-amber-500/10 transition-all hover:-translate-y-1"
+              >
+                <div className="h-40 bg-slate-200 relative overflow-hidden">
+                  <img src={`/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.src = '/placeholders/trop.jpg'; }} />
+                  <div className="absolute top-3 left-3 bg-amber-500 text-white text-[0.6rem] font-bold px-2 py-1 rounded shadow-sm flex items-center gap-1">
+                    <Star size={10} className="fill-white" /> PICKUP
+                  </div>
+                </div>
+                <div className="p-5">
+                  <div className="text-[0.65rem] font-bold text-slate-400 tracking-widest mb-1">{island.prefecture}</div>
+                  <h3 className="font-serif text-lg font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">{island.name}</h3>
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Refined Categories & In-page Curated Results */}
-      <div className="px-8 lg:px-12 py-20 lg:py-28 bg-white border-b border-slate-100">
+      <div className={`px-8 lg:px-12 py-20 lg:py-28 bg-white border-b border-slate-100 ${isMounted && allIslands.filter(i => i.is_featured).length > 0 ? 'pt-10 lg:pt-10 border-t border-slate-100' : ''}`}>
         <div className="mb-12 text-center">
           <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">CURATED THEMES & PARTNERS</p>
           <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest">目的から探す＆進化パートナー</h2>
@@ -355,7 +426,7 @@ export default function Home() {
           {/* キャラクター図鑑ダイレクトアクセスボタン */}
           <div className="mt-8 flex justify-center">
             <button
-              onClick={() => setIsCompanionModalOpen(true)}
+              onClick={() => router.push('/companion')}
               className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all group/btn border border-blue-500/30"
             >
               <div className="flex -space-x-1 overflow-hidden">
@@ -365,7 +436,7 @@ export default function Home() {
                 <span className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-xs border border-white">♨️</span>
               </div>
               <span className="text-xs sm:text-sm font-bold tracking-wider text-amber-300">
-                オリジナル進化キャラクター図鑑＆スキル確認 ＞
+                オリジナル進化キャラクター大図鑑ページへ ＞
               </span>
             </button>
           </div>
@@ -416,6 +487,7 @@ export default function Home() {
               exit={{ opacity: 0, height: 0, y: -10 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="max-w-6xl mx-auto mt-12 overflow-hidden"
+              ref={categoryRef}
             >
               <div className="bg-slate-50/80 rounded-3xl p-6 lg:p-10 border border-slate-200/60 shadow-inner">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8">
@@ -617,6 +689,7 @@ export default function Home() {
               exit={{ opacity: 0, height: 0, y: -10 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
               className="mt-8 mb-24 overflow-hidden"
+              ref={regionRef}
             >
               <div className="bg-slate-900 rounded-3xl p-6 lg:p-10 border border-slate-700 shadow-2xl text-white">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-slate-800">
@@ -710,7 +783,7 @@ export default function Home() {
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/90 to-transparent" />
         <div className="relative max-w-sm mx-auto px-8 pb-[calc(24px+env(safe-area-inset-bottom))] pt-12 flex justify-between items-end pointer-events-auto">
-          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex flex-col items-center gap-2 text-slate-800 hover:scale-110 transition-transform">
+          <button onClick={() => setIsSearchOpen(true)} className="flex flex-col items-center gap-2 text-slate-800 hover:scale-110 transition-transform">
             <Compass size={24} strokeWidth={1.5} />
             <span className="text-[0.6rem] font-bold tracking-widest">探す</span>
           </button>

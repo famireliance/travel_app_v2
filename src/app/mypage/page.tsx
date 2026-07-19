@@ -35,6 +35,7 @@ export default function MyPage() {
   }, [allIslandsData, visitCounts]);
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(travelerName || '');
+  const [myDiaries, setMyDiaries] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedIslandForCert, setSelectedIslandForCert] = useState<any>(null);
 
@@ -53,7 +54,13 @@ export default function MyPage() {
       }
     })
     .catch(console.error);
-  }, [islandStatuses]);
+
+    if (user?.id) {
+      supabase.from('island_diaries').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
+        .then(({ data }) => setMyDiaries(data || []))
+        .catch(console.error);
+    }
+  }, [islandStatuses, user]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -294,14 +301,29 @@ export default function MyPage() {
           </div>
         </div>
 
-        {/* Certificate Gallery Section */}
+        {/* Certificate Gallery Section (Card Holder) */}
         <div className="mb-12">
           <h3 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-4 border-l-2 border-amber-500 pl-3 flex items-center justify-between">
             <span className="flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-500" strokeWidth={2.5}/> 公式到達証明書コレクション ({visitedList.length})
+              <Award className="w-4 h-4 text-amber-500" strokeWidth={2.5}/> 到達証明カードホルダー ({visitedList.length})
             </span>
-            <span className="text-[0.7rem] font-normal text-slate-400">デジタル・郵送オーダー対応</span>
+            <span className="text-[0.7rem] font-normal text-slate-400">デジタル・物理カード購入</span>
           </h3>
+
+          <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 mb-6 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white shadow-md">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div>
+                <h4 className="font-bold text-amber-900 text-sm">プレミアム・カードホルダー機能（準備中）</h4>
+                <p className="text-xs text-amber-700">あなたの到達証明を物理的なトレーディングカードとして郵送するサービスを準備中です。</p>
+              </div>
+            </div>
+            <button className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold tracking-widest shadow-md transition-all whitespace-nowrap">
+              詳細を見る
+            </button>
+          </div>
 
           {visitedList.length === 0 ? (
             <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 rounded-3xl border border-amber-500/30 text-center space-y-4 shadow-xl">
@@ -360,6 +382,41 @@ export default function MyPage() {
                       <Award className="w-3.5 h-3.5" />
                       証明書を見る・発行 / SNSシェア
                     </button>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* My Diaries */}
+        <div className="mb-12">
+          <h3 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-4 border-l-2 border-blue-500 pl-3 flex items-center gap-2">
+            <Edit3 className="w-4 h-4 text-blue-500" strokeWidth={2}/> 私の島ログ ({myDiaries.length})
+          </h3>
+          
+          {myDiaries.length === 0 ? (
+            <p className="text-slate-400 text-sm font-serif mb-12">まだ島ログの投稿がありません。</p>
+          ) : (
+            <div className="space-y-4">
+              {myDiaries.map(diary => {
+                const island = allIslandsData.find(i => i.id === diary.island_id);
+                return (
+                  <div key={diary.id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4">
+                    {diary.photo_url && (
+                      <div className="w-full md:w-32 h-32 shrink-0">
+                        <img src={diary.photo_url} alt="Diary photo" className="w-full h-full object-cover rounded-xl border border-slate-200" />
+                      </div>
+                    )}
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors" onClick={() => router.push(`/island/${diary.island_id}`)}>
+                          {island?.name || '不明な島'}
+                        </h4>
+                        <span className="text-xs text-slate-400">{new Date(diary.created_at).toLocaleDateString('ja-JP')}</span>
+                      </div>
+                      <p className="text-sm text-slate-600 font-serif whitespace-pre-wrap">{diary.content}</p>
+                    </div>
                   </div>
                 );
               })}

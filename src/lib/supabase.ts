@@ -125,14 +125,63 @@ const ACCURATE_ISLAND_DIRECTORY: Record<string, { coordinates: string; region_id
   '直島': { coordinates: '34.4608, 133.9961', region_id: 'naoshima', prefecture: '香川県' },
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function fetchAllIslands(): Promise<any[]> {
-  // 全432島の精密実証・重複排除済み正規マスターデータ（ALL_ISLANDS_MASTER_DICTIONARY）を常に正規データ源として返す
-  // （旧データベースのIDとマスターのIDが衝突して「頭島（岡山）」に「向島（東京都）」の県名・座標が混ざる問題を完全解消）
-  const masterList = Object.values(ALL_ISLANDS_MASTER_DICTIONARY);
-  if (masterList && masterList.length > 0) {
-    return masterList;
+  try {
+    // Only fetch published islands for the user app, ordered by popularity
+    const { data, error } = await supabase
+      .from('islands')
+      .select('*')
+      .eq('is_published', true)
+      .order('popularity_score', { ascending: false });
+      
+    if (!error && data && data.length > 0) {
+      return data;
+    }
+  } catch (err) {
   }
   return FALLBACK_ISLANDS;
 }
+
+export async function fetchSiteSettings(): Promise<any | null> {
+  try {
+    const { data, error } = await supabase
+      .from('site_settings')
+      .select('*')
+      .eq('id', 1)
+      .single();
+    if (!error && data) return data;
+  } catch (err) {
+    console.error("Failed to fetch site settings", err);
+  }
+  return null;
+}
+
+// ==========================================
+// Phase 6: アドサーバー (Ad Campaigns)
+// ==========================================
+export const fetchAdCampaigns = async (islandId?: string, regionId?: string) => {
+  try {
+    let query = supabase.from('ad_campaigns').select('*')
+      .eq('is_active', true)
+      .neq('banner_url', ''); // 安全対策: バナーURLが空のものをシステムレベルでブロック
+    
+    if (islandId || regionId) {
+      let orString = 'target_type.eq.global';
+      if (regionId) orString += `,and(target_type.eq.region,target_id.eq.${regionId})`;
+      if (islandId) orString += `,and(target_type.eq.island,target_id.ilike.*${islandId}*)`; // JSON配列文字列の部分一致検索
+      
+      query = query.or(orString);
+    } else {
+      query = query.eq('target_type', 'global');
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    
+    return (data || []).sort(() => Math.random() - 0.5);
+  } catch (error) {
+    console.error('Error fetching ad campaigns:', error);
+    return [];
+  }
+};
 

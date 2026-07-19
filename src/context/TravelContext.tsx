@@ -4,6 +4,8 @@ import React, { createContext, useContext, useEffect, useState, useMemo } from '
 import { supabase } from '@/lib/supabase';
 import { calculateIslandXP, getPlayerLevelInfo } from '@/lib/gamification';
 import { CompanionId, CompanionStageInfo, CompanionCharacter, COMPANION_CHARACTERS, getCompanionStageInfo } from '@/lib/companion';
+import { IslandFairy, FAIRIES_MASTER } from '@/lib/fairies';
+import { COLLAB_SPOTS } from '@/lib/spots';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 export type IslandStatus = 'visited' | 'planning' | 'none' | 'verified_visited';
@@ -27,8 +29,14 @@ interface TravelContextType {
   updateCompanionId: (id: CompanionId) => void;
   companionChar: CompanionCharacter;
   companionStage: CompanionStageInfo;
+  // Island Fairies Collection
+  collectedFairies: string[];
+  collectedFairyDates: Record<string, string>; // { fairyId: '2026-07-19T12:00:00Z' }
+  newlyDiscoveredFairies: IslandFairy[];
+  clearDiscoveredFairy: (fairyId: string) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   addIslandVisit: (islandId: string, islandObj?: any, newSpots?: number) => { xpGained: number };
+  addSpotVisit: (spotId: string) => boolean;
 }
 
 const TravelContext = createContext<TravelContextType>({
@@ -47,7 +55,12 @@ const TravelContext = createContext<TravelContextType>({
   updateCompanionId: () => {},
   companionChar: COMPANION_CHARACTERS.shimamaru,
   companionStage: COMPANION_CHARACTERS.shimamaru.stages[0],
-  addIslandVisit: () => ({ xpGained: 0 })
+  collectedFairies: [],
+  collectedFairyDates: {},
+  newlyDiscoveredFairies: [],
+  clearDiscoveredFairy: () => {},
+  addIslandVisit: () => ({ xpGained: 0 }),
+  addSpotVisit: () => false
 });
 
 export function TravelProvider({ children }: { children: React.ReactNode }) {
@@ -59,6 +72,9 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [spotsVisited, setSpotsVisited] = useState<Record<string, number>>({});
   const [totalXP, setTotalXP] = useState<number>(0);
   const [selectedCompanionId, setSelectedCompanionId] = useState<CompanionId>('shimamaru');
+  const [collectedFairies, setCollectedFairies] = useState<string[]>([]);
+  const [collectedFairyDates, setCollectedFairyDates] = useState<Record<string, string>>({});
+  const [newlyDiscoveredFairies, setNewlyDiscoveredFairies] = useState<IslandFairy[]>([]);
 
   // Auth & Data Load
   useEffect(() => {
@@ -159,6 +175,27 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    const fKey = userId ? `island_fairies_${userId}` : 'island_fairies_anon';
+    const dKey = userId ? `island_fairies_dates_${userId}` : 'island_fairies_dates_anon';
+    const storedF = localStorage.getItem(fKey);
+    const storedD = localStorage.getItem(dKey);
+    if (storedF) {
+      try {
+        const parsedF = JSON.parse(storedF);
+        if (isMounted && Array.isArray(parsedF)) {
+          setCollectedFairies(parsedF);
+        }
+      } catch (e) { console.error("Failed to parse fairies:", e); }
+    }
+    if (storedD) {
+      try {
+        const parsedD = JSON.parse(storedD);
+        if (isMounted && typeof parsedD === 'object' && parsedD !== null) {
+          setCollectedFairyDates(parsedD);
+        }
+      } catch (e) { console.error("Failed to parse fairy dates:", e); }
+    }
+
     // Supabaseからの同期
     if (userId && isMounted) {
       try {
@@ -256,6 +293,50 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       });
     }
 
+    // ご当地妖精の発見判定
+    if (isFirstVisit && islandObj) {
+      const rId = islandObj.region_id;
+      const iId = islandId;
+      
+      const foundFairies = FAIRIES_MASTER.filter(f => {
+        if (f.island_id && f.island_id === iId) return true; // Island specific (Collab)
+        if (!f.island_id && f.region_id === rId) return true; // Region specific
+        return false;
+      });
+
+      if (foundFairies.length > 0) {
+        setCollectedFairies(prev => {
+          let hasNew = false;
+          const nextF = [...prev];
+          const newF: IslandFairy[] = [];
+          foundFairies.forEach(f => {
+            if (!nextF.includes(f.id)) {
+              nextF.push(f.id);
+              newF.push(f);
+              hasNew = true;
+            }
+          });
+
+          if (hasNew) {
+            const fKey = user ? `island_fairies_${user.id}` : 'island_fairies_anon';
+            localStorage.setItem(fKey, JSON.stringify(nextF));
+            
+            setCollectedFairyDates(prevD => {
+              const nextD = { ...prevD };
+              newF.forEach(f => { nextD[f.id] = new Date().toISOString(); });
+              const dKey = user ? `island_fairies_dates_${user.id}` : 'island_fairies_dates_anon';
+              localStorage.setItem(dKey, JSON.stringify(nextD));
+              return nextD;
+            });
+
+            setNewlyDiscoveredFairies(current => [...current, ...newF]);
+            return nextF;
+          }
+          return prev;
+        });
+      }
+    }
+
     // XP加算
     if (gained > 0) {
       setTotalXP(prev => {
@@ -279,6 +360,37 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const updateCompanionId = (id: CompanionId) => {
     setSelectedCompanionId(id);
     localStorage.setItem('kiratabi_companion_id', id);
+  };
+
+  const clearDiscoveredFairy = (fairyId: string) => {
+    setNewlyDiscoveredFairies(prev => prev.filter(f => f.id !== fairyId));
+  };
+
+  const addSpotVisit = (spotId: string): boolean => {
+    const spot = COLLAB_SPOTS.find(s => s.id === spotId);
+    if (!spot) return false;
+    
+    const fairyId = spot.reward_fairy_id;
+    if (!collectedFairies.includes(fairyId)) {
+      const fairy = FAIRIES_MASTER.find(f => f.id === fairyId);
+      if (fairy) {
+        setCollectedFairies(prev => {
+          const next = [...prev, fairyId];
+          const fKey = user ? `island_fairies_${user.id}` : 'island_fairies_anon';
+          localStorage.setItem(fKey, JSON.stringify(next));
+          return next;
+        });
+        setCollectedFairyDates(prev => {
+          const next = { ...prev, [fairyId]: new Date().toISOString() };
+          const dKey = user ? `island_fairies_dates_${user.id}` : 'island_fairies_dates_anon';
+          localStorage.setItem(dKey, JSON.stringify(next));
+          return next;
+        });
+        setNewlyDiscoveredFairies(prev => [...prev, fairy]);
+        return true;
+      }
+    }
+    return false;
   };
 
   const totalPoints = useMemo(() => {
@@ -321,7 +433,12 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       updateCompanionId,
       companionChar,
       companionStage,
-      addIslandVisit
+      collectedFairies,
+      collectedFairyDates,
+      newlyDiscoveredFairies,
+      clearDiscoveredFairy,
+      addIslandVisit,
+      addSpotVisit
     }}>
       {children}
     </TravelContext.Provider>

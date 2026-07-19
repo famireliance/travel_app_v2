@@ -8,9 +8,12 @@ import { useTravel } from '@/context/TravelContext';
 import CertificateModal from '@/components/CertificateModal';
 import MiniMapClient from '@/components/Map/MiniMapClient';
 import CheckInModal from '@/components/CheckInModal';
-import { fetchAllIslands } from '@/lib/supabase';
+import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import { getGuideUrl, getAiCompanionUrl, ECOSYSTEM_CONFIG } from '@/lib/ecosystem';
 import Breadcrumb from '@/components/Breadcrumb';
+import IslandDiaries from '@/components/IslandDiaries';
+import BannerCarousel from '@/components/BannerCarousel';
+import { Tent, Car, Ship, CloudLightning } from 'lucide-react';
 
 export default function IslandDetail() {
   const params = useParams();
@@ -19,6 +22,9 @@ export default function IslandDetail() {
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [island, setIsland] = useState<any>(null);
+  const [siteSettings, setSiteSettings] = useState<any>(null);
+  const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
+  const [weatherAlerts, setWeatherAlerts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
@@ -34,11 +40,24 @@ export default function IslandDetail() {
   };
 
   useEffect(() => {
-    fetchAllIslands().then(islands => {
+    fetchAllIslands().then(async (islands) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const found = (islands || []).find((i: any) => i.id === islandId);
       if (found) {
         setIsland(found);
+        
+        // Phase 6: Fetch Targeted Ads
+        fetchAdCampaigns(found.id, found.region_id).then(ads => setAdCampaigns(ads || []));
+
+        // Phase 6: Fetch Automated Weather Alerts
+        if (found.coordinates) {
+          const [lat, lon] = found.coordinates.split(',').map((s: string) => s.trim());
+          fetch(`/api/weather?lat=${lat}&lon=${lon}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.alerts) setWeatherAlerts(data.alerts);
+            }).catch(() => {});
+        }
       } else {
         setIsland({
           id: islandId,
@@ -50,6 +69,10 @@ export default function IslandDetail() {
       }
       setLoading(false);
     }).catch(() => setLoading(false));
+
+    fetchSiteSettings().then(data => {
+      if (data) setSiteSettings(data);
+    });
   }, [islandId]);
 
   // Premium Skeleton Loading Screen
@@ -74,6 +97,25 @@ export default function IslandDetail() {
     </div>
   );
 
+  if (island.is_published === false) return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 p-6 text-center">
+      <AlertTriangle className="w-16 h-16 text-slate-300 mb-4" />
+      <h1 className="font-serif font-bold text-2xl text-slate-700 mb-2">公開準備中</h1>
+      <p className="text-slate-500 text-sm max-w-sm">この島の情報は現在準備中、または公開が一時停止されています。</p>
+      <button onClick={() => router.back()} className="mt-8 px-6 py-2 bg-slate-900 text-white rounded-full text-sm font-bold shadow-md">戻る</button>
+    </div>
+  );
+
+  const parseJsonSafe = (str: string | null) => {
+    if (!str) return [];
+    try { return JSON.parse(str); } catch { return [{ name: 'リンクを見る', url: str }]; }
+  };
+  // 安全対策: 管理者がうっかりURLを空のまま登録しても、ユーザー画面には絶対に表示させない（信頼性担保）
+  const hotels = parseJsonSafe(island.aff_hotel_url).filter((h: any) => h.url && h.url.trim() !== '');
+  const rentacars = parseJsonSafe(island.aff_rentacar_url).filter((r: any) => r.url && r.url.trim() !== '');
+  const ferries = parseJsonSafe(island.aff_ferry_url).filter((f: any) => f.url && f.url.trim() !== '');
+  const jobs = parseJsonSafe(island.aff_job_url).filter((j: any) => j.url && j.url.trim() !== '');
+
   let defaultFallback = '/placeholders/temp.jpg';
   if (island.prefecture === '北海道' || island.prefecture === '青森県' || island.region_id?.includes('hokkaido')) {
     defaultFallback = '/placeholders/cold.jpg';
@@ -81,7 +123,7 @@ export default function IslandDetail() {
     defaultFallback = '/placeholders/trop.jpg';
   }
 
-  const fallbackImage = `/region/${island.region_id}.jpg`;
+  const fallbackImage = island.hero_image_url || `/region/${island.region_id}.jpg`;
   
   const flagIcons: Record<string, React.ReactNode> = {
     '診療所': <Plus className="w-4 h-4 text-rose-500" />,
@@ -94,6 +136,28 @@ export default function IslandDetail() {
     <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans relative">
       {/* Hero Image Section */}
       <div className="relative w-full h-[50vh] lg:h-[60vh] overflow-hidden">
+        {/* Top Navigation Overlay */}
+        <div className="absolute top-0 left-0 right-0 z-50 p-6 lg:p-8 flex flex-col gap-4 bg-gradient-to-b from-slate-900/80 via-slate-900/20 to-transparent pointer-events-none">
+          <div className="flex items-center gap-4 pointer-events-auto">
+            <button 
+              onClick={() => router.back()} 
+              className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/40 transition-colors shadow-sm"
+              title="前に戻る"
+            >
+              <ArrowLeft className="w-6 h-6" strokeWidth={2} />
+            </button>
+            <Breadcrumb 
+              items={[
+                { label: 'マップ', href: '/map' },
+                { label: island.region_id, href: `/region/${island.region_id}` },
+                { label: island.name }
+              ]} 
+              isDark={true}
+              className="!mb-0"
+            />
+          </div>
+        </div>
+
         <img 
           src={fallbackImage} 
           onError={(e) => { e.currentTarget.src = defaultFallback }}
@@ -127,8 +191,47 @@ export default function IslandDetail() {
         </div>
       </div>
 
+      {/* Global & Targeted Campaign Banner (Carousel) */}
+      {adCampaigns.length > 0 && (
+        <BannerCarousel campaigns={adCampaigns} />
+      )}
+
+      {/* Automated Weather Alert Banner */}
+      {weatherAlerts.length > 0 && (
+        <div className="w-full bg-rose-600 text-white p-4 shadow-sm relative z-30 border-b border-rose-700/50">
+          <div className="max-w-4xl mx-auto px-6 lg:px-12 flex gap-4 items-start md:items-center">
+            <CloudLightning className="w-6 h-6 shrink-0 mt-0.5 md:mt-0 animate-pulse" />
+            <div>
+              <p className="font-bold text-sm md:text-base tracking-widest mb-1">
+                【自動発令】{weatherAlerts[0].event}
+              </p>
+              <p className="text-xs md:text-sm font-medium text-white/90 whitespace-pre-line leading-relaxed">
+                {weatherAlerts[0].description} ({weatherAlerts[0].sender_name})
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Agency Manual Alert Banner */}
+      {island.alert_status && island.alert_status !== 'normal' && (
+        <div className={`w-full ${island.alert_status === 'danger' ? 'bg-red-700 text-white' : island.alert_status === 'cancelled' ? 'bg-slate-900 text-white' : 'bg-amber-500 text-slate-900'} p-4 shadow-sm relative z-30`}>
+          <div className="max-w-4xl mx-auto px-6 lg:px-12 flex gap-4 items-start md:items-center">
+            <AlertTriangle className="w-6 h-6 shrink-0 mt-0.5 md:mt-0" />
+            <div>
+              <p className="font-bold text-sm md:text-base tracking-widest mb-1">
+                {island.alert_status === 'danger' ? '【重要】渡航制限・危険情報' : island.alert_status === 'cancelled' ? '【重要】欠航・運休情報' : '【お知らせ】渡航に関する注意'}
+              </p>
+              <p className={`text-xs md:text-sm font-medium ${island.alert_status === 'warning' ? 'text-slate-800' : 'text-white/90'} whitespace-pre-line leading-relaxed`}>
+                {island.alert_message || '現地からの最新情報をご確認の上、安全なご旅行をお願いいたします。'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Content Section */}
-      <div className="max-w-4xl mx-auto px-6 lg:px-12 -mt-4 relative z-20">
+      <div className={`max-w-4xl mx-auto px-6 lg:px-12 ${(adCampaigns.length > 0) || (island.alert_status && island.alert_status !== 'normal') || weatherAlerts.length > 0 ? 'mt-8' : '-mt-4'} relative z-20`}>
         <Breadcrumb 
           items={[
             { label: '日本全国離島マップ', href: '/map' },
@@ -173,75 +276,74 @@ export default function IslandDetail() {
           </div>
         </div>
 
-        {/* Ecosystem Portal Section (Kira-Tabi Guide & AI Companion) */}
-        <div className="mb-14">
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-amber-500 animate-pulse" />
-            <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 uppercase">輝旅エコシステム連携</h2>
-            <span className="text-[0.65rem] bg-blue-50 text-blue-600 px-2.5 py-0.5 rounded-full font-bold border border-blue-200">公式連携</span>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Card 1: Kira-Tabi Guide */}
-            <a
-              href={getGuideUrl(island.name)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative bg-gradient-to-br from-white to-slate-50 border border-slate-200 hover:border-blue-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
-                    <BookOpen className="w-5 h-5" />
+        {/* Ecosystem Portal Section (Kira-Tabi Guide & Article) */}
+        {(island.guide_url || island.article_url) && (
+          <div className="mb-14">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-5 h-5 text-amber-500 animate-pulse" />
+              <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 uppercase">KIRATABI 連携コンテンツ</h2>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* Card 1: Kira-Tabi Guide */}
+              {island.guide_url && (
+                <a
+                  href={island.guide_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative bg-gradient-to-br from-white to-slate-50 border border-slate-200 hover:border-blue-300 rounded-2xl p-5 shadow-sm hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                        <BookOpen className="w-5 h-5" />
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                    </div>
+                    <h3 className="font-serif font-bold text-slate-900 text-base group-hover:text-blue-600 transition-colors mb-1">
+                      KIRATABIガイドで情報を見る
+                    </h3>
+                    <p className="text-xs text-slate-500 leading-relaxed font-serif">
+                      絶景スポットやグルメ情報、現地の観光モデルコースを探索します。
+                    </p>
                   </div>
-                  <ExternalLink className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
-                </div>
-                <h3 className="font-serif font-bold text-slate-900 text-base group-hover:text-blue-600 transition-colors mb-1">
-                  輝旅ガイドで情報を見る
-                </h3>
-                <p className="text-xs text-slate-500 leading-relaxed font-serif">
-                  絶景スポットやグルメ情報、現地の観光モデルコースをAIガイドで探索します。
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
-                <span>guide.kira-tabi.com</span>
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </a>
+                  <div className="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-bold text-blue-600">
+                    <span>guide.kira-tabi.com</span>
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
+                  </div>
+                </a>
+              )}
 
-            {/* Card 2: AI Travel Companion */}
-            <a
-              href={getAiCompanionUrl(island.name)}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group relative bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 border border-slate-800 hover:border-blue-500 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between text-white"
-            >
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors">
-                    <Bot className="w-5 h-5" />
+              {/* Card 2: Kira-Tabi Article */}
+              {island.article_url && (
+                <a
+                  href={island.article_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group relative bg-gradient-to-br from-slate-900 via-slate-900 to-blue-950 border border-slate-800 hover:border-blue-500 rounded-2xl p-5 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between text-white"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center group-hover:bg-blue-500 group-hover:text-white transition-colors">
+                        <Star className="w-5 h-5" />
+                      </div>
+                    </div>
+                    <h3 className="font-serif font-bold text-white text-base group-hover:text-blue-300 transition-colors mb-1">
+                      KIRATABI 関連記事
+                    </h3>
+                    <p className="text-xs text-slate-300 leading-relaxed font-serif">
+                      この島の魅力や詳細な滞在レポートをKIRATABI本サイトで読むことができます。
+                    </p>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    {ECOSYSTEM_CONFIG.isAiCompanionInDevelopment && (
-                      <span className="text-[0.6rem] uppercase tracking-wider font-bold bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full border border-rose-500/30 animate-pulse">開発中/Beta</span>
-                    )}
-                    <span className="text-[0.6rem] uppercase tracking-wider font-bold bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full border border-amber-500/30">AI行程生成</span>
+                  <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-blue-400">
+                    <span>kira-tabi.com</span>
+                    <span className="group-hover:translate-x-1 transition-transform">→</span>
                   </div>
-                </div>
-                <h3 className="font-serif font-bold text-white text-base group-hover:text-blue-300 transition-colors mb-1">
-                  AIコンパニオンに旅程を相談
-                </h3>
-                <p className="text-xs text-slate-300 leading-relaxed font-serif">
-                  旅の期間や予算、希望に合わせて「{island.name}」のオーダーメイドプランを作成します。
-                </p>
-              </div>
-              <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-xs font-bold text-blue-400">
-                <span>ai-travel-companion</span>
-                <span className="group-hover:translate-x-1 transition-transform">→</span>
-              </div>
-            </a>
+                </a>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Description (Self-Contained Article) */}
         <div className="mb-12">
@@ -340,6 +442,51 @@ export default function IslandDetail() {
           </motion.div>
         )}
 
+        {/* Monetization / Affiliate Booking Section */}
+        {(hotels.length > 0 || rentacars.length > 0 || ferries.length > 0 || jobs.length > 0) && (
+          <div className="mb-12">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-6 border-l-2 border-amber-500 pl-3">お得なご予約・移住・お仕事</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {hotels.map((h: any, idx: number) => (
+                <a key={`hotel-${idx}`} href={h.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white hover:bg-blue-50 border border-blue-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group">
+                  <div className="w-10 h-10 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0"><Tent size={20} /></div>
+                  <div className="flex-1 truncate">
+                    <div className="text-[10px] font-bold text-slate-400 mb-0.5 group-hover:text-blue-400 transition-colors">宿泊予約</div>
+                    <div className="text-sm font-bold text-slate-700 truncate group-hover:text-blue-700 transition-colors">{h.name}</div>
+                  </div>
+                </a>
+              ))}
+              {rentacars.map((r: any, idx: number) => (
+                <a key={`rentacar-${idx}`} href={r.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white hover:bg-emerald-50 border border-emerald-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0"><Car size={20} /></div>
+                  <div className="flex-1 truncate">
+                    <div className="text-[10px] font-bold text-slate-400 mb-0.5 group-hover:text-emerald-400 transition-colors">レンタカー・移動手段</div>
+                    <div className="text-sm font-bold text-slate-700 truncate group-hover:text-emerald-700 transition-colors">{r.name}</div>
+                  </div>
+                </a>
+              ))}
+              {ferries.map((f: any, idx: number) => (
+                <a key={`ferry-${idx}`} href={f.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white hover:bg-indigo-50 border border-indigo-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group">
+                  <div className="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0"><Ship size={20} /></div>
+                  <div className="flex-1 truncate">
+                    <div className="text-[10px] font-bold text-slate-400 mb-0.5 group-hover:text-indigo-400 transition-colors">フェリー・航空券</div>
+                    <div className="text-sm font-bold text-slate-700 truncate group-hover:text-indigo-700 transition-colors">{f.name}</div>
+                  </div>
+                </a>
+              ))}
+              {jobs.map((j: any, idx: number) => (
+                <a key={`job-${idx}`} href={j.url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 bg-white hover:bg-pink-50 border border-pink-100 rounded-2xl p-4 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all group">
+                  <div className="w-10 h-10 rounded-xl bg-pink-100 text-pink-600 flex items-center justify-center shrink-0"><Users size={20} /></div>
+                  <div className="flex-1 truncate">
+                    <div className="text-[10px] font-bold text-slate-400 mb-0.5 group-hover:text-pink-400 transition-colors">求人・リゾートバイト</div>
+                    <div className="text-sm font-bold text-slate-700 truncate group-hover:text-pink-700 transition-colors">{j.name}</div>
+                  </div>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Island Details Table */}
         <div className="bg-white rounded-3xl shadow-sm border border-slate-100 p-6 lg:p-8 mb-12">
           <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-6 border-l-2 border-blue-500 pl-3">島の概要・アクセス情報</h2>
@@ -361,7 +508,20 @@ export default function IslandDetail() {
               <span className="font-mono text-slate-600 text-sm">{island.coordinates || 'N/A'}</span>
             </div>
           </div>
+          
+          {island.transport_info && (
+            <div className="mt-6 pt-6 border-t border-slate-100">
+              <h3 className="text-xs font-bold tracking-widest text-slate-400 mb-3">島内移動・詳細アクセス情報</h3>
+              <div 
+                className="prose prose-sm prose-slate max-w-none text-slate-600 font-serif"
+                dangerouslySetInnerHTML={{ __html: island.transport_info }}
+              />
+            </div>
+          )}
         </div>
+
+        {/* Island Diaries (島ログ) */}
+        <IslandDiaries islandId={islandId} />
 
         {/* Action Buttons */}
         <div className="fixed bottom-0 left-0 right-0 p-4 lg:p-6 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-center gap-4 z-40">
@@ -409,6 +569,3 @@ export default function IslandDetail() {
   );
 }
 
-function BedDouble(props: React.SVGProps<SVGSVGElement>) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 20v-8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v8"/><path d="M4 10V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v4"/><path d="M12 4v6"/><path d="M2 18h20"/></svg> }
-function Coffee(props: React.SVGProps<SVGSVGElement>) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></svg> }
-function Wifi(props: React.SVGProps<SVGSVGElement>) { return <svg {...props} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg> }
