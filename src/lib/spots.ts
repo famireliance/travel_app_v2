@@ -65,6 +65,17 @@ export const COLLAB_SPOTS: CollabSpot[] = [
     },
     radius_m: 10000000, // 日本中どこでもチェックインできるように1万kmに設定
     reward_fairy_id: 'fairy_okinawa_manza'
+  },
+  {
+    id: 'spot_kirahotel_test',
+    name: 'キラキラホテルリゾート（テスト）',
+    description: '架空のコラボホテル。GPSでこの地点にアクセスすると、ホテル制服を着た限定衣装のルリちゃんが手に入ります。',
+    coordinates: {
+      lat: 35.6812, // 東京駅付近を仮設定
+      lng: 139.7671,
+    },
+    radius_m: 5000000, // テストしやすいため半径5000km
+    reward_fairy_id: 'fairy_okinawa_main_kirahotel'
   }
 ];
 
