@@ -28,12 +28,12 @@ export default function IslandDetail() {
   const [loading, setLoading] = useState(true);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
-  const { user, islandStatuses, updateStatus } = useTravel();
+  const { user, islandStatuses, updateStatus, addIslandVisit } = useTravel();
   const status = islandStatuses[islandId] || 'none';
 
   const handleStatusChange = (newStatus: 'visited' | 'planning' | 'verified_visited') => {
     if (newStatus === 'visited') {
-      updateStatus(islandId as string, 'visited');
+      addIslandVisit(islandId as string, island, 0, false);
     } else {
       updateStatus(islandId as string, newStatus);
     }

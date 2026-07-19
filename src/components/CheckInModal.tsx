@@ -22,10 +22,10 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
   const [distanceInfo, setDistanceInfo] = useState<number | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { updateStatus } = useTravel();
+  const { addIslandVisit, updateStatus } = useTravel();
 
   const handleSelfReport = () => {
-    updateStatus(island.id, 'visited');
+    addIslandVisit(island.id, island, 0, false);
     onClose();
   };
 
@@ -68,7 +68,7 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
       // 閾値: checkinRadiusKm以内なら公式認定到達
       if (distance <= checkinRadiusKm) {
         setResultStatus('success');
-        updateStatus(island.id, 'verified_visited');
+        addIslandVisit(island.id, island, 0, true);
         // 自動で閉じるタイマーをセットするか、ユーザーに手動で閉じさせるか。ここでは手動で結果を見せる
       } else {
         setResultStatus('error');
@@ -122,7 +122,7 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
         const checkinRadiusKm = (island.checkin_radius_m || 3000) / 1000;
         if (distance <= checkinRadiusKm) {
           setResultStatus('success');
-          updateStatus(island.id, 'verified_visited');
+          addIslandVisit(island.id, island, 0, true);
         } else {
           setResultStatus('error');
           setErrorMessage(`現在地は島の中心から ${distance.toFixed(1)}km 離れています（判定基準: ${checkinRadiusKm.toFixed(1)}km以内）。`);

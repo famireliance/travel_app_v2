@@ -35,7 +35,7 @@ interface TravelContextType {
   newlyDiscoveredFairies: IslandFairy[];
   clearDiscoveredFairy: (fairyId: string) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addIslandVisit: (islandId: string, islandObj?: any, newSpots?: number) => { xpGained: number };
+  addIslandVisit: (islandId: string, islandObj?: any, newSpots?: number, isVerified?: boolean) => { xpGained: number };
   addSpotVisit: (spotId: string) => boolean;
 }
 
@@ -271,7 +271,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const addIslandVisit = (islandId: string, islandObj?: any, newSpots: number = 0) => {
+  const addIslandVisit = (islandId: string, islandObj?: any, newSpots: number = 0, isVerified: boolean = false) => {
     const isFirstVisit = (visitCounts[islandId] || 0) === 0;
     const gained = calculateIslandXP(islandObj || { id: islandId, name: islandId }, isFirstVisit, newSpots);
 
@@ -346,8 +346,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       });
     }
 
-    // ステータスをvisitedへ同期
-    updateStatus(islandId, 'visited');
+    // ステータスを同期
+    updateStatus(islandId, isVerified ? 'verified_visited' : 'visited');
 
     return { xpGained: gained };
   };
