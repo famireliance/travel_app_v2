@@ -13,7 +13,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 
 export default function MyPage() {
   const router = useRouter();
-  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, totalXP, visitCounts, spotsVisited } = useTravel();
+  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, totalPoints, conquestTargetCount, visitCounts, spotsVisited } = useTravel();
 
   useEffect(() => {
     if (user === null) {
@@ -22,9 +22,9 @@ export default function MyPage() {
     }
   }, [user, router]);
 
-  const ALL_ISLANDS_COUNT = 432;
+  const ALL_ISLANDS_COUNT = conquestTargetCount || 425;
   const progressPct = (totalVisited / ALL_ISLANDS_COUNT) * 100;
-  const playerLvInfo = getPlayerLevelInfo(totalXP || 0);
+  const playerLvInfo = getPlayerLevelInfo(totalPoints || 0);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [islandsData, setIslandsData] = useState<any[]>([]);
@@ -94,8 +94,9 @@ export default function MyPage() {
                 <span className="text-sm">{playerLvInfo.icon}</span>
                 <span>Lv.{playerLvInfo.level} {playerLvInfo.title}</span>
               </span>
-              <span className="px-2.5 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-700 font-mono text-xs font-bold">
-                TOTAL: {playerLvInfo.currentXP.toLocaleString()} XP
+              <span className="px-2.5 py-0.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-700 font-mono text-xs font-bold flex items-center gap-1">
+                <Star className="w-3 h-3 fill-amber-500" />
+                TOTAL: {(totalPoints || 0).toLocaleString()} pt
               </span>
               <span className="text-xs text-slate-400 font-mono">ID: {user?.id?.slice(0, 8) || 'ANON-GUEST'}</span>
             </div>
@@ -142,10 +143,10 @@ export default function MyPage() {
                 <div className="flex justify-between items-center text-xs mb-1 font-sans">
                   <span className="font-bold text-slate-700 flex items-center gap-1">
                     <Sparkles className="w-3.5 h-3.5 text-amber-500 animate-pulse" />
-                    旅人経験値 (Lv.{playerLvInfo.level} → {playerLvInfo.level === 99 ? 'MAX' : `Lv.${playerLvInfo.level + 1}`})
+                    公式到達ポイント (Lv.{playerLvInfo.level} → {playerLvInfo.level === 99 ? 'MAX' : `Lv.${playerLvInfo.level + 1}`})
                   </span>
                   <span className="font-mono text-slate-600 font-bold">
-                    {playerLvInfo.currentXP.toLocaleString()} / {playerLvInfo.nextLevelXP.toLocaleString()} XP
+                    {playerLvInfo.currentXP.toLocaleString()} / {playerLvInfo.nextLevelXP.toLocaleString()} pt
                   </span>
                 </div>
                 <div className="w-full bg-slate-100 h-3 rounded-full overflow-hidden border border-slate-200 p-0.5">
@@ -161,7 +162,7 @@ export default function MyPage() {
               {/* Visited Islands Count Bar */}
               <div>
                 <div className="flex justify-between items-center text-xs mb-1 font-serif text-slate-500">
-                  <span>全国432島 到達コンプリート率: <strong className="text-slate-800">{progressPct.toFixed(1)}%</strong></span>
+                  <span>全国{ALL_ISLANDS_COUNT}島 到達コンプリート率: <strong className="text-slate-800">{progressPct.toFixed(1)}%</strong></span>
                   <span className="flex items-center gap-1 text-blue-600 font-bold"><Award size={14} className="text-amber-500" /> {totalVisited} / {ALL_ISLANDS_COUNT} 島</span>
                 </div>
                 <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">

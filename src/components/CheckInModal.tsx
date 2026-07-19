@@ -63,14 +63,16 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
       const distance = calculateDistanceKm(photoLat, photoLng, islandLat, islandLng);
       setDistanceInfo(distance);
 
-      // 閾値: 15km以内なら公式認定到達
-      if (distance <= 15) {
+      const checkinRadiusKm = (island.checkin_radius_m || 3000) / 1000;
+
+      // 閾値: checkinRadiusKm以内なら公式認定到達
+      if (distance <= checkinRadiusKm) {
         setResultStatus('success');
         updateStatus(island.id, 'verified_visited');
         // 自動で閉じるタイマーをセットするか、ユーザーに手動で閉じさせるか。ここでは手動で結果を見せる
       } else {
         setResultStatus('error');
-        setErrorMessage(`島の中心から ${distance.toFixed(1)}km 離れています（判定基準: 15km以内）。現地で撮影された写真か確認してください。`);
+        setErrorMessage(`島の中心から ${distance.toFixed(1)}km 離れています（判定基準: ${checkinRadiusKm.toFixed(1)}km以内）。現地で撮影された写真か確認してください。`);
       }
     } catch (error) {
       console.error('EXIF parse error:', error);
@@ -117,12 +119,13 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
         const distance = calculateDistanceKm(userLat, userLng, islandLat, islandLng);
         setDistanceInfo(distance);
 
-        if (distance <= 15) {
+        const checkinRadiusKm = (island.checkin_radius_m || 3000) / 1000;
+        if (distance <= checkinRadiusKm) {
           setResultStatus('success');
           updateStatus(island.id, 'verified_visited');
         } else {
           setResultStatus('error');
-          setErrorMessage(`現在地は島の中心から ${distance.toFixed(1)}km 離れています（判定基準: 15km以内）。`);
+          setErrorMessage(`現在地は島の中心から ${distance.toFixed(1)}km 離れています（判定基準: ${checkinRadiusKm.toFixed(1)}km以内）。`);
         }
       },
       (error) => {
@@ -176,7 +179,8 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
               <div className="text-center mb-8">
                 <h4 className="text-xl font-serif font-bold text-slate-800 mb-2">「{island.name}」の到達証明</h4>
                 <p className="text-sm text-slate-500">
-                  現地で撮影した写真（GPS付）をアップロードすることで、公式認定（Verified）として記録されます。
+                  現地で撮影した写真（GPS付）や現在地情報で公式認定（Verified）チェックインが可能です。<br/>
+                  <span className="text-amber-600 font-bold">※公式認定されるとポイントやキャラクター進化が解禁されます。</span>
                 </p>
               </div>
 

@@ -12,7 +12,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 81.25,
+    "radius_m": 5086.0,
+    "checkin_radius_m": 6086.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "2": {
     "id": "2",
@@ -25,7 +31,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 182.08,
+    "radius_m": 7613.0,
+    "checkin_radius_m": 8613.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "3": {
     "id": "3",
@@ -38,7 +50,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.47,
+    "radius_m": 1320.0,
+    "checkin_radius_m": 2320.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "4": {
     "id": "4",
@@ -51,7 +69,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.19,
+    "radius_m": 1285.0,
+    "checkin_radius_m": 2285.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "5": {
     "id": "5",
@@ -64,7 +88,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 142.7,
+    "radius_m": 6740.0,
+    "checkin_radius_m": 7740.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "6": {
     "id": "6",
@@ -77,7 +107,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "7": {
     "id": "7",
@@ -90,7 +124,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "8": {
     "id": "8",
@@ -103,7 +141,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "9": {
     "id": "9",
@@ -116,7 +158,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "10": {
     "id": "10",
@@ -129,7 +175,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "11": {
     "id": "11",
@@ -142,7 +192,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "12": {
     "id": "12",
@@ -155,7 +209,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "13": {
     "id": "13",
@@ -168,7 +226,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "14": {
     "id": "14",
@@ -181,7 +243,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "15": {
     "id": "15",
@@ -194,7 +260,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.05,
+    "radius_m": 126.0,
+    "checkin_radius_m": 1126.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "16": {
     "id": "16",
@@ -207,7 +279,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "17": {
     "id": "17",
@@ -220,7 +296,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.73,
+    "radius_m": 932.0,
+    "checkin_radius_m": 1932.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "18": {
     "id": "18",
@@ -233,7 +315,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "19": {
     "id": "19",
@@ -246,7 +332,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "20": {
     "id": "20",
@@ -259,7 +349,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "21": {
     "id": "21",
@@ -272,7 +366,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "22": {
     "id": "22",
@@ -285,7 +383,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "23": {
     "id": "23",
@@ -298,7 +400,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "24": {
     "id": "24",
@@ -311,7 +417,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "25": {
     "id": "25",
@@ -324,7 +434,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "26": {
     "id": "26",
@@ -337,7 +451,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 6.49,
+    "radius_m": 1437.0,
+    "checkin_radius_m": 2437.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "27": {
     "id": "27",
@@ -350,7 +470,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.92,
+    "radius_m": 964.0,
+    "checkin_radius_m": 1964.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "28": {
     "id": "28",
@@ -363,7 +489,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 9.92,
+    "radius_m": 1777.0,
+    "checkin_radius_m": 2777.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "29": {
     "id": "29",
@@ -376,7 +508,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.72,
+    "radius_m": 479.0,
+    "checkin_radius_m": 1479.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "30": {
     "id": "30",
@@ -389,7 +527,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.48,
+    "radius_m": 391.0,
+    "checkin_radius_m": 1391.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "31": {
     "id": "31",
@@ -402,7 +546,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.37,
+    "radius_m": 660.0,
+    "checkin_radius_m": 1660.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "32": {
     "id": "32",
@@ -415,7 +565,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.1,
+    "radius_m": 1503.0,
+    "checkin_radius_m": 2503.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "33": {
     "id": "33",
@@ -428,7 +584,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.62,
+    "radius_m": 913.0,
+    "checkin_radius_m": 1913.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "34": {
     "id": "34",
@@ -441,7 +603,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.33,
+    "radius_m": 324.0,
+    "checkin_radius_m": 1324.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "35": {
     "id": "35",
@@ -454,7 +622,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "36": {
     "id": "36",
@@ -467,7 +639,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 8.51,
+    "radius_m": 1646.0,
+    "checkin_radius_m": 2646.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "37": {
     "id": "37",
@@ -480,7 +658,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.14,
+    "radius_m": 211.0,
+    "checkin_radius_m": 1211.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "38": {
     "id": "38",
@@ -493,7 +677,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "39": {
     "id": "39",
@@ -506,7 +694,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "40": {
     "id": "40",
@@ -519,7 +711,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "41": {
     "id": "41",
@@ -532,7 +728,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "42": {
     "id": "42",
@@ -545,7 +745,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "43": {
     "id": "43",
@@ -558,7 +762,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "44": {
     "id": "44",
@@ -571,7 +779,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "45": {
     "id": "45",
@@ -584,7 +796,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "46": {
     "id": "46",
@@ -597,7 +813,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "47": {
     "id": "47",
@@ -610,7 +830,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "48": {
     "id": "48",
@@ -623,7 +847,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "49": {
     "id": "49",
@@ -636,7 +864,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "50": {
     "id": "50",
@@ -649,7 +881,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.12,
+    "radius_m": 1145.0,
+    "checkin_radius_m": 2145.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "51": {
     "id": "51",
@@ -662,7 +900,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 22.97,
+    "radius_m": 2704.0,
+    "checkin_radius_m": 3704.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "52": {
     "id": "52",
@@ -675,7 +919,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.67,
+    "radius_m": 1081.0,
+    "checkin_radius_m": 2081.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "53": {
     "id": "53",
@@ -688,7 +938,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 18.24,
+    "radius_m": 2410.0,
+    "checkin_radius_m": 3410.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "54": {
     "id": "54",
@@ -701,7 +957,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 55.2,
+    "radius_m": 4192.0,
+    "checkin_radius_m": 5192.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "55": {
     "id": "55",
@@ -714,7 +976,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 20.51,
+    "radius_m": 2555.0,
+    "checkin_radius_m": 3555.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "56": {
     "id": "56",
@@ -727,7 +995,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 69.11,
+    "radius_m": 4690.0,
+    "checkin_radius_m": 5690.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "57": {
     "id": "57",
@@ -740,7 +1014,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "58": {
     "id": "58",
@@ -753,7 +1031,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "59": {
     "id": "59",
@@ -766,7 +1048,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "60": {
     "id": "60",
@@ -779,7 +1065,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "61": {
     "id": "61",
@@ -792,7 +1082,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "62": {
     "id": "62",
@@ -805,7 +1099,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "63": {
     "id": "63",
@@ -818,7 +1116,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 23.45,
+    "radius_m": 2732.0,
+    "checkin_radius_m": 3732.0,
+    "points": 900.0,
+    "difficulty": "秘境中の秘境",
+    "is_conquest_target": true
   },
   "64": {
     "id": "64",
@@ -831,7 +1135,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 19.88,
+    "radius_m": 2516.0,
+    "checkin_radius_m": 3516.0,
+    "points": 900.0,
+    "difficulty": "秘境中の秘境",
+    "is_conquest_target": true
   },
   "65": {
     "id": "65",
@@ -844,7 +1154,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": null,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true,
+    "checkin_radius_m": 3000
   },
   "66": {
     "id": "66",
@@ -857,7 +1172,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": null,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true,
+    "checkin_radius_m": 3000
   },
   "67": {
     "id": "67",
@@ -870,7 +1190,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "68": {
     "id": "68",
@@ -883,7 +1207,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "69": {
     "id": "69",
@@ -896,7 +1224,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "70": {
     "id": "70",
@@ -909,7 +1241,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "71": {
     "id": "71",
@@ -922,7 +1258,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "72": {
     "id": "72",
@@ -935,7 +1275,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "73": {
     "id": "73",
@@ -948,7 +1292,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.39,
+    "radius_m": 352.0,
+    "checkin_radius_m": 1352.0,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true
   },
   "74": {
     "id": "74",
@@ -961,7 +1311,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": null,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true,
+    "checkin_radius_m": 3000
   },
   "75": {
     "id": "75",
@@ -974,7 +1329,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.82,
+    "radius_m": 511.0,
+    "checkin_radius_m": 1511.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "76": {
     "id": "76",
@@ -987,7 +1348,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 854.81,
+    "radius_m": 16495.0,
+    "checkin_radius_m": 17495.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "77": {
     "id": "77",
@@ -1000,7 +1367,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 9.69,
+    "radius_m": 1756.0,
+    "checkin_radius_m": 2756.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "78": {
     "id": "78",
@@ -1013,7 +1386,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 46.58,
+    "radius_m": 3851.0,
+    "checkin_radius_m": 4851.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "79": {
     "id": "79",
@@ -1026,7 +1405,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.57,
+    "radius_m": 426.0,
+    "checkin_radius_m": 1426.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "80": {
     "id": "80",
@@ -1039,7 +1424,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "81": {
     "id": "81",
@@ -1052,7 +1441,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "82": {
     "id": "82",
@@ -1065,7 +1458,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "83": {
     "id": "83",
@@ -1078,7 +1475,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "84": {
     "id": "84",
@@ -1091,7 +1492,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "85": {
     "id": "85",
@@ -1104,7 +1509,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "86": {
     "id": "86",
@@ -1117,7 +1526,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "87": {
     "id": "87",
@@ -1130,7 +1543,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.52,
+    "radius_m": 407.0,
+    "checkin_radius_m": 1407.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "88": {
     "id": "88",
@@ -1143,7 +1562,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "89": {
     "id": "89",
@@ -1156,7 +1579,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "90": {
     "id": "90",
@@ -1169,7 +1596,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.51,
+    "radius_m": 693.0,
+    "checkin_radius_m": 1693.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "91": {
     "id": "91",
@@ -1182,7 +1615,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": null,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true,
+    "checkin_radius_m": 3000
   },
   "92": {
     "id": "92",
@@ -1195,7 +1633,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "93": {
     "id": "93",
@@ -1208,7 +1650,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "94": {
     "id": "94",
@@ -1221,7 +1667,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "95": {
     "id": "95",
@@ -1234,7 +1684,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.8,
+    "radius_m": 505.0,
+    "checkin_radius_m": 1505.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "96": {
     "id": "96",
@@ -1247,7 +1703,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.91,
+    "radius_m": 538.0,
+    "checkin_radius_m": 1538.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "97": {
     "id": "97",
@@ -1260,7 +1722,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.73,
+    "radius_m": 742.0,
+    "checkin_radius_m": 1742.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "98": {
     "id": "98",
@@ -1273,7 +1741,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "99": {
     "id": "99",
@@ -1286,7 +1758,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "100": {
     "id": "100",
@@ -1299,7 +1775,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "101": {
     "id": "101",
@@ -1312,7 +1792,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.41,
+    "radius_m": 1185.0,
+    "checkin_radius_m": 2185.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "102": {
     "id": "102",
@@ -1325,7 +1811,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 6.96,
+    "radius_m": 1488.0,
+    "checkin_radius_m": 2488.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "103": {
     "id": "103",
@@ -1338,7 +1830,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.69,
+    "radius_m": 469.0,
+    "checkin_radius_m": 1469.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "104": {
     "id": "104",
@@ -1351,7 +1849,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.67,
+    "radius_m": 462.0,
+    "checkin_radius_m": 1462.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "105": {
     "id": "105",
@@ -1364,7 +1868,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.4,
+    "radius_m": 357.0,
+    "checkin_radius_m": 1357.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "106": {
     "id": "106",
@@ -1377,7 +1887,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.71,
+    "radius_m": 475.0,
+    "checkin_radius_m": 1475.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "107": {
     "id": "107",
@@ -1390,7 +1906,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.63,
+    "radius_m": 448.0,
+    "checkin_radius_m": 1448.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "108": {
     "id": "108",
@@ -1403,7 +1925,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.06,
+    "radius_m": 138.0,
+    "checkin_radius_m": 1138.0,
+    "points": 1200.0,
+    "difficulty": "到達伝説",
+    "is_conquest_target": true
   },
   "109": {
     "id": "109",
@@ -1416,7 +1944,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "110": {
     "id": "110",
@@ -1429,7 +1961,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "111": {
     "id": "111",
@@ -1442,7 +1978,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "112": {
     "id": "112",
@@ -1455,7 +1995,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "113": {
     "id": "113",
@@ -1468,7 +2012,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "114": {
     "id": "114",
@@ -1481,7 +2029,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 592.51,
+    "radius_m": 13733.0,
+    "checkin_radius_m": 14733.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "115": {
     "id": "115",
@@ -1494,7 +2048,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.67,
+    "radius_m": 922.0,
+    "checkin_radius_m": 1922.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "116": {
     "id": "116",
@@ -1507,7 +2067,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.4,
+    "radius_m": 1311.0,
+    "checkin_radius_m": 2311.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "117": {
     "id": "117",
@@ -1520,7 +2086,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.92,
+    "radius_m": 782.0,
+    "checkin_radius_m": 1782.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "118": {
     "id": "118",
@@ -1533,7 +2105,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.53,
+    "radius_m": 1201.0,
+    "checkin_radius_m": 2201.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "119": {
     "id": "119",
@@ -1546,7 +2124,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 6.52,
+    "radius_m": 1441.0,
+    "checkin_radius_m": 2441.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "120": {
     "id": "120",
@@ -1559,7 +2143,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "121": {
     "id": "121",
@@ -1572,7 +2160,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "122": {
     "id": "122",
@@ -1585,7 +2177,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "123": {
     "id": "123",
@@ -1598,7 +2194,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 9.47,
+    "radius_m": 1736.0,
+    "checkin_radius_m": 2736.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "124": {
     "id": "124",
@@ -1611,7 +2213,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "125": {
     "id": "125",
@@ -1624,7 +2230,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "126": {
     "id": "126",
@@ -1637,7 +2247,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "127": {
     "id": "127",
@@ -1650,7 +2264,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "128": {
     "id": "128",
@@ -1663,7 +2281,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "129": {
     "id": "129",
@@ -1676,7 +2298,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "130": {
     "id": "130",
@@ -1689,7 +2315,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 10.14,
+    "radius_m": 1797.0,
+    "checkin_radius_m": 2797.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "131": {
     "id": "131",
@@ -1702,7 +2334,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.57,
+    "radius_m": 426.0,
+    "checkin_radius_m": 1426.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "132": {
     "id": "132",
@@ -1715,7 +2353,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "133": {
     "id": "133",
@@ -1728,7 +2370,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.07,
+    "radius_m": 812.0,
+    "checkin_radius_m": 1812.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "134": {
     "id": "134",
@@ -1741,7 +2389,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.41,
+    "radius_m": 876.0,
+    "checkin_radius_m": 1876.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "135": {
     "id": "135",
@@ -1754,7 +2408,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.95,
+    "radius_m": 969.0,
+    "checkin_radius_m": 1969.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "136": {
     "id": "136",
@@ -1767,7 +2427,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.48,
+    "radius_m": 1543.0,
+    "checkin_radius_m": 2543.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "137": {
     "id": "137",
@@ -1780,7 +2446,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.48,
+    "radius_m": 686.0,
+    "checkin_radius_m": 1686.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "138": {
     "id": "138",
@@ -1793,7 +2465,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.05,
+    "radius_m": 578.0,
+    "checkin_radius_m": 1578.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "139": {
     "id": "139",
@@ -1806,7 +2484,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.33,
+    "radius_m": 324.0,
+    "checkin_radius_m": 1324.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "140": {
     "id": "140",
@@ -1819,7 +2503,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.96,
+    "radius_m": 553.0,
+    "checkin_radius_m": 1553.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "141": {
     "id": "141",
@@ -1832,7 +2522,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.92,
+    "radius_m": 541.0,
+    "checkin_radius_m": 1541.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "142": {
     "id": "142",
@@ -1845,7 +2541,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 35.04,
+    "radius_m": 3340.0,
+    "checkin_radius_m": 4340.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "143": {
     "id": "143",
@@ -1858,7 +2560,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 31.21,
+    "radius_m": 3152.0,
+    "checkin_radius_m": 4152.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "144": {
     "id": "144",
@@ -1871,7 +2579,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 22.31,
+    "radius_m": 2665.0,
+    "checkin_radius_m": 3665.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "145": {
     "id": "145",
@@ -1884,7 +2598,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.72,
+    "radius_m": 479.0,
+    "checkin_radius_m": 1479.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "146": {
     "id": "146",
@@ -1897,7 +2617,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 30.33,
+    "radius_m": 3107.0,
+    "checkin_radius_m": 4107.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "147": {
     "id": "147",
@@ -1910,7 +2636,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.84,
+    "radius_m": 1106.0,
+    "checkin_radius_m": 2106.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "148": {
     "id": "148",
@@ -1923,7 +2655,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.05,
+    "radius_m": 578.0,
+    "checkin_radius_m": 1578.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "149": {
     "id": "149",
@@ -1936,7 +2674,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 91.33,
+    "radius_m": 5392.0,
+    "checkin_radius_m": 6392.0,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true
   },
   "150": {
     "id": "150",
@@ -1949,7 +2693,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 69.46,
+    "radius_m": 4702.0,
+    "checkin_radius_m": 5702.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "151": {
     "id": "151",
@@ -1962,7 +2712,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 18.79,
+    "radius_m": 2446.0,
+    "checkin_radius_m": 3446.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "152": {
     "id": "152",
@@ -1975,7 +2731,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.98,
+    "radius_m": 1594.0,
+    "checkin_radius_m": 2594.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "153": {
     "id": "153",
@@ -1988,7 +2750,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.64,
+    "radius_m": 1340.0,
+    "checkin_radius_m": 2340.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "154": {
     "id": "154",
@@ -2001,7 +2769,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 17.37,
+    "radius_m": 2351.0,
+    "checkin_radius_m": 3351.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "155": {
     "id": "155",
@@ -2014,7 +2788,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 38.27,
+    "radius_m": 3490.0,
+    "checkin_radius_m": 4490.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "156": {
     "id": "156",
@@ -2027,7 +2807,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.76,
+    "radius_m": 492.0,
+    "checkin_radius_m": 1492.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "157": {
     "id": "157",
@@ -2040,7 +2826,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.7,
+    "radius_m": 472.0,
+    "checkin_radius_m": 1472.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "158": {
     "id": "158",
@@ -2053,7 +2845,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.25,
+    "radius_m": 846.0,
+    "checkin_radius_m": 1846.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "159": {
     "id": "159",
@@ -2066,7 +2864,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.09,
+    "radius_m": 169.0,
+    "checkin_radius_m": 1169.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "160": {
     "id": "160",
@@ -2079,7 +2883,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.08,
+    "radius_m": 990.0,
+    "checkin_radius_m": 1990.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "161": {
     "id": "161",
@@ -2092,7 +2902,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 8.71,
+    "radius_m": 1665.0,
+    "checkin_radius_m": 2665.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "162": {
     "id": "162",
@@ -2105,7 +2921,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.43,
+    "radius_m": 370.0,
+    "checkin_radius_m": 1370.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "163": {
     "id": "163",
@@ -2118,7 +2940,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.39,
+    "radius_m": 872.0,
+    "checkin_radius_m": 1872.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "164": {
     "id": "164",
@@ -2131,7 +2959,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "165": {
     "id": "165",
@@ -2144,7 +2976,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "166": {
     "id": "166",
@@ -2157,7 +2993,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.16,
+    "radius_m": 829.0,
+    "checkin_radius_m": 1829.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "167": {
     "id": "167",
@@ -2170,7 +3012,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "168": {
     "id": "168",
@@ -2183,7 +3029,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.84,
+    "radius_m": 1106.0,
+    "checkin_radius_m": 2106.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "169": {
     "id": "169",
@@ -2196,7 +3048,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 14.82,
+    "radius_m": 2172.0,
+    "checkin_radius_m": 3172.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "170": {
     "id": "170",
@@ -2209,7 +3067,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.0,
+    "radius_m": 564.0,
+    "checkin_radius_m": 1564.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "171": {
     "id": "171",
@@ -2222,7 +3086,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.27,
+    "radius_m": 850.0,
+    "checkin_radius_m": 1850.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "172": {
     "id": "172",
@@ -2235,7 +3105,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 11.68,
+    "radius_m": 1928.0,
+    "checkin_radius_m": 2928.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "173": {
     "id": "173",
@@ -2248,7 +3124,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.73,
+    "radius_m": 482.0,
+    "checkin_radius_m": 1482.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "174": {
     "id": "174",
@@ -2261,7 +3143,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.9,
+    "radius_m": 778.0,
+    "checkin_radius_m": 1778.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "175": {
     "id": "175",
@@ -2274,7 +3162,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.16,
+    "radius_m": 1151.0,
+    "checkin_radius_m": 2151.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "176": {
     "id": "176",
@@ -2287,7 +3181,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.68,
+    "radius_m": 1564.0,
+    "checkin_radius_m": 2564.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "177": {
     "id": "177",
@@ -2300,7 +3200,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "178": {
     "id": "178",
@@ -2313,7 +3217,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.97,
+    "radius_m": 556.0,
+    "checkin_radius_m": 1556.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "179": {
     "id": "179",
@@ -2326,7 +3236,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.09,
+    "radius_m": 589.0,
+    "checkin_radius_m": 1589.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "180": {
     "id": "180",
@@ -2339,7 +3255,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "181": {
     "id": "181",
@@ -2352,7 +3272,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.32,
+    "radius_m": 859.0,
+    "checkin_radius_m": 1859.0,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true
   },
   "182": {
     "id": "182",
@@ -2365,7 +3291,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.74,
+    "radius_m": 485.0,
+    "checkin_radius_m": 1485.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "183": {
     "id": "183",
@@ -2378,7 +3310,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.76,
+    "radius_m": 1572.0,
+    "checkin_radius_m": 2572.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "184": {
     "id": "184",
@@ -2391,7 +3329,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.99,
+    "radius_m": 976.0,
+    "checkin_radius_m": 1976.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "185": {
     "id": "185",
@@ -2404,7 +3348,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.37,
+    "radius_m": 869.0,
+    "checkin_radius_m": 1869.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "186": {
     "id": "186",
@@ -2417,7 +3367,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.74,
+    "radius_m": 485.0,
+    "checkin_radius_m": 1485.0,
+    "points": 0,
+    "difficulty": "到達不可",
+    "is_conquest_target": false
   },
   "187": {
     "id": "187",
@@ -2430,7 +3386,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "188": {
     "id": "188",
@@ -2443,7 +3403,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "189": {
     "id": "189",
@@ -2456,7 +3420,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "190": {
     "id": "190",
@@ -2469,7 +3437,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "191": {
     "id": "191",
@@ -2482,7 +3454,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.15,
+    "radius_m": 1280.0,
+    "checkin_radius_m": 2280.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "192": {
     "id": "192",
@@ -2495,7 +3473,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "193": {
     "id": "193",
@@ -2508,7 +3490,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.58,
+    "radius_m": 906.0,
+    "checkin_radius_m": 1906.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "194": {
     "id": "194",
@@ -2521,7 +3509,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "195": {
     "id": "195",
@@ -2534,7 +3526,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.82,
+    "radius_m": 1578.0,
+    "checkin_radius_m": 2578.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "196": {
     "id": "196",
@@ -2547,7 +3545,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 14.5,
+    "radius_m": 2148.0,
+    "checkin_radius_m": 3148.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "197": {
     "id": "197",
@@ -2560,7 +3564,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 153.26,
+    "radius_m": 6985.0,
+    "checkin_radius_m": 7985.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "198": {
     "id": "198",
@@ -2573,7 +3583,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.34,
+    "radius_m": 653.0,
+    "checkin_radius_m": 1653.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "199": {
     "id": "199",
@@ -2586,7 +3602,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.62,
+    "radius_m": 913.0,
+    "checkin_radius_m": 1913.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "200": {
     "id": "200",
@@ -2599,7 +3621,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "201": {
     "id": "201",
@@ -2612,7 +3638,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.72,
+    "radius_m": 1088.0,
+    "checkin_radius_m": 2088.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "202": {
     "id": "202",
@@ -2625,7 +3657,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.1,
+    "radius_m": 592.0,
+    "checkin_radius_m": 1592.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "203": {
     "id": "203",
@@ -2638,7 +3676,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.12,
+    "radius_m": 195.0,
+    "checkin_radius_m": 1195.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "204": {
     "id": "204",
@@ -2651,7 +3695,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 22.31,
+    "radius_m": 2665.0,
+    "checkin_radius_m": 3665.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "205": {
     "id": "205",
@@ -2664,7 +3714,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.93,
+    "radius_m": 544.0,
+    "checkin_radius_m": 1544.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "206": {
     "id": "206",
@@ -2677,7 +3733,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "207": {
     "id": "207",
@@ -2690,7 +3750,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 11.72,
+    "radius_m": 1931.0,
+    "checkin_radius_m": 2931.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "208": {
     "id": "208",
@@ -2703,7 +3769,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.41,
+    "radius_m": 1042.0,
+    "checkin_radius_m": 2042.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "209": {
     "id": "209",
@@ -2716,7 +3788,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.54,
+    "radius_m": 415.0,
+    "checkin_radius_m": 1415.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "210": {
     "id": "210",
@@ -2729,7 +3807,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.84,
+    "radius_m": 517.0,
+    "checkin_radius_m": 1517.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "211": {
     "id": "211",
@@ -2742,7 +3826,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.36,
+    "radius_m": 867.0,
+    "checkin_radius_m": 1867.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "212": {
     "id": "212",
@@ -2755,7 +3845,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.83,
+    "radius_m": 763.0,
+    "checkin_radius_m": 1763.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "213": {
     "id": "213",
@@ -2768,7 +3864,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.6,
+    "radius_m": 437.0,
+    "checkin_radius_m": 1437.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "214": {
     "id": "214",
@@ -2781,7 +3883,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.01,
+    "radius_m": 567.0,
+    "checkin_radius_m": 1567.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "215": {
     "id": "215",
@@ -2794,7 +3902,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 41.88,
+    "radius_m": 3651.0,
+    "checkin_radius_m": 4651.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "216": {
     "id": "216",
@@ -2807,7 +3921,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 20.99,
+    "radius_m": 2585.0,
+    "checkin_radius_m": 3585.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "217": {
     "id": "217",
@@ -2820,7 +3940,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 64.57,
+    "radius_m": 4534.0,
+    "checkin_radius_m": 5534.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "218": {
     "id": "218",
@@ -2833,7 +3959,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 8.68,
+    "radius_m": 1662.0,
+    "checkin_radius_m": 2662.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "219": {
     "id": "219",
@@ -2846,7 +3978,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 21.27,
+    "radius_m": 2602.0,
+    "checkin_radius_m": 3602.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "220": {
     "id": "220",
@@ -2859,7 +3997,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 8.4,
+    "radius_m": 1635.0,
+    "checkin_radius_m": 2635.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "221": {
     "id": "221",
@@ -2872,7 +4016,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.74,
+    "radius_m": 1091.0,
+    "checkin_radius_m": 2091.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "222": {
     "id": "222",
@@ -2885,7 +4035,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.37,
+    "radius_m": 1036.0,
+    "checkin_radius_m": 2036.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "223": {
     "id": "223",
@@ -2898,7 +4054,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.43,
+    "radius_m": 675.0,
+    "checkin_radius_m": 1675.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "224": {
     "id": "224",
@@ -2911,7 +4073,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.8,
+    "radius_m": 505.0,
+    "checkin_radius_m": 1505.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "225": {
     "id": "225",
@@ -2924,7 +4092,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.68,
+    "radius_m": 924.0,
+    "checkin_radius_m": 1924.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "226": {
     "id": "226",
@@ -2937,7 +4111,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.67,
+    "radius_m": 1081.0,
+    "checkin_radius_m": 2081.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "227": {
     "id": "227",
@@ -2950,7 +4130,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 8.95,
+    "radius_m": 1688.0,
+    "checkin_radius_m": 2688.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "228": {
     "id": "228",
@@ -2963,7 +4149,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.09,
+    "radius_m": 816.0,
+    "checkin_radius_m": 1816.0,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true
   },
   "229": {
     "id": "229",
@@ -2976,7 +4168,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.81,
+    "radius_m": 1101.0,
+    "checkin_radius_m": 2101.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "230": {
     "id": "230",
@@ -2989,7 +4187,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.94,
+    "radius_m": 547.0,
+    "checkin_radius_m": 1547.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "231": {
     "id": "231",
@@ -3002,7 +4206,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.51,
+    "radius_m": 403.0,
+    "checkin_radius_m": 1403.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "232": {
     "id": "232",
@@ -3015,7 +4225,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.13,
+    "radius_m": 823.0,
+    "checkin_radius_m": 1823.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "233": {
     "id": "233",
@@ -3028,7 +4244,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.85,
+    "radius_m": 952.0,
+    "checkin_radius_m": 1952.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "234": {
     "id": "234",
@@ -3041,7 +4263,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.75,
+    "radius_m": 1230.0,
+    "checkin_radius_m": 2230.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "235": {
     "id": "235",
@@ -3054,7 +4282,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.36,
+    "radius_m": 658.0,
+    "checkin_radius_m": 1658.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "236": {
     "id": "236",
@@ -3067,7 +4301,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.34,
+    "radius_m": 653.0,
+    "checkin_radius_m": 1653.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "237": {
     "id": "237",
@@ -3080,7 +4320,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 41.88,
+    "radius_m": 3651.0,
+    "checkin_radius_m": 4651.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "238": {
     "id": "238",
@@ -3093,7 +4339,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.29,
+    "radius_m": 304.0,
+    "checkin_radius_m": 1304.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "239": {
     "id": "239",
@@ -3106,7 +4358,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.5,
+    "radius_m": 399.0,
+    "checkin_radius_m": 1399.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "240": {
     "id": "240",
@@ -3119,7 +4377,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.32,
+    "radius_m": 319.0,
+    "checkin_radius_m": 1319.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "241": {
     "id": "241",
@@ -3132,7 +4396,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.76,
+    "radius_m": 937.0,
+    "checkin_radius_m": 1937.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "242": {
     "id": "242",
@@ -3145,7 +4415,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "243": {
     "id": "243",
@@ -3158,7 +4432,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.44,
+    "radius_m": 677.0,
+    "checkin_radius_m": 1677.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "244": {
     "id": "244",
@@ -3171,7 +4451,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "245": {
     "id": "245",
@@ -3184,7 +4468,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.39,
+    "radius_m": 352.0,
+    "checkin_radius_m": 1352.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "246": {
     "id": "246",
@@ -3197,7 +4487,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.39,
+    "radius_m": 352.0,
+    "checkin_radius_m": 1352.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "247": {
     "id": "247",
@@ -3210,7 +4506,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.56,
+    "radius_m": 422.0,
+    "checkin_radius_m": 1422.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "248": {
     "id": "248",
@@ -3223,7 +4525,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 10.02,
+    "radius_m": 1786.0,
+    "checkin_radius_m": 2786.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "249": {
     "id": "249",
@@ -3236,7 +4544,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.31,
+    "radius_m": 646.0,
+    "checkin_radius_m": 1646.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "250": {
     "id": "250",
@@ -3249,7 +4563,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.76,
+    "radius_m": 937.0,
+    "checkin_radius_m": 1937.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "251": {
     "id": "251",
@@ -3262,7 +4582,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 32.29,
+    "radius_m": 3206.0,
+    "checkin_radius_m": 4206.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "252": {
     "id": "252",
@@ -3275,7 +4601,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "253": {
     "id": "253",
@@ -3288,7 +4618,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.14,
+    "radius_m": 211.0,
+    "checkin_radius_m": 1211.0,
+    "points": 0,
+    "difficulty": "到達不可",
+    "is_conquest_target": false
   },
   "254": {
     "id": "254",
@@ -3301,7 +4637,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "255": {
     "id": "255",
@@ -3314,7 +4654,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.93,
+    "radius_m": 544.0,
+    "checkin_radius_m": 1544.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "256": {
     "id": "256",
@@ -3327,7 +4673,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.56,
+    "radius_m": 422.0,
+    "checkin_radius_m": 1422.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "257": {
     "id": "257",
@@ -3340,7 +4692,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.5,
+    "radius_m": 1323.0,
+    "checkin_radius_m": 2323.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "258": {
     "id": "258",
@@ -3353,7 +4711,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 134.63,
+    "radius_m": 6546.0,
+    "checkin_radius_m": 7546.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "259": {
     "id": "259",
@@ -3366,7 +4730,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "260": {
     "id": "260",
@@ -3379,7 +4747,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.54,
+    "radius_m": 415.0,
+    "checkin_radius_m": 1415.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "261": {
     "id": "261",
@@ -3392,7 +4766,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 90.66,
+    "radius_m": 5372.0,
+    "checkin_radius_m": 6372.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "262": {
     "id": "262",
@@ -3405,7 +4785,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 12.09,
+    "radius_m": 1962.0,
+    "checkin_radius_m": 2962.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "263": {
     "id": "263",
@@ -3418,7 +4804,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.6,
+    "radius_m": 437.0,
+    "checkin_radius_m": 1437.0,
+    "points": 0,
+    "difficulty": "到達不可",
+    "is_conquest_target": false
   },
   "264": {
     "id": "264",
@@ -3431,7 +4823,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "265": {
     "id": "265",
@@ -3444,7 +4840,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "266": {
     "id": "266",
@@ -3457,7 +4857,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "267": {
     "id": "267",
@@ -3470,7 +4874,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "268": {
     "id": "268",
@@ -3483,7 +4891,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "269": {
     "id": "269",
@@ -3496,7 +4908,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "270": {
     "id": "270",
@@ -3509,7 +4925,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "271": {
     "id": "271",
@@ -3522,7 +4942,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 24.9,
+    "radius_m": 2815.0,
+    "checkin_radius_m": 3815.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "272": {
     "id": "272",
@@ -3535,7 +4961,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "273": {
     "id": "273",
@@ -3548,7 +4978,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.39,
+    "radius_m": 665.0,
+    "checkin_radius_m": 1665.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "274": {
     "id": "274",
@@ -3561,7 +4997,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.56,
+    "radius_m": 422.0,
+    "checkin_radius_m": 1422.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "275": {
     "id": "275",
@@ -3574,7 +5016,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.07,
+    "radius_m": 149.0,
+    "checkin_radius_m": 1149.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "276": {
     "id": "276",
@@ -3587,7 +5035,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.5,
+    "radius_m": 1323.0,
+    "checkin_radius_m": 2323.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "277": {
     "id": "277",
@@ -3600,7 +5054,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "278": {
     "id": "278",
@@ -3613,7 +5071,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "279": {
     "id": "279",
@@ -3626,7 +5088,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 163.44,
+    "radius_m": 7213.0,
+    "checkin_radius_m": 8213.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "280": {
     "id": "280",
@@ -3639,7 +5107,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 16.55,
+    "radius_m": 2295.0,
+    "checkin_radius_m": 3295.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "281": {
     "id": "281",
@@ -3652,7 +5126,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.57,
+    "radius_m": 1066.0,
+    "checkin_radius_m": 2066.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "282": {
     "id": "282",
@@ -3665,7 +5145,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 15.16,
+    "radius_m": 2197.0,
+    "checkin_radius_m": 3197.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "283": {
     "id": "283",
@@ -3678,7 +5164,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 16.18,
+    "radius_m": 2269.0,
+    "checkin_radius_m": 3269.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "284": {
     "id": "284",
@@ -3691,7 +5183,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 16.94,
+    "radius_m": 2322.0,
+    "checkin_radius_m": 3322.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "285": {
     "id": "285",
@@ -3704,7 +5202,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.53,
+    "radius_m": 411.0,
+    "checkin_radius_m": 1411.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "286": {
     "id": "286",
@@ -3717,7 +5221,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.92,
+    "radius_m": 541.0,
+    "checkin_radius_m": 1541.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "287": {
     "id": "287",
@@ -3730,7 +5240,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "288": {
     "id": "288",
@@ -3743,7 +5257,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "289": {
     "id": "289",
@@ -3756,7 +5274,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.67,
+    "radius_m": 922.0,
+    "checkin_radius_m": 1922.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "290": {
     "id": "290",
@@ -3769,7 +5293,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.21,
+    "radius_m": 621.0,
+    "checkin_radius_m": 1621.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "291": {
     "id": "291",
@@ -3782,7 +5312,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.67,
+    "radius_m": 922.0,
+    "checkin_radius_m": 1922.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "292": {
     "id": "292",
@@ -3795,7 +5331,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.08,
+    "radius_m": 586.0,
+    "checkin_radius_m": 1586.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "293": {
     "id": "293",
@@ -3808,7 +5350,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 12.09,
+    "radius_m": 1962.0,
+    "checkin_radius_m": 2962.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "294": {
     "id": "294",
@@ -3821,7 +5369,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.54,
+    "radius_m": 415.0,
+    "checkin_radius_m": 1415.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "295": {
     "id": "295",
@@ -3834,7 +5388,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.58,
+    "radius_m": 906.0,
+    "checkin_radius_m": 1906.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "296": {
     "id": "296",
@@ -3847,7 +5407,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.47,
+    "radius_m": 1320.0,
+    "checkin_radius_m": 2320.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "297": {
     "id": "297",
@@ -3860,7 +5426,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 6.37,
+    "radius_m": 1424.0,
+    "checkin_radius_m": 2424.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "298": {
     "id": "298",
@@ -3873,7 +5445,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 33.16,
+    "radius_m": 3249.0,
+    "checkin_radius_m": 4249.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "299": {
     "id": "299",
@@ -3886,7 +5464,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.93,
+    "radius_m": 1118.0,
+    "checkin_radius_m": 2118.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "300": {
     "id": "300",
@@ -3899,7 +5483,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.79,
+    "radius_m": 1358.0,
+    "checkin_radius_m": 2358.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "301": {
     "id": "301",
@@ -3912,7 +5502,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.22,
+    "radius_m": 623.0,
+    "checkin_radius_m": 1623.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "302": {
     "id": "302",
@@ -3925,7 +5521,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.22,
+    "radius_m": 1516.0,
+    "checkin_radius_m": 2516.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "303": {
     "id": "303",
@@ -3938,7 +5540,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.16,
+    "radius_m": 608.0,
+    "checkin_radius_m": 1608.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "304": {
     "id": "304",
@@ -3951,7 +5559,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.45,
+    "radius_m": 378.0,
+    "checkin_radius_m": 1378.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "305": {
     "id": "305",
@@ -3964,7 +5578,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.62,
+    "radius_m": 718.0,
+    "checkin_radius_m": 1718.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "306": {
     "id": "306",
@@ -3977,7 +5597,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.73,
+    "radius_m": 482.0,
+    "checkin_radius_m": 1482.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "307": {
     "id": "307",
@@ -3990,7 +5616,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.32,
+    "radius_m": 319.0,
+    "checkin_radius_m": 1319.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "308": {
     "id": "308",
@@ -4003,7 +5635,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.71,
+    "radius_m": 929.0,
+    "checkin_radius_m": 1929.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "309": {
     "id": "309",
@@ -4016,7 +5654,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.83,
+    "radius_m": 949.0,
+    "checkin_radius_m": 1949.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "310": {
     "id": "310",
@@ -4029,7 +5673,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.77,
+    "radius_m": 495.0,
+    "checkin_radius_m": 1495.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "311": {
     "id": "311",
@@ -4042,7 +5692,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.24,
+    "radius_m": 1162.0,
+    "checkin_radius_m": 2162.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "312": {
     "id": "312",
@@ -4055,7 +5711,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.39,
+    "radius_m": 665.0,
+    "checkin_radius_m": 1665.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "313": {
     "id": "313",
@@ -4068,7 +5730,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.67,
+    "radius_m": 922.0,
+    "checkin_radius_m": 1922.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "314": {
     "id": "314",
@@ -4081,7 +5749,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 6.98,
+    "radius_m": 1491.0,
+    "checkin_radius_m": 2491.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "315": {
     "id": "315",
@@ -4094,7 +5768,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.83,
+    "radius_m": 514.0,
+    "checkin_radius_m": 1514.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "316": {
     "id": "316",
@@ -4107,7 +5787,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.61,
+    "radius_m": 716.0,
+    "checkin_radius_m": 1716.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "317": {
     "id": "317",
@@ -4120,7 +5806,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.8,
+    "radius_m": 505.0,
+    "checkin_radius_m": 1505.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "318": {
     "id": "318",
@@ -4133,7 +5825,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.07,
+    "radius_m": 584.0,
+    "checkin_radius_m": 1584.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "319": {
     "id": "319",
@@ -4146,7 +5844,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.86,
+    "radius_m": 954.0,
+    "checkin_radius_m": 1954.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "320": {
     "id": "320",
@@ -4159,7 +5863,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.24,
+    "radius_m": 276.0,
+    "checkin_radius_m": 1276.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "321": {
     "id": "321",
@@ -4172,7 +5882,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "322": {
     "id": "322",
@@ -4185,7 +5899,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 574.95,
+    "radius_m": 13528.0,
+    "checkin_radius_m": 14528.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "323": {
     "id": "323",
@@ -4198,7 +5918,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 225.93,
+    "radius_m": 8480.0,
+    "checkin_radius_m": 9480.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "324": {
     "id": "324",
@@ -4211,7 +5937,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 12.54,
+    "radius_m": 1998.0,
+    "checkin_radius_m": 2998.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "325": {
     "id": "325",
@@ -4224,7 +5956,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 30.2,
+    "radius_m": 3100.0,
+    "checkin_radius_m": 4100.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "326": {
     "id": "326",
@@ -4237,7 +5975,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.74,
+    "radius_m": 485.0,
+    "checkin_radius_m": 1485.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "327": {
     "id": "327",
@@ -4250,7 +5994,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 6.55,
+    "radius_m": 1444.0,
+    "checkin_radius_m": 2444.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "328": {
     "id": "328",
@@ -4263,7 +6013,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 6.95,
+    "radius_m": 1487.0,
+    "checkin_radius_m": 2487.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "329": {
     "id": "329",
@@ -4276,7 +6032,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.45,
+    "radius_m": 1048.0,
+    "checkin_radius_m": 2048.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "330": {
     "id": "330",
@@ -4289,7 +6051,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.14,
+    "radius_m": 602.0,
+    "checkin_radius_m": 1602.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "331": {
     "id": "331",
@@ -4302,7 +6070,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.59,
+    "radius_m": 1334.0,
+    "checkin_radius_m": 2334.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "332": {
     "id": "332",
@@ -4315,7 +6089,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 90.66,
+    "radius_m": 5372.0,
+    "checkin_radius_m": 6372.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "333": {
     "id": "333",
@@ -4328,7 +6108,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 17.06,
+    "radius_m": 2330.0,
+    "checkin_radius_m": 3330.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "334": {
     "id": "334",
@@ -4341,7 +6127,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.71,
+    "radius_m": 1087.0,
+    "checkin_radius_m": 2087.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "335": {
     "id": "335",
@@ -4354,7 +6146,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.87,
+    "radius_m": 1110.0,
+    "checkin_radius_m": 2110.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "336": {
     "id": "336",
@@ -4367,7 +6165,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "337": {
     "id": "337",
@@ -4380,7 +6182,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "338": {
     "id": "338",
@@ -4393,7 +6199,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "339": {
     "id": "339",
@@ -4406,7 +6216,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 444.3,
+    "radius_m": 11892.0,
+    "checkin_radius_m": 12892.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "340": {
     "id": "340",
@@ -4419,7 +6235,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 504.29,
+    "radius_m": 12670.0,
+    "checkin_radius_m": 13670.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "341": {
     "id": "341",
@@ -4432,7 +6254,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 35.81,
+    "radius_m": 3376.0,
+    "checkin_radius_m": 4376.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "342": {
     "id": "342",
@@ -4445,7 +6273,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.22,
+    "radius_m": 1159.0,
+    "checkin_radius_m": 2159.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "343": {
     "id": "343",
@@ -4458,7 +6292,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 11.62,
+    "radius_m": 1923.0,
+    "checkin_radius_m": 2923.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "344": {
     "id": "344",
@@ -4471,7 +6311,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 15.39,
+    "radius_m": 2213.0,
+    "checkin_radius_m": 3213.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "345": {
     "id": "345",
@@ -4484,7 +6330,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 13.33,
+    "radius_m": 2060.0,
+    "checkin_radius_m": 3060.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "346": {
     "id": "346",
@@ -4497,7 +6349,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 34.42,
+    "radius_m": 3310.0,
+    "checkin_radius_m": 4310.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "347": {
     "id": "347",
@@ -4510,7 +6368,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 27.61,
+    "radius_m": 2965.0,
+    "checkin_radius_m": 3965.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "348": {
     "id": "348",
@@ -4523,7 +6387,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.08,
+    "radius_m": 814.0,
+    "checkin_radius_m": 1814.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "349": {
     "id": "349",
@@ -4536,7 +6406,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.49,
+    "radius_m": 1544.0,
+    "checkin_radius_m": 2544.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "350": {
     "id": "350",
@@ -4549,7 +6425,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.98,
+    "radius_m": 559.0,
+    "checkin_radius_m": 1559.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "351": {
     "id": "351",
@@ -4562,7 +6444,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.07,
+    "radius_m": 1500.0,
+    "checkin_radius_m": 2500.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "352": {
     "id": "352",
@@ -4575,7 +6463,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 712.41,
+    "radius_m": 15059.0,
+    "checkin_radius_m": 16059.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "353": {
     "id": "353",
@@ -4588,7 +6482,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 77.25,
+    "radius_m": 4959.0,
+    "checkin_radius_m": 5959.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "354": {
     "id": "354",
@@ -4601,7 +6501,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 13.34,
+    "radius_m": 2061.0,
+    "checkin_radius_m": 3061.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "355": {
     "id": "355",
@@ -4614,7 +6520,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 9.35,
+    "radius_m": 1725.0,
+    "checkin_radius_m": 2725.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "356": {
     "id": "356",
@@ -4627,7 +6539,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 56.76,
+    "radius_m": 4251.0,
+    "checkin_radius_m": 5251.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "357": {
     "id": "357",
@@ -4640,7 +6558,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 247.85,
+    "radius_m": 8882.0,
+    "checkin_radius_m": 9882.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "358": {
     "id": "358",
@@ -4653,7 +6577,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 93.65,
+    "radius_m": 5460.0,
+    "checkin_radius_m": 6460.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "359": {
     "id": "359",
@@ -4666,7 +6596,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 20.56,
+    "radius_m": 2558.0,
+    "checkin_radius_m": 3558.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "360": {
     "id": "360",
@@ -4679,7 +6615,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1208.53,
+    "radius_m": 19613.0,
+    "checkin_radius_m": 20613.0,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true
   },
   "361": {
     "id": "361",
@@ -4692,7 +6634,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.17,
+    "radius_m": 1005.0,
+    "checkin_radius_m": 2005.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "362": {
     "id": "362",
@@ -4705,7 +6653,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.16,
+    "radius_m": 829.0,
+    "checkin_radius_m": 1829.0,
+    "points": 1200.0,
+    "difficulty": "到達伝説",
+    "is_conquest_target": true
   },
   "363": {
     "id": "363",
@@ -4718,7 +6672,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.36,
+    "radius_m": 658.0,
+    "checkin_radius_m": 1658.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "364": {
     "id": "364",
@@ -4731,7 +6691,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 20.66,
+    "radius_m": 2564.0,
+    "checkin_radius_m": 3564.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "365": {
     "id": "365",
@@ -4744,7 +6710,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.08,
+    "radius_m": 586.0,
+    "checkin_radius_m": 1586.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "366": {
     "id": "366",
@@ -4757,7 +6729,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 14.13,
+    "radius_m": 2121.0,
+    "checkin_radius_m": 3121.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "367": {
     "id": "367",
@@ -4770,7 +6748,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 22.76,
+    "radius_m": 2692.0,
+    "checkin_radius_m": 3692.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "368": {
     "id": "368",
@@ -4783,7 +6767,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.99,
+    "radius_m": 976.0,
+    "checkin_radius_m": 1976.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "369": {
     "id": "369",
@@ -4796,7 +6786,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.44,
+    "radius_m": 1316.0,
+    "checkin_radius_m": 2316.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "370": {
     "id": "370",
@@ -4809,7 +6805,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.09,
+    "radius_m": 816.0,
+    "checkin_radius_m": 1816.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "371": {
     "id": "371",
@@ -4822,7 +6824,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.54,
+    "radius_m": 1328.0,
+    "checkin_radius_m": 2328.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "372": {
     "id": "372",
@@ -4835,7 +6843,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.72,
+    "radius_m": 740.0,
+    "checkin_radius_m": 1740.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "373": {
     "id": "373",
@@ -4848,7 +6862,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.88,
+    "radius_m": 774.0,
+    "checkin_radius_m": 1774.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "374": {
     "id": "374",
@@ -4861,7 +6881,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.63,
+    "radius_m": 448.0,
+    "checkin_radius_m": 1448.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "375": {
     "id": "375",
@@ -4874,7 +6900,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": null,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true,
+    "checkin_radius_m": 3000
   },
   "376": {
     "id": "376",
@@ -4887,7 +6918,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "377": {
     "id": "377",
@@ -4900,7 +6935,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "378": {
     "id": "378",
@@ -4913,7 +6952,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "379": {
     "id": "379",
@@ -4926,7 +6969,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.15,
+    "radius_m": 605.0,
+    "checkin_radius_m": 1605.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "380": {
     "id": "380",
@@ -4939,7 +6988,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 59.53,
+    "radius_m": 4353.0,
+    "checkin_radius_m": 5353.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "381": {
     "id": "381",
@@ -4952,7 +7007,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.63,
+    "radius_m": 448.0,
+    "checkin_radius_m": 1448.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "382": {
     "id": "382",
@@ -4965,7 +7026,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.62,
+    "radius_m": 1557.0,
+    "checkin_radius_m": 2557.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "383": {
     "id": "383",
@@ -4978,7 +7045,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 3.58,
+    "radius_m": 1067.0,
+    "checkin_radius_m": 2067.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "384": {
     "id": "384",
@@ -4991,7 +7064,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 11.91,
+    "radius_m": 1947.0,
+    "checkin_radius_m": 2947.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "385": {
     "id": "385",
@@ -5004,7 +7083,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 30.52,
+    "radius_m": 3117.0,
+    "checkin_radius_m": 4117.0,
+    "points": 550.0,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true
   },
   "386": {
     "id": "386",
@@ -5017,7 +7102,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 158.93,
+    "radius_m": 7113.0,
+    "checkin_radius_m": 8113.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "387": {
     "id": "387",
@@ -5030,7 +7121,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "388": {
     "id": "388",
@@ -5043,7 +7138,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.83,
+    "radius_m": 949.0,
+    "checkin_radius_m": 1949.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "389": {
     "id": "389",
@@ -5056,7 +7157,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.84,
+    "radius_m": 951.0,
+    "checkin_radius_m": 1951.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "390": {
     "id": "390",
@@ -5069,7 +7176,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 19.81,
+    "radius_m": 2511.0,
+    "checkin_radius_m": 3511.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "391": {
     "id": "391",
@@ -5082,7 +7195,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.27,
+    "radius_m": 293.0,
+    "checkin_radius_m": 1293.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "392": {
     "id": "392",
@@ -5095,7 +7214,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 222.24,
+    "radius_m": 8411.0,
+    "checkin_radius_m": 9411.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "393": {
     "id": "393",
@@ -5108,7 +7233,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.43,
+    "radius_m": 1315.0,
+    "checkin_radius_m": 2315.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "394": {
     "id": "394",
@@ -5121,7 +7252,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 7.86,
+    "radius_m": 1582.0,
+    "checkin_radius_m": 2582.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "395": {
     "id": "395",
@@ -5134,7 +7271,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 10.02,
+    "radius_m": 1786.0,
+    "checkin_radius_m": 2786.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "396": {
     "id": "396",
@@ -5147,7 +7290,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 289.62,
+    "radius_m": 9602.0,
+    "checkin_radius_m": 10602.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "397": {
     "id": "397",
@@ -5160,7 +7309,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.16,
+    "radius_m": 226.0,
+    "checkin_radius_m": 1226.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "398": {
     "id": "398",
@@ -5173,7 +7328,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.97,
+    "radius_m": 556.0,
+    "checkin_radius_m": 1556.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   },
   "399": {
     "id": "399",
@@ -5186,7 +7347,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "400": {
     "id": "400",
@@ -5199,7 +7364,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 12.73,
+    "radius_m": 2013.0,
+    "checkin_radius_m": 3013.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "401": {
     "id": "401",
@@ -5212,7 +7383,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 28.82,
+    "radius_m": 3029.0,
+    "checkin_radius_m": 4029.0,
+    "points": 220.0,
+    "difficulty": "空路の島",
+    "is_conquest_target": true
   },
   "402": {
     "id": "402",
@@ -5225,7 +7402,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "403": {
     "id": "403",
@@ -5238,7 +7419,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "404": {
     "id": "404",
@@ -5251,7 +7436,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "405": {
     "id": "405",
@@ -5264,7 +7453,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.39,
+    "radius_m": 665.0,
+    "checkin_radius_m": 1665.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "406": {
     "id": "406",
@@ -5277,7 +7472,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.65,
+    "radius_m": 455.0,
+    "checkin_radius_m": 1455.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "407": {
     "id": "407",
@@ -5290,7 +7491,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.65,
+    "radius_m": 455.0,
+    "checkin_radius_m": 1455.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "408": {
     "id": "408",
@@ -5303,7 +7510,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "409": {
     "id": "409",
@@ -5316,7 +7527,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "410": {
     "id": "410",
@@ -5329,7 +7544,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "411": {
     "id": "411",
@@ -5342,7 +7561,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "412": {
     "id": "412",
@@ -5355,7 +7578,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 5.73,
+    "radius_m": 1351.0,
+    "checkin_radius_m": 2351.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "413": {
     "id": "413",
@@ -5368,7 +7597,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "414": {
     "id": "414",
@@ -5381,7 +7614,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 22.31,
+    "radius_m": 2665.0,
+    "checkin_radius_m": 3665.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "415": {
     "id": "415",
@@ -5394,7 +7633,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "416": {
     "id": "416",
@@ -5407,7 +7650,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 1.3,
+    "radius_m": 643.0,
+    "checkin_radius_m": 1643.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "417": {
     "id": "417",
@@ -5420,7 +7669,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.92,
+    "radius_m": 541.0,
+    "checkin_radius_m": 1541.0,
+    "points": 140.0,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true
   },
   "418": {
     "id": "418",
@@ -5433,7 +7688,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "419": {
     "id": "419",
@@ -5446,7 +7705,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "420": {
     "id": "420",
@@ -5459,7 +7722,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.66,
+    "radius_m": 1218.0,
+    "checkin_radius_m": 2218.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "421": {
     "id": "421",
@@ -5472,7 +7741,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "422": {
     "id": "422",
@@ -5485,7 +7758,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 0.33,
+    "radius_m": 324.0,
+    "checkin_radius_m": 1324.0,
+    "points": 10.0,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true
   },
   "423": {
     "id": "423",
@@ -5498,7 +7777,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.63,
+    "radius_m": 915.0,
+    "checkin_radius_m": 1915.0,
+    "points": 0,
+    "difficulty": "到達不可",
+    "is_conquest_target": false
   },
   "424": {
     "id": "424",
@@ -5511,7 +7796,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 15.39,
+    "radius_m": 2213.0,
+    "checkin_radius_m": 3213.0,
+    "points": 60.0,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true
   },
   "425": {
     "id": "425",
@@ -5524,7 +7815,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "426": {
     "id": "426",
@@ -5537,7 +7832,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "427": {
     "id": "427",
@@ -5550,7 +7849,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "428": {
     "id": "428",
@@ -5563,7 +7866,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "429": {
     "id": "429",
@@ -5576,7 +7883,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "430": {
     "id": "430",
@@ -5589,7 +7900,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 4.06,
+    "radius_m": 1137.0,
+    "checkin_radius_m": 2137.0,
+    "points": 400.0,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true
   },
   "431": {
     "id": "431",
@@ -5602,7 +7919,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
   },
   "432": {
     "id": "432",
@@ -5615,7 +7936,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
-    }
+    },
+    "area": 2.41,
+    "radius_m": 876.0,
+    "checkin_radius_m": 1876.0,
+    "points": 350.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
   }
 };
 

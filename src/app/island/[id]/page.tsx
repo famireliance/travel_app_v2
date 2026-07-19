@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Users, Navigation, Compass, CheckSquare, Star, Plus, Award, BookOpen, Bot, ExternalLink, Sparkles } from 'lucide-react';
+import { ArrowLeft, MapPin, Users, Navigation, Compass, CheckSquare, Star, Plus, Award, BookOpen, Bot, ExternalLink, Sparkles, AlertTriangle, BedDouble, Coffee, Wifi } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTravel } from '@/context/TravelContext';
 import CertificateModal from '@/components/CertificateModal';
@@ -74,6 +74,13 @@ export default function IslandDetail() {
     </div>
   );
 
+  let defaultFallback = '/placeholders/temp.jpg';
+  if (island.prefecture === '北海道' || island.prefecture === '青森県' || island.region_id?.includes('hokkaido')) {
+    defaultFallback = '/placeholders/cold.jpg';
+  } else if (island.prefecture === '沖縄県' || island.prefecture === '鹿児島県' || island.region_id === 'ogasawara') {
+    defaultFallback = '/placeholders/trop.jpg';
+  }
+
   const fallbackImage = `/region/${island.region_id}.jpg`;
   
   const flagIcons: Record<string, React.ReactNode> = {
@@ -89,7 +96,7 @@ export default function IslandDetail() {
       <div className="relative w-full h-[50vh] lg:h-[60vh] overflow-hidden">
         <img 
           src={fallbackImage} 
-          onError={(e) => { e.currentTarget.src = '/placeholders/trop.jpg' }}
+          onError={(e) => { e.currentTarget.src = defaultFallback }}
           alt={island.name}
           className="w-full h-full object-cover"
         />
@@ -109,7 +116,7 @@ export default function IslandDetail() {
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="text-[0.7rem] font-bold tracking-[0.3em] uppercase mb-2 text-blue-900"
           >
-            {island.region_id}
+            {island.prefecture || island.region_id}
           </motion.p>
           <motion.h1 
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
@@ -125,27 +132,44 @@ export default function IslandDetail() {
         <Breadcrumb 
           items={[
             { label: '日本全国離島マップ', href: '/map' },
-            ...(island.region_id && island.region_id !== 'null' ? [{ label: `${island.region_id}`, href: `/region/${encodeURIComponent(island.region_id)}` }] : []),
+            ...(island.region_id && island.region_id !== 'null' ? [{ label: `${island.prefecture || island.region_id}`, href: `/region/${encodeURIComponent(island.region_id)}` }] : []),
             { label: island.name }
           ]} 
         />
-        
+
+        {island.is_conquest_target === false && (
+          <div className="mb-6 bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3 shadow-sm">
+            <AlertTriangle className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
+            <div>
+              <h3 className="text-sm font-bold text-rose-800 mb-1">制覇対象外（上陸不可）</h3>
+              <p className="text-xs text-rose-600 leading-relaxed">
+                この島は自衛隊基地や渡航手段不明などの理由により立入が制限されています。100%制覇の分母からは除外されています。
+              </p>
+            </div>
+          </div>
+        )}
+
         {/* Info Cards */}
-        <div className="grid grid-cols-3 gap-4 mb-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
             <MapPin className="w-5 h-5 text-blue-500 mb-2" strokeWidth={1.5} />
             <span className="text-xs text-slate-500 font-medium tracking-widest mb-1">面積</span>
-            <span className="text-lg font-serif text-slate-800">{island.area} <span className="text-xs">km²</span></span>
+            {island.area ? <span className="text-lg font-serif text-slate-800">{island.area} <span className="text-xs">km²</span></span> : <span className="text-sm font-serif text-slate-400">調査中</span>}
           </div>
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
             <Users className="w-5 h-5 text-blue-500 mb-2" strokeWidth={1.5} />
             <span className="text-xs text-slate-500 font-medium tracking-widest mb-1">人口</span>
-            <span className="text-lg font-serif text-slate-800">{island.population} <span className="text-xs">人</span></span>
+            {island.population ? <span className="text-lg font-serif text-slate-800">{island.population} <span className="text-xs">人</span></span> : <span className="text-sm font-serif text-slate-400">調査中</span>}
           </div>
           <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
             <Navigation className="w-5 h-5 text-blue-500 mb-2" strokeWidth={1.5} />
             <span className="text-xs text-slate-500 font-medium tracking-widest mb-1">アクセス</span>
             <span className="text-xs font-serif text-slate-800 leading-tight">{island.access}</span>
+          </div>
+          <div className="bg-gradient-to-br from-amber-50 to-yellow-50 p-4 rounded-2xl shadow-sm border border-amber-100 flex flex-col items-center justify-center text-center col-span-3 sm:col-span-1 sm:row-start-1 sm:col-start-4">
+            <Star className="w-5 h-5 text-amber-500 mb-2" strokeWidth={1.5} />
+            <span className="text-xs text-amber-700 font-medium tracking-widest mb-1">公式到達ポイント</span>
+            <span className="text-lg font-mono font-bold text-amber-600">{island.points || 0} <span className="text-xs">pt</span></span>
           </div>
         </div>
 
@@ -322,15 +346,15 @@ export default function IslandDetail() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-12">
             <div className="border-b border-slate-100 pb-4">
               <span className="text-xs text-slate-400 tracking-wider block mb-1">所属地域 / 自治体</span>
-              <span className="font-serif text-slate-800 font-bold">{island.region_id || '日本'}</span>
+              <span className="font-serif text-slate-800 font-bold">{island.prefecture || island.region_id || '日本'}</span>
             </div>
             <div className="border-b border-slate-100 pb-4">
               <span className="text-xs text-slate-400 tracking-wider block mb-1">主なアクセス手段</span>
-              <span className="font-serif text-slate-800 font-bold">{island.access || 'フェリー / 高速船'}</span>
+              <span className="font-serif text-slate-800 font-bold">{island.access || '確認中'}</span>
             </div>
             <div className="border-b border-slate-100 pb-4">
               <span className="text-xs text-slate-400 tracking-wider block mb-1">周囲 / 面積</span>
-              <span className="font-serif text-slate-800 font-bold">{island.area || '詳細情報確認中'}</span>
+              <span className="font-serif text-slate-800 font-bold">{island.area ? `${island.area} km²` : '調査中'}</span>
             </div>
             <div className="border-b border-slate-100 pb-4">
               <span className="text-xs text-slate-400 tracking-wider block mb-1">座標</span>

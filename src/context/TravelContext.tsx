@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useState, useMemo } from '
 import { supabase } from '@/lib/supabase';
 import { calculateIslandXP, getPlayerLevelInfo } from '@/lib/gamification';
 import { CompanionId, CompanionStageInfo, CompanionCharacter, COMPANION_CHARACTERS, getCompanionStageInfo } from '@/lib/companion';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 export type IslandStatus = 'visited' | 'planning' | 'none' | 'verified_visited';
 
@@ -19,6 +20,8 @@ interface TravelContextType {
   visitCounts: Record<string, number>;
   spotsVisited: Record<string, number>;
   totalXP: number;
+  totalPoints: number;
+  conquestTargetCount: number;
   // Companion Character
   selectedCompanionId: CompanionId;
   updateCompanionId: (id: CompanionId) => void;
@@ -38,6 +41,8 @@ const TravelContext = createContext<TravelContextType>({
   visitCounts: {},
   spotsVisited: {},
   totalXP: 0,
+  totalPoints: 0,
+  conquestTargetCount: 425, // default
   selectedCompanionId: 'shimamaru',
   updateCompanionId: () => {},
   companionChar: COMPANION_CHARACTERS.shimamaru,
@@ -276,7 +281,24 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('kiratabi_companion_id', id);
   };
 
-  const playerLvInfo = useMemo(() => getPlayerLevelInfo(totalXP), [totalXP]);
+  const totalPoints = useMemo(() => {
+    let pts = 0;
+    Object.entries(islandStatuses).forEach(([id, status]) => {
+      if (status === 'verified_visited') {
+        const island = ALL_ISLANDS_MASTER_DICTIONARY[id];
+        if (island && island.points) {
+          pts += island.points;
+        }
+      }
+    });
+    return pts;
+  }, [islandStatuses]);
+
+  const conquestTargetCount = useMemo(() => {
+    return Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter(i => i.is_conquest_target !== false).length;
+  }, []);
+
+  const playerLvInfo = useMemo(() => getPlayerLevelInfo(totalPoints), [totalPoints]);
   const companionChar = useMemo(() => COMPANION_CHARACTERS[selectedCompanionId] || COMPANION_CHARACTERS.shimamaru, [selectedCompanionId]);
   const companionStage = useMemo(() => getCompanionStageInfo(selectedCompanionId, playerLvInfo.level), [selectedCompanionId, playerLvInfo.level]);
 
@@ -293,6 +315,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       visitCounts,
       spotsVisited,
       totalXP,
+      totalPoints,
+      conquestTargetCount,
       selectedCompanionId,
       updateCompanionId,
       companionChar,

@@ -347,6 +347,59 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
 
   if (!isOpen || !island) return null;
 
+  if (!isVerified) {
+    return (
+      <AnimatePresence>
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-[9999] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 lg:p-8"
+        >
+          <motion.div
+            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+            className="w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden bg-white"
+          >
+            <div className="bg-slate-100 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
+              <h3 className="font-bold text-slate-700">到達記録</h3>
+              <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
+            </div>
+            <div className="p-6 text-center">
+              <div className="w-24 h-24 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-4">
+                {companionChar ? (
+                  <span className="text-4xl">{companionStage?.icon || '🦉'}</span>
+                ) : (
+                  <CheckCircle className="w-12 h-12 text-blue-400" />
+                )}
+              </div>
+              <h4 className="font-serif font-bold text-xl text-slate-800 mb-2">「{island.name}」<br/>自己申告記録完了！</h4>
+              <p className="text-sm text-slate-500 mb-6">
+                簡易到達記録を保存しました。到達率がアップします！
+              </p>
+              
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span className="text-xs font-bold text-amber-800">公式認定でさらに豪華に！</span>
+                </div>
+                <p className="text-xs text-amber-700 leading-relaxed">
+                  現地での写真(GPS付)やGPSチェックインを行うと、<strong className="text-amber-900">ポイント獲得</strong>や<strong className="text-amber-900">高画質な公式証明書</strong>の発行が可能になります！
+                </p>
+              </div>
+            </div>
+            <div className="p-4 bg-slate-50 border-t border-slate-100">
+              <button onClick={onClose} className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-colors">
+                閉じる
+              </button>
+            </div>
+          </motion.div>
+        </motion.div>
+      </AnimatePresence>
+    );
+  }
+
   return (
     <AnimatePresence>
       <motion.div
