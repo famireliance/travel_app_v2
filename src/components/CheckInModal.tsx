@@ -24,10 +24,7 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { addIslandVisit, updateStatus } = useTravel();
 
-  const handleSelfReport = () => {
-    addIslandVisit(island.id, island, 0, false);
-    onClose();
-  };
+
 
   const processPhoto = async (file: File) => {
     setIsProcessing(true);
@@ -280,30 +277,13 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
                 </motion.div>
               )}
 
-              {/* Info & Self Report */}
-              <div className="bg-slate-50 rounded-xl p-4 flex gap-3 mb-6">
-                <Info className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
-                <div className="text-xs text-slate-600 leading-relaxed">
-                  過去の旅行でGPS付きの写真がない場合や、GPS判定をスキップしたい場合は、自己申告による通常の記録が可能です。
-                </div>
-              </div>
-
               <div className="flex items-center justify-center">
-                {resultStatus === 'success' ? (
-                  <button 
-                    onClick={handleClose}
-                    className="w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-md"
-                  >
-                    閉じる
-                  </button>
-                ) : (
-                  <button 
-                    onClick={handleSelfReport}
-                    className="w-full py-3.5 rounded-xl bg-white border-2 border-slate-200 text-slate-600 font-bold text-sm hover:border-slate-300 hover:bg-slate-50 transition-all"
-                  >
-                    自己申告で「行った」記録をつける
-                  </button>
-                )}
+                <button 
+                  onClick={handleClose}
+                  className="w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-md"
+                >
+                  閉じる
+                </button>
               </div>
             </div>
           </motion.div>

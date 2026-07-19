@@ -34,7 +34,12 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   const [assignedSerial, setAssignedSerial] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
   const [orderSubmitting, setOrderSubmitting] = useState(false);
+  const [isDigitalIssued, setIsDigitalIssued] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Mock Trial Status (Ideally fetched from Supabase profiles.trial_ends_at)
+  const isTrialActive = true; 
 
   useEffect(() => {
     if (isOpen && island) {
@@ -47,6 +52,8 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       setErrorMessage(null);
       setUploadError(null);
       setAssignedSerial(getFormattedSerial(island.id || island.name));
+      // In a real app, check if user already paid for this island's certificate
+      setIsDigitalIssued(false);
     }
   }, [isOpen, island, user, contextTravelerName]);
 
@@ -416,6 +423,9 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
             isVerified ? 'bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200' : 'bg-slate-800 border border-slate-700'
           }`}
         >
+          {/* Inject AuthModal just in case they need to login */}
+          {/* Note: We need to import AuthModal at the top, but we can do it inline or assume it's available via context, 
+              actually it's better to just prompt them to close and login via the top right, but let's render a simple message */}
           {/* Modal Header */}
           <div className={`flex items-center justify-between px-6 py-4 border-b sticky top-0 z-10 ${
             isVerified ? 'bg-amber-100/80 border-amber-200' : 'border-slate-700 bg-slate-800/80'
@@ -525,20 +535,69 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                 </div>
 
                 {/* Canvas Preview Box */}
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center relative">
                   <p className="text-xs text-slate-400 mb-3 tracking-widest uppercase flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" /> 証明書プレビュー (リアルタイム反映)
                   </p>
-                  <div className="w-full bg-slate-950 p-3 rounded-2xl border border-slate-700/60 shadow-inner overflow-hidden flex justify-center">
+                  <div className="w-full bg-slate-950 p-3 rounded-2xl border border-slate-700/60 shadow-inner overflow-hidden flex justify-center relative">
                     <canvas
                       ref={canvasRef}
-                      className="w-full max-w-[640px] h-auto rounded-lg shadow-2xl border border-slate-800"
+                      className={`w-full max-w-[640px] h-auto rounded-lg shadow-2xl border border-slate-800 transition-all duration-1000 ${!isDigitalIssued ? 'blur-sm grayscale opacity-80' : ''}`}
                     />
+                    {!isDigitalIssued && (
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/40 backdrop-blur-sm z-10 p-6 rounded-2xl">
+                        {!user ? (
+                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm">
+                            <User className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                            <h4 className="font-bold text-slate-800 mb-2">ログインが必要です</h4>
+                            <p className="text-xs text-slate-500 mb-4">公式認定デジタル証明書を発行・保存するには、無料のユーザー登録が必要です。</p>
+                            <p className="text-xs font-bold text-rose-600 mb-4 animate-pulse">【特典】今登録すると3ヶ月間発行無料！</p>
+                            <button onClick={onClose} className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl">
+                              閉じてログイン画面へ
+                            </button>
+                          </div>
+                        ) : isTrialActive ? (
+                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border-2 border-amber-400">
+                            <Sparkles className="w-12 h-12 text-amber-500 mx-auto mb-3" />
+                            <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">簡易デジタル版を発行</h4>
+                            <p className="text-xs text-slate-600 mb-4 leading-relaxed">
+                              この島の公式認定デジタル証明書を発行し、透かしを解除してダウンロード可能にします。
+                            </p>
+                            <div className="bg-rose-50 text-rose-600 font-bold text-xs p-3 rounded-xl mb-4 border border-rose-200">
+                              【登録から3ヶ月限定トライアル期間中】<br/>
+                              各島で1枚まで<span className="text-sm"> 無料 </span>で発行できます！
+                            </div>
+                            <button 
+                              onClick={() => setIsDigitalIssued(true)}
+                              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm rounded-xl shadow-lg"
+                            >
+                              無料で公式証明書を発行する
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border border-slate-200">
+                            <Award className="w-12 h-12 text-blue-500 mx-auto mb-3" />
+                            <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">簡易デジタル版を発行</h4>
+                            <p className="text-xs text-slate-600 mb-4 leading-relaxed">
+                              無料トライアル期間が終了しました。公式認定デジタル証明書の発行には決済が必要です。
+                            </p>
+                            <button 
+                              onClick={() => setIsDigitalIssued(true)}
+                              className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2"
+                            >
+                              <span>Stripe決済へ進む</span>
+                              <span className="bg-slate-700 px-2 py-0.5 rounded text-xs">¥100</span>
+                            </button>
+                            <p className="text-[10px] text-slate-400 mt-3">※テスト環境のため実際には課金されません</p>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
                 {/* Viral & Free Download Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 transition-all duration-500 ${!isDigitalIssued ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
                   <button
                     onClick={handleShareX}
                     className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-sm tracking-widest flex items-center justify-center gap-2 shadow-lg hover:shadow-sky-500/25 transition-all"

@@ -4,6 +4,7 @@ import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import { TravelProvider } from "@/context/TravelContext";
 import FairyDiscoveryModal from "@/components/FairyDiscoveryModal";
+import AuthReminderBanner from "@/components/AuthReminderBanner";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +32,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <TravelProvider>
+          <AuthReminderBanner />
           {children}
           <FairyDiscoveryModal />
         </TravelProvider>
