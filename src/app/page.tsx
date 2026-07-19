@@ -31,7 +31,7 @@ export default function Home() {
   const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
-  const { user, totalVisited, companionChar, companionStage, islandStatuses } = useTravel();
+  const { user, totalVisited, companionChar, companionStage, islandStatuses, totalPoints } = useTravel();
   const { scrollY } = useScroll();
   const headerY = useTransform(scrollY, [0, 500], [0, 150]);
   const headerOpacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -323,15 +323,15 @@ export default function Home() {
           </div>
 
           {/* Premium Glass Dashboard */}
-          <div className="bg-white/10 backdrop-blur-2xl p-8 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden group w-full lg:w-[420px] shrink-0">
-            <div className="flex justify-between items-end mb-6 relative z-10">
+          <div className="bg-white/10 backdrop-blur-2xl p-5 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden group w-full lg:w-[380px] shrink-0">
+            <div className="flex justify-between items-end mb-4 relative z-10">
               <div>
-                <p className="text-[0.65rem] font-medium text-white/60 tracking-[0.2em] uppercase mb-2">Your Voyage</p>
-                <h2 className="font-serif text-lg text-white tracking-wider">全国踏破率</h2>
+                <p className="text-[0.6rem] font-medium text-white/60 tracking-[0.2em] uppercase mb-1">Your Voyage</p>
+                <h2 className="font-serif text-base text-white tracking-wider">全国踏破率</h2>
               </div>
               <div className="text-right">
-                <span className="font-serif text-4xl font-light text-white tracking-tighter">{progressPct.toFixed(1)}</span>
-                <span className="text-sm font-light text-white/70 ml-1">%</span>
+                <span className="font-serif text-3xl font-light text-white tracking-tighter">{progressPct.toFixed(1)}</span>
+                <span className="text-xs font-light text-white/70 ml-1">%</span>
               </div>
             </div>
             
@@ -343,8 +343,9 @@ export default function Home() {
                 className="h-full bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
               />
             </div>
-            <div className="flex justify-between mt-3 text-[0.65rem] font-medium text-white/70 tracking-widest relative z-10">
+            <div className="flex justify-between items-center mt-3 text-[0.6rem] font-medium text-white/70 tracking-widest relative z-10">
               <span>踏破 {totalVisited} 島</span>
+              <span className="text-amber-300">★ {totalPoints.toLocaleString()} pt</span>
               <span>残り {ALL_ISLANDS_COUNT - totalVisited} 島</span>
             </div>
 
@@ -352,7 +353,7 @@ export default function Home() {
             {companionChar && companionStage && (
               <div 
                 onClick={() => setIsCompanionModalOpen(true)}
-                className="mt-5 p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all cursor-pointer group/comp relative z-10 flex items-center justify-between"
+                className="mt-4 p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all cursor-pointer group/comp relative z-10 flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
                   <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm border border-white/60 shrink-0 group-hover/comp:scale-105 transition-transform`}>
