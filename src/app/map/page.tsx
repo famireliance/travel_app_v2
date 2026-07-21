@@ -43,29 +43,12 @@ function GlobalMapContent() {
       });
   }, []);
 
-  if (loading) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-400 font-serif tracking-[0.2em] text-sm gap-4">
-      <Compass className="w-8 h-8 animate-spin-slow opacity-50" strokeWidth={1} />
-      <span>日本全国の海図を展開中...</span>
-    </div>
-  );
-
-  if (error || allIslands.length === 0) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-600 font-serif gap-4">
-      <p>マップデータの読み込みに失敗しました。</p>
-      <button onClick={() => router.push('/')} className="px-6 py-2 bg-blue-600 text-white rounded-xl">
-        トップへ戻る
-      </button>
-    </div>
-  );
-
   const visitedCount = Object.values(islandStatuses).filter(s => s === 'visited' || s === 'verified_visited').length;
   const planningCount = Object.values(islandStatuses).filter(s => s === 'planning').length;
   
   const filteredIslands = allIslands.filter(isl => {
     if (difficultyFilter && getIslandDifficulty(isl).level !== difficultyFilter) return false;
     if (regionParam && isl.region_id !== regionParam) return false;
-    // (If we had category mapping, we'd apply filterParam here)
     return true;
   });
 
@@ -92,7 +75,6 @@ function GlobalMapContent() {
 
     if (hasValidCoords) {
       if (minLat === maxLat && minLng === maxLng) {
-        // Single point
         return [[minLat - 0.1, minLng - 0.1], [maxLat + 0.1, maxLng + 0.1]] as [[number, number], [number, number]];
       }
       const latPad = (maxLat - minLat) * 0.15 || 0.5;
@@ -102,6 +84,24 @@ function GlobalMapContent() {
     
     return [[24, 122], [46, 146]] as [[number, number], [number, number]];
   }, [filteredIslands, manualBounds]);
+
+  if (loading) return (
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-400 font-serif tracking-[0.2em] text-sm gap-4">
+      <Compass className="w-8 h-8 animate-spin-slow opacity-50" strokeWidth={1} />
+      <span>日本全国の海図を展開中...</span>
+    </div>
+  );
+
+  if (error || allIslands.length === 0) return (
+    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-600 font-serif gap-4">
+      <p>マップデータの読み込みに失敗しました。</p>
+      <button onClick={() => router.push('/')} className="px-6 py-2 bg-blue-600 text-white rounded-xl">
+        トップへ戻る
+      </button>
+    </div>
+  );
+
+
 
   const handleSelectIsland = (islandId: string) => {
     const island = allIslands.find(i => i.id === islandId);

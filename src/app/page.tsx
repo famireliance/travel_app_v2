@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X } from 'lucide-react';
+import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X, Star } from 'lucide-react';
 import regionsData from '../data/regions.json';
 import heroSlides from '../data/hero_slides.json';
 import SearchModal from '@/components/SearchModal';
@@ -783,17 +783,23 @@ export default function Home() {
       {/* Floating Bottom Nav - Ultra Minimal (Mobile Only) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/90 to-transparent" />
-        <div className="relative max-w-sm mx-auto px-8 pb-[calc(24px+env(safe-area-inset-bottom))] pt-12 flex justify-between items-end pointer-events-auto">
+        <div className="relative max-w-sm mx-auto px-6 pb-[calc(24px+env(safe-area-inset-bottom))] pt-12 flex justify-between items-end pointer-events-auto">
           <button onClick={() => setIsSearchOpen(true)} className="flex flex-col items-center gap-2 text-slate-800 hover:scale-110 transition-transform">
-            <Compass size={24} strokeWidth={1.5} />
+            <Compass size={22} strokeWidth={1.5} />
             <span className="text-[0.6rem] font-bold tracking-widest">探す</span>
           </button>
           <button onClick={() => router.push('/map')} className="flex flex-col items-center gap-2 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all">
-            <Map size={24} strokeWidth={1.5} />
+            <Map size={22} strokeWidth={1.5} />
             <span className="text-[0.6rem] font-bold tracking-widest">マップ</span>
           </button>
+          <button onClick={() => setIsCompanionModalOpen(true)} className="flex flex-col items-center gap-1.5 text-amber-500 hover:text-amber-600 hover:scale-110 transition-all -translate-y-2">
+            <div className="bg-amber-100 p-2 rounded-full shadow-sm border border-amber-200">
+              <Sparkles size={24} strokeWidth={1.5} />
+            </div>
+            <span className="text-[0.6rem] font-bold tracking-widest text-amber-600">図鑑</span>
+          </button>
           <button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="flex flex-col items-center gap-2 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all">
-            <User size={24} strokeWidth={1.5} />
+            <User size={22} strokeWidth={1.5} />
             <span className="text-[0.6rem] font-bold tracking-widest">マイページ</span>
           </button>
         </div>
