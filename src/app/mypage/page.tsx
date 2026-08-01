@@ -3,13 +3,15 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
-import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, ChevronDown, ChevronUp, History, BookOpen, Compass, Heart } from 'lucide-react';
+import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, ChevronDown, ChevronUp, History, BookOpen, Compass, Heart, ImageIcon } from 'lucide-react';
 import { supabase, fetchAllIslands } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import CertificateModal from '@/components/CertificateModal';
 import { calculateDifficultyStats, getIslandDifficulty } from '@/lib/difficulty';
 import { getPlayerLevelInfo, getIslandMastery, getSpecialTitles } from '@/lib/gamification';
+import { FAIRIES_MASTER } from '@/lib/fairies';
 import Breadcrumb from '@/components/Breadcrumb';
+import toast from 'react-hot-toast';
 
 export default function MyPage() {
   const router = useRouter();
@@ -44,7 +46,7 @@ export default function MyPage() {
   const [selectedIslandForCert, setSelectedIslandForCert] = useState<any>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
-  const [openSections, setOpenSections] = useState<Set<string>>(new Set(['recent', 'quests', 'titles', 'certs', 'diaries', 'planning']));
+  const [openSections, setOpenSections] = useState<Set<string>>(new Set(['profile', 'fairies', 'recent', 'quests', 'titles', 'certs', 'diaries', 'planning']));
   const toggleSection = (id: string) => {
     setOpenSections(prev => {
       const next = new Set(prev);
@@ -58,9 +60,17 @@ export default function MyPage() {
   }, [travelerName]);
 
   useEffect(() => {
-    const savedBio = localStorage.getItem('kiratabi_bio');
-    if (savedBio) setBio(savedBio);
-  }, []);
+    const loadBio = async () => {
+      if (!user) return;
+      try {
+        const { data } = await supabase.from('user_profiles').select('bio').eq('id', user.id).single();
+        if (data?.bio) setBio(data.bio);
+      } catch (e) {
+        console.error('Failed to load bio', e);
+      }
+    };
+    loadBio();
+  }, [user]);
 
   useEffect(() => {
     Promise.all([
@@ -89,6 +99,39 @@ export default function MyPage() {
     router.push('/');
   };
 
+  const handleSaveName = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newName = nameInput.trim();
+    if (!newName) return;
+    if (newName === travelerName) {
+      setIsEditingName(false);
+      return;
+    }
+
+    if (user) {
+      const { data } = await supabase.from('user_profiles').select('id').eq('nickname', newName).neq('id', user.id);
+      if (data && data.length > 0) {
+        toast.error('この名前はすでに使用されています。別の名前をお試しください。');
+        return;
+      }
+    }
+
+    updateTravelerName(newName);
+    setIsEditingName(false);
+    toast.success('名前を更新しました');
+  };
+
+  const handleSaveBio = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const newBio = bioInput.trim();
+    setBio(newBio);
+    setIsEditingBio(false);
+    if (user) {
+      await supabase.from('user_profiles').update({ bio: newBio }).eq('id', user.id);
+    }
+    toast.success('自己紹介を更新しました');
+  };
+
   const visitedList = islandsData.filter(i => islandStatuses[i.id] === 'visited' || islandStatuses[i.id] === 'verified_visited');
   const planningList = islandsData.filter(i => islandStatuses[i.id] === 'planning');
   const diffStats = calculateDifficultyStats(allIslandsData, islandStatuses);
@@ -98,14 +141,19 @@ export default function MyPage() {
     .slice(-5)
     .reverse();
 
+  const unlockedFairies = FAIRIES_MASTER.map(fairy => {
+    const unlocked = fairy.island_id ? (islandStatuses[fairy.island_id] === 'visited' || islandStatuses[fairy.island_id] === 'verified_visited') : (visitedList.some(isl => isl.region_id === fairy.region_id));
+    return { ...fairy, unlocked };
+  });
+
   if (!isDataLoaded) {
     return (
-      <div className="min-h-screen bg-slate-50 animate-pulse">
-        <div className="h-16 bg-slate-200" />
+      <div className="min-h-screen bg-slate-900 animate-pulse">
+        <div className="h-16 bg-slate-800" />
         <div className="p-6 max-w-3xl mx-auto space-y-4">
-          <div className="h-40 bg-slate-200 rounded-3xl" />
-          <div className="h-24 bg-slate-200 rounded-3xl" />
-          <div className="h-48 bg-slate-200 rounded-3xl" />
+          <div className="h-40 bg-slate-800 rounded-3xl" />
+          <div className="h-24 bg-slate-800 rounded-3xl" />
+          <div className="h-48 bg-slate-800 rounded-3xl" />
         </div>
       </div>
     );
@@ -113,62 +161,65 @@ export default function MyPage() {
 
   const SectionHeader = ({ id, icon: Icon, title, subtitle }: { id: string, icon: any, title: string, subtitle?: string }) => (
     <div 
-      className="flex items-center justify-between cursor-pointer py-4 hover:bg-slate-50/50 rounded-xl transition-colors -mx-2 px-2"
+      className="flex items-center justify-between cursor-pointer py-4 hover:bg-slate-800/50 rounded-xl transition-colors -mx-2 px-2"
       onClick={() => toggleSection(id)}
     >
-      <h3 className="text-sm font-bold tracking-[0.2em] text-slate-800 border-l-2 border-blue-500 pl-3 flex items-center gap-2">
-        <Icon className="w-4 h-4 text-blue-500" strokeWidth={2}/> {title}
+      <h3 className="text-sm font-bold tracking-[0.2em] text-white border-l-2 border-amber-500 pl-3 flex items-center gap-2">
+        <Icon className="w-4 h-4 text-amber-500" strokeWidth={2}/> {title}
         {subtitle && <span className="text-[0.7rem] font-normal text-slate-400 ml-2">{subtitle}</span>}
       </h3>
-      <button className="text-slate-400 hover:text-slate-600 transition-colors">
+      <button className="text-slate-400 hover:text-white transition-colors">
         {openSections.has(id) ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
       </button>
     </div>
   );
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] pb-32 font-sans relative">
-      <header className="px-6 lg:px-12 py-6 bg-white border-b border-slate-100 flex items-center justify-between sticky top-0 z-40">
+    <main className="min-h-screen bg-[#0F172A] pb-32 font-sans relative text-slate-200">
+      <div className="fixed inset-0 bg-[url('https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?q=80&w=2000&auto=format&fit=crop')] bg-cover bg-center opacity-5 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-br from-slate-900 via-[#0F172A] to-indigo-950/80 pointer-events-none" />
+      
+      <header className="px-6 lg:px-12 py-6 border-b border-white/5 flex items-center justify-between sticky top-0 z-40 bg-slate-900/80 backdrop-blur-md">
         <button 
           onClick={() => router.push('/')} 
-          className="p-2 text-slate-600 hover:text-slate-900 transition-colors"
+          className="p-2 text-slate-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
         </button>
-        <h1 className="font-serif font-bold tracking-[0.2em] text-slate-800">MY PAGE</h1>
+        <h1 className="font-serif font-bold tracking-[0.2em] text-white flex items-center gap-2"><Sparkles className="text-amber-500 w-4 h-4" /> ADVENTURER PASSPORT</h1>
         <button onClick={() => setShowLogoutConfirm(true)} className="p-2 text-slate-400 hover:text-rose-500 transition-colors">
           <LogOut className="w-5 h-5" strokeWidth={1.5} />
         </button>
       </header>
 
-      <div className="max-w-3xl mx-auto px-6 mt-8 space-y-10">
-        <Breadcrumb items={[{ label: 'マイページ / パスポート' }]} />
+      <div className="max-w-4xl mx-auto px-4 md:px-6 mt-8 space-y-10 relative z-10">
         
-        {/* Profile Card Redesign */}
-        <div id="section-profile" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-40 h-40 bg-amber-500/10 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
+        {/* Profile Card Redesign (Glassmorphism Passport) */}
+        <div id="section-profile" className="bg-white/5 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/10 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/20 rounded-full blur-3xl -ml-20 -mb-20 pointer-events-none" />
           
           <div className="relative shrink-0 mt-2">
             {/* Level Ring */}
-            <svg className="w-32 h-32 transform -rotate-90 absolute -top-2 -left-2 z-0" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" fill="transparent" stroke="#f1f5f9" strokeWidth="6" />
+            <svg className="w-40 h-40 transform -rotate-90 absolute -top-4 -left-4 z-0" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="46" fill="transparent" stroke="rgba(255,255,255,0.1)" strokeWidth="4" />
               <motion.circle
                 initial={{ strokeDasharray: '0 289' }}
                 animate={{ strokeDasharray: `${(playerLvInfo.progressPct / 100) * 289} 289` }}
                 transition={{ duration: 1.5, ease: "easeOut" }}
-                cx="50" cy="50" r="46" fill="transparent" stroke="url(#gradient)" strokeWidth="6" strokeLinecap="round"
+                cx="50" cy="50" r="46" fill="transparent" stroke="url(#gradient)" strokeWidth="4" strokeLinecap="round"
               />
               <defs>
                 <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stopColor="#f59e0b" />
-                  <stop offset="100%" stopColor="#ec4899" />
+                  <stop offset="100%" stopColor="#8b5cf6" />
                 </linearGradient>
               </defs>
             </svg>
-            <div className="w-28 h-28 bg-gradient-to-br from-blue-500 to-indigo-600 text-white rounded-full flex items-center justify-center font-serif text-4xl font-bold shadow-xl relative z-10 border-4 border-white">
+            <div className="w-32 h-32 bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-full flex items-center justify-center font-serif text-5xl font-bold shadow-2xl relative z-10 border-4 border-slate-700">
               {travelerName?.charAt(0) || user?.email?.charAt(0) || '旅'}
             </div>
-            <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-rose-500 text-white text-[0.65rem] font-bold px-3 py-1 rounded-full shadow-lg z-20 whitespace-nowrap border-2 border-white tracking-widest">
+            <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-900 text-[0.7rem] font-bold px-4 py-1.5 rounded-full shadow-lg z-20 whitespace-nowrap border-2 border-slate-800 tracking-widest uppercase">
               Lv.{playerLvInfo.level} {playerLvInfo.title}
             </div>
           </div>
@@ -176,147 +227,133 @@ export default function MyPage() {
           <div className="flex-1 w-full text-center md:text-left pt-2 z-10">
             {!isEditingName ? (
               <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                <h2 className="text-2xl md:text-3xl font-serif font-bold text-slate-800 tracking-wide">
+                <h2 className="text-3xl md:text-4xl font-serif font-bold text-white tracking-wide drop-shadow-md">
                   {travelerName || user?.email?.split('@')[0] || '島旅トラベラー'}
                 </h2>
                 <button
                   onClick={() => setIsEditingName(true)}
-                  className="p-2 rounded-full hover:bg-slate-100 text-slate-400 hover:text-blue-600 transition-colors"
+                  className="p-2 rounded-full hover:bg-white/10 text-slate-400 hover:text-amber-400 transition-colors"
                 >
-                  <Edit3 className="w-4 h-4" />
+                  <Edit3 className="w-5 h-5" />
                 </button>
               </div>
             ) : (
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                updateTravelerName(nameInput.trim() || '島旅トラベラー');
-                setIsEditingName(false);
-              }} className="flex items-center justify-center md:justify-start gap-2 mb-2">
+              <form onSubmit={handleSaveName} className="flex items-center justify-center md:justify-start gap-2 mb-2">
                 <input
                   type="text"
                   value={nameInput}
                   onChange={(e) => setNameInput(e.target.value)}
-                  className="bg-slate-50 border border-blue-300 rounded-xl px-4 py-2 text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                  className="bg-slate-800 border border-amber-500/50 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 shadow-inner"
                   autoFocus
                 />
-                <button type="submit" className="p-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white"><Check className="w-5 h-5" /></button>
+                <button type="submit" className="p-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-slate-900 shadow-md"><Check className="w-5 h-5" /></button>
               </form>
             )}
 
-            <div className="text-xs text-slate-400 font-mono mb-3">ID: {user?.id?.slice(0, 12) || 'ANON-GUEST'}</div>
+            <div className="text-xs text-slate-400 font-mono mb-4 bg-slate-800/50 inline-block px-3 py-1 rounded-lg border border-slate-700/50">ID: {user?.id?.slice(0, 12) || 'ANON-GUEST'}</div>
             
-            <div className="mb-6 max-w-sm">
+            <div className="mb-8 max-w-lg mx-auto md:mx-0">
               {!isEditingBio ? (
-                <div className="flex items-start justify-center md:justify-start gap-2 group">
-                  <p className="text-sm text-slate-600 font-serif whitespace-pre-wrap">{bio || '自己紹介文が未設定です。'}</p>
-                  <button onClick={() => { setBioInput(bio); setIsEditingBio(true); }} className="opacity-0 group-hover:opacity-100 p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-blue-600 transition-all">
-                    <Edit3 size={14} />
+                <div className="flex items-start justify-center md:justify-start gap-2 group relative">
+                  <p className="text-sm text-slate-300 font-serif whitespace-pre-wrap leading-relaxed bg-slate-800/30 p-4 rounded-2xl border border-slate-700/50 w-full min-h-[5rem] relative">
+                    <span className="absolute -top-3 left-4 bg-slate-900 text-slate-400 text-[0.6rem] px-2 py-0.5 rounded-full border border-slate-700">自己紹介</span>
+                    {bio || '自己紹介文が未設定です。ここをタップして編集。'}
+                  </p>
+                  <button onClick={() => { setBioInput(bio); setIsEditingBio(true); }} className="absolute right-2 top-2 p-2 hover:bg-white/10 rounded-full text-slate-400 hover:text-amber-400 transition-all shadow-sm">
+                    <Edit3 size={16} />
                   </button>
                 </div>
               ) : (
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  setBio(bioInput);
-                  localStorage.setItem('kiratabi_bio', bioInput);
-                  setIsEditingBio(false);
-                }} className="flex flex-col gap-2">
+                <form onSubmit={handleSaveBio} className="flex flex-col gap-3">
                   <textarea
                     value={bioInput}
                     onChange={(e) => setBioInput(e.target.value)}
-                    className="w-full bg-slate-50 border border-blue-300 rounded-xl px-3 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/20 resize-none h-20"
-                    placeholder="自己紹介文を入力してください..."
+                    className="w-full bg-slate-800 border border-amber-500/50 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-amber-500/50 resize-none h-24 shadow-inner"
+                    placeholder="冒険の記録や好きな島などを入力してください..."
                     autoFocus
                   />
                   <div className="flex justify-end gap-2">
-                    <button type="button" onClick={() => setIsEditingBio(false)} className="px-3 py-1.5 text-xs text-slate-500 hover:bg-slate-100 rounded-lg">キャンセル</button>
-                    <button type="submit" className="px-3 py-1.5 text-xs bg-blue-600 text-white rounded-lg hover:bg-blue-500 flex items-center gap-1"><Check size={14} /> 保存</button>
+                    <button type="button" onClick={() => setIsEditingBio(false)} className="px-4 py-2 text-xs text-slate-300 hover:bg-slate-700 rounded-xl transition-colors">キャンセル</button>
+                    <button type="submit" className="px-4 py-2 text-xs bg-amber-500 text-slate-900 font-bold rounded-xl hover:bg-amber-600 flex items-center gap-1 shadow-md transition-colors"><Check size={14} /> 保存</button>
                   </div>
                 </form>
               )}
             </div>
 
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100 flex flex-col items-center md:items-start">
-                <div className="text-slate-500 text-[0.65rem] font-bold mb-1 flex items-center gap-1"><MapPin size={12}/> 到達島数</div>
-                <div className="text-xl font-serif font-bold text-slate-800">{totalVisited}</div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="bg-slate-800/50 backdrop-blur-sm p-4 rounded-2xl border border-slate-700/50 flex flex-col items-center md:items-start transition-all hover:border-amber-500/30">
+                <div className="text-slate-400 text-[0.65rem] font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-widest"><MapPin size={12} className="text-amber-500"/> 到達島数</div>
+                <div className="text-3xl font-serif font-bold text-white drop-shadow-md">{totalVisited}</div>
               </div>
-              <div className="bg-amber-50/50 p-3 rounded-2xl border border-amber-100/50 flex flex-col items-center md:items-start">
-                <div className="text-amber-600 text-[0.65rem] font-bold mb-1 flex items-center gap-1"><Star size={12}/> 獲得XP</div>
-                <div className="text-xl font-serif font-bold text-amber-700">{(totalPoints || 0).toLocaleString()}</div>
+              <div className="bg-amber-900/20 backdrop-blur-sm p-4 rounded-2xl border border-amber-500/20 flex flex-col items-center md:items-start transition-all hover:border-amber-500/50">
+                <div className="text-amber-300 text-[0.65rem] font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-widest"><Star size={12} className="text-amber-400"/> 獲得XP</div>
+                <div className="text-3xl font-serif font-bold text-amber-400 drop-shadow-md">{(totalPoints || 0).toLocaleString()}</div>
               </div>
-              <div className="bg-purple-50/50 p-3 rounded-2xl border border-purple-100/50 flex flex-col items-center md:items-start">
-                <div className="text-purple-600 text-[0.65rem] font-bold mb-1 flex items-center gap-1"><Sparkles size={12}/> 妖精図鑑</div>
-                <div className="text-xl font-serif font-bold text-purple-700">0</div>
+              <div className="bg-purple-900/20 backdrop-blur-sm p-4 rounded-2xl border border-purple-500/20 flex flex-col items-center md:items-start transition-all hover:border-purple-500/50">
+                <div className="text-purple-300 text-[0.65rem] font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-widest"><Sparkles size={12} className="text-purple-400"/> 妖精図鑑</div>
+                <div className="text-3xl font-serif font-bold text-purple-400 drop-shadow-md">{unlockedFairies.filter(f => f.unlocked).length}</div>
               </div>
-              <div className="bg-blue-50/50 p-3 rounded-2xl border border-blue-100/50 flex flex-col items-center md:items-start">
-                <div className="text-blue-600 text-[0.65rem] font-bold mb-1 flex items-center gap-1"><GlobeIcon size={12}/> コンプリート率</div>
-                <div className="text-xl font-serif font-bold text-blue-700">{progressPct.toFixed(1)}%</div>
+              <div className="bg-indigo-900/20 backdrop-blur-sm p-4 rounded-2xl border border-indigo-500/20 flex flex-col items-center md:items-start transition-all hover:border-indigo-500/50">
+                <div className="text-indigo-300 text-[0.65rem] font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-widest"><GlobeIcon size={12} className="text-indigo-400"/> コンプリート率</div>
+                <div className="text-3xl font-serif font-bold text-indigo-400 drop-shadow-md">{progressPct.toFixed(1)}%</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* 3D Globe & Video Studio Banner */}
+        {/* 3D Globe Banner (Refined) */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-r from-slate-950 via-indigo-950 to-purple-950 rounded-3xl p-6 md:p-8 border border-indigo-500/40 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 text-white relative overflow-hidden"
+          className="bg-gradient-to-r from-indigo-900/80 via-purple-900/80 to-slate-900/80 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-indigo-500/30 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"
         >
-          <div className="absolute -right-10 -top-10 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="flex items-center gap-4 text-center md:text-left z-10">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-lg">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-10" />
+          <div className="absolute -right-10 -top-10 w-48 h-48 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
+          <div className="flex items-center gap-5 text-center md:text-left z-10">
+            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white shrink-0 shadow-lg border border-white/10">
               <GlobeIcon className="w-8 h-8 animate-spin-slow" />
             </div>
             <div>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[0.65rem] font-bold tracking-widest uppercase inline-block mb-1">
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[0.65rem] font-bold tracking-widest uppercase inline-block mb-2 border border-amber-500/30">
                 NEW • 3D EXPEDITION STUDIO
               </span>
-              <h3 className="text-lg md:text-xl font-serif font-bold tracking-wide">
-                日本全国 島旅3D地球儀・航路トラッカー & ムービー録画
+              <h3 className="text-lg md:text-xl font-serif font-bold tracking-wide text-white drop-shadow-sm">
+                日本全国 島旅3D地球儀・航路トラッカー
               </h3>
-              <p className="text-xs text-indigo-200 mt-1 max-w-lg leading-relaxed font-sans">
-                あなたが訪れた島々の座標を地球儀上にマッピング。飛行機や船が走る3D航海ルートをシネマティックに再生し、SNS用の高画質動画を無料キャプチャ！
+              <p className="text-xs text-indigo-200 mt-1 max-w-lg leading-relaxed font-sans opacity-90">
+                あなたが訪れた島々の座標を地球儀上にマッピング。あなたの冒険の軌跡を3Dで俯瞰しよう。
               </p>
             </div>
           </div>
           <button
             onClick={() => router.push('/globe')}
-            className="shrink-0 w-full md:w-auto px-6 py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-purple-600 hover:from-amber-400 hover:to-purple-500 text-white font-bold font-serif text-xs tracking-widest shadow-xl flex items-center justify-center gap-2.5 transition-all hover:scale-105 border border-amber-400/40 z-10"
+            className="shrink-0 w-full md:w-auto px-6 py-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold font-serif text-sm tracking-widest shadow-xl flex items-center justify-center gap-2.5 transition-all hover:scale-105 border border-white/20 z-10 backdrop-blur-md"
           >
-            <Video className="w-4 h-4 text-yellow-300 animate-bounce" />
-            3D地球儀・動画スタジオを開く →
+            <Video className="w-4 h-4 text-purple-300" />
+            3D地球儀を開く →
           </button>
         </motion.div>
 
-        {/* Recent Timeline */}
-        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
-          <SectionHeader id="recent" icon={History} title="最近の到達履歴" subtitle="最新5件" />
+        {/* Fairy Dex Section (NEW) */}
+        <div id="section-fairies" className="bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-lg border border-white/10">
+          <SectionHeader id="fairies" icon={Sparkles} title={`妖精図鑑 - Fairy Dex (${unlockedFairies.filter(f => f.unlocked).length}/${unlockedFairies.length})`} subtitle="出会った精霊たち" />
           <AnimatePresence>
-            {openSections.has('recent') && (
+            {openSections.has('fairies') && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                <div className="pt-4">
-                  {recentVisits.length === 0 ? (
-                    <p className="text-slate-400 text-sm font-serif">まだ到達記録がありません。</p>
-                  ) : (
-                    <div className="space-y-4 pl-2 border-l-2 border-slate-100 ml-4 relative">
-                      {recentVisits.map(([id, _], i) => {
-                        const island = allIslandsData.find(isl => isl.id === id);
-                        return (
-                          <div key={id} className="relative pl-6">
-                            <div className="absolute -left-[1.3rem] top-1 w-3.5 h-3.5 bg-blue-500 border-4 border-white rounded-full shadow-sm" />
-                            <div className="bg-slate-50 border border-slate-100 p-3 rounded-xl flex items-center justify-between cursor-pointer hover:border-blue-300 transition-colors" onClick={() => router.push(`/island/${id}`)}>
-                              <div>
-                                <div className="text-slate-800 font-bold">{island?.name || '不明な島'}</div>
-                                <div className="text-xs text-slate-400 font-mono mt-0.5">{island?.region_id || 'Japan'}</div>
-                              </div>
-                              <Award className="w-4 h-4 text-amber-500" />
-                            </div>
-                          </div>
-                        );
-                      })}
+                <div className="pt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+                  {unlockedFairies.map((fairy) => (
+                    <div key={fairy.id} className="flex flex-col items-center gap-2 group">
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner transition-all duration-500 relative overflow-hidden ${fairy.unlocked ? `bg-gradient-to-br ${fairy.visual.colorFrom} ${fairy.visual.colorTo} shadow-lg shadow-white/10` : 'bg-slate-800/50 border border-slate-700/50 grayscale opacity-40'}`}>
+                        {fairy.unlocked && <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />}
+                        <span className="z-10">{fairy.visual.icon}</span>
+                        {fairy.unlocked && <Sparkles className={`absolute top-1 right-1 w-3 h-3 ${fairy.visual.sparkleColor} opacity-70 animate-pulse`} />}
+                      </div>
+                      <div className={`text-[0.6rem] font-bold text-center w-full truncate px-1 ${fairy.unlocked ? 'text-white' : 'text-slate-500'}`}>
+                        {fairy.unlocked ? fairy.name : '???'}
+                      </div>
                     </div>
-                  )}
+                  ))}
                 </div>
               </motion.div>
             )}
@@ -324,36 +361,41 @@ export default function MyPage() {
         </div>
 
         {/* Difficulty Tier Quests & Trophies */}
-        <div id="section-quests" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
-          <SectionHeader id="quests" icon={Compass} title="冒険難易度別 踏破クエスト＆達成トロフィー" subtitle="5段階難易度・達成実績" />
+        <div id="section-quests" className="bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-lg border border-white/10">
+          <SectionHeader id="quests" icon={Compass} title="冒険難易度別 踏破クエスト" subtitle="5段階難易度・達成実績" />
           <AnimatePresence>
             {openSections.has('quests') && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                <div className="pt-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-3.5">
+                <div className="pt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-4">
                   {Object.entries(diffStats).map(([key, stat], idx) => {
                     const level = idx + 1;
                     const pct = stat.total > 0 ? Math.round((stat.visited / stat.total) * 100) : 0;
                     return (
-                      <div key={key} className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${stat.visited > 0 ? 'bg-gradient-to-b from-amber-500/10 to-amber-500/5 border-amber-500/40 shadow-sm' : 'bg-slate-50 border-slate-200'}`}>
+                      <div key={key} className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-4 ${stat.visited > 0 ? 'bg-amber-500/10 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.1)]' : 'bg-slate-800/50 border-slate-700/50'}`}>
                         <div>
-                          <div className="flex items-center justify-between mb-1.5">
-                            <span className="text-lg">{stat.icon}</span>
-                            <span className={`text-[0.6rem] font-bold px-2 py-0.5 rounded-full ${stat.visited > 0 ? 'bg-amber-500 text-slate-950 shadow-sm' : 'bg-slate-200 text-slate-600'}`}>
-                              ★{level} {level === 5 ? 'レジェンド' : level === 4 ? '秘境島' : level === 3 ? 'アドベンチャー' : level === 2 ? 'スタンダード' : 'イージー'}
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-2xl drop-shadow-md">{stat.icon}</span>
+                            <span className={`text-[0.6rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${stat.visited > 0 ? 'bg-amber-500 text-slate-900 shadow-sm' : 'bg-slate-700 text-slate-400'}`}>
+                              ★{level} {level === 5 ? 'LEGEND' : level === 4 ? 'SECRET' : level === 3 ? 'ADV' : level === 2 ? 'STD' : 'EASY'}
                             </span>
                           </div>
-                          <div className="text-xs font-bold text-slate-800 tracking-wide mt-1">{stat.title}</div>
-                          <div className="text-xs text-slate-500 mt-0.5 font-mono">
-                            <strong className="text-slate-900 font-serif text-sm">{stat.visited}</strong> / {stat.total} 島 ({pct}%)
+                          <div className={`text-sm font-bold tracking-wide mt-2 ${stat.visited > 0 ? 'text-white' : 'text-slate-400'}`}>{stat.title}</div>
+                          <div className="text-xs text-slate-400 mt-1 font-mono">
+                            <strong className={`font-serif text-base ${stat.visited > 0 ? 'text-amber-400' : 'text-slate-500'}`}>{stat.visited}</strong> / {stat.total} 島 ({pct}%)
                           </div>
                         </div>
-                        <div className="space-y-1.5">
-                          <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden">
-                            <div className={`h-full ${stat.visited > 0 ? 'bg-amber-500' : 'bg-slate-300'}`} style={{ width: `${pct}%` }} />
+                        <div className="space-y-2">
+                          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
+                            <motion.div 
+                              initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, delay: 0.2 }}
+                              className={`h-full relative overflow-hidden ${stat.visited > 0 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' : 'bg-slate-600'}`} 
+                            >
+                              {stat.visited > 0 && <div className="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]" />}
+                            </motion.div>
                           </div>
                           <div className="text-center">
-                            <span className={`text-[0.65rem] font-bold block py-1 rounded-lg ${stat.visited > 0 ? 'bg-amber-500/20 text-amber-800 border border-amber-500/30' : 'text-slate-400 bg-slate-100'}`}>
-                              {stat.visited > 0 ? `🏆 Level ${level} 勲章獲得` : `🔒 挑戦待ち`}
+                            <span className={`text-[0.65rem] font-bold block py-1.5 rounded-lg ${stat.visited > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-500 bg-slate-800 border border-slate-700'}`}>
+                              {stat.visited > 0 ? `🏆 Level ${level} 勲章獲得済` : `🔒 未獲得`}
                             </span>
                           </div>
                         </div>
@@ -367,27 +409,27 @@ export default function MyPage() {
         </div>
 
         {/* Special Titles Collection */}
-        <div id="section-titles" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
+        <div id="section-titles" className="bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-lg border border-white/10">
           <SectionHeader id="titles" icon={Award} title={`👑 特別称号コレクション (${specialTitles.filter(t => t.unlocked).length}/${specialTitles.length})`} subtitle="全国諸島覇者＆海神称号" />
           <AnimatePresence>
             {openSections.has('titles') && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                <div className="pt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="pt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {specialTitles.map(t => (
-                    <div key={t.id} className={`p-4 rounded-2xl border transition-all flex flex-col justify-between gap-3 ${t.unlocked ? 'bg-gradient-to-br from-amber-500/15 via-purple-500/10 to-indigo-500/10 border-amber-500/60 shadow-md scale-[1.01]' : 'bg-slate-50 border-slate-200 opacity-80 hover:opacity-100'}`}>
+                    <div key={t.id} className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-4 ${t.unlocked ? 'bg-gradient-to-br from-amber-500/20 via-purple-500/10 to-indigo-500/10 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] scale-[1.02]' : 'bg-slate-800/50 border-slate-700/50 opacity-70 hover:opacity-100'}`}>
                       <div>
-                        <div className="flex items-center justify-between mb-2">
-                          <span className="text-2xl">{t.icon}</span>
-                          <span className={`text-[0.65rem] font-bold px-2.5 py-0.5 rounded-full ${t.unlocked ? 'bg-gradient-to-r from-amber-500 to-purple-600 text-white shadow-sm font-serif' : 'bg-slate-200 text-slate-500'}`}>
-                            {t.unlocked ? '👑 称号獲得済' : `🔒 進行度: ${t.progress}%`}
+                        <div className="flex items-center justify-between mb-3">
+                          <span className="text-3xl drop-shadow-lg">{t.icon}</span>
+                          <span className={`text-[0.65rem] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${t.unlocked ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-900 shadow-md font-serif' : 'bg-slate-700 text-slate-400'}`}>
+                            {t.unlocked ? '👑 獲得済' : `🔒 進行度: ${t.progress}%`}
                           </span>
                         </div>
-                        <h4 className={`font-serif font-bold text-sm leading-snug ${t.unlocked ? 'text-slate-900' : 'text-slate-600'}`}>{t.name}</h4>
-                        <p className="text-xs text-slate-500 mt-1 leading-relaxed">{t.description}</p>
+                        <h4 className={`font-serif font-bold text-base leading-snug ${t.unlocked ? 'text-white' : 'text-slate-400'}`}>{t.name}</h4>
+                        <p className={`text-xs mt-2 leading-relaxed ${t.unlocked ? 'text-slate-300' : 'text-slate-500'}`}>{t.description}</p>
                       </div>
                       {!t.unlocked && (
-                        <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mt-2">
-                          <div className="h-full bg-purple-500" style={{ width: `${t.progress}%` }} />
+                        <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3 border border-slate-700">
+                          <motion.div initial={{ width: 0 }} animate={{ width: `${t.progress}%` }} className="h-full bg-purple-500" />
                         </div>
                       )}
                     </div>
@@ -398,63 +440,48 @@ export default function MyPage() {
           </AnimatePresence>
         </div>
 
-        {/* Certificate Gallery */}
-        <div id="section-certs" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
-          <SectionHeader id="certs" icon={Award} title={`到達証明カードホルダー (${visitedList.length})`} subtitle="デジタル・物理カード購入" />
+        {/* Certificate Gallery Carousel/Grid */}
+        <div id="section-certs" className="bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-lg border border-white/10">
+          <SectionHeader id="certs" icon={Award} title={`到達証明カードホルダー (${visitedList.length})`} subtitle="タップしてプレビュー" />
           <AnimatePresence>
             {openSections.has('certs') && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                <div className="pt-4">
-                  <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 p-4 rounded-2xl flex flex-col md:flex-row items-center justify-between gap-4 mb-6 shadow-sm">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-amber-500 rounded-full flex items-center justify-center text-white shadow-md">
-                        <Sparkles className="w-5 h-5" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-amber-900 text-sm">プレミアム・カードホルダー機能（準備中）</h4>
-                        <p className="text-xs text-amber-700">あなたの到達証明を物理的なトレーディングカードとして郵送するサービスを準備中です。</p>
-                      </div>
-                    </div>
-                    <button onClick={() => router.push('/globe')} className="px-5 py-2 bg-amber-500 hover:bg-amber-600 text-white rounded-xl text-xs font-bold tracking-widest shadow-md transition-all whitespace-nowrap">
-                      詳細を見る
-                    </button>
-                  </div>
-
+                <div className="pt-6">
                   {visitedList.length === 0 ? (
-                    <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8 rounded-3xl border border-amber-500/30 text-center space-y-4 shadow-xl">
-                      <div className="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 mx-auto">
-                        <Sparkles className="w-8 h-8 animate-pulse" />
+                    <div className="bg-slate-800/50 p-10 rounded-3xl border border-slate-700 text-center space-y-4">
+                      <div className="w-16 h-16 rounded-2xl bg-slate-700/50 border border-slate-600 flex items-center justify-center text-slate-500 mx-auto">
+                        <Sparkles className="w-8 h-8" />
                       </div>
                       <h4 className="font-serif font-bold text-white text-lg">まだ到達証明書はありません</h4>
-                      <p className="text-xs text-slate-300 max-w-md mx-auto leading-relaxed">
-                        日本全国432島を訪れ、「行った！」ボタンを押すと、あなたのお名前が入った公式公認デジタル＆紙証明書がここにコレクションされます。
+                      <p className="text-xs text-slate-400 max-w-md mx-auto leading-relaxed">
+                        日本全国432島を訪れ、「行った！」ボタンを押すと、あなたのお名前が入った公式公認デジタル証明書がここにコレクションされます。
                       </p>
-                      <button onClick={() => router.push('/map')} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-xs tracking-widest transition-all hover:scale-105 shadow-lg">
-                        🗺️ 地図から島を探して記録する →
-                      </button>
                     </div>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                       {visitedList.map(island => {
                         const diff = getIslandDifficulty(island);
                         const mastery = getIslandMastery(visitCounts[island.id] || 1, spotsVisited[island.id] || 0, island.name);
                         return (
-                          <div key={island.id} className="bg-gradient-to-br from-slate-900 to-slate-800 p-5 rounded-2xl border border-amber-500/40 shadow-lg hover:border-amber-400 transition-all flex flex-col justify-between gap-4 group">
-                            <div className="flex items-start justify-between">
-                              <div>
-                                <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
-                                  <span className="inline-block px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[0.6rem] font-bold tracking-widest uppercase">Verified</span>
-                                  <span className={`inline-block px-2.5 py-0.5 rounded-full text-[0.6rem] font-bold border ${mastery.bgColor} ${mastery.color} ${mastery.borderColor}`}>{mastery.badgeText} ({visitCounts[island.id] || 1}回)</span>
-                                  <span className="inline-block px-2 py-0.5 rounded-full bg-slate-800 text-amber-400 text-[0.6rem] font-bold border border-amber-500/30">{diff.stars}</span>
+                          <div 
+                            key={island.id} 
+                            onClick={() => setSelectedIslandForCert(island)}
+                            className="group cursor-pointer aspect-[3/4] bg-slate-800 rounded-2xl border border-slate-600 overflow-hidden relative shadow-lg hover:shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:border-amber-400 transition-all duration-300"
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/90 z-10" />
+                            <div className="absolute inset-0 flex flex-col justify-end p-4 z-20">
+                                <div className="flex flex-wrap items-center gap-1.5 mb-2">
+                                  <span className="inline-block px-2 py-0.5 rounded text-[0.5rem] font-bold bg-amber-500 text-slate-900 uppercase">Verified</span>
+                                  <span className="inline-block px-2 py-0.5 rounded text-[0.5rem] font-bold bg-slate-700 text-amber-400 border border-slate-600">{diff.stars}</span>
                                 </div>
-                                <h4 className="font-serif font-bold text-white text-lg group-hover:text-amber-300 transition-colors">{island.name}</h4>
-                                <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5 font-mono"><MapPin size={10} className="text-amber-500" /> {island.region_id || 'Japan'}</p>
-                              </div>
-                              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 font-serif font-bold text-sm shrink-0">🏆</div>
+                                <h4 className="font-serif font-bold text-white text-sm group-hover:text-amber-400 transition-colors">{island.name}</h4>
+                                <p className="text-[0.65rem] text-slate-400 mt-1 font-mono">{island.region_id}</p>
                             </div>
-                            <button onClick={() => setSelectedIslandForCert(island)} className="w-full py-2.5 rounded-xl bg-amber-500/20 hover:bg-amber-500 text-amber-300 hover:text-slate-950 font-bold text-xs tracking-wider border border-amber-500/40 hover:border-amber-500 transition-all flex items-center justify-center gap-1.5">
-                              <Award className="w-3.5 h-3.5" /> 証明書を見る・発行 / SNSシェア
-                            </button>
+                            <div className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/50 flex items-center justify-center backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                               <Award className="w-4 h-4 text-amber-400" />
+                            </div>
+                            {/* Decorative background for the card */}
+                            <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] mix-blend-overlay group-hover:scale-110 transition-transform duration-700" />
                           </div>
                         );
                       })}
@@ -467,31 +494,33 @@ export default function MyPage() {
         </div>
 
         {/* My Diaries */}
-        <div id="section-diaries" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
+        <div id="section-diaries" className="bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-lg border border-white/10">
           <SectionHeader id="diaries" icon={BookOpen} title={`私の島ログ (${myDiaries.length})`} />
           <AnimatePresence>
             {openSections.has('diaries') && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                <div className="pt-4">
+                <div className="pt-6">
                   {myDiaries.length === 0 ? (
-                    <p className="text-slate-400 text-sm font-serif">まだ島ログの投稿がありません。</p>
+                    <p className="text-slate-500 text-sm font-serif">まだ島ログの投稿がありません。</p>
                   ) : (
                     <div className="space-y-4">
                       {myDiaries.map(diary => {
                         const island = allIslandsData.find(i => i.id === diary.island_id);
                         return (
-                          <div key={diary.id} className="bg-slate-50 p-5 rounded-2xl shadow-sm border border-slate-100 flex flex-col md:flex-row gap-4">
+                          <div key={diary.id} className="bg-slate-800/50 p-5 rounded-2xl shadow-sm border border-slate-700/50 flex flex-col md:flex-row gap-5 hover:border-slate-600 transition-colors">
                             {diary.photo_url && (
-                              <div className="w-full md:w-32 h-32 shrink-0">
-                                <img src={diary.photo_url} alt="Diary photo" className="w-full h-full object-cover rounded-xl border border-slate-200" />
+                              <div className="w-full md:w-40 h-40 shrink-0">
+                                <img src={diary.photo_url} alt="Diary photo" className="w-full h-full object-cover rounded-xl border border-slate-700 shadow-md" />
                               </div>
                             )}
                             <div className="flex-1">
-                              <div className="flex items-center justify-between mb-2">
-                                <h4 className="font-bold text-slate-800 cursor-pointer hover:text-blue-600 transition-colors" onClick={() => router.push(`/island/${diary.island_id}`)}>{island?.name || '不明な島'}</h4>
-                                <span className="text-xs text-slate-400">{new Date(diary.created_at).toLocaleDateString('ja-JP')}</span>
+                              <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-700">
+                                <h4 className="font-bold text-amber-400 cursor-pointer hover:text-amber-300 transition-colors flex items-center gap-2" onClick={() => router.push(`/island/${diary.island_id}`)}>
+                                  <MapPin size={14} /> {island?.name || '不明な島'}
+                                </h4>
+                                <span className="text-xs text-slate-400 font-mono">{new Date(diary.created_at).toLocaleDateString('ja-JP')}</span>
                               </div>
-                              <p className="text-sm text-slate-600 font-serif whitespace-pre-wrap">{diary.content}</p>
+                              <p className="text-sm text-slate-300 font-serif whitespace-pre-wrap leading-relaxed">{diary.content}</p>
                             </div>
                           </div>
                         );
@@ -505,30 +534,30 @@ export default function MyPage() {
         </div>
 
         {/* Planning Islands */}
-        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-100">
+        <div className="bg-white/5 backdrop-blur-xl p-6 md:p-8 rounded-3xl shadow-lg border border-white/10">
           <SectionHeader id="planning" icon={Heart} title={`お気に入りリスト (${planningList.length})`} />
           <AnimatePresence>
             {openSections.has('planning') && (
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
-                <div className="pt-4">
+                <div className="pt-6">
                   {planningList.length === 0 ? (
-                    <p className="text-slate-400 text-sm font-serif">まだお気に入りに登録された島はありません。</p>
+                    <p className="text-slate-500 text-sm font-serif">まだお気に入りに登録された島はありません。</p>
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {planningList.map(island => (
-                        <div key={island.id} className="bg-rose-50/50 p-4 rounded-xl shadow-sm border border-rose-100 flex items-center justify-between gap-4 transition-colors hover:border-rose-300">
+                        <div key={island.id} className="bg-rose-900/10 p-4 rounded-xl shadow-sm border border-rose-500/20 flex items-center justify-between gap-4 transition-colors hover:border-rose-500/40">
                           <div className="flex items-center gap-4 cursor-pointer flex-1" onClick={() => router.push(`/island/${island.id}`)}>
-                            <div className="w-12 h-12 rounded-lg bg-rose-100 flex items-center justify-center text-rose-500 font-bold font-serif">{island.name.charAt(0)}</div>
+                            <div className="w-12 h-12 rounded-xl bg-rose-500/20 flex items-center justify-center text-rose-400 font-bold font-serif shadow-inner">{island.name.charAt(0)}</div>
                             <div>
-                              <h4 className="font-bold text-slate-800">{island.name}</h4>
+                              <h4 className="font-bold text-white">{island.name}</h4>
                               <p className="text-xs text-slate-400 flex items-center gap-1 mt-1"><MapPin size={10}/> {island.region_id}</p>
                             </div>
                           </div>
                           <button 
                             onClick={() => updateStatus(island.id, 'visited')} 
-                            className="shrink-0 text-[0.65rem] font-bold bg-blue-100 text-blue-600 px-3 py-1.5 rounded-lg hover:bg-blue-200 transition-colors"
+                            className="shrink-0 text-[0.65rem] font-bold bg-blue-500/20 text-blue-300 px-3 py-1.5 rounded-lg hover:bg-blue-500/40 border border-blue-500/30 transition-colors"
                           >
-                            到達済みに変更
+                            到達済に変更
                           </button>
                         </div>
                       ))}
@@ -549,48 +578,17 @@ export default function MyPage() {
       />
 
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl p-6 mx-4 max-w-sm w-full shadow-2xl">
-            <h3 className="font-bold text-lg text-slate-800 mb-2">ログアウトしますか？</h3>
-            <p className="text-sm text-slate-500 mb-6">旅の記録はデバイスに保存されます。</p>
-            <div className="flex gap-3">
-              <button onClick={() => setShowLogoutConfirm(false)} className="flex-1 py-3 border border-slate-200 rounded-xl text-slate-600 font-bold text-sm">キャンセル</button>
-              <button onClick={() => { setShowLogoutConfirm(false); handleLogout(); }} className="flex-1 py-3 bg-red-500 text-white rounded-xl font-bold text-sm">ログアウト</button>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm">
+          <div className="bg-slate-800 rounded-3xl p-8 mx-4 max-w-sm w-full shadow-2xl border border-slate-700">
+            <h3 className="font-bold text-xl text-white mb-3">ログアウトしますか？</h3>
+            <p className="text-sm text-slate-400 mb-8">旅の記録はデバイスとサーバーに保存されます。</p>
+            <div className="flex gap-4">
+              <button onClick={() => setShowLogoutConfirm(false)} className="flex-1 py-3 border border-slate-600 hover:bg-slate-700 rounded-xl text-white font-bold text-sm transition-colors">キャンセル</button>
+              <button onClick={() => { setShowLogoutConfirm(false); handleLogout(); }} className="flex-1 py-3 bg-rose-500 hover:bg-rose-600 text-white rounded-xl font-bold text-sm shadow-lg shadow-rose-500/20 transition-colors">ログアウト</button>
             </div>
           </div>
         </div>
       )}
-
-      {/* Bottom Navigation for Mobile */}
-      <nav className="fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-md border-t border-slate-200 flex md:hidden z-50 pb-safe">
-        {[
-          { label: 'プロフ', icon: Sparkles, id: 'profile' },
-          { label: '履歴', icon: History, id: 'recent' },
-          { label: '称号', icon: Award, id: 'titles' },
-          { label: '証明', icon: Compass, id: 'certs' },
-          { label: '日記', icon: BookOpen, id: 'diaries' }
-        ].map(({ label, icon: Icon, id }, i) => (
-          <button 
-            key={i} 
-            onClick={() => {
-              if (id !== 'profile') {
-                setOpenSections(prev => new Set(prev).add(id));
-              }
-              setTimeout(() => {
-                const el = document.getElementById(`section-${id}`);
-                if (el) {
-                  const y = el.getBoundingClientRect().top + window.scrollY - 100;
-                  window.scrollTo({ top: y, behavior: 'smooth' });
-                }
-              }, 50);
-            }} 
-            className="flex-1 py-3 text-[0.65rem] font-bold text-slate-500 hover:text-blue-600 flex flex-col items-center gap-1 transition-colors"
-          >
-            <Icon size={18} />
-            <span>{label}</span>
-          </button>
-        ))}
-      </nav>
     </main>
   );
 }

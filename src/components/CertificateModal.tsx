@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Share2, Award, Camera, CheckCircle, Sparkles, Send, Calendar, User } from 'lucide-react';
+import imageCompression from 'browser-image-compression';
 
 interface CertificateModalProps {
   isOpen: boolean;
@@ -96,19 +97,27 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
 
 
   // Handle Photo Upload
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setUploadError('ファイルサイズは5MB以下にしてください');
-        return;
-      }
       setUploadError(null);
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        setCustomImage(event.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+      try {
+        const options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1920,
+          useWebWorker: true,
+        };
+        // 巨大な写真も自動で1MB以下に圧縮
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setCustomImage(event.target?.result as string);
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('画像圧縮エラー:', error);
+        setUploadError('画像の最適化に失敗しました。別の写真をお試しください。');
+      }
     }
   };
 

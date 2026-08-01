@@ -1,8 +1,11 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, CircleMarker, Tooltip, Polyline, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import React, { useEffect, useState, useRef, useMemo } from 'react';
+import dynamic from 'next/dynamic';
+
+// Import Globe only on client side to avoid SSR issues with canvas/WebGL
+const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface GlobeSatelliteMapProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -18,37 +21,21 @@ interface GlobeSatelliteMapProps {
   mapStyleMode?: 'satellite' | 'dark_ocean';
 }
 
-// カメラをスムーズに移動させる補助コンポーネント
-const CameraController = ({ center, zoom }: { center?: [number, number]; zoom?: number }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (center) {
-      map.flyTo(center, zoom || 6, {
-        animate: true,
-        duration: 1.4,
-        easeLinearity: 0.25
-      });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getIslandCoords(island: any): { lat: number; lng: number } {
+  if (island?.coordinates) {
+    const matchDecimal = island.coordinates.match(/([0-9.]+)[^0-9.]+([0-9.]+)/);
+    if (matchDecimal) {
+      let lat = parseFloat(matchDecimal[1]);
+      let lng = parseFloat(matchDecimal[2]);
+      if (island.coordinates.includes('S')) lat = -lat;
+      if (island.coordinates.includes('W')) lng = -lng;
+      if (lat > -90 && lat < 90 && lng > -180 && lng < 180) {
+        return { lat, lng };
+      }
     }
-  }, [map, center, zoom]);
-  return null;
-};
-
-// 大圏航路（放物線風の滑らかな曲線）座標計算
-function getCurvedFlightRoute(from: [number, number], to: [number, number], numPoints = 40): [number, number][] {
-  const points: [number, number][] = [];
-  const [lat1, lng1] = from;
-  const [lat2, lng2] = to;
-
-  for (let i = 0; i <= numPoints; i++) {
-    const t = i / numPoints;
-    // 線形補間
-    const lat = lat1 + (lat2 - lat1) * t;
-    const lng = lng1 + (lng2 - lng1) * t;
-    // 中間地点でわずかに北（または南）へアーチさせて3D放物線・大圏航路感を演出
-    const arcHeight = Math.sin(t * Math.PI) * Math.min(6, Math.abs(lng2 - lng1) * 0.25);
-    points.push([lat + arcHeight, lng]);
   }
-  return points;
+  return { lat: 35.689, lng: 139.691 };
 }
 
 export default function GlobeSatelliteMap({
@@ -61,192 +48,149 @@ export default function GlobeSatelliteMap({
   mapStyleMode = 'satellite'
 }: GlobeSatelliteMapProps) {
   const [mounted, setMounted] = useState(false);
-  const [dashOffset, setDashOffset] = useState(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const globeEl = useRef<any>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
+    const handleResize = () => {
+      if (containerRef.current) {
+        setDimensions({
+          width: containerRef.current.clientWidth,
+          height: containerRef.current.clientHeight
+        });
+      }
+    };
+    handleResize();
+    // Use a small delay for initial resize to ensure DOM is ready
+    setTimeout(handleResize, 100);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // フライトラインのアニメーション効果
+  // Update camera on center change
   useEffect(() => {
-    const interval = setInterval(() => {
-      setDashOffset(prev => (prev - 1) % 100);
-    }, 40);
-    return () => clearInterval(interval);
-  }, []);
+    if (globeEl.current && center && mounted) {
+      // For globe.gl, altitude defines zoom. Lower altitude = higher zoom.
+      // Zoom 5 -> alt 1, Zoom 11 -> alt 0.2
+      const baseAlt = 1.2;
+      let alt = baseAlt;
+      if (zoom > 5) {
+        alt = Math.max(0.05, 5 / zoom);
+      } else {
+        alt = baseAlt;
+      }
+      
+      globeEl.current.pointOfView({ lat: center[0], lng: center[1], altitude: alt }, 1500);
+    }
+  }, [center, zoom, mounted]);
 
-  if (!mounted) return null;
-
-  const tokyoHub: [number, number] = [35.65, 139.76]; // 竹芝桟橋 / 東京港
+  const tokyoHub = { lat: 35.65, lng: 139.76, name: '東京港' };
   const visitedIds = new Set(visitedList.map(v => v.id));
 
-  // 選択中の島とのフライト曲線
-  let selectedRoute: [number, number][] | null = null;
-  if (selectedIsland) {
-    const coordsStr = selectedIsland.coordinates;
-    if (coordsStr) {
-      const matchDecimal = coordsStr.match(/([0-9.]+)[^0-9.]+([0-9.]+)/);
-      if (matchDecimal) {
-        let lat = parseFloat(matchDecimal[1]);
-        let lng = parseFloat(matchDecimal[2]);
-        if (coordsStr.includes('S')) lat = -lat;
-        if (coordsStr.includes('W')) lng = -lng;
-        selectedRoute = getCurvedFlightRoute(tokyoHub, [lat, lng]);
-      }
+  // Compute arcs from Tokyo to all visited islands
+  const arcsData = useMemo(() => {
+    return visitedList.map(island => {
+      const coords = getIslandCoords(island);
+      return {
+        startLat: tokyoHub.lat,
+        startLng: tokyoHub.lng,
+        endLat: coords.lat,
+        endLng: coords.lng,
+        color: ['rgba(245, 158, 11, 0.2)', 'rgba(236, 72, 153, 0.8)'],
+        name: island.name
+      };
+    });
+  }, [visitedList]);
+
+  // Compute rings (ripples) for selected island
+  const ringsData = useMemo(() => {
+    if (selectedIsland) {
+      const coords = getIslandCoords(selectedIsland);
+      return [{ lat: coords.lat, lng: coords.lng, color: '#EC4899', maxR: 2 }];
     }
-  }
+    return [];
+  }, [selectedIsland]);
+
+  // Compute points for all islands
+  const pointsData = useMemo(() => {
+    return islands.map(island => {
+      const coords = getIslandCoords(island);
+      const isVisited = visitedIds.has(island.id);
+      const isSelected = selectedIsland?.id === island.id;
+      return {
+        ...island,
+        lat: coords.lat,
+        lng: coords.lng,
+        // Visited islands are larger and gold, unvisited are small and blue, selected is largest and pink
+        size: isSelected ? 0.4 : isVisited ? 0.2 : 0.05,
+        color: isSelected ? '#EC4899' : isVisited ? '#F59E0B' : '#38BDF8',
+      };
+    });
+  }, [islands, visitedIds, selectedIsland]);
+
+  if (!mounted || dimensions.width === 0) return null;
 
   return (
-    <div className="w-full h-full relative rounded-3xl overflow-hidden border border-amber-500/30 shadow-2xl bg-slate-950">
-      <MapContainer
-        center={center}
-        zoom={zoom}
-        style={{ height: '100%', width: '100%', background: '#040d21' }}
-        zoomControl={false}
-        attributionControl={false}
-      >
-        <CameraController center={center} zoom={zoom} />
+    <div ref={containerRef} className="w-full h-full relative bg-slate-950 overflow-hidden cursor-move">
+      <Globe
+        ref={globeEl}
+        width={dimensions.width}
+        height={dimensions.height}
+        globeImageUrl={mapStyleMode === 'satellite' ? "//unpkg.com/three-globe/example/img/earth-blue-marble.jpg" : "//unpkg.com/three-globe/example/img/earth-dark.jpg"}
+        bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
+        backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+        
+        // Arcs (Flight routes)
+        arcsData={arcsData}
+        arcColor="color"
+        arcDashLength={0.4}
+        arcDashGap={2}
+        arcDashInitialGap={() => Math.random() * 5}
+        arcDashAnimateTime={3000}
+        arcStroke={0.5}
 
-        {/* 1. ベースタイル：ESRI World Imagery (高精細衛星航空写真・ディープオーシャン) */}
-        {mapStyleMode === 'satellite' ? (
-          <>
-            <TileLayer
-              url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-              attribution='&copy; Esri'
-            />
-            {/* 地名・国境・境界線ラベル (ハイブリッドオーバーレイ) */}
-            <TileLayer
-              url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
-              attribution='&copy; Esri'
-            />
-          </>
-        ) : (
-          /* 2. ダークサイバーオーシャンモード (CartoDB Dark Matter) */
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
-            attribution='&copy; OpenStreetMap & CartoDB'
-          />
-        )}
+        // Rings (Selected Island Radar)
+        ringsData={ringsData}
+        ringColor="color"
+        ringMaxRadius="maxR"
+        ringPropagationSpeed={3}
+        ringRepeatPeriod={800}
 
-        {/* 3. 起点：東京港（竹芝ターミナル）ピン */}
-        <CircleMarker
-          center={tokyoHub}
-          radius={12}
-          pathOptions={{ fillColor: '#F43F5E', fillOpacity: 1, color: '#FFFFFF', weight: 3 }}
-        >
-          <Tooltip direction="top" offset={[0, -10]} permanent={false}>
-            <span className="font-serif font-bold text-rose-950">🚀 起点：東京港・竹芝ターミナル</span>
-          </Tooltip>
-        </CircleMarker>
-        <CircleMarker
-          center={tokyoHub}
-          radius={20}
-          pathOptions={{ fillColor: '#F43F5E', fillOpacity: 0.25, color: '#F43F5E', weight: 1, dashArray: '4,4' }}
-        />
+        // Points (Islands)
+        pointsData={pointsData}
+        pointColor="color"
+        pointAltitude="size"
+        pointRadius="size"
+        pointResolution={32}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        pointLabel={(d: any) => `
+          <div class="bg-slate-900/90 p-2 rounded-lg border border-white/20 text-white font-serif text-sm backdrop-blur-md pointer-events-none shadow-xl">
+            <b>${d.name}</b> (${d.prefecture})<br/>
+            <span class="text-xs text-slate-400">${d.region_id}</span>
+            ${visitedIds.has(d.id) ? '<br/><span class="text-[0.65rem] text-amber-400 font-bold">到達済</span>' : ''}
+          </div>
+        `}
+        onPointClick={onSelectIsland}
 
-        {/* 4. 到達済み離島へのフライト・フェリー航路 (ゴールドライン) */}
-        {visitedList.map(island => {
-          if (!island.coordinates) return null;
-          const matchDecimal = island.coordinates.match(/([0-9.]+)[^0-9.]+([0-9.]+)/);
-          if (!matchDecimal) return null;
-          let lat = parseFloat(matchDecimal[1]);
-          let lng = parseFloat(matchDecimal[2]);
-          if (island.coordinates.includes('S')) lat = -lat;
-          if (island.coordinates.includes('W')) lng = -lng;
-
-          const route = getCurvedFlightRoute(tokyoHub, [lat, lng]);
-          return (
-            <Polyline
-              key={`route-${island.id}`}
-              positions={route}
-              pathOptions={{
-                color: '#F59E0B',
-                weight: 2,
-                opacity: 0.6,
-                dashArray: '6, 8',
-                dashOffset: `${dashOffset}px`
-              }}
-            />
-          );
-        })}
-
-        {/* 5. 選択中の島への強調フライト航路（ピンクゴールド発光ライン） */}
-        {selectedRoute && (
-          <>
-            <Polyline
-              positions={selectedRoute}
-              pathOptions={{
-                color: '#EC4899',
-                weight: 4,
-                opacity: 0.95
-              }}
-            />
-            <Polyline
-              positions={selectedRoute}
-              pathOptions={{
-                color: '#FFFFFF',
-                weight: 2,
-                dashArray: '12, 12',
-                dashOffset: `${-dashOffset * 2}px`,
-                opacity: 0.9
-              }}
-            />
-          </>
-        )}
-
-        {/* 6. 全国離島マーカープロット */}
-        {islands.map(island => {
-          if (!island.coordinates) return null;
-          const matchDecimal = island.coordinates.match(/([0-9.]+)[^0-9.]+([0-9.]+)/);
-          if (!matchDecimal) return null;
-          let lat = parseFloat(matchDecimal[1]);
-          let lng = parseFloat(matchDecimal[2]);
-          if (island.coordinates.includes('S')) lat = -lat;
-          if (island.coordinates.includes('W')) lng = -lng;
-
-          const isVisited = visitedIds.has(island.id);
-          const isSelected = selectedIsland?.id === island.id;
-
-          const radius = isSelected ? 13 : isVisited ? 10 : 6;
-          const fillColor = isSelected ? '#EC4899' : isVisited ? '#F59E0B' : '#38BDF8';
-          const borderColor = isSelected ? '#FFFFFF' : isVisited ? '#78350F' : '#0369A1';
-          const weight = isSelected ? 3.5 : 2;
-
-          return (
-            <React.Fragment key={island.id}>
-              {isSelected && (
-                <CircleMarker
-                  center={[lat, lng]}
-                  radius={24}
-                  pathOptions={{ fillColor: '#EC4899', fillOpacity: 0.3, color: '#EC4899', weight: 1.5, dashArray: '5,5' }}
-                />
-              )}
-              <CircleMarker
-                center={[lat, lng]}
-                radius={radius}
-                pathOptions={{ fillColor, fillOpacity: 1, color: borderColor, weight }}
-                eventHandlers={{
-                  click: () => {
-                    onSelectIsland(island);
-                  }
-                }}
-              >
-                <Tooltip direction="top" offset={[0, -8]} permanent={isSelected}>
-                  <span className="font-serif text-xs font-bold text-slate-900 flex items-center gap-1">
-                    {isVisited ? '👑 ' : isSelected ? '🎯 ' : '🏝️ '}
-                    {island.name} ({island.prefecture})
-                  </span>
-                </Tooltip>
-              </CircleMarker>
-            </React.Fragment>
-          );
-        })}
-      </MapContainer>
-
-      {/* マップ右上のスタイル切り替え・帰属表示タグ */}
-      <div className="absolute top-4 right-4 z-[1000] bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[0.65rem] font-mono text-indigo-300 flex items-center gap-2 pointer-events-none">
+        // Custom HTML for Tokyo Hub
+        htmlElementsData={[tokyoHub]}
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        htmlElement={(d: any) => {
+          const el = document.createElement('div');
+          el.innerHTML = '🗼';
+          el.style.color = 'white';
+          el.style.fontSize = '16px';
+          el.style.pointerEvents = 'none';
+          el.style.transform = 'translate(-50%, -50%)';
+          return el;
+        }}
+      />
+      <div className="absolute top-4 right-4 z-[10] bg-slate-950/85 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10 text-[0.65rem] font-mono text-indigo-300 flex items-center gap-2 pointer-events-none">
         <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-        <span>ESRI SATELLITE & FLIGHT ENGINE</span>
+        <span>3D WEBGL GLOBE ENGINE</span>
       </div>
     </div>
   );

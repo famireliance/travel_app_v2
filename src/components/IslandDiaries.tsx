@@ -1,29 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useTravel } from '@/context/TravelContext';
-import { Camera, Send, MessageCircle } from 'lucide-react';
+import { Camera, Send, MessageCircle, X } from 'lucide-react';
 import toast from 'react-hot-toast';
-
-function isValidImageUrl(url: string): boolean {
-  try {
-    const parsed = new URL(url);
-    if (parsed.protocol !== 'https:') return false;
-    const ext = parsed.pathname.split('.').pop()?.toLowerCase();
-    return ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext || '');
-  } catch {
-    return false;
-  }
-}
+import imageCompression from 'browser-image-compression';
 
 export default function IslandDiaries({ islandId }: { islandId: string }) {
   const { user } = useTravel();
   const [diaries, setDiaries] = useState<any[]>([]);
   const [content, setContent] = useState('');
-  const [photoUrl, setPhotoUrl] = useState('');
+  const [photoDataUrl, setPhotoDataUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     fetchDiaries();
@@ -32,6 +23,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
   const fetchDiaries = async () => {
     setLoading(true);
     try {
+      // NOTE: 本来はuser_profilesとJOINして表示名を出すのが理想ですが、現状はuser_idをそのまま使っています
       const { data, error } = await supabase
         .from('island_diaries')
         .select('*')
@@ -47,14 +39,32 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
     }
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const options = {
+          maxSizeMB: 1,
+          maxWidthOrHeight: 1200,
+          useWebWorker: true,
+        };
+        // 画像を自動圧縮
+        const compressedFile = await imageCompression(file, options);
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          setPhotoDataUrl(event.target?.result as string);
+        };
+        reader.readAsDataURL(compressedFile);
+      } catch (error) {
+        console.error('画像圧縮エラー:', error);
+        toast.error('画像の最適化に失敗しました。別の写真をお試しください。');
+      }
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!content.trim() || !user) return;
-    
-    if (photoUrl && !isValidImageUrl(photoUrl)) {
-      toast.error('写真のURLはhttpsで始まる画像URL（jpg/jpeg/png/webp/gif）を入力してください');
-      return;
-    }
     
     setSubmitting(true);
     try {
@@ -64,7 +74,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
           island_id: islandId,
           user_id: user.id,
           content: content.trim(),
-          photo_url: photoUrl.trim() || null
+          photo_url: photoDataUrl || null
         }])
         .select();
 
@@ -72,7 +82,8 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
       
       setDiaries([data[0], ...diaries]);
       setContent('');
-      setPhotoUrl('');
+      setPhotoDataUrl('');
+      if (fileInputRef.current) fileInputRef.current.value = '';
       toast.success('投稿しました！');
     } catch (err) {
       console.error('Failed to post diary:', err);
@@ -104,16 +115,37 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
             className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-3 resize-none h-24"
             required
           />
+          
+          {photoDataUrl && (
+            <div className="relative mb-3 inline-block">
+              <img src={photoDataUrl} alt="Preview" className="h-32 rounded-lg border border-slate-200 object-cover" />
+              <button
+                type="button"
+                onClick={() => { setPhotoDataUrl(''); if (fileInputRef.current) fileInputRef.current.value = ''; }}
+                className="absolute -top-2 -right-2 bg-slate-800 text-white p-1 rounded-full hover:bg-slate-700 shadow-md"
+              >
+                <X size={14} />
+              </button>
+            </div>
+          )}
+
           <div className="flex items-center gap-3">
             <div className="flex-1 relative">
-              <Camera className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
-                type="url"
-                value={photoUrl}
-                onChange={(e) => setPhotoUrl(e.target.value)}
-                placeholder="写真のURL（任意）"
-                className="w-full bg-white border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                type="file"
+                accept="image/*"
+                onChange={handleImageUpload}
+                ref={fileInputRef}
+                className="hidden"
+                id="diary-image-upload"
               />
+              <label 
+                htmlFor="diary-image-upload"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-white border border-slate-200 text-slate-600 rounded-xl hover:bg-slate-50 cursor-pointer transition-colors text-sm font-bold shadow-sm"
+              >
+                <Camera className="w-4 h-4" />
+                写真を選ぶ
+              </label>
             </div>
             <button
               type="submit"
