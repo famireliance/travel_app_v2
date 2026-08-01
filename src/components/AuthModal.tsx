@@ -77,7 +77,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
           setLoading(false);
           return;
         }
-        const { error } = await supabase.auth.signUp({ 
+        const { data, error } = await supabase.auth.signUp({ 
           email, 
           password,
           options: {
@@ -86,6 +86,33 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
           }
         });
         if (error) throw error;
+
+        // Supabaseのセキュリティ仕様: 既に登録済みのメールアドレスの場合、エラーにはならず identities が空で返る
+        if (data?.user && data.user.identities && data.user.identities.length === 0) {
+          // 未確認のまま残っているアカウントの可能性が高いため、確認メールを強制的に再送する
+          const { error: resendError } = await supabase.auth.resend({
+            type: 'signup',
+            email,
+            options: {
+              emailRedirectTo: `${window.location.origin}/auth/callback`,
+            }
+          });
+          
+          if (resendError) {
+            // 既に本登録（確認済み）の場合は再送エラーになる可能性があるので案内を変更
+            throw new Error('このメールアドレスは既に登録されています。ログイン画面からログインをお試しください。');
+          }
+          
+          localStorage.setItem('kiratabi_traveler_name', nickname);
+          setMessage({ 
+            text: '⚠️ このメールアドレスは過去に登録リクエストがありました。\n確認メールを再送しましたので、受信トレイをご確認ください。', 
+            type: 'success' 
+          });
+          setShowResendButton(true);
+          setLoading(false);
+          return;
+        }
+
         localStorage.setItem('kiratabi_traveler_name', nickname);
         setMessage({ text: '✅ 登録完了！確認メールを送信しました。\n\n📧 メールが届かない場合:\n• スパム/迷惑メールフォルダをご確認ください\n• しばらく待ってから再送ボタンをお試しください', type: 'success' });
         setShowResendButton(true);
