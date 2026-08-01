@@ -113,8 +113,8 @@ export default function FairyDiscoveryModal() {
                   animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
                   className={`relative flex items-center justify-center filter drop-shadow-2xl ${currentFairy.visual.shadowColor}`}
                 >
-                  {currentFairy.imageUrl ? (
-                    <img src={currentFairy.imageUrl} alt={currentFairy.name} className="w-48 h-48 object-contain mix-blend-multiply" />
+                  {currentFairy.visual.imageUrl ? (
+                    <img src={currentFairy.visual.imageUrl} alt={currentFairy.name} className="w-48 h-48 object-contain mix-blend-multiply" />
                   ) : (
                     <span className="text-[120px]">{currentFairy.visual.icon}</span>
                   )}
@@ -134,7 +134,7 @@ export default function FairyDiscoveryModal() {
               {/* Timestamp & Location Stamp */}
               <div className="w-full mt-4 p-2 bg-black/30 rounded-lg text-left border border-white/10 backdrop-blur-sm">
                 <p className="text-[10px] text-white/70 font-mono">OBTAINED: {obtainedDate}</p>
-                <p className="text-[10px] text-white/70 font-mono">LOCATION: {currentFairy.island_id.toUpperCase()}</p>
+                <p className="text-[10px] text-white/70 font-mono">LOCATION: {currentFairy.island_id?.toUpperCase() ?? currentFairy.region_id?.toUpperCase() ?? 'JAPAN'}</p>
               </div>
             </div>
           </div>

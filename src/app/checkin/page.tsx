@@ -14,7 +14,7 @@ function CheckinContent() {
   const { addSpotVisit } = useTravel();
 
   const [spot, setSpot] = useState<CollabSpot | null>(null);
-  const [status, setStatus] = useState<'idle' | 'locating' | 'success' | 'error'>('idle');
+  const [status, setStatus] = useState<'idle' | 'locating' | 'success' | 'error' | 'already_obtained'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [distanceInfo, setDistanceInfo] = useState<number | null>(null);
 
@@ -44,11 +44,11 @@ function CheckinContent() {
 
         if (dist <= spot.radius_m) {
           // Success!
-          const success = addSpotVisit(spot.id);
-          setStatus('success');
-          if (!success) {
-             // It returns false if already collected, but we can still say success and "already obtained"
-             setErrorMessage('このスポットの限定妖精はすでに獲得済みです！');
+          const alreadyHad = !addSpotVisit(spot.id);
+          if (alreadyHad) {
+            setStatus('already_obtained');
+          } else {
+            setStatus('success');
           }
         } else {
           // Too far
@@ -138,15 +138,26 @@ function CheckinContent() {
           <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-emerald-950/50 p-6 rounded-2xl border border-emerald-500/30 flex flex-col items-center">
             <CheckCircle2 className="w-12 h-12 text-emerald-400 mb-3" />
             <h3 className="text-lg font-bold text-emerald-300 mb-2">チェックイン成功！</h3>
-            {errorMessage ? (
-               <p className="text-xs text-slate-300">{errorMessage}</p>
-            ) : (
-               <p className="text-xs text-emerald-100">店舗限定のレア妖精を獲得しました！</p>
-            )}
+            <p className="text-xs text-emerald-100">店舗限定のレア妖精を獲得しました！</p>
             
             <button
               onClick={() => router.push('/companion')}
               className="mt-6 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all"
+            >
+              図鑑へ見に行く
+            </button>
+          </motion.div>
+        )}
+
+        {status === 'already_obtained' && (
+          <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-blue-950/50 p-6 rounded-2xl border border-blue-500/30 flex flex-col items-center">
+            <CheckCircle2 className="w-12 h-12 text-blue-400 mb-3" />
+            <h3 className="text-lg font-bold text-blue-300 mb-2">チェックイン済み</h3>
+            <p className="text-xs text-blue-100">このスポットの限定妖精はすでに獲得済みです！</p>
+            
+            <button
+              onClick={() => router.push('/companion')}
+              className="mt-6 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all"
             >
               図鑑へ見に行く
             </button>

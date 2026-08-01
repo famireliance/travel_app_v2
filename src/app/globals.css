@@ -75,3 +75,7 @@ body {
 .animate-spin-slow {
   animation: spin-slow 3s linear infinite;
 }
+
+.duration-10000 { transition-duration: 10000ms; }
+@keyframes zoom-slow { from { transform: scale(1); } to { transform: scale(1.15); } }
+.animate-zoom-slow { animation: zoom-slow 10s ease-in-out forwards; }

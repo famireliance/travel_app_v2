@@ -26,16 +26,29 @@ export default function IslandDetail() {
   const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
   const [weatherAlerts, setWeatherAlerts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
-  const { user, islandStatuses, updateStatus, addIslandVisit } = useTravel();
+  const { user, islandStatuses, visitCounts, updateStatus, decrementVisitCount, addIslandVisit } = useTravel();
   const status = islandStatuses[islandId] || 'none';
+  const visitCount = visitCounts[islandId] || 0;
 
   const handleStatusChange = (newStatus: 'visited' | 'planning' | 'verified_visited') => {
     if (newStatus === 'visited') {
       addIslandVisit(islandId as string, island, 0, false);
+      setIsCertModalOpen(true);
     } else {
       updateStatus(islandId as string, newStatus);
+    }
+  };
+
+  const handleCancelRecord = () => {
+    if (window.confirm("到達記録を取り消しますか？")) {
+      if (visitCount > 1) {
+        decrementVisitCount(islandId);
+      } else {
+        updateStatus(islandId, 'none');
+      }
     }
   };
 
@@ -59,13 +72,7 @@ export default function IslandDetail() {
             }).catch(() => {});
         }
       } else {
-        setIsland({
-          id: islandId,
-          name: typeof islandId === 'string' ? islandId.toUpperCase() : 'ISLAND',
-          region_id: '日本の離島エリア',
-          coordinates: '35.689, 139.691',
-          description: '手つかずの自然と温かい文化が残る魅力ある日本の離島です。'
-        });
+        setNotFound(true);
       }
       setLoading(false);
     }).catch(() => setLoading(false));
@@ -91,6 +98,17 @@ export default function IslandDetail() {
     </div>
   );
 
+  if (notFound) {
+    return (
+      <div className="min-h-screen bg-[#0a0a1a] flex flex-col items-center justify-center gap-6 text-white">
+        <p className="text-6xl">🏝️</p>
+        <h1 className="text-2xl font-bold">島が見つかりませんでした</h1>
+        <p className="text-slate-400">指定された島のデータが存在しません。</p>
+        <button onClick={() => router.push('/')} className="px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold transition-colors">トップへ戻る</button>
+      </div>
+    );
+  }
+
   if (!island) return (
     <div className="min-h-screen flex items-center justify-center text-slate-500 font-serif">
       島が見つかりませんでした
@@ -106,9 +124,15 @@ export default function IslandDetail() {
     </div>
   );
 
-  const parseJsonSafe = (str: string | null) => {
-    if (!str) return [];
-    try { return JSON.parse(str); } catch { return [{ name: 'リンクを見る', url: str }]; }
+  const parseJsonSafe = (val: unknown): any[] => {
+    if (Array.isArray(val)) return val;
+    if (typeof val === 'string') {
+      try {
+        const parsed = JSON.parse(val);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch { return []; }
+    }
+    return [];
   };
   // 安全対策: 管理者がうっかりURLを空のまま登録しても、ユーザー画面には絶対に表示させない（信頼性担保）
   const hotels = parseJsonSafe(island.aff_hotel_url).filter((h: any) => h.url && h.url.trim() !== '');
@@ -139,13 +163,6 @@ export default function IslandDetail() {
         {/* Top Navigation Overlay */}
         <div className="absolute top-0 left-0 right-0 z-50 p-6 lg:p-8 flex flex-col gap-4 bg-gradient-to-b from-slate-900/80 via-slate-900/20 to-transparent pointer-events-none">
           <div className="flex items-center gap-4 pointer-events-auto">
-            <button 
-              onClick={() => router.back()} 
-              className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/40 transition-colors shadow-sm"
-              title="前に戻る"
-            >
-              <ArrowLeft className="w-6 h-6" strokeWidth={2} />
-            </button>
             <Breadcrumb 
               items={[
                 { label: 'マップ', href: '/map' },
@@ -160,7 +177,14 @@ export default function IslandDetail() {
 
         <img 
           src={fallbackImage} 
-          onError={(e) => { e.currentTarget.src = defaultFallback }}
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (!target.src.includes(defaultFallback)) {
+              target.src = defaultFallback;
+            } else {
+              target.style.display = 'none';
+            }
+          }}
           alt={island.name}
           className="w-full h-full object-cover"
         />
@@ -203,10 +227,10 @@ export default function IslandDetail() {
             <CloudLightning className="w-6 h-6 shrink-0 mt-0.5 md:mt-0 animate-pulse" />
             <div>
               <p className="font-bold text-sm md:text-base tracking-widest mb-1">
-                【自動発令】{weatherAlerts[0].event}
+                【自動発令】{weatherAlerts[0]?.event}
               </p>
               <p className="text-xs md:text-sm font-medium text-white/90 whitespace-pre-line leading-relaxed">
-                {weatherAlerts[0].description} ({weatherAlerts[0].sender_name})
+                {weatherAlerts[0]?.description} ({weatherAlerts[0]?.sender_name})
               </p>
             </div>
           </div>
@@ -544,7 +568,7 @@ export default function IslandDetail() {
 
           {status !== 'none' && (
             <button
-              onClick={() => updateStatus(islandId as string, 'none')}
+              onClick={handleCancelRecord}
               className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 font-bold text-xs tracking-wider transition-all shadow-sm bg-white hover:bg-slate-50"
             >
               記録を取り消す
@@ -563,6 +587,10 @@ export default function IslandDetail() {
       <CheckInModal
         isOpen={isCheckInModalOpen}
         onClose={() => setIsCheckInModalOpen(false)}
+        onOpenCertificate={() => {
+          setIsCheckInModalOpen(false);
+          setIsCertModalOpen(true);
+        }}
         island={island}
       />
     </main>

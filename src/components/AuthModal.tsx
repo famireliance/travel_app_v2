@@ -3,6 +3,15 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, ArrowRight, UserCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
+const getJapaneseError = (msg: string): string => {
+  if (msg.includes('Invalid login credentials')) return 'メールアドレスまたはパスワードが間違っています';
+  if (msg.includes('Email not confirmed')) return 'メールアドレスの確認が完了していません。確認メールをご確認ください';
+  if (msg.includes('already registered')) return 'このメールアドレスはすでに登録されています';
+  if (msg.includes('Password should be')) return 'パスワードは6文字以上で設定してください';
+  if (msg.includes('rate limit')) return 'しばらく時間をおいて再度お試しください';
+  return msg;
+};
+
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -12,29 +21,85 @@ interface AuthModalProps {
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [isLogin, setIsLogin] = useState(true);
+  const [passwordConfirm, setPasswordConfirm] = useState('');
+  const [nickname, setNickname] = useState('');
+  const [activeTab, setActiveTab] = useState<'login' | 'signup' | 'magic'>('login');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{text: string, type: 'error' | 'success'} | null>(null);
+  const [showResendButton, setShowResendButton] = useState(false);
+
+  const handleClose = () => {
+    setEmail('');
+    setPassword('');
+    setPasswordConfirm('');
+    setNickname('');
+    setMessage(null);
+    setShowResendButton(false);
+    onClose();
+  };
+
+  const handleResendEmail = async () => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
+    });
+    if (error) setMessage({ text: '再送に失敗しました。しばらく待ってから再試行してください。', type: 'error' });
+    else setMessage({ text: '確認メールを再送しました。スパムフォルダもご確認ください。', type: 'success' });
+  };
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (activeTab !== 'magic' && password.length < 6) {
+      setMessage({ text: 'パスワードは6文字以上で設定してください', type: 'error' });
+      return;
+    }
+
     setLoading(true);
     setMessage(null);
+    setShowResendButton(false);
 
     try {
-      if (isLogin) {
+      if (activeTab === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
         if (onAuthSuccess) onAuthSuccess();
-        onClose();
-      } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        handleClose();
+      } else if (activeTab === 'signup') {
+        if (password !== passwordConfirm) {
+          setMessage({ text: '確認用パスワードが一致しません', type: 'error' });
+          setLoading(false);
+          return;
+        }
+        if (!nickname.trim()) {
+          setMessage({ text: 'トラベラーネーム（ニックネーム）を入力してください', type: 'error' });
+          setLoading(false);
+          return;
+        }
+        const { error } = await supabase.auth.signUp({ 
+          email, 
+          password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/auth/callback`,
+            data: { nickname }
+          }
+        });
         if (error) throw error;
-        setMessage({ text: '確認メールを送信しました。メール内のリンクをクリックして登録を完了してください。', type: 'success' });
+        localStorage.setItem('kiratabi_traveler_name', nickname);
+        setMessage({ text: '✅ 登録完了！確認メールを送信しました。\n\n📧 メールが届かない場合:\n• スパム/迷惑メールフォルダをご確認ください\n• しばらく待ってから再送ボタンをお試しください', type: 'success' });
+        setShowResendButton(true);
+      } else if (activeTab === 'magic') {
+        const { error } = await supabase.auth.signInWithOtp({
+          email,
+          options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
+        });
+        if (error) throw error;
+        setMessage({ text: '✉️ ログインリンクを送信しました！メールのリンクをクリックしてください。', type: 'success' });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setMessage({ text: error.message || '認証エラーが発生しました', type: 'error' });
+      setMessage({ text: getJapaneseError(error.message || ''), type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -50,7 +115,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
           className="fixed inset-0 z-[9999] bg-[#F8FAFC]/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 font-sans"
         >
           <button 
-            onClick={onClose}
+            onClick={handleClose}
             className="absolute top-8 right-6 lg:right-12 p-2 text-slate-400 hover:text-slate-800 transition-colors"
           >
             <X size={32} strokeWidth={1} />
@@ -63,18 +128,42 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
             </div>
 
             <h2 className="font-serif font-bold text-2xl text-slate-800 mb-2">
-              {isLogin ? 'おかえりなさい' : 'アカウントを作成'}
+              {activeTab === 'login' ? 'おかえりなさい' : activeTab === 'signup' ? 'アカウントを作成' : 'マジックリンク'}
             </h2>
-            <p className="text-sm text-slate-500 tracking-widest mb-8">
-              {isLogin ? 'ログインして踏破記録を保存しましょう' : '登録してあなただけの旅行記録を始めましょう'}
+            <p className="text-sm text-slate-500 tracking-widest mb-6 text-center">
+              {activeTab === 'login' ? 'ログインして踏破記録を保存しましょう' : activeTab === 'signup' ? '登録してあなただけの旅行記録を始めましょう' : 'メールのリンクから安全にログイン'}
             </p>
+
+            {/* Tabs */}
+            <div className="flex w-full bg-slate-100 rounded-lg p-1 mb-6">
+              {(['login', 'signup', 'magic'] as const).map(tab => (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => { setActiveTab(tab); setMessage(null); setShowResendButton(false); }}
+                  className={`flex-1 py-2 text-xs font-bold rounded-md transition-colors ${activeTab === tab ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  {tab === 'login' ? 'ログイン' : tab === 'signup' ? '新規登録' : 'マジックリンク'}
+                </button>
+              ))}
+            </div>
 
             <form onSubmit={handleAuth} className="w-full flex flex-col gap-4">
               
               {message && (
-                <div className={`p-3 rounded-lg text-xs font-medium tracking-wide ${message.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>
+                <div className={`p-3 rounded-lg text-xs font-medium tracking-wide whitespace-pre-wrap ${message.type === 'error' ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}`}>
                   {message.text}
                 </div>
+              )}
+
+              {showResendButton && (
+                <button
+                  type="button"
+                  onClick={handleResendEmail}
+                  className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs py-2 rounded-lg transition-colors mb-2"
+                >
+                  確認メールを再送する
+                </button>
               )}
 
               <div className="relative">
@@ -89,38 +178,57 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
                 />
               </div>
 
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" strokeWidth={1.5} />
-                <input 
-                  type="password" 
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="パスワード" 
-                  required
-                  className="w-full bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 py-3 pl-12 pr-4 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
-                />
-              </div>
+              {activeTab !== 'magic' && (
+                <div className="relative">
+                  <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" strokeWidth={1.5} />
+                  <input 
+                    type="password" 
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    placeholder="パスワード (6文字以上)" 
+                    required
+                    className="w-full bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 py-3 pl-12 pr-4 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                  />
+                </div>
+              )}
+
+              {activeTab === 'signup' && (
+                <>
+                  <div className="relative">
+                    <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" strokeWidth={1.5} />
+                    <input 
+                      type="password" 
+                      value={passwordConfirm}
+                      onChange={e => setPasswordConfirm(e.target.value)}
+                      placeholder="パスワード（確認用）" 
+                      required
+                      className="w-full bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 py-3 pl-12 pr-4 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                  <div className="relative">
+                    <UserCircle className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" strokeWidth={1.5} />
+                    <input 
+                      type="text" 
+                      value={nickname}
+                      onChange={e => setNickname(e.target.value)}
+                      placeholder="トラベラーネーム（ニックネーム）" 
+                      required
+                      className="w-full bg-slate-50 border border-slate-200 text-slate-800 placeholder-slate-400 py-3 pl-12 pr-4 rounded-xl focus:outline-none focus:border-blue-500 focus:bg-white transition-all"
+                    />
+                  </div>
+                </>
+              )}
 
               <button 
                 type="submit"
                 disabled={loading}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold tracking-widest py-4 rounded-xl mt-4 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold tracking-widest py-4 rounded-xl mt-2 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
               >
-                {loading ? '処理中...' : (isLogin ? 'ログイン' : '登録する')}
+                {loading ? '処理中...' : (activeTab === 'login' ? 'ログイン' : activeTab === 'signup' ? '登録する' : 'リンクを送信')}
                 {!loading && <ArrowRight className="w-4 h-4" strokeWidth={2} />}
               </button>
 
             </form>
-
-            <div className="mt-8 text-sm text-slate-500">
-              {isLogin ? 'アカウントをお持ちでないですか？' : 'すでにアカウントをお持ちですか？'}
-              <button 
-                onClick={() => { setIsLogin(!isLogin); setMessage(null); }}
-                className="ml-2 text-blue-600 font-bold hover:underline"
-              >
-                {isLogin ? '新規登録' : 'ログイン'}
-              </button>
-            </div>
 
           </div>
         </motion.div>

@@ -12,30 +12,6 @@ export async function GET(request: Request) {
 
   // APIキーが未設定の場合は、テスト用にモックデータ（ランダム確率）を返します
   if (!apiKey || apiKey === 'YOUR_API_KEY_HERE' || apiKey === '') {
-    const random = Math.random();
-    
-    // 20%の確率でテスト用のアラートを発生させる
-    if (random > 0.8) {
-      return NextResponse.json({
-        alerts: [{
-          event: "波浪警報",
-          description: "沿岸部では高波に警戒してください。小型船舶等の運行に影響が出る可能性があります。",
-          severity: "Warning",
-          sender_name: "気象庁 (Test Mock)"
-        }]
-      });
-    } else if (random > 0.95) {
-      return NextResponse.json({
-        alerts: [{
-          event: "暴風・大雨特別警報",
-          description: "猛烈な風と雨が予想されます。安全な場所へ避難してください。",
-          severity: "Danger",
-          sender_name: "気象庁 (Test Mock)"
-        }]
-      });
-    }
-    
-    // 平常時
     return NextResponse.json({ alerts: [] });
   }
 

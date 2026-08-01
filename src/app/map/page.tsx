@@ -49,6 +49,14 @@ function GlobalMapContent() {
   const filteredIslands = allIslands.filter(isl => {
     if (difficultyFilter && getIslandDifficulty(isl).level !== difficultyFilter) return false;
     if (regionParam && isl.region_id !== regionParam) return false;
+    if (filterParam) {
+      const lowerFilter = filterParam.toLowerCase();
+      const matchTag = isl.tags && isl.tags.some((t: string) => t.toLowerCase().includes(lowerFilter));
+      const matchCat = isl.category && isl.category.toLowerCase().includes(lowerFilter);
+      const matchName = isl.name && isl.name.toLowerCase().includes(lowerFilter);
+      const matchDesc = isl.description && isl.description.toLowerCase().includes(lowerFilter);
+      if (!matchTag && !matchCat && !matchName && !matchDesc) return false;
+    }
     return true;
   });
 
@@ -143,13 +151,28 @@ function GlobalMapContent() {
       </header>
 
       {/* Breadcrumb Overlay */}
-      <div className="absolute top-28 lg:top-24 left-6 lg:left-12 z-[1000] pointer-events-auto">
+      <div className="absolute top-28 lg:top-24 left-6 lg:left-12 z-[1000] pointer-events-auto flex flex-col gap-2">
         <Breadcrumb 
           items={[
             { label: '日本全国離島マップ' }
           ]} 
           className="mb-0"
         />
+        {filterParam && (
+          <div className="bg-blue-600/90 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg w-max">
+            <span>🔍 「{filterParam}」でフィルター中</span>
+            <button 
+              onClick={() => {
+                const params = new URLSearchParams(searchParams.toString());
+                params.delete('filter');
+                router.replace(`/map?${params.toString()}`);
+              }}
+              className="ml-2 bg-blue-700 hover:bg-blue-800 rounded-full w-5 h-5 flex items-center justify-center transition-colors"
+            >
+              ×
+            </button>
+          </div>
+        )}
       </div>
 
       {/* Difficulty Tier Filter Bar */}

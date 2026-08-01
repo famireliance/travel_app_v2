@@ -7,7 +7,11 @@ const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supa
 const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'placeholder_anon_key';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    flowType: 'pkce',
+  },
+});
 
 const REGION_COORDINATE_ATLAS: Record<string, [number, number]> = {
   'izu': [34.3, 139.3],

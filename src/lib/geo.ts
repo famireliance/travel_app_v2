@@ -2,6 +2,7 @@
  * Haversine formula to calculate the distance between two coordinates in kilometers.
  */
 export function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  if (isNaN(lat1) || isNaN(lat2) || isNaN(lon1) || isNaN(lon2)) return Infinity;
   const R = 6371; // Radius of the earth in km
   const dLat = deg2rad(lat2 - lat1);
   const dLon = deg2rad(lon2 - lon1); 
@@ -9,7 +10,8 @@ export function calculateDistanceKm(lat1: number, lon1: number, lat2: number, lo
     Math.sin(dLat/2) * Math.sin(dLat/2) +
     Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
     Math.sin(dLon/2) * Math.sin(dLon/2); 
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+  const clampedA = Math.min(1, a);
+  const c = 2 * Math.atan2(Math.sqrt(clampedA), Math.sqrt(1 - clampedA)); 
   const d = R * c; // Distance in km
   return d;
 }

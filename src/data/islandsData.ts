@@ -17,7 +17,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'hachijojima',
     name: '八丈島',
-    region_id: '伊豆・小笠原',
+    region_id: 'izu',
     prefecture: '東京都',
     difficulty: 2,
     coordinates: '33.1128, 139.7953',
@@ -29,7 +29,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'oshima',
     name: '伊豆大島',
-    region_id: '伊豆・小笠原',
+    region_id: 'izu',
     prefecture: '東京都',
     difficulty: 2,
     coordinates: '34.7336, 139.3603',
@@ -41,7 +41,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'niijima',
     name: '新島',
-    region_id: '伊豆・小笠原',
+    region_id: 'izu',
     prefecture: '東京都',
     difficulty: 2,
     coordinates: '34.3731, 139.2672',
@@ -53,7 +53,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'kozushima',
     name: '神津島',
-    region_id: '伊豆・小笠原',
+    region_id: 'izu',
     prefecture: '東京都',
     difficulty: 3,
     coordinates: '34.2047, 139.1333',
@@ -65,7 +65,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'miyakejima',
     name: '三宅島',
-    region_id: '伊豆・小笠原',
+    region_id: 'izu',
     prefecture: '東京都',
     difficulty: 3,
     coordinates: '34.0869, 139.5283',
@@ -79,7 +79,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'chichijima',
     name: '父島',
-    region_id: '小笠原諸島',
+    region_id: 'ogasawara',
     prefecture: '東京都',
     difficulty: 4,
     coordinates: '27.0953, 142.1914',
@@ -91,7 +91,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'hahajima',
     name: '母島',
-    region_id: '小笠原諸島',
+    region_id: 'ogasawara',
     prefecture: '東京都',
     difficulty: 5,
     coordinates: '26.6500, 142.1556',
@@ -105,7 +105,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'ishigaki',
     name: '石垣島',
-    region_id: '八重山諸島',
+    region_id: 'yaeyama',
     prefecture: '沖縄県',
     difficulty: 2,
     coordinates: '24.3448, 124.1556',
@@ -117,7 +117,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'iriomote',
     name: '西表島',
-    region_id: '八重山諸島',
+    region_id: 'yaeyama',
     prefecture: '沖縄県',
     difficulty: 2,
     coordinates: '24.3338, 123.7956',
@@ -129,7 +129,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'hateruma',
     name: '波照間島',
-    region_id: '八重山諸島',
+    region_id: 'yaeyama',
     prefecture: '沖縄県',
     difficulty: 4,
     coordinates: '24.0569, 123.7778',
@@ -141,7 +141,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'yonaguni',
     name: '与那国島',
-    region_id: '八重山諸島',
+    region_id: 'yaeyama',
     prefecture: '沖縄県',
     difficulty: 4,
     coordinates: '24.4669, 122.9981',
@@ -153,7 +153,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'taketomi',
     name: '竹富島',
-    region_id: '八重山諸島',
+    region_id: 'yaeyama',
     prefecture: '沖縄県',
     difficulty: 2,
     coordinates: '24.3242, 124.0780',
@@ -167,7 +167,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'takarajima',
     name: '宝島',
-    region_id: 'トカラ列島',
+    region_id: 'tokara',
     prefecture: '鹿児島県',
     difficulty: 5,
     coordinates: '29.1417, 129.2139',
@@ -179,7 +179,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'nakanoshima-tokara',
     name: '中之島',
-    region_id: 'トカラ列島',
+    region_id: 'tokara',
     prefecture: '鹿児島県',
     difficulty: 5,
     coordinates: '29.8389, 129.8667',
@@ -193,7 +193,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'amami',
     name: '奄美大島',
-    region_id: '奄美群島',
+    region_id: 'amami',
     prefecture: '鹿児島県',
     difficulty: 2,
     coordinates: '28.3769, 129.4939',
@@ -205,7 +205,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'yoron',
     name: '与論島（ヨロン島）',
-    region_id: '奄美群島',
+    region_id: 'amami',
     prefecture: '鹿児島県',
     difficulty: 3,
     coordinates: '27.0422, 128.4319',
@@ -219,7 +219,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'miyako',
     name: '宮古島',
-    region_id: '宮古諸島',
+    region_id: 'miyako',
     prefecture: '沖縄県',
     difficulty: 2,
     coordinates: '24.8056, 125.2814',
@@ -231,7 +231,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'irabu',
     name: '伊良部島',
-    region_id: '宮古諸島',
+    region_id: 'miyako',
     prefecture: '沖縄県',
     difficulty: 2,
     coordinates: '24.8389, 125.1833',
@@ -245,7 +245,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'minamidaito',
     name: '南大東島',
-    region_id: '大東諸島',
+    region_id: 'daito',
     prefecture: '沖縄県',
     difficulty: 5,
     coordinates: '25.8500, 131.2333',
@@ -257,7 +257,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'kitadaito',
     name: '北大東島',
-    region_id: '大東諸島',
+    region_id: 'daito',
     prefecture: '沖縄県',
     difficulty: 5,
     coordinates: '25.9469, 131.3117',
@@ -271,7 +271,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'fukuejima',
     name: '福江島（五島）',
-    region_id: '五島列島',
+    region_id: 'goto',
     prefecture: '長崎県',
     difficulty: 2,
     coordinates: '32.6986, 128.8386',
@@ -285,7 +285,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'shodoshima',
     name: '小豆島',
-    region_id: '瀬戸内海',
+    region_id: 'naoshima',
     prefecture: '香川県',
     difficulty: 2,
     coordinates: '34.4836, 134.1925',
@@ -297,7 +297,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'naoshima',
     name: '直島',
-    region_id: '瀬戸内海',
+    region_id: 'naoshima',
     prefecture: '香川県',
     difficulty: 2,
     coordinates: '34.4617, 133.9989',
@@ -311,7 +311,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'rishiri',
     name: '利尻島',
-    region_id: '北海道',
+    region_id: 'pseudo_hokkaido',
     prefecture: '北海道',
     difficulty: 3,
     coordinates: '45.1806, 141.2400',
@@ -323,7 +323,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'rebun',
     name: '礼文島',
-    region_id: '北海道',
+    region_id: 'pseudo_hokkaido',
     prefecture: '北海道',
     difficulty: 3,
     coordinates: '45.3847, 141.0286',
@@ -337,7 +337,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'oki-dogo',
     name: '隠岐の島町（島後）',
-    region_id: '隠岐諸島',
+    region_id: 'oki',
     prefecture: '島根県',
     difficulty: 3,
     coordinates: '36.2047, 133.3322',
@@ -351,7 +351,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'yakushima',
     name: '屋久島',
-    region_id: '薩南・大隅諸島',
+    region_id: 'osumi',
     prefecture: '鹿児島県',
     difficulty: 2,
     coordinates: '30.3617, 130.5432',
@@ -363,7 +363,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'aogashima',
     name: '青ヶ島',
-    region_id: '伊豆・小笠原',
+    region_id: 'izu',
     prefecture: '東京都',
     difficulty: 5,
     coordinates: '32.4569, 139.7658',
@@ -375,7 +375,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'sadoshima',
     name: '佐渡島',
-    region_id: '日本海・北陸',
+    region_id: 'pseudo_hokuriku',
     prefecture: '新潟県',
     difficulty: 2,
     coordinates: '38.0408, 138.4039',
@@ -387,7 +387,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
   {
     id: 'tsushima',
     name: '対馬',
-    region_id: '対馬・壱岐',
+    region_id: 'tsushima',
     prefecture: '長崎県',
     difficulty: 2,
     coordinates: '34.2082, 129.2889',
@@ -395,5 +395,17 @@ export const FALLBACK_ISLANDS: LocalIsland[] = [
     access: '博多港からフェリー・ジェットフォイル / 福岡・長崎から飛行機',
     tags: ['国境の島', '和多都美神社', 'ツシマヤマネコ'],
     spots: [{ name: '和多都美神社', desc: '海中に5つの鳥居が連なり、潮の満ち引きで表情を変える竜宮伝説の神秘的な古社。' }]
+  },
+  {
+    id: 'kumejima',
+    name: '久米島',
+    region_id: 'kume',
+    prefecture: '沖縄県',
+    difficulty: 2,
+    coordinates: '26.3475, 126.7905',
+    description: '琉球王国時代から「球美の島」と称えられる美しい島。ハテの浜の純白の砂洲や、奥武島の畳石など絶景の宝庫。',
+    access: '那覇から飛行機で約35分 / 那覇からフェリーで約3時間',
+    tags: ['ハテの浜', '畳石', '車海老'],
+    spots: [{ name: 'ハテの浜', desc: '東洋一美しいとも言われる、海に浮かぶ真っ白な砂洲の絶景。' }]
   }
 ];

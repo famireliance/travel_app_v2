@@ -4,6 +4,18 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useTravel } from '@/context/TravelContext';
 import { Camera, Send, MessageCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
+
+function isValidImageUrl(url: string): boolean {
+  try {
+    const parsed = new URL(url);
+    if (parsed.protocol !== 'https:') return false;
+    const ext = parsed.pathname.split('.').pop()?.toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'webp', 'gif'].includes(ext || '');
+  } catch {
+    return false;
+  }
+}
 
 export default function IslandDiaries({ islandId }: { islandId: string }) {
   const { user } = useTravel();
@@ -39,6 +51,11 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
     e.preventDefault();
     if (!content.trim() || !user) return;
     
+    if (photoUrl && !isValidImageUrl(photoUrl)) {
+      toast.error('写真のURLはhttpsで始まる画像URL（jpg/jpeg/png/webp/gif）を入力してください');
+      return;
+    }
+    
     setSubmitting(true);
     try {
       const { data, error } = await supabase
@@ -56,9 +73,10 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
       setDiaries([data[0], ...diaries]);
       setContent('');
       setPhotoUrl('');
+      toast.success('投稿しました！');
     } catch (err) {
       console.error('Failed to post diary:', err);
-      alert('投稿に失敗しました。');
+      toast.error('投稿に失敗しました。');
     } finally {
       setSubmitting(false);
     }

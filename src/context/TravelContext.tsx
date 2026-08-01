@@ -15,6 +15,7 @@ interface TravelContextType {
   user: any | null;
   islandStatuses: Record<string, IslandStatus>;
   updateStatus: (islandId: string, status: IslandStatus) => void;
+  decrementVisitCount: (islandId: string) => Promise<void>;
   totalVisited: number;
   travelerName: string;
   updateTravelerName: (name: string) => void;
@@ -42,7 +43,8 @@ interface TravelContextType {
 const TravelContext = createContext<TravelContextType>({
   user: null,
   islandStatuses: {},
-  updateStatus: () => {},
+  updateStatus: async () => {},
+  decrementVisitCount: async () => {},
   totalVisited: 0,
   travelerName: '島旅トラベラー',
   updateTravelerName: () => {},
@@ -75,6 +77,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [collectedFairies, setCollectedFairies] = useState<string[]>([]);
   const [collectedFairyDates, setCollectedFairyDates] = useState<Record<string, string>>({});
   const [newlyDiscoveredFairies, setNewlyDiscoveredFairies] = useState<IslandFairy[]>([]);
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
 
   // Auth & Data Load
   useEffect(() => {
@@ -90,17 +93,50 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       setSelectedCompanionId(savedComp);
     }
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!isMounted) return;
       const currentUser = session?.user || null;
       setUser(currentUser);
+      
+      // ユーザーのニックネームをSupabaseから取得
+      if (currentUser) {
+        try {
+          const { data, error } = await supabase.from('user_profiles').select('nickname').eq('id', currentUser.id).single();
+          if (data && data.nickname && isMounted) {
+            setTravelerName(data.nickname);
+            localStorage.setItem('kiratabi_traveler_name', data.nickname);
+          }
+        } catch(e) {}
+      }
+
       loadLocalData(currentUser?.id, isMounted);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (!isMounted) return;
+      if (_event === 'SIGNED_OUT') {
+        // ユーザーデータをクリアしてゲスト状態に戻す
+        setIslandStatuses({});
+        setVisitCounts({});
+        setSpotsVisited({});
+        setCollectedFairies([]);
+        setCollectedFairyDates({});
+        setIsDataLoaded(false);
+      }
       const currentUser = session?.user || null;
       setUser(currentUser);
+      
+      if (currentUser && _event === 'SIGNED_IN') {
+        try {
+          supabase.from('user_profiles').select('nickname').eq('id', currentUser.id).single().then(({data}) => {
+             if (data && data.nickname && isMounted) {
+               setTravelerName(data.nickname);
+               localStorage.setItem('kiratabi_traveler_name', data.nickname);
+             }
+          });
+        } catch(e) {}
+      }
+
       loadLocalData(currentUser?.id, isMounted);
     });
 
@@ -111,92 +147,102 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
+    // データがロードされる前に空の状態でlocalStorageを上書きしてしまうのを防ぐ
+    if (!isDataLoaded) return;
+
     if (user) {
       localStorage.setItem(`travel_app_statuses_${user.id}`, JSON.stringify(islandStatuses));
     } else {
       localStorage.setItem('travel_app_statuses_guest', JSON.stringify(islandStatuses));
     }
-  }, [islandStatuses, user]);
+  }, [islandStatuses, user, isDataLoaded]);
 
   const loadLocalData = async (userId?: string, isMounted: boolean = true) => {
     if (!isMounted) return;
+    
+    // 1. まずゲスト用のデータを取得する（マージ用）
+    let guestData: Record<string, IslandStatus> = {};
+    const guestStored = localStorage.getItem('travel_app_statuses_guest') || localStorage.getItem('island_status_anon');
+    if (guestStored) {
+      try {
+        const parsed = JSON.parse(guestStored);
+        if (typeof parsed === 'object' && parsed !== null) guestData = parsed;
+      } catch (e) {}
+    }
+
+    // 2. ユーザーデータまたはゲストデータをベースにローカルデータを構築
+    let localData: Record<string, IslandStatus> = { ...guestData };
     const storageKey = userId ? `travel_app_statuses_${userId}` : 'travel_app_statuses_guest';
     const oldKey = userId ? `island_status_${userId}` : 'island_status_anon';
-    const stored = localStorage.getItem(storageKey) || localStorage.getItem(oldKey);
-    let localData: Record<string, IslandStatus> = {};
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (typeof parsed === 'object' && parsed !== null) {
-          localData = parsed;
-          if (isMounted) setIslandStatuses(localData);
-        } else if (isMounted) {
-          setIslandStatuses({});
-        }
-      } catch (e) {
-        console.error("Failed to parse island statuses from localStorage:", e);
-        if (isMounted) setIslandStatuses({});
+    
+    if (userId) {
+      const userStored = localStorage.getItem(storageKey) || localStorage.getItem(oldKey);
+      if (userStored) {
+        try {
+          const parsed = JSON.parse(userStored);
+          if (typeof parsed === 'object' && parsed !== null) {
+            // ユーザーデータが存在すれば、ゲストデータを上書きマージ
+            localData = { ...localData, ...parsed };
+          }
+        } catch (e) {}
       }
-    } else if (isMounted) {
-      setIslandStatuses({});
     }
+    
+    if (isMounted) setIslandStatuses(localData);
 
-    // 訪問回数とスポットの復元
+    // 訪問回数のマージ
+    let vLocal: Record<string, number> = {};
+    const guestVStored = localStorage.getItem('island_visits_count_anon');
+    if (guestVStored) { try { const p = JSON.parse(guestVStored); if(p) vLocal = {...p}; } catch(e){} }
     const vKey = userId ? `island_visits_count_${userId}` : 'island_visits_count_anon';
-    const storedV = localStorage.getItem(vKey);
-    if (storedV) {
-      try { 
-        const parsedV = JSON.parse(storedV);
-        if (isMounted && typeof parsedV === 'object' && parsedV !== null) {
-          setVisitCounts(parsedV);
-        }
-      } catch (e) { 
-        console.error("Failed to parse visit counts:", e); 
-      }
-    } else if (isMounted) {
-      // 初期化: existing visited statuses get at least count=1
-      const initialV: Record<string, number> = {};
+    if (userId) {
+       const userVStored = localStorage.getItem(vKey);
+       if (userVStored) { try { const p = JSON.parse(userVStored); if(p) vLocal = {...vLocal, ...p}; } catch(e){} }
+    }
+    // データが無ければステータスから最低1回を付与
+    if (Object.keys(vLocal).length === 0) {
       Object.keys(localData).forEach(id => {
-        if (localData[id] === 'visited') initialV[id] = 1;
+        if (localData[id] === 'visited' || localData[id] === 'verified_visited') vLocal[id] = 1;
       });
-      setVisitCounts(initialV);
     }
+    if (isMounted) setVisitCounts(vLocal);
 
+    // スポットの復元とマージ
+    let sLocal: Record<string, number> = {};
+    const guestSStored = localStorage.getItem('island_spots_anon');
+    if (guestSStored) { try { const p = JSON.parse(guestSStored); if(p) sLocal = {...p}; } catch(e){} }
     const sKey = userId ? `island_spots_${userId}` : 'island_spots_anon';
-    const storedS = localStorage.getItem(sKey);
-    if (storedS) {
-      try { 
-        const parsedS = JSON.parse(storedS);
-        if (isMounted && typeof parsedS === 'object' && parsedS !== null) {
-          setSpotsVisited(parsedS);
-        }
-      } catch (e) { 
-        console.error("Failed to parse spots visited:", e); 
-      }
+    if (userId) {
+       const userSStored = localStorage.getItem(sKey);
+       if (userSStored) { try { const p = JSON.parse(userSStored); if(p) sLocal = {...sLocal, ...p}; } catch(e){} }
     }
+    if (isMounted) setSpotsVisited(sLocal);
 
+    // 妖精の復元とマージ
+    let fLocal: string[] = [];
+    const guestFStored = localStorage.getItem('island_fairies_anon');
+    if (guestFStored) { try { const p = JSON.parse(guestFStored); if(Array.isArray(p)) fLocal = [...p]; } catch(e){} }
     const fKey = userId ? `island_fairies_${userId}` : 'island_fairies_anon';
+    if (userId) {
+       const userFStored = localStorage.getItem(fKey);
+       if (userFStored) {
+          try { const p = JSON.parse(userFStored); if(Array.isArray(p)) fLocal = Array.from(new Set([...fLocal, ...p])); } catch(e){}
+       }
+    }
+    if (isMounted) setCollectedFairies(fLocal);
+    
+    // 妖精日付の復元とマージ
+    let dLocal: Record<string, string> = {};
+    const guestDStored = localStorage.getItem('island_fairies_dates_anon');
+    if (guestDStored) { try { const p = JSON.parse(guestDStored); if(p) dLocal = {...p}; } catch(e){} }
     const dKey = userId ? `island_fairies_dates_${userId}` : 'island_fairies_dates_anon';
-    const storedF = localStorage.getItem(fKey);
-    const storedD = localStorage.getItem(dKey);
-    if (storedF) {
-      try {
-        const parsedF = JSON.parse(storedF);
-        if (isMounted && Array.isArray(parsedF)) {
-          setCollectedFairies(parsedF);
-        }
-      } catch (e) { console.error("Failed to parse fairies:", e); }
+    if (userId) {
+       const userDStored = localStorage.getItem(dKey);
+       if (userDStored) { try { const p = JSON.parse(userDStored); if(p) dLocal = {...dLocal, ...p}; } catch(e){} }
     }
-    if (storedD) {
-      try {
-        const parsedD = JSON.parse(storedD);
-        if (isMounted && typeof parsedD === 'object' && parsedD !== null) {
-          setCollectedFairyDates(parsedD);
-        }
-      } catch (e) { console.error("Failed to parse fairy dates:", e); }
-    }
+    if (isMounted) setCollectedFairyDates(dLocal);
 
-    // Supabaseからの同期
+    // Supabaseからの同期・アップロード
     if (userId && isMounted) {
       try {
         const { data, error } = await supabase
@@ -208,15 +254,46 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
         if (!error && data) {
           const merged: Record<string, IslandStatus> = { ...localData };
+          
+          // Supabaseのデータをローカルに反映
           data.forEach(row => {
             merged[row.island_id] = row.status as IslandStatus;
           });
+          
+          // ローカルにはあるがSupabaseにない（ゲスト時代に登録された）データをSupabaseへ保存
+          const islandsToUpload = Object.keys(localData).filter(
+            id => !data.some(row => row.island_id === id)
+          );
+          
+          if (islandsToUpload.length > 0) {
+            for (const islandId of islandsToUpload) {
+               const status = localData[islandId];
+               if (status !== 'none') {
+                  await supabase
+                    .from('island_visits')
+                    .upsert({
+                      user_id: userId,
+                      island_id: islandId,
+                      status,
+                      visited_at: status === 'visited' || status === 'verified_visited' ? new Date().toISOString() : null,
+                    }, { onConflict: 'user_id,island_id' });
+               }
+            }
+          }
+
           setIslandStatuses(merged);
           localStorage.setItem(storageKey, JSON.stringify(merged));
+          
+          // 全て保存が完了したらゲストデータをクリアする（任意）
+          // localStorage.removeItem('travel_app_statuses_guest');
         }
       } catch (err) {
         console.error('Supabase sync error:', err);
       }
+    }
+    
+    if (isMounted) {
+      setIsDataLoaded(true);
     }
   };
 
@@ -270,6 +347,29 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const decrementVisitCount = async (islandId: string) => {
+    const currentCount = visitCounts[islandId] || 0;
+    if (currentCount <= 1) {
+      // If dropping to 0, clear status entirely
+      await updateStatus(islandId, 'none');
+      setVisitCounts(prev => {
+        const nextV = { ...prev };
+        delete nextV[islandId];
+        const vKey = user ? `island_visits_count_${user.id}` : 'island_visits_count_anon';
+        localStorage.setItem(vKey, JSON.stringify(nextV));
+        return nextV;
+      });
+    } else {
+      // Just decrement the count
+      setVisitCounts(prev => {
+        const nextV = { ...prev, [islandId]: currentCount - 1 };
+        const vKey = user ? `island_visits_count_${user.id}` : 'island_visits_count_anon';
+        localStorage.setItem(vKey, JSON.stringify(nextV));
+        return nextV;
+      });
+    }
+  };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addIslandVisit = (islandId: string, islandObj?: any, newSpots: number = 0, isVerified: boolean = false) => {
     const isFirstVisit = (visitCounts[islandId] || 0) === 0;
@@ -295,7 +395,18 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
     // ご当地妖精の発見判定
     if (isFirstVisit && islandObj) {
-      const rId = islandObj.region_id;
+      const prefectureMap: Record<string, string> = {
+        '北海道': 'hokkaido',
+        '青森県': 'tohoku', '岩手県': 'tohoku', '秋田県': 'tohoku', '宮城県': 'tohoku', '山形県': 'tohoku', '福島県': 'tohoku',
+        '茨城県': 'kanto', '栃木県': 'kanto', '群馬県': 'kanto', '埼玉県': 'kanto', '千葉県': 'kanto', '東京都': 'kanto', '神奈川県': 'kanto',
+        '新潟県': 'hokuriku', '富山県': 'hokuriku', '石川県': 'hokuriku', '福井県': 'hokuriku',
+        '山梨県': 'tokai', '長野県': 'tokai', '岐阜県': 'tokai', '静岡県': 'tokai', '愛知県': 'tokai', '三重県': 'tokai',
+        '滋賀県': 'kinki', '京都府': 'kinki', '大阪府': 'kinki', '兵庫県': 'kinki', '奈良県': 'kinki', '和歌山県': 'kinki',
+        '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
+        '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
+        '福岡県': 'kyushu', '佐賀県': 'kyushu', '長崎県': 'kyushu', '熊本県': 'kyushu', '大分県': 'kyushu', '宮崎県': 'kyushu', '鹿児島県': 'kyushu',
+      };
+      const rId = islandObj.region_id || islandObj.region || prefectureMap[islandObj.prefecture] || 'unknown';
       const iId = islandId;
       
       const foundFairies = FAIRIES_MASTER.filter(f => {
@@ -352,9 +463,14 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     return { xpGained: gained };
   };
 
-  const updateTravelerName = (name: string) => {
+  const updateTravelerName = async (name: string) => {
     setTravelerName(name);
     localStorage.setItem('kiratabi_traveler_name', name);
+    if (user) {
+      try {
+        await supabase.from('user_profiles').upsert({ id: user.id, nickname: name, email: user.email });
+      } catch(e) { console.error('Failed to update nickname in DB', e); }
+    }
   };
 
   const updateCompanionId = (id: CompanionId) => {
@@ -410,36 +526,40 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     return Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter(i => i.is_conquest_target !== false).length;
   }, []);
 
-  const playerLvInfo = useMemo(() => getPlayerLevelInfo(totalPoints), [totalPoints]);
+  const playerLvInfo = useMemo(() => getPlayerLevelInfo(totalXP), [totalXP]);
   const companionChar = useMemo(() => COMPANION_CHARACTERS[selectedCompanionId] || COMPANION_CHARACTERS.shimamaru, [selectedCompanionId]);
   const companionStage = useMemo(() => getCompanionStageInfo(selectedCompanionId, playerLvInfo.level), [selectedCompanionId, playerLvInfo.level]);
 
   const totalVisited = useMemo(() => Object.values(islandStatuses).filter(s => s === 'visited' || s === 'verified_visited').length, [islandStatuses]);
 
+  const contextValue = useMemo(() => ({
+    user,
+    islandStatuses,
+    updateStatus,
+    decrementVisitCount,
+    totalVisited,
+    travelerName,
+    updateTravelerName,
+    visitCounts,
+    spotsVisited,
+    totalXP,
+    totalPoints,
+    conquestTargetCount,
+    selectedCompanionId,
+    updateCompanionId,
+    companionChar,
+    companionStage,
+    collectedFairies,
+    collectedFairyDates,
+    newlyDiscoveredFairies,
+    clearDiscoveredFairy,
+    addIslandVisit,
+    addSpotVisit
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }), [user, islandStatuses, totalVisited, travelerName, visitCounts, spotsVisited, totalXP, totalPoints, conquestTargetCount, selectedCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, newlyDiscoveredFairies]);
+
   return (
-    <TravelContext.Provider value={{
-      user,
-      islandStatuses,
-      updateStatus,
-      totalVisited,
-      travelerName,
-      updateTravelerName,
-      visitCounts,
-      spotsVisited,
-      totalXP,
-      totalPoints,
-      conquestTargetCount,
-      selectedCompanionId,
-      updateCompanionId,
-      companionChar,
-      companionStage,
-      collectedFairies,
-      collectedFairyDates,
-      newlyDiscoveredFairies,
-      clearDiscoveredFairy,
-      addIslandVisit,
-      addSpotVisit
-    }}>
+    <TravelContext.Provider value={contextValue}>
       {children}
     </TravelContext.Provider>
   );

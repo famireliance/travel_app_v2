@@ -18,6 +18,8 @@ export default function CompanionPage() {
   
   const [viewMode, setViewMode] = useState<ViewMode>('COMPANION');
   const [activeTab, setActiveTab] = useState<CompanionId>(selectedCompanionId);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [selectedFairy, setSelectedFairy] = useState<any | null>(null);
   const activeViewChar = COMPANION_CHARACTERS[activeTab];
 
   return (
@@ -265,8 +267,8 @@ export default function CompanionPage() {
                 const isRareOrEpic = fairy.rarity === 'RARE' || fairy.rarity === 'EPIC' || fairy.rarity === 'SPOT_EXCLUSIVE';
 
                 return (
-                  <div key={fairy.id} className="relative group">
-                    <div className={`w-full aspect-[2/3] rounded-3xl p-[2px] transition-all duration-500 ${
+                  <div key={fairy.id} className="relative group" onClick={() => isDiscovered && setSelectedFairy(fairy)}>
+                    <div className={`w-full aspect-[2/3] rounded-3xl p-[2px] transition-all duration-500 cursor-pointer ${
                       isDiscovered 
                         ? (isRareOrEpic ? 'bg-gradient-to-br from-amber-200 via-white to-amber-500 shadow-[0_0_30px_rgba(251,191,36,0.3)] hover:-translate-y-2' : 'bg-white/20 shadow-lg hover:-translate-y-2')
                         : 'bg-white/5 border border-white/5'
@@ -277,7 +279,7 @@ export default function CompanionPage() {
                         
                         {/* Holographic overlay */}
                         {isDiscovered && isRareOrEpic && (
-                          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20 mix-blend-overlay group-hover:bg-[length:120%_120%] group-hover:opacity-40 transition-all duration-700" />
+                          <div className="absolute inset-0 opacity-20 mix-blend-overlay group-hover:opacity-40 transition-all duration-700" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)' }} />
                         )}
 
                         <div className="p-4 relative z-10 flex justify-between items-start">
@@ -295,16 +297,16 @@ export default function CompanionPage() {
                         <div className="flex-1 flex items-center justify-center relative z-10 my-4">
                           {isDiscovered ? (
                             <div className={`relative filter drop-shadow-xl ${fairy.visual.shadowColor} group-hover:scale-110 transition-transform duration-500`}>
-                              {fairy.imageUrl ? (
-                                <img src={fairy.imageUrl} alt={fairy.name} className="w-32 h-32 object-contain mix-blend-multiply" />
+                              {fairy.visual.imageUrl ? (
+                                <img src={fairy.visual.imageUrl} alt={fairy.name} className="w-32 h-32 object-contain mix-blend-multiply" />
                               ) : (
                                 <span className="text-[80px] lg:text-[100px]">{fairy.visual.icon}</span>
                               )}
                             </div>
                           ) : (
                             <div className="relative filter blur-sm brightness-0 opacity-20 group-hover:blur-md transition-all">
-                              {fairy.imageUrl ? (
-                                <img src={fairy.imageUrl} alt="???" className="w-32 h-32 object-contain mix-blend-multiply" />
+                              {fairy.visual.imageUrl ? (
+                                <img src={fairy.visual.imageUrl} alt="???" className="w-32 h-32 object-contain mix-blend-multiply" />
                               ) : (
                                 <span className="text-[80px] lg:text-[100px]">{fairy.visual.icon}</span>
                               )}
@@ -326,7 +328,7 @@ export default function CompanionPage() {
                                     {new Date(collectedFairyDates[fairy.id]).toLocaleString('ja-JP', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
                                   </p>
                                   <p className="text-[8px] text-white/50 font-mono scale-90 origin-left truncate">
-                                    LOC: {fairy.island_id.toUpperCase()}
+                                    LOC: {fairy.island_id?.toUpperCase() ?? 'REGION'}
                                   </p>
                                 </div>
                               )}
@@ -335,6 +337,9 @@ export default function CompanionPage() {
                             <>
                               <h4 className="text-sm font-bold text-slate-600 mb-1">???</h4>
                               <p className="text-[9px] text-slate-700">条件を満たして発見</p>
+                              {!isDiscovered && fairy.region_id && (
+                                <p className="text-[10px] text-slate-500 mt-2">📍 {fairy.region_id} エリアを訪れると出会えるかも</p>
+                              )}
                             </>
                           )}
                         </div>
@@ -347,6 +352,22 @@ export default function CompanionPage() {
           </motion.div>
         )}
       </main>
+
+      {selectedFairy && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setSelectedFairy(null)}>
+          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-8 max-w-sm w-full mx-4 text-center relative z-10" onClick={(e) => e.stopPropagation()}>
+            {selectedFairy.visual?.imageUrl ? (
+              <img src={selectedFairy.visual.imageUrl} alt={selectedFairy.name} className="w-32 h-32 mx-auto mb-4 object-contain" />
+            ) : (
+              <div className="text-[80px] mb-4">{selectedFairy.visual?.icon}</div>
+            )}
+            <h2 className="text-xl font-bold text-white mb-1">{selectedFairy.name}</h2>
+            <p className="text-sm text-slate-400 mb-3">{selectedFairy.description || 'まだ詳細情報がありません。'}</p>
+            <p className="text-xs text-amber-400">📍 {selectedFairy.region_id} エリア</p>
+            <button onClick={() => setSelectedFairy(null)} className="mt-6 px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-bold transition-colors">閉じる</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

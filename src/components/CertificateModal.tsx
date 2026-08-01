@@ -65,7 +65,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
     setErrorMessage(null);
     setOrderSubmitting(true);
     try {
-      const res = await fetch('/api/order', {
+      const res = await fetch('/api/order/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -80,12 +80,11 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
         })
       });
       const data = await res.json();
-      if (res.ok && data.success) {
-        setOrderNumber(data.orderNumber || 'ORD-2026-0001');
-        if (data.serialNumber) setAssignedSerial(data.serialNumber);
-        setOrderSuccess(true);
+      if (res.ok && data.url) {
+        // Stripe Checkoutページへリダイレクト
+        window.location.href = data.url;
       } else {
-        setErrorMessage(data.error || '注文受付中にエラーが発生しました。');
+        setErrorMessage(data.error || '決済ページの準備中にエラーが発生しました。');
       }
     } catch (e) {
       console.error(e);
@@ -94,6 +93,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       setOrderSubmitting(false);
     }
   };
+
 
   // Handle Photo Upload
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -382,6 +382,11 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                 )}
               </div>
               <h4 className="font-serif font-bold text-xl text-slate-800 mb-2">「{island.name}」<br/>自己申告記録完了！</h4>
+              
+              <div className="text-xs font-mono text-slate-400 bg-slate-100 py-1.5 px-4 rounded-full inline-block mb-4 border border-slate-200">
+                DATE OF ARRIVAL: {visitDate}
+              </div>
+
               <p className="text-sm text-slate-500 mb-6">
                 簡易到達記録を保存しました。到達率がアップします！
               </p>

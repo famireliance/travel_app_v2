@@ -43,6 +43,8 @@ export default function Home() {
 
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
+  const [authNotification, setAuthNotification] = useState<{text: string, type: 'success'|'error'} | null>(null);
+
 
   useEffect(() => {
     // ランダムな初期スライドを設定
@@ -57,7 +59,20 @@ export default function Home() {
     fetchAdCampaigns().then(data => {
       setAdCampaigns(data || []);
     });
+
+    // メール確認リンクから戻ってきた場合の通知
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('auth_success')) {
+      setAuthNotification({ text: '✅ メールアドレスが確認されました！ようこそ、kiratabiへ！', type: 'success' });
+      window.history.replaceState({}, '', '/');
+      setTimeout(() => setAuthNotification(null), 6000);
+    } else if (params.get('auth_error')) {
+      setAuthNotification({ text: `⚠️ ${params.get('auth_error')}`, type: 'error' });
+      window.history.replaceState({}, '', '/');
+      setTimeout(() => setAuthNotification(null), 8000);
+    }
   }, []);
+
 
   useEffect(() => {
     if (selectedCategory && categoryRef.current) {
@@ -154,7 +169,26 @@ export default function Home() {
     <div className="bg-[#F8FAFC] min-h-screen pb-[120px] relative font-sans text-slate-800 selection:bg-blue-900 selection:text-white">
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+
+      {/* メール認証完了/エラー通知トースト */}
+      <AnimatePresence>
+        {authNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: -60 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -60 }}
+            className={`fixed top-6 left-1/2 -translate-x-1/2 z-[10000] px-6 py-4 rounded-2xl shadow-2xl text-sm font-bold max-w-sm w-full text-center ${
+              authNotification.type === 'success' 
+                ? 'bg-emerald-500 text-white' 
+                : 'bg-rose-500 text-white'
+            }`}
+          >
+            {authNotification.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
       
+
       {/* Premium Minimalist Nav */}
       <motion.div 
         className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 pt-7 pb-4 lg:pt-8 lg:pb-6 flex items-center justify-between backdrop-blur-xl transition-all"
@@ -401,7 +435,14 @@ export default function Home() {
                 className="w-[280px] sm:w-[320px] shrink-0 snap-start bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden cursor-pointer group hover:shadow-xl hover:shadow-amber-500/10 transition-all hover:-translate-y-1"
               >
                 <div className="h-40 bg-slate-200 relative overflow-hidden">
-                  <img src={`/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.src = '/placeholders/trop.jpg'; }} />
+                  <img src={`/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                    const t = e.currentTarget;
+                    if (!t.src.endsWith('/placeholders/trop.jpg')) {
+                      t.src = '/placeholders/trop.jpg';
+                    } else {
+                      t.style.display = 'none';
+                    }
+                  }} />
                   <div className="absolute top-3 left-3 bg-amber-500 text-white text-[0.6rem] font-bold px-2 py-1 rounded shadow-sm flex items-center gap-1">
                     <Star size={10} className="fill-white" /> PICKUP
                   </div>
@@ -546,7 +587,14 @@ export default function Home() {
                         <div className="relative h-36 overflow-hidden bg-slate-100">
                           <img
                             src={`/region/${isl.region_id || 'okinawa_main'}.jpg`}
-                            onError={(e) => { e.currentTarget.src = '/placeholders/trop.jpg'; }}
+                            onError={(e) => {
+                              const t = e.currentTarget;
+                              if (!t.src.endsWith('/placeholders/trop.jpg')) {
+                                t.src = '/placeholders/trop.jpg';
+                              } else {
+                                t.style.display = 'none';
+                              }
+                            }}
                             alt={isl.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
@@ -571,9 +619,11 @@ export default function Home() {
                       </motion.div>
                     ))}
                   </div>
-                ) : (
-                  <div className="text-center py-12 text-slate-500 text-sm font-serif">
-                    条件に合う島を抽出しています...
+                ) : selectedCategory && (
+                  <div className="text-center py-12 text-slate-500">
+                    <p className="text-4xl mb-3">🏝️</p>
+                    <p className="font-bold">該当する島が見つかりませんでした</p>
+                    <p className="text-sm mt-1">別のカテゴリをお試しください</p>
                   </div>
                 )}
               </div>

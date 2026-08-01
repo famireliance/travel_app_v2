@@ -6,15 +6,17 @@ import { X, Upload, MapPin, CheckCircle2, AlertCircle, Camera, Navigation2, Shie
 import exifr from 'exifr';
 import { calculateDistanceKm } from '@/lib/geo';
 import { useTravel } from '@/context/TravelContext';
+import { Award } from 'lucide-react';
 
 interface CheckInModalProps {
   isOpen: boolean;
   onClose: () => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   island: any;
+  onOpenCertificate?: () => void;
 }
 
-export default function CheckInModal({ isOpen, onClose, island }: CheckInModalProps) {
+export default function CheckInModal({ isOpen, onClose, island, onOpenCertificate }: CheckInModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
   const [resultStatus, setResultStatus] = useState<'idle' | 'success' | 'error' | 'no_gps'>('idle');
@@ -38,7 +40,7 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
 
       if (!gpsData || typeof gpsData.latitude !== 'number' || typeof gpsData.longitude !== 'number') {
         setResultStatus('no_gps');
-        setErrorMessage('写真からGPS（位置情報）データが見つかりませんでした。撮影時の位置情報付加設定がオンになっているか確認してください。');
+        setErrorMessage('写真からGPS（位置情報）データが見つかりませんでした。\n\n※iPhone (iOS) をご利用の場合：\n写真選択画面の上部にある「オプション」から「位置情報」をオンにしてから選択してください（または「実際のサイズ」を選択）。\n\n※SNS・LINEから保存した写真には位置情報が含まれません。スマートフォンのカメラで直接撮影した元の写真をお選びください。');
         setIsProcessing(false);
         return;
       }
@@ -60,7 +62,9 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
       const distance = calculateDistanceKm(photoLat, photoLng, islandLat, islandLng);
       setDistanceInfo(distance);
 
-      const checkinRadiusKm = (island.checkin_radius_m || 3000) / 1000;
+      // 石垣島など細長い形状の島では、面積から算出した真円の半径だと市街地が範囲外になるため、2倍のバッファを持たせます
+      const baseRadiusKm = (island.checkin_radius_m || 3000) / 1000;
+      const checkinRadiusKm = Math.max(baseRadiusKm * 2.0, 5.0); // 最小でも5kmを保証
 
       // 閾値: checkinRadiusKm以内なら公式認定到達
       if (distance <= checkinRadiusKm) {
@@ -116,7 +120,9 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
         const distance = calculateDistanceKm(userLat, userLng, islandLat, islandLng);
         setDistanceInfo(distance);
 
-        const checkinRadiusKm = (island.checkin_radius_m || 3000) / 1000;
+        // 石垣島など細長い形状の島では、面積から算出した真円の半径だと市街地が範囲外になるため、2倍のバッファを持たせます
+        const baseRadiusKm = (island.checkin_radius_m || 3000) / 1000;
+        const checkinRadiusKm = Math.max(baseRadiusKm * 2.0, 5.0); // 最小でも5kmを保証
         if (distance <= checkinRadiusKm) {
           setResultStatus('success');
           addIslandVisit(island.id, island, 0, true);
@@ -263,7 +269,7 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
                     <AlertCircle className="w-6 h-6 text-rose-500 shrink-0" />
                     <h4 className="font-bold text-rose-800">認定できませんでした</h4>
                   </div>
-                  <p className="text-sm text-rose-600 leading-relaxed mb-4">
+                  <p className="text-sm text-rose-600 leading-relaxed mb-4 whitespace-pre-wrap">
                     {errorMessage}
                   </p>
                   <div className="flex justify-center">
@@ -277,10 +283,19 @@ export default function CheckInModal({ isOpen, onClose, island }: CheckInModalPr
                 </motion.div>
               )}
 
-              <div className="flex items-center justify-center">
+              <div className="flex flex-col gap-3 mt-4">
+                {resultStatus === 'success' && onOpenCertificate && (
+                  <button 
+                    onClick={onOpenCertificate}
+                    className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm transition-all shadow-xl flex items-center justify-center gap-2 animate-pulse"
+                  >
+                    <Award className="w-5 h-5" />
+                    公式認定証を見る / キャラカード獲得！
+                  </button>
+                )}
                 <button 
                   onClick={handleClose}
-                  className="w-full py-3.5 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition-all shadow-md"
+                  className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all shadow-md ${resultStatus === 'success' ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}
                 >
                   閉じる
                 </button>

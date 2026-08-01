@@ -15,6 +15,7 @@ import { getIslandDifficulty } from '@/lib/difficulty';
 import { getPlayerLevelInfo } from '@/lib/gamification';
 import { fetchAllIslands } from '@/lib/supabase';
 import { getGuideUrl, getAiCompanionUrl } from '@/lib/ecosystem';
+import toast from 'react-hot-toast';
 import Breadcrumb from '@/components/Breadcrumb';
 
 // SSR回避：高精細衛星マップコンポーネントの動的インポート
@@ -95,6 +96,11 @@ export default function GlobeTrackerPage() {
   const [mapZoom, setMapZoom] = useState<number>(5);
   const [mapStyleMode, setMapStyleMode] = useState<'satellite' | 'dark_ocean'>('satellite');
 
+  // 録画機能
+  const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
+
   // シネマティックツアー
   const [isTourPlaying, setIsTourPlaying] = useState<boolean>(false);
   const [tourStepIndex, setTourStepIndex] = useState<number>(0);
@@ -167,8 +173,45 @@ export default function GlobeTrackerPage() {
 
   // パスポートカードの確実なPNG保存
   const downloadHighResPassport = () => {
-    alert('現在の高精細衛星マップとフライト記録を、お使いの端末の写真アプリやプレビューにカード形式で保存します！');
-    window.print();
+    const canvas = document.querySelector('canvas');
+    if (!canvas) {
+      toast.error('保存するキャンバスが見つかりません');
+      return;
+    }
+    const link = document.createElement('a');
+    link.download = `kiratabi-passport-${Date.now()}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+  };
+
+  const handleStartRecording = () => {
+    const canvas = document.querySelector('canvas');
+    if (!canvas) {
+      toast.error('録画するキャンバスが見つかりません');
+      return;
+    }
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const stream = (canvas as any).captureStream(30);
+    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+    chunksRef.current = [];
+    recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
+    recorder.onstop = () => {
+      const blob = new Blob(chunksRef.current, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.download = `kiratabi-flight-${Date.now()}.webm`;
+      link.href = url;
+      link.click();
+      URL.revokeObjectURL(url);
+    };
+    recorder.start();
+    mediaRecorderRef.current = recorder;
+    setIsRecording(true);
+  };
+
+  const handleStopRecording = () => {
+    mediaRecorderRef.current?.stop();
+    setIsRecording(false);
   };
 
   // おすすめ未踏離島（次のターゲット）を3つ抽出
@@ -270,6 +313,24 @@ export default function GlobeTrackerPage() {
             <Camera className="w-4 h-4 text-slate-950" />
             <span>📸 高画質パスポート保存 (.PNG)</span>
           </button>
+
+          {isRecording ? (
+            <button
+              onClick={handleStopRecording}
+              className="px-5 py-3 rounded-2xl bg-red-600 hover:bg-red-500 text-white font-bold font-serif text-xs tracking-widest shadow-xl flex items-center gap-2 transition-all hover:scale-105"
+            >
+              <Pause className="w-4 h-4" />
+              <span>録画停止</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleStartRecording}
+              className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold font-serif text-xs tracking-widest shadow-xl flex items-center gap-2 transition-all hover:scale-105"
+            >
+              <Camera className="w-4 h-4" />
+              <span>SNS用動画録画開始</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -382,7 +443,18 @@ export default function GlobeTrackerPage() {
               </div>
               <div className="text-right">
                 <span className="text-[0.65rem] text-amber-400 font-bold block">TOTAL LOGGED ROUTE</span>
-                <span className="font-mono text-white text-sm font-bold">{(visitedList.length * 340).toLocaleString()} <span className="text-xs text-slate-400">km equivalent</span></span>
+                <span className="font-mono text-white text-sm font-bold">
+                  {Math.floor(visitedList.reduce((acc, island) => {
+                    const toRad = (deg: number) => deg * (Math.PI / 180);
+                    const R = 6371;
+                    const islandCoords = getIslandCoords(island);
+                    const dLat = toRad(islandCoords.lat - 35.65);
+                    const dLon = toRad(islandCoords.lng - 139.69);
+                    const a = Math.sin(dLat/2)**2 + Math.cos(toRad(35.65)) * Math.cos(toRad(islandCoords.lat)) * Math.sin(dLon/2)**2;
+                    const distKm = R * 2 * Math.atan2(Math.sqrt(Math.min(1,a)), Math.sqrt(1-Math.min(1,a)));
+                    return acc + distKm * 2;
+                  }, 0)).toLocaleString()} <span className="text-xs text-slate-400">km equivalent</span>
+                </span>
               </div>
             </div>
           </div>
@@ -425,7 +497,15 @@ export default function GlobeTrackerPage() {
                   <div className="bg-slate-950/80 p-3.5 rounded-2xl border border-white/10">
                     <span className="text-[0.65rem] text-slate-400 block font-mono">推定直線移動距離 (起点:東京港)</span>
                     <strong className="text-base font-mono text-amber-400 mt-1 block">
-                      約 {(Math.abs((getIslandCoords(selectedIsland).lat - 35.65) * 111)).toFixed(0)} km
+                      約 {(() => {
+                        const toRad = (deg: number) => deg * (Math.PI / 180);
+                        const R = 6371;
+                        const islandCoords = getIslandCoords(selectedIsland);
+                        const dLat = toRad(islandCoords.lat - 35.65);
+                        const dLon = toRad(islandCoords.lng - 139.69);
+                        const a = Math.sin(dLat/2)**2 + Math.cos(toRad(35.65)) * Math.cos(toRad(islandCoords.lat)) * Math.sin(dLon/2)**2;
+                        return (R * 2 * Math.atan2(Math.sqrt(Math.min(1,a)), Math.sqrt(1-Math.min(1,a)))).toFixed(0);
+                      })()} km
                     </strong>
                   </div>
                   <div className="bg-slate-950/80 p-3.5 rounded-2xl border border-white/10">

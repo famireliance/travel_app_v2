@@ -115,7 +115,14 @@ export default function RegionMap() {
         <MapClient islands={regionIslands} bounds={bounds} />
       </div>
 
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
+      <SearchModal 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        onSelectIsland={(island: any) => {
+          setIsSearchOpen(false);
+          router.push(`/island/${island.id}`);
+        }}
+      />
     </main>
   );
 }
