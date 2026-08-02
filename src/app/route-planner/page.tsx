@@ -1,10 +1,11 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Map, Calendar, Ship, ArrowLeft, ArrowRight, Loader2 } from 'lucide-react';
+import { Sparkles, Map, Calendar, Ship, ArrowLeft, ArrowRight, Loader2, Compass } from 'lucide-react';
 import Breadcrumb from '@/components/Breadcrumb';
 
 interface RoutePlan {
+  planType: string;
   title: string;
   description: string;
   totalEstimatedBudget: string;
@@ -24,7 +25,8 @@ export default function RoutePlannerPage() {
   const [preferences, setPreferences] = useState('');
   const [maxIslands, setMaxIslands] = useState(3);
   const [isLoading, setIsLoading] = useState(false);
-  const [result, setResult] = useState<RoutePlan | null>(null);
+  const [result, setResult] = useState<RoutePlan[] | null>(null);
+  const [activeTab, setActiveTab] = useState(0);
   const [errorMsg, setErrorMsg] = useState('');
 
   const handleGenerate = async () => {
@@ -49,6 +51,7 @@ export default function RoutePlannerPage() {
       }
 
       setResult(data);
+      setActiveTab(0);
     } catch (err: any) {
       console.error(err);
       setErrorMsg(err.message || 'エラーが発生しました。APIキーが設定されていない可能性があります。');
@@ -147,46 +150,71 @@ export default function RoutePlannerPage() {
           )}
         </div>
 
-        {/* AI Result Section */}
-        {result && !isLoading && (
+        {/* AI Result Section (Tabs for Multiple Plans) */}
+        {result && result.length > 0 && !isLoading && (
           <div className="animate-fade-in-up">
-            <h2 className="font-serif text-2xl font-bold text-slate-800 mb-2">{result.title}</h2>
-            <p className="text-slate-600 leading-relaxed mb-4">{result.description}</p>
-            <p className="text-sm font-bold text-amber-600 mb-8 bg-amber-50 inline-block px-3 py-1 rounded-full border border-amber-200">
-              💰 目安予算: {result.totalEstimatedBudget}
-            </p>
-
-            <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-blue-200 before:to-transparent">
-              {result.route.map((day, index) => (
-                <div key={index} className="relative flex items-start justify-between md:justify-normal md:odd:flex-row-reverse group">
-                  <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-md z-10">
-                    {day.day}
-                  </div>
-                  
-                  <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-2">
-                    <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-slate-800 text-lg flex items-center gap-2">
-                        {day.islandName}
-                      </h3>
-                      {day.islandId && (
-                        <button 
-                          onClick={() => router.push(`/island/${day.islandId}`)}
-                          className="text-[0.65rem] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full hover:bg-blue-100 flex items-center gap-1 transition-colors"
-                        >
-                          詳細 <ArrowRight size={10} />
-                        </button>
-                      )}
-                    </div>
-                    
-                    <p className="text-sm text-slate-600 leading-relaxed mb-4">{day.activity}</p>
-                    
-                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-start gap-2 text-xs font-medium text-slate-500">
-                      <Ship size={14} className="text-blue-400 mt-0.5 shrink-0" />
-                      <span>{day.transportation}</span>
-                    </div>
-                  </div>
-                </div>
+            <h2 className="font-serif text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+              <Compass className="w-6 h-6 text-blue-500" /> 
+              提案されたプラン
+            </h2>
+            
+            {/* Tabs */}
+            <div className="flex flex-wrap gap-2 mb-6">
+              {result.map((plan, index) => (
+                <button
+                  key={index}
+                  onClick={() => setActiveTab(index)}
+                  className={`px-4 py-2 rounded-full text-sm font-bold transition-all border ${
+                    activeTab === index 
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-md' 
+                      : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
+                  }`}
+                >
+                  {plan.planType || `プラン ${index + 1}`}
+                </button>
               ))}
+            </div>
+
+            {/* Tab Content */}
+            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+              <h3 className="font-serif text-xl md:text-2xl font-bold text-slate-800 mb-2">{result[activeTab].title}</h3>
+              <p className="text-slate-600 leading-relaxed mb-4">{result[activeTab].description}</p>
+              <p className="text-sm font-bold text-amber-600 mb-8 bg-amber-50 inline-block px-3 py-1 rounded-full border border-amber-200">
+                💰 目安予算: {result[activeTab].totalEstimatedBudget}
+              </p>
+
+              <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-blue-200 before:to-transparent">
+                {result[activeTab].route.map((day, index) => (
+                  <div key={index} className="relative flex items-start justify-between md:justify-normal md:odd:flex-row-reverse group">
+                    <div className="flex items-center justify-center w-10 h-10 rounded-full border-4 border-white bg-blue-500 text-white font-bold shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow-md z-10">
+                      {day.day}
+                    </div>
+                    
+                    <div className="w-[calc(100%-3rem)] md:w-[calc(50%-2.5rem)] bg-white p-5 rounded-2xl shadow-sm border border-slate-100 mb-2">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-bold text-slate-800 text-lg flex items-center gap-2">
+                          {day.islandName}
+                        </h4>
+                        {day.islandId && (
+                          <button 
+                            onClick={() => router.push(`/island/${day.islandId}`)}
+                            className="text-[0.65rem] font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full hover:bg-blue-100 flex items-center gap-1 transition-colors"
+                          >
+                            詳細 <ArrowRight size={10} />
+                          </button>
+                        )}
+                      </div>
+                      
+                      <p className="text-sm text-slate-600 leading-relaxed mb-4">{day.activity}</p>
+                      
+                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-start gap-2 text-xs font-medium text-slate-500">
+                        <Ship size={14} className="text-blue-400 mt-0.5 shrink-0" />
+                        <span>{day.transportation}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
@@ -194,3 +222,4 @@ export default function RoutePlannerPage() {
     </div>
   );
 }
+
