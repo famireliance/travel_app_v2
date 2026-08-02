@@ -40,18 +40,23 @@ export const GUIDE_FALLBACK_MAP: Record<string, string> = {
 };
 
 /**
- * 島の名前から「輝旅ガイド」の検索・またはカテゴリURLを生成します
+ * 島の名前とDBのガイドURLから「輝旅ガイド」のURLを生成します
+ * 404エラーを絶対に避けるため、DBに有効なURLがなければトップページ（クエリ付き）にフォールバックします。
  */
-export function getGuideUrl(islandName: string): string {
+export function getGuideUrl(islandName: string, dbGuideUrl?: string | null): string {
+  // 1. データベースに明示的なガイドURLがあればそれを最優先（404を回避するため確実なURLを使う）
+  if (dbGuideUrl && dbGuideUrl.startsWith('http')) {
+    return dbGuideUrl;
+  }
+
   if (!islandName) return ECOSYSTEM_CONFIG.guideBaseUrl;
   
-  // フォールバック辞書に存在すれば親島を使用
+  // 2. フォールバック辞書に存在すれば親島を使用
   const targetIsland = GUIDE_FALLBACK_MAP[islandName] || islandName;
   
-  // ガイド側が ?q= で動かない場合は ?s= (WordPress標準検索)を使用するか、
-  // もしくはタグ/カテゴリのURLにする（例: /tag/miyako）
-  // 今回は WordPress標準の ?s= 検索パラメータを利用する
-  return `${ECOSYSTEM_CONFIG.guideBaseUrl}/?s=${encodeURIComponent(targetIsland)}`;
+  // 3. 404を避けるため、安全なクエリパラメータ方式（/?s=島名 または /?island=島名）を使用
+  // これにより、ガイド側にまだ専用ページがなくてもトップページが表示され404になりません。
+  return `${ECOSYSTEM_CONFIG.guideBaseUrl}/?island=${encodeURIComponent(targetIsland)}`;
 }
 
 /**

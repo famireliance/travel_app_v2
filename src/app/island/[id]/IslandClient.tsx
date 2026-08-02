@@ -510,7 +510,7 @@ export default function IslandDetail() {
         {/* KIRATABI Guide Link */}
         <div className="mb-12">
           <a
-            href={getGuideUrl(island.name)}
+            href={getGuideUrl(island.name, island.guide_url)}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-3xl p-6 flex items-center justify-between group hover:shadow-md hover:border-blue-200 transition-all"

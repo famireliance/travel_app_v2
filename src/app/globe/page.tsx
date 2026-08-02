@@ -528,7 +528,7 @@ export default function GlobeTrackerPage() {
 
                   <div className="grid grid-cols-2 gap-2">
                     <a
-                      href={getGuideUrl(selectedIsland.name)}
+                      href={getGuideUrl(selectedIsland.name, selectedIsland.guide_url)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-blue-500/30 hover:border-blue-400 text-blue-300 font-bold text-[0.7rem] flex items-center justify-center gap-1.5 transition-all shadow-md group"
