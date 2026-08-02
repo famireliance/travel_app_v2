@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server';
-import OpenAI from 'openai';
 import { supabase } from '@/lib/supabase';
+import { GoogleGenAI, Type, Schema } from '@google/genai';
 
-// Helper to initialize OpenAI conditionally so the app doesn't crash if API key is missing
-const getOpenAIClient = () => {
-  if (!process.env.OPENAI_API_KEY) {
+// Helper to initialize Gemini conditionally so the app doesn't crash if API key is missing
+const getGeminiClient = () => {
+  if (!process.env.GEMINI_API_KEY) {
     return null;
   }
-  return new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY,
+  return new GoogleGenAI({
+    apiKey: process.env.GEMINI_API_KEY,
   });
 };
 
@@ -17,11 +17,11 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { startLocation, durationDays, preferences, maxIslands } = body;
 
-    const openai = getOpenAIClient();
+    const ai = getGeminiClient();
 
-    if (!openai) {
+    if (!ai) {
       return NextResponse.json(
-        { error: 'OPENAI_API_KEY is not configured in the environment variables.' },
+        { error: 'GEMINI_API_KEY is not configured in the environment variables.' },
         { status: 500 }
       );
     }
@@ -52,37 +52,44 @@ export async function POST(request: Request) {
 
 以下の島データベースから、最適なアイランドホッピング（島巡り）ルートを提案してください。
 データベース: ${islandsContext}
-
-【制約事項】
-必ず以下のJSON形式でのみ回答してください。余計なマークダウン(\`\`\`json)などは出力せず、純粋なJSON文字列のみを出力してください。
-{
-  "title": "ルートの魅力的なタイトル",
-  "description": "ルートの概要とアピールポイント（2〜3文）",
-  "totalEstimatedBudget": "予算の目安（例: 50,000円〜）",
-  "route": [
-    {
-      "day": 1,
-      "islandId": "データベースのID",
-      "islandName": "島名",
-      "activity": "その島でのおすすめの過ごし方",
-      "transportation": "次の目的地または拠点からの移動手段の目安"
-    }
-  ]
-}
 `;
 
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini',
-      messages: [
-        { role: 'system', content: 'You are a professional travel planner API that returns only JSON.' },
-        { role: 'user', content: prompt }
-      ],
-      temperature: 0.7,
-      max_tokens: 1500,
-      response_format: { type: 'json_object' }
+    // Define the expected JSON schema
+    const responseSchema: Schema = {
+      type: Type.OBJECT,
+      properties: {
+        title: { type: Type.STRING, description: "ルートの魅力的なタイトル" },
+        description: { type: Type.STRING, description: "ルートの概要とアピールポイント（2〜3文）" },
+        totalEstimatedBudget: { type: Type.STRING, description: "予算の目安（例: 50,000円〜）" },
+        route: {
+          type: Type.ARRAY,
+          items: {
+            type: Type.OBJECT,
+            properties: {
+              day: { type: Type.INTEGER, description: "何日目か" },
+              islandId: { type: Type.STRING, description: "データベースのID" },
+              islandName: { type: Type.STRING, description: "島名" },
+              activity: { type: Type.STRING, description: "その島でのおすすめの過ごし方" },
+              transportation: { type: Type.STRING, description: "次の目的地または拠点からの移動手段の目安" }
+            },
+            required: ["day", "islandId", "islandName", "activity", "transportation"]
+          }
+        }
+      },
+      required: ["title", "description", "totalEstimatedBudget", "route"]
+    };
+
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.5-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: responseSchema,
+        temperature: 0.7,
+      }
     });
 
-    const aiContent = response.choices[0]?.message?.content;
+    const aiContent = response.text;
     
     if (!aiContent) {
       throw new Error('AI returned empty response');
