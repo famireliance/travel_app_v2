@@ -8,6 +8,7 @@ import { useTravel } from '@/context/TravelContext';
 import { COMPANION_CHARACTERS, CompanionId } from '@/lib/companion';
 import { getPlayerLevelInfo } from '@/lib/gamification';
 import { FAIRIES_MASTER } from '@/lib/fairies';
+import CharacterViewerModal from '@/components/CharacterViewerModal';
 
 type ViewMode = 'COMPANION' | 'FAIRIES';
 
@@ -20,6 +21,7 @@ export default function CompanionPage() {
   const [activeTab, setActiveTab] = useState<CompanionId>(selectedCompanionId);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedFairy, setSelectedFairy] = useState<any | null>(null);
+  const [viewingCharacter, setViewingCharacter] = useState<{image?: string, icon?: string, name: string, theme?: string, description?: string, badgeGradient?: string} | null>(null);
   const activeViewChar = COMPANION_CHARACTERS[activeTab];
 
   return (
@@ -112,14 +114,25 @@ export default function CompanionPage() {
                   </motion.div>
                 </div>
 
-                {/* Right: Big Avatar */}
                 <motion.div 
                   initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8, type: 'spring' }}
-                  className="w-full max-w-md shrink-0 relative"
+                  className="w-full max-w-md shrink-0 relative cursor-pointer group"
+                  onClick={() => setViewingCharacter({
+                    image: companionStage.image,
+                    icon: companionStage.icon,
+                    name: companionStage.name,
+                    theme: companionChar.theme,
+                    description: companionChar.description,
+                    badgeGradient: companionStage.badgeGradient
+                  })}
                 >
-                  <div className="absolute inset-0 bg-blue-500/20 blur-[80px] rounded-full" />
-                  <div className={`w-full aspect-square rounded-[3rem] bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-[120px] shadow-2xl border-4 border-white/20 relative z-10`}>
-                    {companionStage.icon}
+                  <div className="absolute inset-0 bg-blue-500/20 blur-[80px] rounded-full group-hover:bg-blue-400/30 transition-colors" />
+                  <div className={`w-full aspect-square rounded-[3rem] bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-[120px] shadow-2xl border-4 border-white/20 relative z-10 overflow-hidden p-8 group-hover:border-white/40 transition-colors`}>
+                    {companionStage.image ? (
+                      <img src={companionStage.image} alt={companionStage.name} className="w-full h-full object-contain drop-shadow-2xl animate-[float_4s_ease-in-out_infinite] group-hover:scale-105 transition-transform" />
+                    ) : (
+                      <>{companionStage.icon}</>
+                    )}
                   </div>
                   <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-slate-900 border border-white/20 px-6 py-3 rounded-2xl shadow-xl z-20 flex items-center gap-3 w-max">
                     <Shield className="w-5 h-5 text-amber-400" />
@@ -219,8 +232,26 @@ export default function CompanionPage() {
                                 <span className="text-[10px] font-bold text-emerald-400">UNLOCKED</span>
                               )}
                             </div>
-                            <div className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${st.badgeGradient} flex items-center justify-center text-4xl shadow-lg border border-white/30 mb-6`}>
-                              {st.icon}
+                            <div 
+                              className={`w-20 h-20 mx-auto rounded-2xl bg-gradient-to-br ${st.badgeGradient} flex items-center justify-center text-4xl shadow-lg border border-white/30 mb-6 p-2 overflow-hidden ${isUnlocked ? 'cursor-pointer hover:scale-110 hover:shadow-[0_0_20px_rgba(255,255,255,0.3)] transition-all' : ''}`}
+                              onClick={() => {
+                                if (isUnlocked) {
+                                  setViewingCharacter({
+                                    image: st.image,
+                                    icon: st.icon,
+                                    name: st.name,
+                                    theme: activeViewChar.theme,
+                                    description: activeViewChar.description,
+                                    badgeGradient: st.badgeGradient
+                                  });
+                                }
+                              }}
+                            >
+                              {st.image ? (
+                                <img src={st.image} alt={st.name} className={`w-full h-full object-contain ${!isUnlocked ? 'opacity-50 grayscale' : 'drop-shadow-md'}`} />
+                              ) : (
+                                <>{st.icon}</>
+                              )}
                             </div>
                             <div className="text-center mb-6">
                               <h5 className="font-bold text-lg mb-1">{st.name}</h5>
@@ -353,21 +384,18 @@ export default function CompanionPage() {
         )}
       </main>
 
-      {selectedFairy && (
-        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-sm" onClick={() => setSelectedFairy(null)}>
-          <div className="bg-slate-900 border border-slate-700 rounded-3xl p-8 max-w-sm w-full mx-4 text-center relative z-10" onClick={(e) => e.stopPropagation()}>
-            {selectedFairy.visual?.imageUrl ? (
-              <img src={selectedFairy.visual.imageUrl} alt={selectedFairy.name} className="w-32 h-32 mx-auto mb-4 object-contain" />
-            ) : (
-              <div className="text-[80px] mb-4">{selectedFairy.visual?.icon}</div>
-            )}
-            <h2 className="text-xl font-bold text-white mb-1">{selectedFairy.name}</h2>
-            <p className="text-sm text-slate-400 mb-3">{selectedFairy.description || 'まだ詳細情報がありません。'}</p>
-            <p className="text-xs text-amber-400">📍 {selectedFairy.region_id} エリア</p>
-            <button onClick={() => setSelectedFairy(null)} className="mt-6 px-6 py-2 bg-slate-700 hover:bg-slate-600 text-white rounded-xl text-sm font-bold transition-colors">閉じる</button>
-          </div>
-        </div>
-      )}
+      <CharacterViewerModal
+        isOpen={!!viewingCharacter || !!selectedFairy}
+        onClose={() => { setViewingCharacter(null); setSelectedFairy(null); }}
+        image={viewingCharacter?.image || selectedFairy?.visual?.imageUrl}
+        icon={viewingCharacter?.icon || selectedFairy?.visual?.icon}
+        name={viewingCharacter?.name || selectedFairy?.name || ''}
+        theme={viewingCharacter?.theme || selectedFairy?.theme}
+        description={viewingCharacter?.description || selectedFairy?.description}
+        badgeGradient={viewingCharacter?.badgeGradient || (selectedFairy ? `from-${selectedFairy.visual?.colorFrom?.replace('from-','')} to-${selectedFairy.visual?.colorTo?.replace('to-','')}` : undefined)}
+        metDate={selectedFairy && collectedFairyDates[selectedFairy.id] ? new Date(collectedFairyDates[selectedFairy.id]).toLocaleString('ja-JP', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}) : undefined}
+        metLocation={selectedFairy?.region_id}
+      />
     </div>
   );
 }

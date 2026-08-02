@@ -35,7 +35,11 @@ export default function IslandDetail() {
 
   const handleStatusChange = (newStatus: 'visited' | 'planning' | 'verified_visited') => {
     if (newStatus === 'visited') {
-      addIslandVisit(islandId as string, island, 0, false);
+      const result = addIslandVisit(islandId as string, island, 0, false);
+      if (result.error === 'already_visited_today') {
+        alert('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+        return;
+      }
       setIsCertModalOpen(true);
     } else {
       updateStatus(islandId as string, newStatus);
@@ -418,6 +422,27 @@ export default function IslandDetail() {
             </div>
           </div>
         )}
+
+        {/* KIRATABI Guide Link */}
+        <div className="mb-12">
+          <a
+            href={getGuideUrl(island.name)}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-3xl p-6 flex items-center justify-between group hover:shadow-md hover:border-blue-200 transition-all"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center text-blue-600 shadow-sm border border-blue-50 group-hover:scale-110 transition-transform">
+                <BookOpen size={24} />
+              </div>
+              <div>
+                <h3 className="font-bold text-slate-800 text-sm md:text-base">KIRATABIガイドで詳しく見る</h3>
+                <p className="text-xs text-slate-500 mt-1">観光スポットやアクセス情報をチェック</p>
+              </div>
+            </div>
+            <ExternalLink size={20} className="text-blue-300 group-hover:text-blue-500 group-hover:translate-x-1 transition-all" />
+          </a>
+        </div>
 
         {/* Interactive Location MiniMap */}
         <div className="mb-12">

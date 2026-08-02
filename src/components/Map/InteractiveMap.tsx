@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap } from 'react-le
 import 'leaflet/dist/leaflet.css';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
+import { getIslandDifficulty } from '@/lib/difficulty';
 
 interface InteractiveMapProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -65,11 +66,12 @@ export default function InteractiveMap({ islands, bounds, zoom = 5 }: Interactiv
         const status = islandStatuses[island.id] || 'none';
         const isVisited = status === 'visited' || status === 'verified_visited';
         const isPlanning = status === 'planning';
+        const isRestricted = getIslandDifficulty(island).level === 0;
 
-        const markerColor = isVisited ? '#F59E0B' : isPlanning ? '#3B82F6' : '#94A3B8';
-        const borderColor = isVisited ? '#92400E' : isPlanning ? '#1E3A8A' : '#334155';
-        const markerRadius = isVisited ? 12 : isPlanning ? 10 : 8;
-        const markerWeight = isVisited ? 3.5 : isPlanning ? 2.5 : 2;
+        const markerColor = isRestricted ? '#CBD5E1' : isVisited ? '#F59E0B' : isPlanning ? '#3B82F6' : '#94A3B8';
+        const borderColor = isRestricted ? '#94A3B8' : isVisited ? '#92400E' : isPlanning ? '#1E3A8A' : '#334155';
+        const markerRadius = isRestricted ? 5 : isVisited ? 12 : isPlanning ? 10 : 8;
+        const markerWeight = isRestricted ? 1 : isVisited ? 3.5 : isPlanning ? 2.5 : 2;
 
         return (
           <CircleMarker
@@ -89,7 +91,9 @@ export default function InteractiveMap({ islands, bounds, zoom = 5 }: Interactiv
             }}
           >
             <Tooltip direction="top" offset={[0, -10]} opacity={1} permanent={false}>
-              {isVisited ? (
+              {isRestricted ? (
+                <span className="font-serif tracking-widest text-slate-500 font-bold flex items-center gap-1">⛔ 【上陸不可】{island.name}</span>
+              ) : isVisited ? (
                 <span className="font-serif tracking-widest text-amber-900 font-bold flex items-center gap-1">👑 【到達済】{island.name}</span>
               ) : isPlanning ? (
                 <span className="font-serif tracking-widest text-blue-900 font-bold flex items-center gap-1">⭐️ 【行きたい】{island.name}</span>

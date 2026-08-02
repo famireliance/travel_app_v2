@@ -56,7 +56,7 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] bg-[#F8FAFC]/95 backdrop-blur-xl flex flex-col pt-24 px-6 font-sans"
+          className="fixed inset-0 z-[9999] bg-[#F8FAFC]/95 backdrop-blur-xl flex flex-col pt-20 px-6 font-sans h-[100dvh] w-screen"
         >
           <button 
             onClick={onClose}
@@ -65,10 +65,10 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
             <X size={32} strokeWidth={1} />
           </button>
 
-          <div className="w-full max-w-2xl mx-auto flex flex-col items-center">
-            <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-slate-400 mb-8">Search Islands</h2>
+          <div className="w-full max-w-2xl mx-auto flex flex-col items-center h-full">
+            <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-slate-400 mb-8 shrink-0">Search Islands</h2>
             
-            <div className="relative w-full mb-12">
+            <div className="relative w-full mb-8 shrink-0">
               <Search className="absolute left-0 top-1/2 -translate-y-1/2 w-8 h-8 text-slate-300" strokeWidth={1} />
               <input 
                 type="text" 
@@ -80,7 +80,7 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
               />
             </div>
 
-            <div className="w-full max-h-[50vh] overflow-y-auto pr-4">
+            <div className="flex-1 w-full overflow-y-auto pr-4 pb-24">
               {loading && <div className="text-center text-slate-400 tracking-widest text-sm">検索中...</div>}
               
               {!loading && results.length > 0 && (

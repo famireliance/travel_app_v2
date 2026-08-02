@@ -24,7 +24,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
   const [distanceInfo, setDistanceInfo] = useState<number | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addIslandVisit, updateStatus } = useTravel();
+  const { addIslandVisit, updateStatus, setTempCheckInPhotoUrl, setTempCheckInDate } = useTravel();
 
 
 
@@ -43,6 +43,31 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
         setErrorMessage('写真からGPS（位置情報）データが見つかりませんでした。\n\n※iPhone (iOS) をご利用の場合：\n写真選択画面の上部にある「オプション」から「位置情報」をオンにしてから選択してください（または「実際のサイズ」を選択）。\n\n※SNS・LINEから保存した写真には位置情報が含まれません。スマートフォンのカメラで直接撮影した元の写真をお選びください。');
         setIsProcessing(false);
         return;
+      }
+
+      // Try to extract date
+      const fullExif = await exifr.parse(file, ['DateTimeOriginal', 'CreateDate']);
+      let parsedDateStr = null;
+      if (fullExif) {
+        const dateObj = fullExif.DateTimeOriginal || fullExif.CreateDate;
+        if (dateObj instanceof Date && !isNaN(dateObj.getTime())) {
+          parsedDateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
+        }
+      }
+
+      // Read file to data URL so we can pass it to the certificate modal
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result as string;
+        setTempCheckInPhotoUrl(dataUrl);
+      };
+      reader.readAsDataURL(file);
+
+      if (parsedDateStr) {
+        setTempCheckInDate(parsedDateStr);
+      } else {
+        const today = new Date();
+        setTempCheckInDate(`${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`);
       }
 
       const photoLat = gpsData.latitude;
@@ -68,9 +93,13 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
 
       // 閾値: checkinRadiusKm以内なら公式認定到達
       if (distance <= checkinRadiusKm) {
-        setResultStatus('success');
-        addIslandVisit(island.id, island, 0, true);
-        // 自動で閉じるタイマーをセットするか、ユーザーに手動で閉じさせるか。ここでは手動で結果を見せる
+        const result = addIslandVisit(island.id, island, 0, true);
+        if (result.error === 'already_visited_today') {
+          setResultStatus('error');
+          setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+        } else {
+          setResultStatus('success');
+        }
       } else {
         setResultStatus('error');
         setErrorMessage(`島の中心から ${distance.toFixed(1)}km 離れています（判定基準: ${checkinRadiusKm.toFixed(1)}km以内）。現地で撮影された写真か確認してください。`);
@@ -124,8 +153,13 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
         const baseRadiusKm = (island.checkin_radius_m || 3000) / 1000;
         const checkinRadiusKm = Math.max(baseRadiusKm * 2.0, 5.0); // 最小でも5kmを保証
         if (distance <= checkinRadiusKm) {
-          setResultStatus('success');
-          addIslandVisit(island.id, island, 0, true);
+          const result = addIslandVisit(island.id, island, 0, true);
+          if (result.error === 'already_visited_today') {
+            setResultStatus('error');
+            setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+          } else {
+            setResultStatus('success');
+          }
         } else {
           setResultStatus('error');
           setErrorMessage(`現在地は島の中心から ${distance.toFixed(1)}km 離れています（判定基準: ${checkinRadiusKm.toFixed(1)}km以内）。`);
@@ -152,6 +186,12 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
     onClose();
   };
 
+  const handleOpenCertificate = () => {
+    if (onOpenCertificate) {
+      onOpenCertificate();
+    }
+  };
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -171,7 +211,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
             <div className="bg-slate-900 px-6 py-5 flex items-center justify-between">
               <div className="flex items-center gap-2 text-white">
                 <ShieldCheck className="w-5 h-5 text-blue-400" />
-                <h3 className="font-bold tracking-widest text-sm">公式到達認定チェックイン</h3>
+                <h3 className="font-bold tracking-widest text-sm">KIRATABI公認 到達認定チェックイン</h3>
               </div>
               <button onClick={handleClose} className="p-1 rounded-full text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
                 <X className="w-5 h-5" />
@@ -286,11 +326,11 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
               <div className="flex flex-col gap-3 mt-4">
                 {resultStatus === 'success' && onOpenCertificate && (
                   <button 
-                    onClick={onOpenCertificate}
+                    onClick={handleOpenCertificate}
                     className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm transition-all shadow-xl flex items-center justify-center gap-2 animate-pulse"
                   >
                     <Award className="w-5 h-5" />
-                    公式認定証を見る / キャラカード獲得！
+                    公認証明書を見る / キャラカード獲得！
                   </button>
                 )}
                 <button 

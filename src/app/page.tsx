@@ -12,8 +12,19 @@ import CompanionModal from '@/components/CompanionModal';
 import { useTravel } from '@/context/TravelContext';
 import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import BannerCarousel from '@/components/BannerCarousel';
+import { calculateDistanceKm } from '@/lib/geo';
+
 
 const ALL_ISLANDS_COUNT = 432;
+
+const getIslandIdFromLocation = (location: string) => {
+  if (location.includes('西表')) return 'iriomote';
+  if (location.includes('小笠原')) return 'ogasawara';
+  if (location.includes('与那国')) return 'yonaguni';
+  if (location.includes('宮古')) return 'miyako';
+  if (location.includes('粟国')) return 'aguni';
+  return null;
+};
 
 export default function Home() {
   const router = useRouter();
@@ -31,6 +42,7 @@ export default function Home() {
   const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
+  const [selectedAreaTab, setSelectedAreaTab] = useState<string>('全て');
   const { user, totalVisited, companionChar, companionStage, islandStatuses, totalPoints } = useTravel();
   const { scrollY } = useScroll();
   const headerY = useTransform(scrollY, [0, 500], [0, 150]);
@@ -326,9 +338,17 @@ export default function Home() {
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[0] : slides[0].title[0]}<br />
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[1] : slides[0].title[1]}
                 </h1>
-                <div className="flex items-center gap-2 text-white/90 mb-4 bg-black/20 backdrop-blur-sm w-fit px-3 py-1.5 rounded-full border border-white/10">
-                  <MapPin size={14} className="opacity-80" />
+                <div 
+                  className="flex items-center gap-2 text-white/90 mb-4 bg-black/20 hover:bg-black/40 backdrop-blur-sm w-fit px-3 py-1.5 rounded-full border border-white/10 cursor-pointer transition-colors group/loc"
+                  onClick={() => {
+                    const loc = isMounted && slides[currentSlide] ? slides[currentSlide].location : slides[0].location;
+                    const id = getIslandIdFromLocation(loc);
+                    if (id) router.push(`/island/${id}`);
+                  }}
+                >
+                  <MapPin size={14} className="opacity-80 group-hover/loc:scale-110 transition-transform" />
                   <span className="text-xs font-medium tracking-widest">{isMounted && slides[currentSlide] ? slides[currentSlide].location : slides[0].location}</span>
+                  <ArrowRight size={14} className="ml-1 opacity-50 group-hover/loc:opacity-100 group-hover/loc:translate-x-1 transition-all" />
                 </div>
               </motion.div>
             </AnimatePresence>
@@ -361,26 +381,25 @@ export default function Home() {
             <div className="flex justify-between items-end mb-4 relative z-10">
               <div>
                 <p className="text-[0.6rem] font-medium text-white/60 tracking-[0.2em] uppercase mb-1">Your Voyage</p>
-                <h2 className="font-serif text-base text-white tracking-wider">全国踏破率</h2>
+                <h2 className="font-serif text-base text-white tracking-wider">到達アイランド</h2>
               </div>
               <div className="text-right">
-                <span className="font-serif text-3xl font-light text-white tracking-tighter">{progressPct.toFixed(1)}</span>
-                <span className="text-xs font-light text-white/70 ml-1">%</span>
+                <span className="font-serif text-3xl font-light text-white tracking-tighter">{totalVisited}</span>
+                <span className="text-xs font-light text-white/70 ml-1">島</span>
               </div>
             </div>
             
             <div className="w-full h-[2px] bg-white/20 rounded-full overflow-hidden relative z-10">
               <motion.div 
                 initial={{ width: 0 }}
-                animate={{ width: `${progressPct}%` }}
+                animate={{ width: `100%` }}
                 transition={{ duration: 2, ease: "circOut", delay: 0.5 }}
-                className="h-full bg-white rounded-full shadow-[0_0_10px_rgba(255,255,255,0.8)]"
+                className="h-full bg-amber-400 rounded-full shadow-[0_0_10px_rgba(251,191,36,0.8)]"
               />
             </div>
             <div className="flex justify-between items-center mt-3 text-[0.6rem] font-medium text-white/70 tracking-widest relative z-10">
-              <span>踏破 {totalVisited} 島</span>
-              <span className="text-amber-300">★ {totalPoints.toLocaleString()} pt</span>
-              <span>残り {ALL_ISLANDS_COUNT - totalVisited} 島</span>
+              <span className="text-white">日本全国離島めぐり</span>
+              <span className="text-amber-300">★ 累計 {totalPoints.toLocaleString()} pt</span>
             </div>
 
             {/* 守護パートナー精霊・進化ステータスウィジェット */}
@@ -411,6 +430,67 @@ export default function Home() {
                 </div>
               </div>
             )}
+
+            {/* 現在地からチェックインボタン */}
+            <div className="mt-4 relative z-10">
+              <button 
+                onClick={() => {
+                  if (!navigator.geolocation) {
+                    alert('お使いのブラウザは位置情報機能（GPS）をサポートしていません。');
+                    return;
+                  }
+                  const btn = document.getElementById('top-checkin-btn-text');
+                  if (btn) btn.innerText = 'GPSで検索中...';
+                  
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      const { latitude: userLat, longitude: userLng } = position.coords;
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      let closestIsland: any = null;
+                      let minDistance = Infinity;
+
+                      allIslands.forEach(island => {
+                        if (island.coordinates) {
+                          const [islandLatStr, islandLngStr] = island.coordinates.split(',').map((s: string) => s.trim());
+                          const distance = calculateDistanceKm(userLat, userLng, parseFloat(islandLatStr), parseFloat(islandLngStr));
+                          if (distance < minDistance) {
+                            minDistance = distance;
+                            closestIsland = island;
+                          }
+                        }
+                      });
+
+                      if (closestIsland) {
+                        router.push(`/island/${closestIsland.id}`);
+                      } else {
+                        if (btn) btn.innerText = '現在地からチェックイン';
+                        alert('島データが見つかりませんでした。');
+                      }
+                    },
+                    (error) => {
+                      if (btn) btn.innerText = '現在地からチェックイン';
+                      alert('現在地の取得に失敗しました。GPSを許可してください。');
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                  );
+                }}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.02]"
+              >
+                <MapPin size={18} />
+                <span id="top-checkin-btn-text">現在地からチェックイン</span>
+              </button>
+            </div>
+
+            {/* AIルートプランナーへのリンク */}
+            <div className="mt-3 relative z-10">
+              <button 
+                onClick={() => router.push('/route-planner')}
+                className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold tracking-widest text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+              >
+                <Sparkles size={16} className="text-amber-300" />
+                <span>AI アイランドホッピング提案</span>
+              </button>
+            </div>
           </div>
         </motion.div>
       </div>
@@ -461,8 +541,8 @@ export default function Home() {
       {/* Refined Categories & In-page Curated Results */}
       <div className={`px-8 lg:px-12 py-20 lg:py-28 bg-white border-b border-slate-100 ${isMounted && allIslands.filter(i => i.is_featured).length > 0 ? 'pt-10 lg:pt-10 border-t border-slate-100' : ''}`}>
         <div className="mb-12 text-center">
-          <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">CURATED THEMES & PARTNERS</p>
-          <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest">目的から探す＆進化パートナー</h2>
+          <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">EVOLUTION PARTNERS</p>
+          <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest">進化パートナー精霊</h2>
           <div className="w-12 h-[1.5px] bg-blue-600 mx-auto mt-6" />
 
           {/* キャラクター図鑑ダイレクトアクセスボタン */}
@@ -483,8 +563,14 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        <div className="mt-20 mb-12 text-center">
+          <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">CURATED THEMES</p>
+          <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest">目的から探す</h2>
+          <div className="w-12 h-[1.5px] bg-blue-600 mx-auto mt-6" />
+        </div>
         
-        <div className="flex justify-start md:justify-center gap-6 md:gap-14 overflow-x-auto hide-scrollbar -mx-8 px-8 snap-x pb-6">
+        <div className="flex justify-start md:justify-center gap-4 md:gap-8 overflow-x-auto hide-scrollbar -mx-8 px-8 snap-x pb-6">
           {[
             { id: 'transparency', icon: Droplets, label: '海の透明度', badge: 'ブルー・サンゴ' },
             { id: 'stars', icon: Moon, label: '星空保護区', badge: 'ダークスカイ' },
@@ -640,9 +726,27 @@ export default function Home() {
           <div className="w-12 h-[1px] bg-slate-300 mx-auto mt-6" />
         </div>
 
+        {/* Area Tabs */}
+        <div className="flex flex-wrap justify-center gap-2 lg:gap-4 mb-12">
+          {['全て', ...Array.from(new Set(allRegions.map(r => r.area)))].map(tab => (
+            <button
+              key={tab}
+              onClick={() => setSelectedAreaTab(tab)}
+              className={`px-4 py-2 rounded-full text-xs font-bold transition-all border ${
+                selectedAreaTab === tab 
+                  ? 'bg-slate-900 text-white border-slate-900 shadow-md scale-105'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-slate-400 hover:bg-slate-50'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+
         {/* Group by Area */}
         {Object.entries(
           allRegions.reduce((acc, region) => {
+            if (selectedAreaTab !== '全て' && region.area !== selectedAreaTab) return acc;
             if (!acc[region.area]) acc[region.area] = [];
             acc[region.area].push(region);
             return acc;

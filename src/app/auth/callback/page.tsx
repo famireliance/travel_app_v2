@@ -3,6 +3,7 @@
 import { useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { translateAuthError } from '@/lib/authHelpers';
 
 function AuthCallbackContent() {
   const router = useRouter();
@@ -14,7 +15,9 @@ function AuthCallbackContent() {
     const errorDescription = searchParams.get('error_description');
 
     if (error) {
-      router.replace(`/?auth_error=${encodeURIComponent(errorDescription || error)}`);
+      const errorMsg = errorDescription || error;
+      const translated = translateAuthError(errorMsg);
+      router.replace(`/?auth_error=${encodeURIComponent(translated)}`);
       return;
     }
 

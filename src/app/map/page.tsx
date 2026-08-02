@@ -85,6 +85,9 @@ function GlobalMapContent() {
       if (minLat === maxLat && minLng === maxLng) {
         return [[minLat - 0.1, minLng - 0.1], [maxLat + 0.1, maxLng + 0.1]] as [[number, number], [number, number]];
       }
+      if (!regionParam && !filterParam && !manualBounds) {
+        return [[31, 129], [44, 145]] as [[number, number], [number, number]];
+      }
       const latPad = (maxLat - minLat) * 0.15 || 0.5;
       const lngPad = (maxLng - minLng) * 0.15 || 0.5;
       return [[minLat - latPad, minLng - lngPad], [maxLat + latPad, maxLng + lngPad]] as [[number, number], [number, number]];
@@ -200,20 +203,20 @@ function GlobalMapContent() {
       </div>
 
       {/* Floating Legend & Filter Bar */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-xl border border-slate-700 px-6 py-3.5 rounded-full shadow-2xl flex items-center gap-6 pointer-events-auto">
-        <div className="flex items-center gap-2 text-xs font-bold text-amber-400">
-          <span className="w-3 h-3 rounded-full bg-amber-500 inline-block border border-amber-300 shadow-sm" />
-          👑 行った島: <strong className="text-white text-sm font-serif">{visitedCount}</strong>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-xl border border-slate-700 px-4 sm:px-6 py-3 rounded-full shadow-2xl flex flex-nowrap items-center gap-3 sm:gap-6 pointer-events-auto w-max max-w-[95vw] overflow-x-auto hide-scrollbar">
+        <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-amber-400 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500 inline-block border border-amber-300 shadow-sm" />
+          👑 行った島: <strong className="text-white text-xs sm:text-sm font-serif">{visitedCount}</strong>
         </div>
-        <div className="h-4 w-px bg-slate-700" />
-        <div className="flex items-center gap-2 text-xs font-bold text-blue-400">
-          <span className="w-3 h-3 rounded-full bg-blue-500 inline-block border border-blue-300 shadow-sm" />
-          ⭐️ 行きたい島: <strong className="text-white text-sm font-serif">{planningCount}</strong>
+        <div className="h-4 w-px bg-slate-700 shrink-0" />
+        <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-blue-400 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500 inline-block border border-blue-300 shadow-sm" />
+          ⭐️ 行きたい島: <strong className="text-white text-xs sm:text-sm font-serif">{planningCount}</strong>
         </div>
-        <div className="h-4 w-px bg-slate-700 hidden sm:block" />
-        <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-slate-300">
-          <span className="w-3 h-3 rounded-full bg-white inline-block border border-slate-500 shadow-sm" />
-          📍 表示中 <strong className="text-white text-sm font-serif">{filteredIslands.length}</strong> 島
+        <div className="h-4 w-px bg-slate-700 hidden sm:block shrink-0" />
+        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-slate-300 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white inline-block border border-slate-500 shadow-sm" />
+          📍 表示中 <strong className="text-white text-xs sm:text-sm font-serif">{filteredIslands.length}</strong> 島
         </div>
       </div>
 

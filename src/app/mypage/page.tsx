@@ -11,11 +11,12 @@ import { calculateDifficultyStats, getIslandDifficulty } from '@/lib/difficulty'
 import { getPlayerLevelInfo, getIslandMastery, getSpecialTitles } from '@/lib/gamification';
 import { FAIRIES_MASTER } from '@/lib/fairies';
 import Breadcrumb from '@/components/Breadcrumb';
+import CharacterViewerModal from '@/components/CharacterViewerModal';
 import toast from 'react-hot-toast';
 
 export default function MyPage() {
   const router = useRouter();
-  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, totalPoints, conquestTargetCount, visitCounts, spotsVisited, updateStatus } = useTravel();
+  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, bio, updateBio, totalPoints, conquestTargetCount, visitCounts, spotsVisited, updateStatus, companionChar, companionStage, collectedFairies, collectedFairyDates } = useTravel();
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
@@ -38,13 +39,13 @@ export default function MyPage() {
   }, [allIslandsData, visitCounts]);
   const [isEditingName, setIsEditingName] = useState(false);
   const [nameInput, setNameInput] = useState(travelerName || '');
-  const [bio, setBio] = useState('');
   const [isEditingBio, setIsEditingBio] = useState(false);
-  const [bioInput, setBioInput] = useState('');
+  const [bioInput, setBioInput] = useState(bio || '');
   const [myDiaries, setMyDiaries] = useState<any[]>([]);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [selectedIslandForCert, setSelectedIslandForCert] = useState<any>(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [viewingCharacter, setViewingCharacter] = useState<{image?: string, icon?: string, name: string, theme?: string, description?: string, badgeGradient?: string, metDate?: string, metLocation?: string} | null>(null);
 
   const [openSections, setOpenSections] = useState<Set<string>>(new Set(['profile', 'fairies', 'recent', 'quests', 'titles', 'certs', 'diaries', 'planning']));
   const toggleSection = (id: string) => {
@@ -59,18 +60,7 @@ export default function MyPage() {
     setNameInput(travelerName || '');
   }, [travelerName]);
 
-  useEffect(() => {
-    const loadBio = async () => {
-      if (!user) return;
-      try {
-        const { data } = await supabase.from('user_profiles').select('bio').eq('id', user.id).single();
-        if (data?.bio) setBio(data.bio);
-      } catch (e) {
-        console.error('Failed to load bio', e);
-      }
-    };
-    loadBio();
-  }, [user]);
+
 
   useEffect(() => {
     Promise.all([
@@ -124,11 +114,8 @@ export default function MyPage() {
   const handleSaveBio = async (e: React.FormEvent) => {
     e.preventDefault();
     const newBio = bioInput.trim();
-    setBio(newBio);
+    updateBio(newBio);
     setIsEditingBio(false);
-    if (user) {
-      await supabase.from('user_profiles').update({ bio: newBio }).eq('id', user.id);
-    }
     toast.success('自己紹介を更新しました');
   };
 
@@ -302,6 +289,59 @@ export default function MyPage() {
           </div>
         </div>
 
+        {/* Companion Character Banner */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-rose-500/10 backdrop-blur-xl rounded-3xl p-6 md:p-8 border border-amber-500/20 shadow-lg flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-5" />
+          <div className="absolute -left-10 -bottom-10 w-48 h-48 bg-amber-500/20 rounded-full blur-3xl pointer-events-none" />
+          
+          <div className="flex flex-col md:flex-row items-center gap-6 z-10 w-full text-center md:text-left">
+            {companionStage.image ? (
+              <div 
+                className="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-white/10 p-2 shadow-inner border border-white/20 shrink-0 relative cursor-pointer group hover:border-white/40 transition-colors"
+                onClick={() => setViewingCharacter({
+                  image: companionStage.image,
+                  icon: companionStage.icon,
+                  name: companionStage.name,
+                  theme: companionChar?.theme,
+                  description: companionChar?.description || companionStage.skillDesc,
+                  badgeGradient: companionStage.badgeGradient
+                })}
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-200/20 to-orange-400/20 rounded-3xl mix-blend-overlay group-hover:from-amber-200/40 transition-colors" />
+                <img src={companionStage.image} alt={companionStage.name} className="w-full h-full object-contain drop-shadow-2xl animate-[float_4s_ease-in-out_infinite] group-hover:scale-110 transition-transform" />
+              </div>
+            ) : (
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-3xl bg-slate-800 flex items-center justify-center text-4xl shadow-inner border border-slate-700 shrink-0">
+                ✨
+              </div>
+            )}
+            
+            <div className="flex-1">
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[0.65rem] font-bold tracking-widest uppercase inline-block mb-2 border border-amber-500/30">
+                旅の相棒精霊
+              </span>
+              <h3 className="text-xl md:text-2xl font-serif font-bold tracking-wide text-white drop-shadow-sm mb-1">
+                {companionStage.name}
+              </h3>
+              <p className="text-xs md:text-sm text-amber-100/90 leading-relaxed font-sans max-w-md mx-auto md:mx-0">
+                {companionChar?.description || companionStage.skillDesc}
+              </p>
+            </div>
+
+            <button
+              onClick={() => router.push('/companion')}
+              className="shrink-0 mt-4 md:mt-0 px-6 py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-900 font-bold font-serif text-sm tracking-widest shadow-xl flex items-center justify-center gap-2.5 transition-all hover:scale-105"
+            >
+              <Sparkles className="w-4 h-4" />
+              相棒の育成・変更 →
+            </button>
+          </div>
+        </motion.div>
+
         {/* 3D Globe Banner (Refined) */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -343,11 +383,32 @@ export default function MyPage() {
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                 <div className="pt-6 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
                   {unlockedFairies.map((fairy) => (
-                    <div key={fairy.id} className="flex flex-col items-center gap-2 group">
-                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner transition-all duration-500 relative overflow-hidden ${fairy.unlocked ? `bg-gradient-to-br ${fairy.visual.colorFrom} ${fairy.visual.colorTo} shadow-lg shadow-white/10` : 'bg-slate-800/50 border border-slate-700/50 grayscale opacity-40'}`}>
+                    <div 
+                      key={fairy.id} 
+                      className={`flex flex-col items-center gap-2 group ${fairy.unlocked ? 'cursor-pointer' : ''}`}
+                      onClick={() => {
+                        if (fairy.unlocked) {
+                          setViewingCharacter({
+                            image: fairy.visual.imageUrl,
+                            icon: fairy.visual.icon,
+                            name: fairy.name,
+                            theme: fairy.theme,
+                            description: fairy.description,
+                            badgeGradient: `from-${fairy.visual.colorFrom?.replace('from-','')} to-${fairy.visual.colorTo?.replace('to-','')}`,
+                            metDate: collectedFairyDates[fairy.id] ? new Date(collectedFairyDates[fairy.id]).toLocaleString('ja-JP', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'}) : undefined,
+                            metLocation: fairy.region_id
+                          });
+                        }
+                      }}
+                    >
+                      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl shadow-inner transition-all duration-500 relative overflow-hidden ${fairy.unlocked ? `bg-gradient-to-br ${fairy.visual.colorFrom} ${fairy.visual.colorTo} shadow-lg shadow-white/10 group-hover:scale-110 group-hover:shadow-white/30` : 'bg-slate-800/50 border border-slate-700/50 grayscale opacity-40'}`}>
                         {fairy.unlocked && <div className="absolute inset-0 bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity" />}
-                        <span className="z-10">{fairy.visual.icon}</span>
-                        {fairy.unlocked && <Sparkles className={`absolute top-1 right-1 w-3 h-3 ${fairy.visual.sparkleColor} opacity-70 animate-pulse`} />}
+                        {fairy.unlocked && fairy.visual.imageUrl ? (
+                           <img src={fairy.visual.imageUrl} alt={fairy.name} className="w-full h-full object-contain p-1 relative z-10 drop-shadow-md group-hover:scale-110 transition-transform duration-500" />
+                        ) : (
+                           <span className="z-10">{fairy.visual.icon}</span>
+                        )}
+                        {fairy.unlocked && <Sparkles className={`absolute top-1 right-1 w-3 h-3 ${fairy.visual.sparkleColor} opacity-70 animate-pulse z-20`} />}
                       </div>
                       <div className={`text-[0.6rem] font-bold text-center w-full truncate px-1 ${fairy.unlocked ? 'text-white' : 'text-slate-500'}`}>
                         {fairy.unlocked ? fairy.name : '???'}
@@ -371,35 +432,47 @@ export default function MyPage() {
                     const level = idx + 1;
                     const pct = stat.total > 0 ? Math.round((stat.visited / stat.total) * 100) : 0;
                     return (
-                      <div key={key} className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-4 ${stat.visited > 0 ? 'bg-amber-500/10 border-amber-500/40 shadow-[0_0_15px_rgba(245,158,11,0.1)]' : 'bg-slate-800/50 border-slate-700/50'}`}>
-                        <div>
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-2xl drop-shadow-md">{stat.icon}</span>
-                            <span className={`text-[0.6rem] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${stat.visited > 0 ? 'bg-amber-500 text-slate-900 shadow-sm' : 'bg-slate-700 text-slate-400'}`}>
+                      <motion.div 
+                        key={key} 
+                        whileHover={{ scale: 1.05, y: -5 }}
+                        transition={{ type: "spring", stiffness: 400, damping: 17 }}
+                        className={`p-6 rounded-[2rem] border backdrop-blur-md transition-all duration-300 flex flex-col justify-between gap-5 relative overflow-hidden group ${stat.visited > 0 ? 'bg-gradient-to-br from-amber-500/10 via-yellow-500/5 to-transparent border-amber-500/40 shadow-[0_0_30px_rgba(245,158,11,0.15)] hover:shadow-[0_0_40px_rgba(245,158,11,0.3)] hover:border-amber-400/80' : 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/60'}`}
+                      >
+                        {/* 獲得済みの背景エフェクト */}
+                        {stat.visited > 0 && (
+                          <div className="absolute -inset-24 bg-amber-500/20 opacity-0 group-hover:opacity-100 blur-[60px] rounded-full transition-opacity duration-700 pointer-events-none" />
+                        )}
+
+                        <div className="relative z-10">
+                          <div className="flex items-center justify-between mb-3">
+                            <span className="text-4xl drop-shadow-[0_2px_10px_rgba(255,255,255,0.2)] group-hover:scale-110 transition-transform duration-300">{stat.icon}</span>
+                            <span className={`text-[0.65rem] font-bold px-3 py-1 rounded-full uppercase tracking-widest ${stat.visited > 0 ? 'bg-gradient-to-r from-amber-400 to-yellow-600 text-slate-900 shadow-md font-serif' : 'bg-slate-700/80 text-slate-400'}`}>
                               ★{level} {level === 5 ? 'LEGEND' : level === 4 ? 'SECRET' : level === 3 ? 'ADV' : level === 2 ? 'STD' : 'EASY'}
                             </span>
                           </div>
-                          <div className={`text-sm font-bold tracking-wide mt-2 ${stat.visited > 0 ? 'text-white' : 'text-slate-400'}`}>{stat.title}</div>
-                          <div className="text-xs text-slate-400 mt-1 font-mono">
-                            <strong className={`font-serif text-base ${stat.visited > 0 ? 'text-amber-400' : 'text-slate-500'}`}>{stat.visited}</strong> / {stat.total} 島 ({pct}%)
+                          <div className={`text-base font-black tracking-wider mt-3 ${stat.visited > 0 ? 'text-white drop-shadow-md' : 'text-slate-400'}`}>{stat.title}</div>
+                          <div className="text-xs text-slate-300 mt-2 font-mono flex items-baseline gap-1">
+                            <strong className={`font-serif text-xl ${stat.visited > 0 ? 'text-amber-400' : 'text-slate-500'}`}>{stat.visited}</strong>
+                            <span className="text-slate-500">/ {stat.total} 島</span>
+                            <span className="ml-auto font-bold text-[10px] text-slate-400">({pct}%)</span>
                           </div>
                         </div>
-                        <div className="space-y-2">
-                          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden border border-slate-700">
+                        <div className="space-y-3 relative z-10">
+                          <div className="w-full bg-slate-900/80 h-2.5 rounded-full overflow-hidden border border-white/5 shadow-inner">
                             <motion.div 
-                              initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1, delay: 0.2 }}
-                              className={`h-full relative overflow-hidden ${stat.visited > 0 ? 'bg-gradient-to-r from-amber-500 to-yellow-400' : 'bg-slate-600'}`} 
+                              initial={{ width: 0 }} animate={{ width: `${pct}%` }} transition={{ duration: 1.5, delay: 0.2, ease: "easeOut" }}
+                              className={`h-full relative overflow-hidden ${stat.visited > 0 ? 'bg-gradient-to-r from-amber-500 via-yellow-400 to-amber-200 shadow-[0_0_10px_rgba(251,191,36,0.5)]' : 'bg-slate-600'}`} 
                             >
-                              {stat.visited > 0 && <div className="absolute inset-0 bg-white/20 w-full h-full animate-[shimmer_2s_infinite]" />}
+                              {stat.visited > 0 && <div className="absolute inset-0 bg-white/40 w-full h-full animate-[shimmer_1.5s_infinite]" />}
                             </motion.div>
                           </div>
-                          <div className="text-center">
-                            <span className={`text-[0.65rem] font-bold block py-1.5 rounded-lg ${stat.visited > 0 ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'text-slate-500 bg-slate-800 border border-slate-700'}`}>
+                          <div className="text-center pt-1">
+                            <span className={`text-[0.7rem] font-bold block py-2 rounded-xl transition-colors duration-300 ${stat.visited > 0 ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30 group-hover:bg-amber-500/20' : 'text-slate-500 bg-slate-800/80 border border-slate-700/50'}`}>
                               {stat.visited > 0 ? `🏆 Level ${level} 勲章獲得済` : `🔒 未獲得`}
                             </span>
                           </div>
                         </div>
-                      </div>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -416,23 +489,42 @@ export default function MyPage() {
               <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
                 <div className="pt-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
                   {specialTitles.map(t => (
-                    <div key={t.id} className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-4 ${t.unlocked ? 'bg-gradient-to-br from-amber-500/20 via-purple-500/10 to-indigo-500/10 border-amber-500/50 shadow-[0_0_20px_rgba(245,158,11,0.15)] scale-[1.02]' : 'bg-slate-800/50 border-slate-700/50 opacity-70 hover:opacity-100'}`}>
-                      <div>
-                        <div className="flex items-center justify-between mb-3">
-                          <span className="text-3xl drop-shadow-lg">{t.icon}</span>
-                          <span className={`text-[0.65rem] font-bold px-3 py-1 rounded-full uppercase tracking-wider ${t.unlocked ? 'bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-900 shadow-md font-serif' : 'bg-slate-700 text-slate-400'}`}>
+                    <motion.div 
+                      key={t.id} 
+                      whileHover={{ scale: 1.03, y: -4 }}
+                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                      className={`p-6 rounded-[2rem] border backdrop-blur-md transition-all duration-300 flex flex-col justify-between gap-5 relative overflow-hidden group ${t.unlocked ? 'bg-gradient-to-br from-amber-500/15 via-purple-500/10 to-indigo-500/15 border-amber-400/50 shadow-[0_0_25px_rgba(245,158,11,0.2)] hover:shadow-[0_0_40px_rgba(245,158,11,0.35)] hover:border-amber-300/80 z-10' : 'bg-slate-800/40 border-slate-700/50 hover:bg-slate-800/70 hover:border-slate-600'}`}
+                    >
+                      {/* 背景の光彩エフェクト */}
+                      {t.unlocked && (
+                        <>
+                          <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/20 rounded-full blur-3xl group-hover:bg-amber-400/30 transition-colors duration-500" />
+                          <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-purple-500/20 rounded-full blur-3xl group-hover:bg-purple-400/30 transition-colors duration-500" />
+                        </>
+                      )}
+
+                      <div className="relative z-10">
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="bg-white/5 p-3 rounded-2xl border border-white/10 shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+                            <span className="text-4xl drop-shadow-xl">{t.icon}</span>
+                          </div>
+                          <span className={`text-[0.65rem] font-bold px-3 py-1.5 rounded-full uppercase tracking-widest ${t.unlocked ? 'bg-gradient-to-r from-amber-400 to-yellow-600 text-slate-900 shadow-[0_4px_10px_rgba(245,158,11,0.3)] font-serif border border-amber-300/50' : 'bg-slate-800/80 text-slate-400 border border-slate-700'}`}>
                             {t.unlocked ? '👑 獲得済' : `🔒 進行度: ${t.progress}%`}
                           </span>
                         </div>
-                        <h4 className={`font-serif font-bold text-base leading-snug ${t.unlocked ? 'text-white' : 'text-slate-400'}`}>{t.name}</h4>
-                        <p className={`text-xs mt-2 leading-relaxed ${t.unlocked ? 'text-slate-300' : 'text-slate-500'}`}>{t.description}</p>
+                        <h4 className={`font-serif font-black text-lg leading-snug tracking-wide ${t.unlocked ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-200 to-yellow-500 drop-shadow-sm' : 'text-slate-400'}`}>{t.name}</h4>
+                        <p className={`text-xs mt-2 leading-relaxed font-medium ${t.unlocked ? 'text-slate-300' : 'text-slate-500'}`}>{t.description}</p>
                       </div>
                       {!t.unlocked && (
-                        <div className="w-full bg-slate-800 h-1.5 rounded-full overflow-hidden mt-3 border border-slate-700">
-                          <motion.div initial={{ width: 0 }} animate={{ width: `${t.progress}%` }} className="h-full bg-purple-500" />
+                        <div className="w-full bg-slate-900/80 h-2 rounded-full overflow-hidden mt-2 border border-slate-700/50 shadow-inner relative z-10">
+                          <motion.div 
+                            initial={{ width: 0 }} animate={{ width: `${t.progress}%` }} 
+                            transition={{ duration: 1.5, delay: 0.1, ease: "easeOut" }}
+                            className="h-full bg-gradient-to-r from-purple-600 to-indigo-400 shadow-[0_0_10px_rgba(168,85,247,0.4)]" 
+                          />
                         </div>
                       )}
-                    </div>
+                    </motion.div>
                   ))}
                 </div>
               </motion.div>
@@ -503,26 +595,50 @@ export default function MyPage() {
                   {myDiaries.length === 0 ? (
                     <p className="text-slate-500 text-sm font-serif">まだ島ログの投稿がありません。</p>
                   ) : (
-                    <div className="space-y-4">
-                      {myDiaries.map(diary => {
+                    <div className="relative border-l-2 border-slate-700/50 ml-4 md:ml-8 space-y-8 pb-4">
+                      {myDiaries.map((diary, index) => {
                         const island = allIslandsData.find(i => i.id === diary.island_id);
                         return (
-                          <div key={diary.id} className="bg-slate-800/50 p-5 rounded-2xl shadow-sm border border-slate-700/50 flex flex-col md:flex-row gap-5 hover:border-slate-600 transition-colors">
-                            {diary.photo_url && (
-                              <div className="w-full md:w-40 h-40 shrink-0">
-                                <img src={diary.photo_url} alt="Diary photo" className="w-full h-full object-cover rounded-xl border border-slate-700 shadow-md" />
+                          <motion.div 
+                            key={diary.id}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.5, delay: index * 0.1 }}
+                            className="relative pl-6 md:pl-8 group"
+                          >
+                            {/* Timeline Node */}
+                            <div className="absolute -left-[9px] top-2 w-4 h-4 rounded-full bg-slate-900 border-2 border-amber-500 group-hover:bg-amber-400 group-hover:shadow-[0_0_10px_rgba(245,158,11,0.8)] transition-all duration-300" />
+                            
+                            <div className="bg-slate-800/40 backdrop-blur-md p-5 md:p-6 rounded-2xl shadow-[0_4px_15px_rgba(0,0,0,0.1)] border border-slate-700/50 flex flex-col md:flex-row gap-6 hover:border-amber-500/30 hover:bg-slate-800/60 transition-all duration-300 group-hover:-translate-y-1">
+                              
+                              <div className="flex-1">
+                                <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-700/50">
+                                  <h4 
+                                    className="font-black text-lg text-amber-400 cursor-pointer hover:text-amber-300 transition-colors flex items-center gap-2 font-serif drop-shadow-sm" 
+                                    onClick={() => router.push(`/island/${diary.island_id}`)}
+                                  >
+                                    <MapPin size={18} className="text-amber-500" /> {island?.name || '不明な島'}
+                                  </h4>
+                                  <span className="text-[0.7rem] md:text-xs text-slate-400 font-mono bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700">
+                                    {new Date(diary.created_at).toLocaleDateString('ja-JP')}
+                                  </span>
+                                </div>
+                                <p className="text-sm text-slate-300 font-serif whitespace-pre-wrap leading-relaxed tracking-wide">
+                                  {diary.content}
+                                </p>
                               </div>
-                            )}
-                            <div className="flex-1">
-                              <div className="flex items-center justify-between mb-3 pb-3 border-b border-slate-700">
-                                <h4 className="font-bold text-amber-400 cursor-pointer hover:text-amber-300 transition-colors flex items-center gap-2" onClick={() => router.push(`/island/${diary.island_id}`)}>
-                                  <MapPin size={14} /> {island?.name || '不明な島'}
-                                </h4>
-                                <span className="text-xs text-slate-400 font-mono">{new Date(diary.created_at).toLocaleDateString('ja-JP')}</span>
-                              </div>
-                              <p className="text-sm text-slate-300 font-serif whitespace-pre-wrap leading-relaxed">{diary.content}</p>
+                              
+                              {diary.photo_url && (
+                                <div className="w-full md:w-48 h-48 md:h-auto shrink-0 relative overflow-hidden rounded-xl border border-slate-700 shadow-md">
+                                  <img 
+                                    src={diary.photo_url} 
+                                    alt="Diary photo" 
+                                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" 
+                                  />
+                                </div>
+                              )}
                             </div>
-                          </div>
+                          </motion.div>
                         );
                       })}
                     </div>
@@ -575,6 +691,19 @@ export default function MyPage() {
         onClose={() => setSelectedIslandForCert(null)}
         island={selectedIslandForCert}
         user={user}
+      />
+
+      <CharacterViewerModal
+        isOpen={!!viewingCharacter}
+        onClose={() => setViewingCharacter(null)}
+        image={viewingCharacter?.image}
+        icon={viewingCharacter?.icon}
+        name={viewingCharacter?.name || ''}
+        theme={viewingCharacter?.theme}
+        description={viewingCharacter?.description}
+        badgeGradient={viewingCharacter?.badgeGradient}
+        metDate={viewingCharacter?.metDate}
+        metLocation={viewingCharacter?.metLocation}
       />
 
       {showLogoutConfirm && (

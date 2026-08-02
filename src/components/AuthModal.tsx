@@ -3,15 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Mail, Lock, ArrowRight, UserCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
-const getJapaneseError = (msg: string): string => {
-  if (msg.includes('Invalid login credentials')) return 'メールアドレスまたはパスワードが間違っています';
-  if (msg.includes('Email not confirmed')) return 'メールアドレスの確認が完了していません。確認メールをご確認ください';
-  if (msg.includes('already registered')) return 'このメールアドレスはすでに登録されています';
-  if (msg.includes('Password should be')) return 'パスワードは6文字以上で設定してください';
-  if (msg.includes('rate limit')) return 'しばらく時間をおいて再度お試しください';
-  return msg;
-};
-
+import { translateAuthError } from '@/lib/authHelpers';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -126,7 +118,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      setMessage({ text: getJapaneseError(error.message || ''), type: 'error' });
+      setMessage({ text: translateAuthError(error.message || ''), type: 'error' });
     } finally {
       setLoading(false);
     }

@@ -6,6 +6,8 @@ import { TravelProvider } from "@/context/TravelContext";
 import FairyDiscoveryModal from "@/components/FairyDiscoveryModal";
 import AuthReminderBanner from "@/components/AuthReminderBanner";
 import { Toaster } from 'react-hot-toast';
+import GlobalRadar from '@/components/GlobalRadar';
+import Footer from '@/components/Footer';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -57,6 +59,8 @@ export default function RootLayout({
           <AuthReminderBanner />
           {children}
           <FairyDiscoveryModal />
+          <GlobalRadar />
+          <Footer />
         </TravelProvider>
       </body>
     </html>

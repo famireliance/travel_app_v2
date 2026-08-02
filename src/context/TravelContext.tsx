@@ -19,6 +19,8 @@ interface TravelContextType {
   totalVisited: number;
   travelerName: string;
   updateTravelerName: (name: string) => void;
+  bio: string;
+  updateBio: (bio: string) => void;
   // Gamification (XP & Mastery)
   visitCounts: Record<string, number>;
   spotsVisited: Record<string, number>;
@@ -36,8 +38,14 @@ interface TravelContextType {
   newlyDiscoveredFairies: IslandFairy[];
   clearDiscoveredFairy: (fairyId: string) => void;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addIslandVisit: (islandId: string, islandObj?: any, newSpots?: number, isVerified?: boolean) => { xpGained: number };
+  addIslandVisit: (islandId: string, islandObj?: any, newSpots?: number, isVerified?: boolean) => { xpGained: number; error?: string };
   addSpotVisit: (spotId: string) => boolean;
+  lastVisitDates: Record<string, string>;
+  // For passthrough from CheckInModal to CertificateModal
+  tempCheckInPhotoUrl: string | null;
+  setTempCheckInPhotoUrl: (url: string | null) => void;
+  tempCheckInDate: string | null;
+  setTempCheckInDate: (date: string | null) => void;
 }
 
 const TravelContext = createContext<TravelContextType>({
@@ -48,6 +56,8 @@ const TravelContext = createContext<TravelContextType>({
   totalVisited: 0,
   travelerName: '島旅トラベラー',
   updateTravelerName: () => {},
+  bio: '',
+  updateBio: () => {},
   visitCounts: {},
   spotsVisited: {},
   totalXP: 0,
@@ -62,7 +72,12 @@ const TravelContext = createContext<TravelContextType>({
   newlyDiscoveredFairies: [],
   clearDiscoveredFairy: () => {},
   addIslandVisit: () => ({ xpGained: 0 }),
-  addSpotVisit: () => false
+  addSpotVisit: () => false,
+  lastVisitDates: {},
+  tempCheckInPhotoUrl: null,
+  setTempCheckInPhotoUrl: () => {},
+  tempCheckInDate: null,
+  setTempCheckInDate: () => {}
 });
 
 export function TravelProvider({ children }: { children: React.ReactNode }) {
@@ -70,6 +85,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<any>(null);
   const [islandStatuses, setIslandStatuses] = useState<Record<string, IslandStatus>>({});
   const [travelerName, setTravelerName] = useState<string>('島旅トラベラー');
+  const [bio, setBio] = useState<string>('');
   const [visitCounts, setVisitCounts] = useState<Record<string, number>>({});
   const [spotsVisited, setSpotsVisited] = useState<Record<string, number>>({});
   const [totalXP, setTotalXP] = useState<number>(0);
@@ -77,7 +93,10 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [collectedFairies, setCollectedFairies] = useState<string[]>([]);
   const [collectedFairyDates, setCollectedFairyDates] = useState<Record<string, string>>({});
   const [newlyDiscoveredFairies, setNewlyDiscoveredFairies] = useState<IslandFairy[]>([]);
+  const [lastVisitDates, setLastVisitDates] = useState<Record<string, string>>({});
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [tempCheckInPhotoUrl, setTempCheckInPhotoUrl] = useState<string | null>(null);
+  const [tempCheckInDate, setTempCheckInDate] = useState<string | null>(null);
 
   // Auth & Data Load
   useEffect(() => {
@@ -107,6 +126,10 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem('kiratabi_traveler_name', data.nickname);
           }
         } catch(e) {}
+        
+        if (currentUser.user_metadata?.bio) {
+          setBio(currentUser.user_metadata.bio);
+        }
       }
 
       loadLocalData(currentUser?.id, isMounted);
@@ -121,6 +144,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         setSpotsVisited({});
         setCollectedFairies([]);
         setCollectedFairyDates({});
+        setLastVisitDates({});
         setIsDataLoaded(false);
       }
       const currentUser = session?.user || null;
@@ -134,6 +158,9 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
                localStorage.setItem('kiratabi_traveler_name', data.nickname);
              }
           });
+          if (currentUser.user_metadata?.bio) {
+            setBio(currentUser.user_metadata.bio);
+          }
         } catch(e) {}
       }
 
@@ -206,6 +233,17 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       });
     }
     if (isMounted) setVisitCounts(vLocal);
+
+    // 最終訪問日のマージ
+    let lvLocal: Record<string, string> = {};
+    const guestLVStored = localStorage.getItem('island_last_visit_dates_anon');
+    if (guestLVStored) { try { const p = JSON.parse(guestLVStored); if(p) lvLocal = {...p}; } catch(e){} }
+    const lvKey = userId ? `island_last_visit_dates_${userId}` : 'island_last_visit_dates_anon';
+    if (userId) {
+       const userLVStored = localStorage.getItem(lvKey);
+       if (userLVStored) { try { const p = JSON.parse(userLVStored); if(p) lvLocal = {...lvLocal, ...p}; } catch(e){} }
+    }
+    if (isMounted) setLastVisitDates(lvLocal);
 
     // スポットの復元とマージ
     let sLocal: Record<string, number> = {};
@@ -372,6 +410,11 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const addIslandVisit = (islandId: string, islandObj?: any, newSpots: number = 0, isVerified: boolean = false) => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    if (lastVisitDates[islandId] === todayStr) {
+      return { xpGained: 0, error: 'already_visited_today' };
+    }
+
     const isFirstVisit = (visitCounts[islandId] || 0) === 0;
     const gained = calculateIslandXP(islandObj || { id: islandId, name: islandId }, isFirstVisit, newSpots);
 
@@ -381,6 +424,14 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       const vKey = user ? `island_visits_count_${user.id}` : 'island_visits_count_anon';
       localStorage.setItem(vKey, JSON.stringify(nextV));
       return nextV;
+    });
+
+    // 最終訪問日更新
+    setLastVisitDates(prev => {
+      const nextLV = { ...prev, [islandId]: todayStr };
+      const lvKey = user ? `island_last_visit_dates_${user.id}` : 'island_last_visit_dates_anon';
+      localStorage.setItem(lvKey, JSON.stringify(nextLV));
+      return nextLV;
     });
 
     // スポット巡り加算
@@ -473,6 +524,19 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const updateBio = async (newBio: string) => {
+    setBio(newBio);
+    if (user) {
+      try {
+        await supabase.auth.updateUser({
+          data: { bio: newBio }
+        });
+      } catch (err) {
+        console.error('Failed to update bio in auth metadata:', err);
+      }
+    }
+  };
+
   const updateCompanionId = (id: CompanionId) => {
     setSelectedCompanionId(id);
     localStorage.setItem('kiratabi_companion_id', id);
@@ -540,6 +604,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     totalVisited,
     travelerName,
     updateTravelerName,
+    bio,
+    updateBio,
     visitCounts,
     spotsVisited,
     totalXP,
@@ -553,10 +619,15 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     collectedFairyDates,
     newlyDiscoveredFairies,
     clearDiscoveredFairy,
+    lastVisitDates,
     addIslandVisit,
-    addSpotVisit
+    addSpotVisit,
+    tempCheckInPhotoUrl,
+    setTempCheckInPhotoUrl,
+    tempCheckInDate,
+    setTempCheckInDate
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [user, islandStatuses, totalVisited, travelerName, visitCounts, spotsVisited, totalXP, totalPoints, conquestTargetCount, selectedCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, newlyDiscoveredFairies]);
+  }), [user, islandStatuses, totalVisited, travelerName, bio, visitCounts, lastVisitDates, spotsVisited, totalXP, totalPoints, conquestTargetCount, selectedCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, newlyDiscoveredFairies, tempCheckInPhotoUrl, tempCheckInDate]);
 
   return (
     <TravelContext.Provider value={contextValue}>

@@ -18,7 +18,7 @@ import { useTravel } from '@/context/TravelContext';
 import { getFormattedSerial, getIslandDifficulty } from '@/lib/difficulty';
 
 export default function CertificateModal({ isOpen, onClose, island, user }: CertificateModalProps) {
-  const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses } = useTravel();
+  const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses, tempCheckInPhotoUrl, tempCheckInDate } = useTravel();
   const status = island ? (islandStatuses[island.id] || 'none') : 'none';
   const isVerified = status === 'verified_visited';
   const [travelerName, setTravelerName] = useState<string>('');
@@ -28,16 +28,79 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [includeCompanionStamp, setIncludeCompanionStamp] = useState(true);
   const [isOrdering, setIsOrdering] = useState(false);
-  const [orderPlan, setOrderPlan] = useState<'standard' | 'premium'>('standard');
+  const [orderPlan, setOrderPlan] = useState<'card' | 'postcard' | 'a4'>('card');
+  const [orderDesign, setOrderDesign] = useState<'horizontal' | 'vertical'>('horizontal');
+  const [isLaminated, setIsLaminated] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+  
+  // Mailing Form Fields
+  const [recipientCountry, setRecipientCountry] = useState('Japan');
   const [recipientName, setRecipientName] = useState('');
+  const [postalCode, setPostalCode] = useState('');
   const [address, setAddress] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  
   const [assignedSerial, setAssignedSerial] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
   const [orderSubmitting, setOrderSubmitting] = useState(false);
   const [isDigitalIssued, setIsDigitalIssued] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
+  const [hasIssuedToday, setHasIssuedToday] = useState(false);
+  const [isPlayingAd, setIsPlayingAd] = useState(false);
+  const [adTimeLeft, setAdTimeLeft] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const fullscreenCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Use useEffect to check localStorage for daily issue count
+  useEffect(() => {
+    if (isOpen && island) {
+      const issuedKey = `kiratabi_issued_${island.id}`;
+      const lastIssuedDate = localStorage.getItem(issuedKey);
+      const todayStr = new Date().toISOString().split('T')[0];
+      if (lastIssuedDate === todayStr) {
+        setHasIssuedToday(true);
+      } else {
+        setHasIssuedToday(false);
+      }
+    }
+  }, [isOpen, island]);
+
+  const handleIssueCertificate = () => {
+    if (hasIssuedToday) {
+      // Need to watch ad
+      setIsPlayingAd(true);
+      setAdTimeLeft(5);
+    } else {
+      issueDigital();
+    }
+  };
+
+  const issueDigital = () => {
+    if (island) {
+      const issuedKey = `kiratabi_issued_${island.id}`;
+      const todayStr = new Date().toISOString().split('T')[0];
+      localStorage.setItem(issuedKey, todayStr);
+    }
+    setHasIssuedToday(true);
+    setIsDigitalIssued(true);
+  };
+
+  useEffect(() => {
+    if (isPlayingAd && adTimeLeft > 0) {
+      const timer = setTimeout(() => {
+        setAdTimeLeft(adTimeLeft - 1);
+      }, 1000);
+      return () => clearTimeout(timer);
+    } else if (isPlayingAd && adTimeLeft === 0) {
+      // Ad finished
+      const timer = setTimeout(() => {
+        setIsPlayingAd(false);
+        issueDigital();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [isPlayingAd, adTimeLeft]);
 
   // Mock Trial Status (Ideally fetched from Supabase profiles.trial_ends_at)
   const isTrialActive = true; 
@@ -45,8 +108,9 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   useEffect(() => {
     if (isOpen && island) {
       const today = new Date();
-      const dateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+      const dateStr = tempCheckInDate || `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
       setVisitDate(dateStr);
+      setCustomImage(tempCheckInPhotoUrl || null);
       setTravelerName(contextTravelerName || user?.email?.split('@')[0] || '島旅トラベラー');
       setIsOrdering(false);
       setOrderSuccess(false);
@@ -59,8 +123,8 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   }, [isOpen, island, user, contextTravelerName]);
 
   const handleOrderSubmit = async () => {
-    if (!recipientName.trim() || !address.trim()) {
-      setErrorMessage('お届け先お名前とご住所を入力してください。');
+    if (!recipientName.trim() || !address.trim() || !postalCode.trim() || !phoneNumber.trim()) {
+      setErrorMessage('すべての必須項目（お名前、郵便番号、ご住所、電話番号）を入力してください。');
       return;
     }
     setErrorMessage(null);
@@ -71,9 +135,14 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           plan: orderPlan,
+          design: orderDesign,
+          laminated: isLaminated,
+          country: recipientCountry,
           travelerName,
           recipientName,
+          postalCode,
           address,
+          phone: phoneNumber,
           islandId: island?.id,
           islandName: island?.name,
           visitDate,
@@ -92,6 +161,23 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       setErrorMessage('通信エラーが発生しました。');
     } finally {
       setOrderSubmitting(false);
+    }
+  };
+
+  const handlePostalCodeChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value.replace(/[^\d]/g, '');
+    setPostalCode(val);
+    if (recipientCountry === 'Japan' && val.length === 7) {
+      try {
+        const res = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${val}`);
+        const data = await res.json();
+        if (data.results && data.results.length > 0) {
+          const addr = data.results[0];
+          setAddress(`${addr.address1}${addr.address2}${addr.address3}`);
+        }
+      } catch (err) {
+        console.error('Failed to fetch address:', err);
+      }
     }
   };
 
@@ -128,13 +214,10 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    // Set canvas dimensions (4:3 landscape ratio, high res)
     const width = 1200;
     const height = 900;
-    canvas.width = width;
-    canvas.height = height;
 
-    const renderContent = (heroImg?: HTMLImageElement) => {
+    const renderContent = (ctx: CanvasRenderingContext2D, heroImg?: HTMLImageElement) => {
       // Background fill
       ctx.fillStyle = '#0F172A'; // Slate 900
       ctx.fillRect(0, 0, width, height);
@@ -174,11 +257,11 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       ctx.fillStyle = '#F3E5AB';
       ctx.font = 'bold 24px serif';
       ctx.textAlign = 'center';
-      ctx.fillText('KIRATABI OFFICIAL RECORD OF ARRIVAL', width / 2, 110);
+      ctx.fillText('KIRATABI VERIFIED RECORD OF ARRIVAL', width / 2, 110);
 
       ctx.fillStyle = '#D4AF37';
       ctx.font = 'light 48px serif';
-      ctx.fillText('島 旅 到 達 認 定 証', width / 2, 175);
+      ctx.fillText('島 旅 到 達 公 認 証', width / 2, 175);
 
       // Decorative Line
       ctx.beginPath();
@@ -192,7 +275,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       ctx.fillStyle = '#E2E8F0';
       ctx.font = '28px sans-serif';
       ctx.fillText('以下の旅人が日本諸島を巡る旅において、', width / 2, 270);
-      ctx.fillText('見事この地を踏破・到達したことをここに公式に証明する。', width / 2, 315);
+      ctx.fillText('見事この地を踏破・到達したことをKIRATABIシステムにより公認する。', width / 2, 315);
 
       // Traveler Name Highlight Box
       ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
@@ -261,9 +344,9 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
 
       ctx.fillStyle = '#E11D48';
       ctx.font = 'bold 18px serif';
-      ctx.fillText('輝旅公認', centerX, centerY - 15);
+      ctx.fillText('KIRATABI', centerX, centerY - 15);
       ctx.font = 'bold 22px serif';
-      ctx.fillText('到達証明', centerX, centerY + 15);
+      ctx.fillText('公認証明', centerX, centerY + 15);
       ctx.font = '14px monospace';
       ctx.fillText('VERIFIED', centerX, centerY + 38);
 
@@ -307,12 +390,11 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
 
         ctx.fillStyle = '#38BDF8';
         ctx.font = '12px monospace';
-        ctx.fillText(`【 守護精霊パートナー公式認定証 】`, compX + 88, compY + 74);
+        ctx.fillText(`【 守護精霊パートナー公認証 】`, compX + 88, compY + 74);
         ctx.restore();
       }
 
-      // Draw Serial Number (Bottom Left)
-      const serialText = assignedSerial || getFormattedSerial(island.id || island.name);
+    const serialText = assignedSerial || getFormattedSerial(island.id || island.name);
       ctx.fillStyle = '#64748B';
       ctx.font = '18px monospace';
       ctx.textAlign = 'left';
@@ -320,19 +402,30 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       ctx.fillText(`VERIFY AT: https://travelappv2-two.vercel.app`, 80, height - 55);
     };
 
-    renderContent();
+    const applyToCanvas = (c: HTMLCanvasElement | null, imgObj?: HTMLImageElement) => {
+      if (!c) return;
+      const context = c.getContext('2d');
+      if (context) {
+        c.width = width;
+        c.height = height;
+        renderContent(context, imgObj);
+      }
+    };
 
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
-      renderContent(img);
+      applyToCanvas(canvasRef.current, img);
+      applyToCanvas(fullscreenCanvasRef.current, img);
     };
     img.onerror = () => {
       // Keep canvas with default drawn content if image fails
+      applyToCanvas(canvasRef.current);
+      applyToCanvas(fullscreenCanvasRef.current);
     };
     img.src = customImage || island?.image_url || '/placeholders/trop.jpg';
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [island, travelerName, visitDate, customImage, assignedSerial]);
+  }, [island, travelerName, visitDate, customImage, assignedSerial, includeCompanionStamp, companionChar, companionStage]);
 
   useEffect(() => {
     if (!isOpen || !island) return;
@@ -342,23 +435,57 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
     return () => clearTimeout(timer);
   }, [isOpen, island, drawCertificate]);
 
-  // Handle Download
-  const handleDownload = () => {
+  // Handle Download (CORS Safe)
+  const handleDownload = async () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const dataUrl = canvas.toDataURL('image/png');
-    const link = document.createElement('a');
-    link.download = `KIRATABI_Certificate_${island?.name || 'Island'}.png`;
-    link.href = dataUrl;
-    link.click();
+    
+    // Instead of directly using toDataURL which can cause security errors if CORS images were drawn,
+    // we use a blob. If there's still a CORS issue, the canvas might be tainted.
+    // However, imageCompression creates a local data URL or blob, which doesn't taint.
+    // If island.image_url is used, it must have CORS headers from Supabase.
+    try {
+      canvas.toBlob((blob) => {
+        if (!blob) return;
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `KIRATABI_Certificate_${island?.name || 'Island'}.png`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+      }, 'image/png');
+    } catch (e) {
+      console.error('Download error (CORS):', e);
+      setErrorMessage('画像の保存に失敗しました。画像に外部のリソースが含まれている可能性があります。');
+    }
   };
 
-  // Handle X (Twitter) Share
-  const handleShareX = () => {
-    const text = `【島旅到達証明書を獲得！】\n日本の離島「${island?.name}」に到達しました🏝️✨\n全国432島制覇に向けて挑戦中！\n\n#KIRATABI #島専科 #${island?.name} #離島旅`;
-    const url = `https://travelappv2-two.vercel.app/island/${island?.id}`;
-    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-    window.open(twitterUrl, '_blank');
+  // Handle Web Share API (Native Share Menu)
+  const handleNativeShare = async () => {
+    const text = `日本の離島「${island?.name}」に到達しました🏝️✨\n#KIRATABI #島専科 #${island?.name} #離島旅`;
+    const url = `https://island.kira-tabi.com/island/${island?.id}`;
+    
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: 'KIRATABI 到達証明',
+          text: text,
+          url: url
+        });
+      } catch (err) {
+        console.error('Share failed:', err);
+      }
+    } else {
+      // Fallback to X share if Web Share API is not supported
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+      window.open(twitterUrl, '_blank');
+    }
+  };
+
+  // Handle Instagram specific instruction
+  const handleInstagramShare = () => {
+    alert('Instagramでシェアするには、まず画像をダウンロード（保存）し、Instagramアプリを開いて投稿してください。');
+    handleDownload();
   };
 
   if (!isOpen || !island) return null;
@@ -452,10 +579,10 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
               </div>
               <div>
                 <h3 className={`font-serif font-bold text-lg ${isVerified ? 'text-amber-900' : 'text-white'}`}>
-                  {isVerified ? '公式認定到達証明書' : '公式到達証明書の発行'}
+                  {isVerified ? 'KIRATABI公認 到達証明書' : 'KIRATABI公認 到達証明書の発行'}
                 </h3>
                 <p className={`text-xs tracking-wider ${isVerified ? 'text-amber-700/70' : 'text-slate-400'}`}>
-                  KIRATABI OFFICIAL ARRIVAL CERTIFICATE
+                  KIRATABI VERIFIED ARRIVAL CERTIFICATE
                 </p>
               </div>
             </div>
@@ -550,18 +677,26 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
 
                 {/* Canvas Preview Box */}
                 <div className="flex flex-col items-center relative">
-                  <p className="text-xs text-slate-400 mb-3 tracking-widest uppercase flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" /> 証明書プレビュー (リアルタイム反映)
-                  </p>
-                  <div className="w-full bg-slate-950 p-3 rounded-2xl border border-slate-700/60 shadow-inner overflow-hidden flex justify-center relative">
+                  <div className="w-full flex items-center justify-between mb-3">
+                    <p className="text-xs text-slate-400 tracking-widest uppercase flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" /> プレビュー (リアルタイム)
+                    </p>
+                    <button 
+                      onClick={() => setIsFullscreenPreview(true)}
+                      className="text-xs font-bold text-blue-400 hover:text-blue-300 flex items-center gap-1"
+                    >
+                      拡大表示
+                    </button>
+                  </div>
+                  <div className="w-full bg-slate-950 p-3 rounded-2xl border border-slate-700/60 shadow-inner overflow-hidden flex justify-center relative cursor-zoom-in" onClick={() => setIsFullscreenPreview(true)}>
                     <canvas
                       ref={canvasRef}
                       className={`w-full max-w-[640px] h-auto rounded-lg shadow-2xl border border-slate-800 transition-all duration-1000 ${!isDigitalIssued ? 'blur-sm grayscale opacity-80' : ''}`}
                     />
                     {!isDigitalIssued && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/40 backdrop-blur-sm z-10 p-6 rounded-2xl">
+                      <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-900/40 backdrop-blur-sm z-10 p-6 rounded-2xl pointer-events-none">
                         {!user ? (
-                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm">
+                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm pointer-events-auto">
                             <User className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                             <h4 className="font-bold text-slate-800 mb-2">ログインが必要です</h4>
                             <p className="text-xs text-slate-500 mb-4">公式認定デジタル証明書を発行・保存するには、無料のユーザー登録が必要です。</p>
@@ -578,25 +713,29 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                               この島の公式認定デジタル証明書を発行し、透かしを解除してダウンロード可能にします。
                             </p>
                             <div className="bg-rose-50 text-rose-600 font-bold text-xs p-3 rounded-xl mb-4 border border-rose-200">
-                              【登録から3ヶ月限定トライアル期間中】<br/>
-                              各島で1枚まで<span className="text-sm"> 無料 </span>で発行できます！
+                              【各島1日1回無料】<br/>
+                              2回目以降は動画広告視聴で再発行できます。
                             </div>
                             <button 
-                              onClick={() => setIsDigitalIssued(true)}
-                              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm rounded-xl shadow-lg"
+                              onClick={(e) => { e.stopPropagation(); handleIssueCertificate(); }}
+                              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2"
                             >
-                              無料で公式証明書を発行する
+                              {hasIssuedToday ? (
+                                <><span>広告を見て再発行</span></>
+                              ) : (
+                                <>無料で公認証明書を発行する</>
+                              )}
                             </button>
                           </div>
                         ) : (
-                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border border-slate-200">
+                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border border-slate-200 pointer-events-auto">
                             <Award className="w-12 h-12 text-blue-500 mx-auto mb-3" />
                             <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">簡易デジタル版を発行</h4>
                             <p className="text-xs text-slate-600 mb-4 leading-relaxed">
-                              無料トライアル期間が終了しました。公式認定デジタル証明書の発行には決済が必要です。
+                              無料トライアル期間が終了しました。KIRATABI公認デジタル証明書の発行には決済が必要です。
                             </p>
                             <button 
-                              onClick={() => setIsDigitalIssued(true)}
+                              onClick={(e) => { e.stopPropagation(); setIsDigitalIssued(true); }}
                               className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2"
                             >
                               <span>Stripe決済へ進む</span>
@@ -611,20 +750,27 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                 </div>
 
                 {/* Viral & Free Download Actions */}
-                <div className={`grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 transition-all duration-500 ${!isDigitalIssued ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
+                <div className={`grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 transition-all duration-500 ${!isDigitalIssued ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
                   <button
-                    onClick={handleShareX}
-                    className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-sm tracking-widest flex items-center justify-center gap-2 shadow-lg hover:shadow-sky-500/25 transition-all"
+                    onClick={handleNativeShare}
+                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all"
                   >
                     <Share2 className="w-4 h-4" />
-                    X(Twitter)でシェアして自慢する
+                    シェア(X/LINE等)
+                  </button>
+                  <button
+                    onClick={handleInstagramShare}
+                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 hover:from-pink-400 hover:to-yellow-400 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all"
+                  >
+                    <Camera className="w-4 h-4" />
+                    Instagramへ
                   </button>
                   <button
                     onClick={handleDownload}
-                    className="w-full py-4 px-6 rounded-2xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-sm tracking-widest flex items-center justify-center gap-2 shadow-lg hover:shadow-amber-500/25 transition-all"
+                    className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all"
                   >
                     <Download className="w-4 h-4" />
-                    デジタル画像DL (無料)
+                    画像DL(無料)
                   </button>
                 </div>
 
@@ -664,48 +810,112 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                   <div className="space-y-6 bg-slate-900/60 p-6 rounded-3xl border border-slate-700">
                     <h4 className="font-serif font-bold text-white text-xl text-center">プラン選択と配送先入力</h4>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                       <div
-                        onClick={() => setOrderPlan('standard')}
+                        onClick={() => setOrderPlan('card')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'standard' ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700 bg-slate-800'
+                          orderPlan === 'card' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
                         }`}
                       >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">スタンダード版</span>
-                        <div className="text-lg font-bold text-white mb-2">¥600 <span className="text-xs font-normal text-slate-400">(税込・送料込)</span></div>
-                        <p className="text-xs text-slate-300 leading-relaxed">ハガキサイズ・上質厚紙カード仕様。記念保管やプレゼントに最適。</p>
+                        <span className="text-xs font-bold text-amber-400 block mb-1">カードサイズ</span>
+                        <div className="text-lg font-bold text-white mb-2">¥500</div>
+                        <p className="text-[10px] text-slate-300">財布に入る免許証サイズ。</p>
                       </div>
                       <div
-                        onClick={() => setOrderPlan('premium')}
+                        onClick={() => setOrderPlan('postcard')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'premium' ? 'border-amber-500 bg-amber-500/10' : 'border-slate-700 bg-slate-800'
+                          orderPlan === 'postcard' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
                         }`}
                       >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">プレミアム額装版</span>
-                        <div className="text-lg font-bold text-white mb-2">¥2,000 <span className="text-xs font-normal text-slate-400">(税込・送料込)</span></div>
-                        <p className="text-xs text-slate-300 leading-relaxed">A4大判高級証書紙仕様。部屋や店頭に飾れるオフィシャル証書。</p>
+                        <span className="text-xs font-bold text-amber-400 block mb-1">ハガキサイズ</span>
+                        <div className="text-lg font-bold text-white mb-2">¥800</div>
+                        <p className="text-[10px] text-slate-300">飾りやすい定番サイズ。</p>
+                      </div>
+                      <div
+                        onClick={() => setOrderPlan('a4')}
+                        className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                          orderPlan === 'a4' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-amber-400 block mb-1">A4大判サイズ</span>
+                        <div className="text-lg font-bold text-white mb-2">¥1,500</div>
+                        <p className="text-[10px] text-slate-300">部屋に飾る本格的な証書。</p>
                       </div>
                     </div>
 
-                    <div className="space-y-3">
+                    {/* Options (Lamination & Design) */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                        <label className="block text-xs font-bold text-slate-400 mb-3">デザイン方向</label>
+                        <div className="flex gap-2">
+                          <button onClick={() => setOrderDesign('horizontal')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${orderDesign === 'horizontal' ? 'bg-amber-500 text-slate-900' : 'bg-slate-900 text-slate-400'}`}>横版</button>
+                          <button onClick={() => setOrderDesign('vertical')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${orderDesign === 'vertical' ? 'bg-amber-500 text-slate-900' : 'bg-slate-900 text-slate-400'}`}>縦版</button>
+                        </div>
+                      </div>
+                      <div className="bg-slate-800 p-4 rounded-2xl border border-slate-700">
+                        <label className="block text-xs font-bold text-slate-400 mb-3">ラミネート加工 (+¥300)</label>
+                        <label className="flex items-center gap-2 cursor-pointer text-sm font-bold text-white">
+                          <input type="checkbox" checked={isLaminated} onChange={e => setIsLaminated(e.target.checked)} className="w-5 h-5 rounded text-amber-500 bg-slate-900 border-slate-600 focus:ring-amber-400" />
+                          追加する (耐久性・光沢UP)
+                        </label>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 pt-4 border-t border-slate-700/50">
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1">お届け先お名前</label>
+                        <label className="block text-xs font-bold text-slate-400 mb-1">配送国 (Country)</label>
+                        <select 
+                          value={recipientCountry}
+                          onChange={e => setRecipientCountry(e.target.value)}
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
+                        >
+                          <option value="Japan">日本 (Japan)</option>
+                          <option value="USA">United States</option>
+                          <option value="Taiwan">Taiwan</option>
+                          <option value="South Korea">South Korea</option>
+                          <option value="Other">Other (International)</option>
+                        </select>
+                      </div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs font-bold text-slate-400 mb-1">郵便番号 / Zip Code</label>
+                          <input 
+                            type="text" 
+                            value={postalCode}
+                            onChange={handlePostalCodeChange}
+                            placeholder={recipientCountry === 'Japan' ? "例: 1000001 (ハイフンなし)" : "Zip Code"} 
+                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-xs font-bold text-slate-400 mb-1">電話番号 / Phone Number</label>
+                          <input 
+                            type="text" 
+                            value={phoneNumber}
+                            onChange={e => setPhoneNumber(e.target.value)}
+                            placeholder="例: 090-1234-5678" 
+                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-400 mb-1">住所 / Address (自動入力可)</label>
+                        <input 
+                          type="text" 
+                          value={address}
+                          onChange={e => setAddress(e.target.value)}
+                          placeholder="都道府県・市区町村・番地・マンション名" 
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-400 mb-1">お名前 / Full Name</label>
                         <input 
                           type="text" 
                           value={recipientName}
                           onChange={e => setRecipientName(e.target.value)}
                           placeholder="山田 太郎" 
-                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500" 
-                        />
-                      </div>
-                      <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1">郵便番号・ご住所</label>
-                        <input 
-                          type="text" 
-                          value={address}
-                          onChange={e => setAddress(e.target.value)}
-                          placeholder="〒100-0001 東京都千代田区..." 
-                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500" 
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
                         />
                       </div>
                     </div>
@@ -756,6 +966,71 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
           </div>
         </motion.div>
       </motion.div>
+
+      {/* Fullscreen Preview Overlay */}
+      <AnimatePresence>
+        {isFullscreenPreview && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[10000] bg-slate-950/95 backdrop-blur-xl flex flex-col"
+          >
+            <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800">
+              <h3 className="text-white font-bold text-sm">証明書プレビュー (拡大表示)</h3>
+              <button onClick={() => setIsFullscreenPreview(false)} className="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-auto p-4 flex items-center justify-center cursor-zoom-out" onClick={() => setIsFullscreenPreview(false)}>
+              <canvas
+                ref={fullscreenCanvasRef}
+                className={`max-w-none w-auto max-h-none h-auto shadow-2xl border border-slate-800 ${!isDigitalIssued ? 'blur-sm grayscale opacity-80' : ''}`}
+                style={{ width: '1200px', height: '900px', transform: 'scale(0.8)', transformOrigin: 'center' }}
+              />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Mock Video Ad Overlay */}
+      <AnimatePresence>
+        {isPlayingAd && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[11000] bg-black flex flex-col items-center justify-center"
+          >
+            <div className="absolute top-8 right-8 text-white font-mono text-xl bg-black/50 px-4 py-2 rounded-xl border border-white/20">
+              {adTimeLeft > 0 ? `広告終了まで ${adTimeLeft}秒` : '広告終了！証明書を発行します...'}
+            </div>
+            
+            {/* Dummy Ad Content */}
+            <div className="w-full max-w-lg aspect-video bg-slate-900 rounded-xl overflow-hidden border border-slate-700 relative shadow-2xl">
+              <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500">
+                <Sparkles className="w-16 h-16 mb-4 opacity-50 animate-pulse" />
+                <h2 className="text-2xl font-bold font-serif mb-2">KIRATABI プレミアム</h2>
+                <p className="text-sm">〜 旅の思い出を一生の宝物に 〜</p>
+                <div className="mt-8 flex gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></div>
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping" style={{ animationDelay: '0.4s' }}></div>
+                </div>
+              </div>
+            </div>
+            
+            {adTimeLeft === 0 && (
+              <button 
+                onClick={() => { setIsPlayingAd(false); issueDigital(); }}
+                className="mt-8 px-6 py-2 bg-white text-black font-bold rounded-full hover:bg-slate-200 transition-colors"
+              >
+                スキップして証明書を受け取る
+              </button>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </AnimatePresence>
   );
 }
