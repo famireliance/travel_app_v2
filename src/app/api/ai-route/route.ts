@@ -41,23 +41,7 @@ export async function POST(request: Request) {
     // Create a compact string of islands for the AI prompt
     const islandsContext = islands.map(i => `${i.name}(${i.prefecture}) - ID:${i.id}`).join(', ');
 
-    const prompt = `
-あなたは日本の離島専門の優秀なトラベルプランナーAI「島巡りコンシェルジュ」です。
-ユーザーから以下の要望を受け取りました。
 
-【出発地/拠点】: ${startLocation || '指定なし'}
-【日数】: ${durationDays} 日間
-【希望・テーマ】: ${preferences || '特になし'}
-【最大訪問島数】: ${maxIslands || 3} 島
-
-以下の島データベース（抜粋）から、最適なアイランドホッピング（島巡り）ルートを提案してください。
-データベース: ${islandsContext}
-
-【プラン作成の厳格なルール】
-1. **地理的・物理的な現実性（最重要）**: 北海道と沖縄を1日で移動するなど、物理的に不可能なルートは絶対に作成しないでください。必ず「同じ県」や「同じ諸島（例: 八重山諸島、伊豆諸島、瀬戸内海など）」といった近接エリア内に限定してルートを組んでください。
-2. **移動の実現性**: 実際にフェリーや橋、飛行機で移動できる範囲の島々を選んでください。移動時間がかかりすぎる過密スケジュールは避けてください。
-3. **洗練された提案**: 回答内容は長すぎず、ユーザーが読みやすいように簡潔かつ魅力的にまとめてください。誰もが「実際に行ってみたい！」と思えるような現実的で魅力的なプランにしてください。
-`;
 
     // Define the expected JSON schema
     const responseSchema: Schema = {
