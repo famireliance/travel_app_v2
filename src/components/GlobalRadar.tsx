@@ -27,7 +27,7 @@ export default function GlobalRadar() {
         (position) => {
           if (!mounted) return;
           const { latitude: userLat, longitude: userLng } = position.coords;
-          let closestIsland = null;
+          let closestIsland: any = null;
           let minDistance = Infinity;
 
           islands.forEach(island => {
