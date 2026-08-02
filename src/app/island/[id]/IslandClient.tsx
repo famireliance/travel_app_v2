@@ -13,7 +13,7 @@ import { getGuideUrl, getAiCompanionUrl, ECOSYSTEM_CONFIG } from '@/lib/ecosyste
 import Breadcrumb from '@/components/Breadcrumb';
 import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
-import { Tent, Car, Ship, CloudLightning } from 'lucide-react';
+import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain } from 'lucide-react';
 
 export default function IslandDetail() {
   const params = useParams();
@@ -392,24 +392,67 @@ export default function IslandDetail() {
 
         {/* Practical Info Section */}
         {island.practical_info && (
-          <div className="mb-8">
-            <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-4 border-l-2 border-emerald-500 pl-3">旅の実用情報</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-              <div className={`p-3 rounded-xl border flex items-center gap-2 ${island.practical_info.has_convenience_store ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-                <CheckSquare className="w-4 h-4 shrink-0" />
-                <span className="text-xs font-bold">{island.practical_info.has_convenience_store ? 'コンビニ/商店あり' : 'コンビニ/商店なし'}</span>
+          <div className="mb-12">
+            <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-6 border-l-2 border-emerald-500 pl-3">旅のインフラ・実用情報</h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className={`relative overflow-hidden group p-5 rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br ${island.practical_info.has_convenience_store ? 'from-emerald-50 to-white border-emerald-200' : 'from-slate-50 to-white border-slate-200'}`}>
+                <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Store className="w-24 h-24" />
+                </div>
+                <div className="relative z-10 flex flex-col gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm ${island.practical_info.has_convenience_store ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                    <Store className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-bold text-slate-800">{island.practical_info.has_convenience_store ? '商店・コンビニ' : '商店なし'}</span>
+                    <span className={`text-[0.65rem] font-bold ${island.practical_info.has_convenience_store ? 'text-emerald-600' : 'text-slate-400'}`}>{island.practical_info.has_convenience_store ? '現地調達可能' : '事前の準備が必要'}</span>
+                  </div>
+                </div>
               </div>
-              <div className={`p-3 rounded-xl border flex items-center gap-2 ${island.practical_info.has_atm ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-                <CheckSquare className="w-4 h-4 shrink-0" />
-                <span className="text-xs font-bold">{island.practical_info.has_atm ? '現金(ATM)あり' : '現金引出不可'}</span>
+
+              <div className={`relative overflow-hidden group p-5 rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br ${island.practical_info.has_atm ? 'from-emerald-50 to-white border-emerald-200' : 'from-rose-50 to-white border-rose-200'}`}>
+                <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <CreditCard className="w-24 h-24" />
+                </div>
+                <div className="relative z-10 flex flex-col gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm ${island.practical_info.has_atm ? 'bg-emerald-500 text-white' : 'bg-rose-400 text-white'}`}>
+                    <CreditCard className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-bold text-slate-800">{island.practical_info.has_atm ? 'ATM・現金' : 'ATMなし'}</span>
+                    <span className={`text-[0.65rem] font-bold ${island.practical_info.has_atm ? 'text-emerald-600' : 'text-rose-500'}`}>{island.practical_info.has_atm ? '現地で引き出し可能' : '現金の持参が必須'}</span>
+                  </div>
+                </div>
               </div>
-              <div className={`p-3 rounded-xl border flex items-center gap-2 ${island.practical_info.has_clinic ? 'bg-blue-50 border-blue-200 text-blue-800' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>
-                <Plus className="w-4 h-4 shrink-0" />
-                <span className="text-xs font-bold">{island.practical_info.has_clinic ? '診療所あり' : '医療機関なし'}</span>
+
+              <div className={`relative overflow-hidden group p-5 rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br ${island.practical_info.has_clinic ? 'from-blue-50 to-white border-blue-200' : 'from-slate-50 to-white border-slate-200'}`}>
+                <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Stethoscope className="w-24 h-24" />
+                </div>
+                <div className="relative z-10 flex flex-col gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm ${island.practical_info.has_clinic ? 'bg-blue-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                    <Stethoscope className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-bold text-slate-800">{island.practical_info.has_clinic ? '診療所・病院' : '医療機関なし'}</span>
+                    <span className={`text-[0.65rem] font-bold ${island.practical_info.has_clinic ? 'text-blue-600' : 'text-slate-400'}`}>{island.practical_info.has_clinic ? '急病時も安心' : '常備薬の持参を推奨'}</span>
+                  </div>
+                </div>
               </div>
-              <div className={`p-3 rounded-xl border flex items-center gap-2 ${island.practical_info.day_trip_possible ? 'bg-indigo-50 border-indigo-200 text-indigo-800' : 'bg-rose-50 border-rose-200 text-rose-800'}`}>
-                <Compass className="w-4 h-4 shrink-0" />
-                <span className="text-xs font-bold">{island.practical_info.day_trip_possible ? '日帰り可能' : '日帰り困難・要宿泊'}</span>
+
+              <div className={`relative overflow-hidden group p-5 rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 bg-gradient-to-br ${island.practical_info.day_trip_possible ? 'from-indigo-50 to-white border-indigo-200' : 'from-orange-50 to-white border-orange-200'}`}>
+                <div className="absolute -top-4 -right-4 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
+                  <Sunrise className="w-24 h-24" />
+                </div>
+                <div className="relative z-10 flex flex-col gap-3">
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm ${island.practical_info.day_trip_possible ? 'bg-indigo-500 text-white' : 'bg-orange-500 text-white'}`}>
+                    <Sunrise className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <span className="block text-sm font-bold text-slate-800">{island.practical_info.day_trip_possible ? '日帰り観光' : '日帰り困難'}</span>
+                    <span className={`text-[0.65rem] font-bold ${island.practical_info.day_trip_possible ? 'text-indigo-600' : 'text-orange-600'}`}>{island.practical_info.day_trip_possible ? '気軽な滞在が可能' : '宿泊施設の手配が必須'}</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -417,41 +460,82 @@ export default function IslandDetail() {
 
         {/* Deep Parameters Section (Starry Sky, Transparency, etc.) */}
         {island.practical_info && island.practical_info.transparency_level && (
-          <div className="mb-10">
-            <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-4 border-l-2 border-indigo-500 pl-3">島の魅力パラメータ</h2>
-            <div className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div>
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-xs font-bold text-blue-600 flex items-center gap-1"><Sparkles className="w-3 h-3"/> 海の透明度</span>
-                  <span className="text-sm font-mono font-bold text-blue-900">{island.practical_info.transparency_level}/10</span>
+          <div className="mb-12">
+            <div className="bg-gradient-to-br from-slate-900 via-[#0a192f] to-slate-900 rounded-3xl p-8 shadow-2xl border border-slate-800/80 relative overflow-hidden">
+              {/* Glowing background blob */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
+              <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+              
+              <h2 className="text-sm font-bold tracking-[0.2em] text-white mb-8 flex items-center gap-3">
+                <Sparkles className="w-4 h-4 text-blue-400" />
+                <span>ISLAND PARAMETERS</span>
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative z-10">
+                <div className="group">
+                  <div className="flex justify-between items-end mb-3">
+                    <span className="text-sm font-bold text-blue-200 flex items-center gap-2">
+                      <Droplets className="w-4 h-4 text-blue-400 group-hover:scale-110 transition-transform"/> 海の透明度
+                    </span>
+                    <span className="text-lg font-mono font-bold text-white drop-shadow-[0_0_8px_rgba(96,165,250,0.8)]">{island.practical_info.transparency_level}<span className="text-xs text-blue-400/70">/10</span></span>
+                  </div>
+                  <div className="w-full bg-slate-800/80 rounded-full h-3 backdrop-blur-sm border border-slate-700/50 overflow-hidden shadow-inner">
+                    <motion.div 
+                      initial={{ width: 0 }} whileInView={{ width: `${island.practical_info.transparency_level * 10}%` }} viewport={{ once: true }} transition={{ duration: 1.5, ease: "easeOut" }}
+                      className="bg-gradient-to-r from-blue-600 via-blue-400 to-cyan-300 h-full rounded-full shadow-[0_0_15px_rgba(56,189,248,0.6)] relative"
+                    >
+                      <div className="absolute top-0 right-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-white/40 rounded-full"></div>
+                    </motion.div>
+                  </div>
                 </div>
-                <div className="w-full bg-slate-100 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-blue-300 to-blue-500 h-2 rounded-full" style={{ width: `${island.practical_info.transparency_level * 10}%` }}></div>
+
+                <div className="group">
+                  <div className="flex justify-between items-end mb-3">
+                    <span className="text-sm font-bold text-indigo-200 flex items-center gap-2">
+                      <Moon className="w-4 h-4 text-indigo-400 group-hover:scale-110 transition-transform"/> 星空の美しさ
+                    </span>
+                    <span className="text-lg font-mono font-bold text-white drop-shadow-[0_0_8px_rgba(129,140,248,0.8)]">{island.practical_info.starry_sky_level}<span className="text-xs text-indigo-400/70">/10</span></span>
+                  </div>
+                  <div className="w-full bg-slate-800/80 rounded-full h-3 backdrop-blur-sm border border-slate-700/50 overflow-hidden shadow-inner">
+                    <motion.div 
+                      initial={{ width: 0 }} whileInView={{ width: `${island.practical_info.starry_sky_level * 10}%` }} viewport={{ once: true }} transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
+                      className="bg-gradient-to-r from-indigo-600 via-indigo-400 to-purple-400 h-full rounded-full shadow-[0_0_15px_rgba(129,140,248,0.6)] relative"
+                    >
+                      <div className="absolute top-0 right-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-white/40 rounded-full"></div>
+                    </motion.div>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-xs font-bold text-indigo-600 flex items-center gap-1"><Star className="w-3 h-3"/> 星空の美しさ</span>
-                  <span className="text-sm font-mono font-bold text-indigo-900">{island.practical_info.starry_sky_level}/10</span>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-indigo-300 to-indigo-500 h-2 rounded-full" style={{ width: `${island.practical_info.starry_sky_level * 10}%` }}></div>
-                </div>
-              </div>
-              <div>
-                <div className="flex justify-between items-end mb-2">
-                  <span className="text-xs font-bold text-emerald-600 flex items-center gap-1"><Compass className="w-3 h-3"/> 秘境度</span>
-                  <span className="text-sm font-mono font-bold text-emerald-900">{island.practical_info.seclusion_level}/10</span>
-                </div>
-                <div className="w-full bg-slate-100 rounded-full h-2">
-                  <div className="bg-gradient-to-r from-emerald-300 to-emerald-500 h-2 rounded-full" style={{ width: `${island.practical_info.seclusion_level * 10}%` }}></div>
+
+                <div className="group">
+                  <div className="flex justify-between items-end mb-3">
+                    <span className="text-sm font-bold text-emerald-200 flex items-center gap-2">
+                      <Mountain className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform"/> 秘境度
+                    </span>
+                    <span className="text-lg font-mono font-bold text-white drop-shadow-[0_0_8px_rgba(52,211,153,0.8)]">{island.practical_info.seclusion_level}<span className="text-xs text-emerald-400/70">/10</span></span>
+                  </div>
+                  <div className="w-full bg-slate-800/80 rounded-full h-3 backdrop-blur-sm border border-slate-700/50 overflow-hidden shadow-inner">
+                    <motion.div 
+                      initial={{ width: 0 }} whileInView={{ width: `${island.practical_info.seclusion_level * 10}%` }} viewport={{ once: true }} transition={{ duration: 1.5, ease: "easeOut", delay: 0.4 }}
+                      className="bg-gradient-to-r from-emerald-600 via-emerald-400 to-teal-300 h-full rounded-full shadow-[0_0_15px_rgba(52,211,153,0.6)] relative"
+                    >
+                      <div className="absolute top-0 right-0 bottom-0 w-10 bg-gradient-to-r from-transparent to-white/40 rounded-full"></div>
+                    </motion.div>
+                  </div>
                 </div>
               </div>
               
-              {/* Optional tags */}
-              <div className="col-span-1 md:col-span-3 flex flex-wrap gap-2 mt-2">
-                {island.practical_info.has_sauna && <span className="px-3 py-1 bg-rose-50 text-rose-700 text-xs font-bold rounded-lg border border-rose-100">🔥 サウナ・温泉あり</span>}
-                {island.practical_info.camping_level >= 5 && <span className="px-3 py-1 bg-green-50 text-green-700 text-xs font-bold rounded-lg border border-green-100">🏕️ キャンプ好適地</span>}
+              {/* Special Tags */}
+              <div className="col-span-1 md:col-span-3 flex flex-wrap gap-3 mt-8 pt-6 border-t border-slate-700/50 relative z-10">
+                {island.practical_info.has_sauna && (
+                  <div className="px-4 py-2 bg-gradient-to-r from-rose-500/10 to-orange-500/10 text-rose-300 text-xs font-bold rounded-xl border border-rose-500/30 flex items-center gap-2 shadow-[0_0_10px_rgba(244,63,94,0.1)]">
+                    <span className="text-base">♨️</span> サウナ・温泉あり
+                  </div>
+                )}
+                {island.practical_info.camping_level >= 5 && (
+                  <div className="px-4 py-2 bg-gradient-to-r from-green-500/10 to-emerald-500/10 text-emerald-300 text-xs font-bold rounded-xl border border-emerald-500/30 flex items-center gap-2 shadow-[0_0_10px_rgba(16,185,129,0.1)]">
+                    <span className="text-base">🏕️</span> キャンプ好適地 (Lv.{island.practical_info.camping_level})
+                  </div>
+                )}
               </div>
             </div>
           </div>
