@@ -164,20 +164,6 @@ export default function IslandDetail() {
     <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans relative">
       {/* Hero Image Section */}
       <div className="relative w-full h-[50vh] lg:h-[60vh] overflow-hidden">
-        {/* Top Navigation Overlay */}
-        <div className="absolute top-0 left-0 right-0 z-50 p-6 lg:p-8 flex flex-col gap-4 bg-gradient-to-b from-slate-900/80 via-slate-900/20 to-transparent pointer-events-none">
-          <div className="flex items-center gap-4 pointer-events-auto">
-            <Breadcrumb 
-              items={[
-                { label: 'マップ', href: '/map' },
-                { label: island.region_id, href: `/region/${island.region_id}` },
-                { label: island.name }
-              ]} 
-              isDark={true}
-              className="!mb-0"
-            />
-          </div>
-        </div>
 
         <img 
           src={fallbackImage} 
