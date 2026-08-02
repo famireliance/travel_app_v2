@@ -373,22 +373,7 @@ export default function IslandDetail() {
           </div>
         )}
 
-        {/* Basic Island Information */}
-        <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-slate-500 font-bold tracking-widest mb-1 uppercase">Area</span>
-            <span className="text-sm font-bold text-slate-800">{island.area ? `${island.area} km²` : '調査中'}</span>
-          </div>
-          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-            <span className="text-xs text-slate-500 font-bold tracking-widest mb-1 uppercase">Population</span>
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            <span className="text-sm font-bold text-slate-800">{(island as any).population || '調査中'}</span>
-          </div>
-          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center col-span-2 md:col-span-2">
-            <span className="text-xs text-slate-500 font-bold tracking-widest mb-1 uppercase">Access</span>
-            <span className="text-xs md:text-sm font-bold text-slate-800 break-words">{island.access || '調査中'}</span>
-          </div>
-        </div>
+
 
         {/* Practical Info Section */}
         {island.practical_info && (

@@ -18,11 +18,11 @@ import { calculateDistanceKm } from '@/lib/geo';
 const ALL_ISLANDS_COUNT = 432;
 
 const getIslandIdFromLocation = (location: string) => {
-  if (location.includes('西表')) return 'iriomote';
-  if (location.includes('小笠原')) return 'ogasawara';
-  if (location.includes('与那国')) return 'yonaguni';
-  if (location.includes('宮古')) return 'miyako';
-  if (location.includes('粟国')) return 'aguni';
+  if (location.includes('西表')) return '396';
+  if (location.includes('小笠原')) return '63';
+  if (location.includes('与那国')) return '401';
+  if (location.includes('宮古')) return '386';
+  if (location.includes('粟国')) return '382';
   return null;
 };
 
@@ -552,10 +552,10 @@ export default function Home() {
               className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all group/btn border border-blue-500/30"
             >
               <div className="flex -space-x-1 overflow-hidden">
-                <span className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-xs border border-white">🐢</span>
-                <span className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center text-xs border border-white">🦉</span>
-                <span className="w-6 h-6 rounded-full bg-pink-500 flex items-center justify-center text-xs border border-white">🌺</span>
-                <span className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-xs border border-white">♨️</span>
+                <img src="/fairies/ruri.png" alt="ルリ" className="w-6 h-6 rounded-full object-cover border border-white bg-blue-50 shadow-sm" />
+                <img src="/fairies/shisa.png" alt="シーサー" className="w-6 h-6 rounded-full object-cover border border-white bg-orange-50 shadow-sm" />
+                <img src="/fairies/blue.png" alt="ブルー" className="w-6 h-6 rounded-full object-cover border border-white bg-indigo-50 shadow-sm" />
+                <img src="/fairies/shida.png" alt="シダ" className="w-6 h-6 rounded-full object-cover border border-white bg-green-50 shadow-sm" />
               </div>
               <span className="text-xs sm:text-sm font-bold tracking-wider text-amber-300">
                 オリジナル進化キャラクター大図鑑ページへ ＞
@@ -570,7 +570,7 @@ export default function Home() {
           <div className="w-12 h-[1.5px] bg-blue-600 mx-auto mt-6" />
         </div>
         
-        <div className="flex justify-start md:justify-center gap-4 md:gap-8 overflow-x-auto hide-scrollbar -mx-8 px-8 snap-x pb-6">
+        <div className="flex justify-start md:justify-center gap-4 md:gap-8 overflow-x-auto hide-scrollbar -mx-8 px-8 snap-x pb-8 pt-4">
           {[
             { id: 'transparency', icon: Droplets, label: '海の透明度', badge: 'ブルー・サンゴ' },
             { id: 'stars', icon: Moon, label: '星空保護区', badge: 'ダークスカイ' },
@@ -584,7 +584,7 @@ export default function Home() {
               <div 
                 key={cat.id} 
                 onClick={() => setSelectedCategory(isSelected ? null : cat.id)} 
-                className="snap-center flex flex-col items-center gap-2.5 cursor-pointer group shrink-0"
+                className="snap-center flex flex-col items-center gap-2.5 cursor-pointer group shrink-0 min-w-[5.5rem]"
               >
                 <div className={`w-16 h-16 lg:w-20 lg:h-20 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm border relative ${
                   isSelected

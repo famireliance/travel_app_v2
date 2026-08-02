@@ -1,8 +1,12 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
+import WebSocket from 'ws';
+import { GoogleGenAI, Type } from '@google/genai';
 
 dotenv.config({ path: '../.env.local' });
 dotenv.config({ path: '.env.local' });
+
+global.WebSocket = WebSocket;
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -12,50 +16,84 @@ if (!supabaseUrl || !supabaseKey) {
   process.exit(1);
 }
 
-// 20系Node向けにWSをポリフィル (Supabase 2.110.2対策)
-import WebSocket from 'ws';
-global.WebSocket = WebSocket;
-
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const CONCURRENCY = 10;
+// Use the API key from environment
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-// Gemini APIのモック（ダミーデータを返す）
+const CONCURRENCY = 3; // Reduced concurrency to avoid rate limits
+
 async function generateRichDataWithGemini(islandName, prefecture, fallbackDesc) {
-  // リアルなランダムパラメータ生成
-  const rand = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-  
-  // 島名に基づく少し凝ったダミー説明文
-  let description = `${islandName}は、${prefecture}に位置する魅力あふれる離島です。透明度抜群の美しい海と、夜には満天の星空が広がる絶景スポットとして近年注目を集めています。`;
-  description += `\\n島内には独自の文化や歴史的な遺産が残り、訪れる人々に非日常の癒しを提供します。大自然に囲まれた環境で、都会の喧騒を忘れてリフレッシュするのに最適な場所です。`;
-  if (fallbackDesc && fallbackDesc !== 'null') {
-    description += `\\n(参考: ${fallbackDesc})`;
+  const prompt = `
+あなたは日本の離島専門の熟練トラベルライター兼データアナリストです。
+指定された島「${prefecture} ${islandName}」について、以下の要件を満たす正確な情報をJSON形式で出力してください。
+
+【厳守事項】
+1. 情報の正確性: アクセス手段や人口は現実のデータに基づいて推測してください。橋で渡れる島に「フェリー」と書いたり、都市部周辺の島に秘境度を高めに設定しないでください。
+2. explanation (description): 島の特徴や歴史、魅力について、心を打つようなエモーショナルで美しい長文の紹介文を作成してください。「(参考: ~)」などのゴミ文字は絶対に含めないこと。
+3. transparency_level (透明度 1-10): 沖縄や小笠原は高く、内海や本土近海は低めなど現実的に。
+4. starry_sky_level (星空レベル 1-10): 人口が多く明るい島(例: 宮古島中心部など)は中程度、波照間島のような離島は10など現実的に。
+5. seclusion_level (秘境度 1-10): 観光地化されている島(例: 宮古島、石垣島)は低〜中(3-5程度)、アクセスが困難な無人島や離島は高(8-10)にすること。
+
+【出力フォーマット（JSON構造）】
+{
+  "population": "約〇〇人" (不明な場合は "無人島" または "極少数"),
+  "access": "〇〇から〇〇で約〇〇分" (例: 沖縄本島から橋で約10分、羽田空港から飛行機で約55分 等、最も主要なアクセス方法),
+  "description": "島の魅力的な詳細解説...",
+  "practical_info": {
+    "has_convenience_store": true/false (コンビニや商店があるか),
+    "has_atm": true/false,
+    "has_clinic": true/false,
+    "day_trip_possible": true/false (本土や主要島から日帰り可能か),
+    "has_sauna": true/false (サウナ施設や温泉があるか),
+    "transparency_level": 1〜10の整数,
+    "starry_sky_level": 1〜10の整数,
+    "seclusion_level": 1〜10の整数,
+    "camping_level": 1〜10の整数
   }
+}
+`;
 
-  const data = {
-    population: `約${rand(0, 50) * 100 + rand(10, 99)}人`,
-    access: `${prefecture}の主要港からフェリーで約${rand(30, 120)}分`,
-    description: description,
-    practical_info: {
-      has_convenience_store: Math.random() > 0.5,
-      has_atm: Math.random() > 0.3,
-      has_clinic: Math.random() > 0.2,
-      day_trip_possible: Math.random() > 0.4,
-      has_sauna: Math.random() > 0.8,
-      transparency_level: rand(6, 10),
-      starry_sky_level: rand(7, 10),
-      seclusion_level: rand(5, 10),
-      camping_level: rand(4, 10)
-    }
-  };
-  
-  if (data.population === "約0人" || data.population.startsWith("約0")) data.population = "無人島（または極少）";
+  try {
+    const response = await ai.models.generateContent({
+      model: 'gemini-3.5-flash',
+      contents: prompt,
+      config: {
+        responseMimeType: "application/json",
+        responseSchema: {
+          type: Type.OBJECT,
+          properties: {
+            population: { type: Type.STRING },
+            access: { type: Type.STRING },
+            description: { type: Type.STRING },
+            practical_info: {
+              type: Type.OBJECT,
+              properties: {
+                has_convenience_store: { type: Type.BOOLEAN },
+                has_atm: { type: Type.BOOLEAN },
+                has_clinic: { type: Type.BOOLEAN },
+                day_trip_possible: { type: Type.BOOLEAN },
+                has_sauna: { type: Type.BOOLEAN },
+                transparency_level: { type: Type.INTEGER },
+                starry_sky_level: { type: Type.INTEGER },
+                seclusion_level: { type: Type.INTEGER },
+                camping_level: { type: Type.INTEGER }
+              }
+            }
+          }
+        }
+      }
+    });
 
-  return data;
+    return JSON.parse(response.text);
+  } catch (error) {
+    console.error(`Gemini API Error for ${islandName}:`, error.message);
+    return null;
+  }
 }
 
 async function processIsland(island) {
-  console.log(`[Gemini API] Generating data for ${island.name} ...`);
+  console.log(`[Gemini API] Generating TRUE data for ${island.name} ...`);
   const enriched = await generateRichDataWithGemini(island.name, island.prefecture, island.description);
   
   if (enriched) {
@@ -70,11 +108,13 @@ async function processIsland(island) {
       .eq('id', island.id);
       
     if (error) {
-      console.error(`[${island.id}] ${island.name} - DB Update Error:`, error.message);
+      console.error(`❌ [${island.id}] ${island.name} - DB Update Error:`, error.message);
     } else {
-      console.log(`✅ [${island.id}] ${island.name} - Success! Transp: ${enriched.practical_info?.transparency_level}`);
+      console.log(`✅ [${island.id}] ${island.name} - Success! Transp: ${enriched.practical_info?.transparency_level}, Seclusion: ${enriched.practical_info?.seclusion_level}`);
     }
   }
+  // Rate limit protection sleep
+  await new Promise(r => setTimeout(r, 1000));
 }
 
 async function main() {
@@ -89,11 +129,13 @@ async function main() {
     return;
   }
   
-  console.log(`Found ${islands.length} islands. Starting enrichment...`);
+  console.log(`Found ${islands.length} islands. Starting REAL AI enrichment...`);
   
+  // To avoid hitting 15 RPM limit for free tier or concurrent limits, we chunk
   for (let i = 0; i < islands.length; i += CONCURRENCY) {
     const chunk = islands.slice(i, i + CONCURRENCY);
     await Promise.all(chunk.map(processIsland));
+    console.log(`Completed batch ${Math.floor(i/CONCURRENCY) + 1}/${Math.ceil(islands.length/CONCURRENCY)}`);
   }
   
   console.log('All islands processed successfully!');
