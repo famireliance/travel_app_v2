@@ -373,11 +373,28 @@ export default function IslandDetail() {
           </div>
         )}
 
+        {/* Basic Island Information */}
+        <div className="mb-8 grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
+            <span className="text-xs text-slate-500 font-bold tracking-widest mb-1 uppercase">Area</span>
+            <span className="text-sm font-bold text-slate-800">{island.area ? `${island.area} km²` : '調査中'}</span>
+          </div>
+          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
+            <span className="text-xs text-slate-500 font-bold tracking-widest mb-1 uppercase">Population</span>
+            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+            <span className="text-sm font-bold text-slate-800">{(island as any).population || '調査中'}</span>
+          </div>
+          <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center col-span-2 md:col-span-2">
+            <span className="text-xs text-slate-500 font-bold tracking-widest mb-1 uppercase">Access</span>
+            <span className="text-xs md:text-sm font-bold text-slate-800 break-words">{island.access || '調査中'}</span>
+          </div>
+        </div>
+
         {/* Description (Self-Contained Article) */}
         <div className="mb-12">
           <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-4 border-l-2 border-blue-500 pl-3">島の特徴・詳細解説</h2>
           <div className="bg-white rounded-2xl p-6 md:p-8 border border-slate-200/80 shadow-sm">
-            <p className="text-slate-700 leading-relaxed font-serif text-[0.98rem] whitespace-pre-line">
+            <p className="text-slate-700 leading-relaxed font-serif text-[1.05rem] whitespace-pre-line tracking-wide">
               {island.description || '手つかずの自然と温かい伝統文化が残る、日本の魅力的な離島です。'}
             </p>
           </div>
