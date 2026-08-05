@@ -15,7 +15,7 @@ const getGeminiClient = () => {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { startLocation, durationDays, preferences, maxIslands } = body;
+    const { startLocation, durationDays, preferences, maxIslands, excludedIslands = [] } = body;
 
     const ai = getGeminiClient();
 
@@ -38,8 +38,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Failed to fetch islands data for context' }, { status: 500 });
     }
 
+    // Filter out excluded islands if provided
+    const filteredIslands = Array.isArray(excludedIslands) && excludedIslands.length > 0 
+      ? islands.filter(i => !excludedIslands.includes(i.id))
+      : islands;
+
     // Create a compact string of islands for the AI prompt
-    const islandsContext = islands.map(i => `${i.name}(${i.prefecture}) - ID:${i.id} - アクセス:${i.access || '不明'}`).join('\\n');
+    const islandsContext = filteredIslands.map(i => `${i.name}(${i.prefecture}) - ID:${i.id} - アクセス:${i.access || '不明'}`).join('\\n');
 
 
 

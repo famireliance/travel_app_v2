@@ -1,8 +1,9 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Map, Calendar, Ship, ArrowLeft, ArrowRight, Loader2, Compass } from 'lucide-react';
+import { Sparkles, Map, Calendar, Ship, ArrowLeft, ArrowRight, Loader2, Compass, RefreshCw } from 'lucide-react';
 import Breadcrumb from '@/components/Breadcrumb';
+import { useTravel } from '@/context/TravelContext';
 
 interface RoutePlan {
   planType: string;
@@ -20,10 +21,12 @@ interface RoutePlan {
 
 export default function RoutePlannerPage() {
   const router = useRouter();
+  const { islandStatuses } = useTravel();
   const [startLocation, setStartLocation] = useState('東京');
   const [durationDays, setDurationDays] = useState(3);
   const [preferences, setPreferences] = useState('');
   const [maxIslands, setMaxIslands] = useState(3);
+  const [excludeVisited, setExcludeVisited] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<RoutePlan[] | null>(null);
   const [activeTab, setActiveTab] = useState(0);
@@ -33,6 +36,13 @@ export default function RoutePlannerPage() {
     setIsLoading(true);
     setErrorMsg('');
     try {
+      let excludedIslands: string[] = [];
+      if (excludeVisited && islandStatuses) {
+        excludedIslands = Object.keys(islandStatuses).filter(
+          id => islandStatuses[id] === 'visited' || islandStatuses[id] === 'verified_visited'
+        );
+      }
+
       const res = await fetch('/api/ai-route', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -40,7 +50,8 @@ export default function RoutePlannerPage() {
           startLocation,
           durationDays,
           preferences,
-          maxIslands
+          maxIslands,
+          excludedIslands
         })
       });
 
@@ -127,6 +138,20 @@ export default function RoutePlannerPage() {
                 className="w-full border-2 border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:border-blue-500 font-medium min-h-[100px]"
               />
             </div>
+
+            <div className="md:col-span-2">
+              <label className="flex items-center gap-3 cursor-pointer p-4 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-colors">
+                <input 
+                  type="checkbox" 
+                  checked={excludeVisited}
+                  onChange={(e) => setExcludeVisited(e.target.checked)}
+                  className="w-5 h-5 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                />
+                <span className="text-sm font-bold text-slate-700">
+                  すでに行ったことのある島（到達済み）はルートから除外する
+                </span>
+              </label>
+            </div>
           </div>
 
           <button 
@@ -176,7 +201,7 @@ export default function RoutePlannerPage() {
             </div>
 
             {/* Tab Content */}
-            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+            <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 mb-8">
               <h3 className="font-serif text-xl md:text-2xl font-bold text-slate-800 mb-2">{result[activeTab].title}</h3>
               <p className="text-slate-600 leading-relaxed mb-4">{result[activeTab].description}</p>
               <p className="text-sm font-bold text-amber-600 mb-8 bg-amber-50 inline-block px-3 py-1 rounded-full border border-amber-200">
@@ -215,6 +240,19 @@ export default function RoutePlannerPage() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            {/* Regenerate Button */}
+            <div className="text-center">
+              <p className="text-xs text-slate-500 mb-3">気に入るプランが見つからない場合は再生成できます</p>
+              <button 
+                onClick={handleGenerate}
+                disabled={isLoading}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-bold text-slate-700 bg-white border-2 border-slate-200 shadow-sm hover:border-slate-300 hover:bg-slate-50 transition-all active:scale-95"
+              >
+                <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
+                {isLoading ? "考案中..." : "別のルートを再検索する"}
+              </button>
             </div>
           </div>
         )}
