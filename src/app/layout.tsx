@@ -38,6 +38,9 @@ export const metadata: Metadata = {
     images: ['/logo.png'],
   },
   manifest: '/manifest.json',
+  formatDetection: {
+    telephone: false,
+  },
 };
 
 export const viewport: Viewport = {

@@ -240,6 +240,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
                     <input 
                       type="file" 
                       accept="image/jpeg,image/png,image/heic" 
+                      capture="environment"
                       className="hidden" 
                       ref={fileInputRef}
                       onChange={onFileChange}

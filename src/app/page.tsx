@@ -289,10 +289,10 @@ export default function Home() {
       )}
 
       {/* Cinematic Hero Section */}
-      <div className={`relative ${adCampaigns.length > 0 ? 'h-[75vh]' : 'h-[85vh] lg:h-[90vh]'} w-full overflow-hidden flex flex-col justify-end items-center`}>
+      <div className={`relative ${adCampaigns.length > 0 ? 'min-h-[75dvh]' : 'min-h-[85dvh] lg:min-h-[90dvh]'} w-full overflow-hidden flex flex-col justify-end items-center pt-32`}>
         {/* Subtle Ken Burns Effect */}
         <motion.div 
-          className="absolute inset-0 z-0 h-[80vh] min-h-[600px] overflow-hidden bg-slate-900"
+          className="absolute -inset-[10%] z-0 h-[120%] overflow-hidden bg-slate-900"
           style={{ y: headerY }}
         >
           <AnimatePresence mode="wait">
@@ -341,7 +341,7 @@ export default function Home() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <h1 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-[1.4] md:leading-[1.6] tracking-widest drop-shadow-lg mb-6 max-w-2xl break-words">
+                <h1 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-snug md:leading-[1.3] tracking-widest drop-shadow-lg mb-6 max-w-2xl break-words">
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[0] : slides[0].title[0]}<br />
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[1] : slides[0].title[1]}
                 </h1>
@@ -428,7 +428,7 @@ export default function Home() {
                       <Sparkles className="w-2.5 h-2.5" />
                       <span>同行守護精霊 (STAGE {companionStage.stage})</span>
                     </span>
-                    <p className="text-xs font-bold text-white mt-0.5 group-hover/comp:underline leading-snug">
+                    <p className="text-xs font-bold text-white mt-0.5 group-hover/comp:underline leading-snug break-all">
                       {companionStage.name}
                     </p>
                   </div>
