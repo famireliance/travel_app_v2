@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Upload, MapPin, CheckCircle2, AlertCircle, Camera, Navigation2, ShieldCheck, Info } from 'lucide-react';
+import { X, Camera, CheckCircle2, ShieldCheck, Navigation2, AlertCircle } from 'lucide-react';
 import exifr from 'exifr';
 import { calculateDistanceKm } from '@/lib/geo';
 import { useTravel } from '@/context/TravelContext';
@@ -24,7 +24,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
   const [distanceInfo, setDistanceInfo] = useState<number | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addIslandVisit, updateStatus, setTempCheckInPhotoUrl, setTempCheckInDate } = useTravel();
+  const { addIslandVisit, setTempCheckInPhotoUrl, setTempCheckInDate } = useTravel();
 
 
 

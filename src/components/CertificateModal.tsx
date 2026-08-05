@@ -16,6 +16,7 @@ interface CertificateModalProps {
 
 import { useTravel } from '@/context/TravelContext';
 import { getFormattedSerial, getIslandDifficulty } from '@/lib/difficulty';
+import { supabase } from '@/lib/supabase';
 
 export default function CertificateModal({ isOpen, onClose, island, user }: CertificateModalProps) {
   const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses, tempCheckInPhotoUrl, tempCheckInDate } = useTravel();
@@ -41,16 +42,40 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   const [phoneNumber, setPhoneNumber] = useState('');
   
   const [assignedSerial, setAssignedSerial] = useState('');
-  const [orderNumber, setOrderNumber] = useState('');
   const [orderSubmitting, setOrderSubmitting] = useState(false);
   const [isDigitalIssued, setIsDigitalIssued] = useState(false);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
   const [hasIssuedToday, setHasIssuedToday] = useState(false);
   const [isPlayingAd, setIsPlayingAd] = useState(false);
   const [adTimeLeft, setAdTimeLeft] = useState(0);
+  const [hasHologram, setHasHologram] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fullscreenCanvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    if (isOpen && island && user) {
+      // Check if user has uploaded a photo for this island
+      if (tempCheckInPhotoUrl) {
+        setHasHologram(true);
+      } else {
+        supabase.from('island_diaries')
+          .select('photo_url')
+          .eq('island_id', island.id)
+          .eq('user_id', user.id)
+          .not('photo_url', 'is', null)
+          .limit(1)
+          .then(({ data }) => {
+            if (data && data.length > 0) {
+              setHasHologram(true);
+            } else {
+              setHasHologram(false);
+            }
+          });
+      }
+    } else {
+      setHasHologram(false);
+    }
+  }, [isOpen, island, user, tempCheckInPhotoUrl]);
 
   // Use useEffect to check localStorage for daily issue count
   useEffect(() => {
@@ -76,7 +101,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
     }
   };
 
-  const issueDigital = () => {
+  const issueDigital = useCallback(() => {
     if (island) {
       const issuedKey = `kiratabi_issued_${island.id}`;
       const todayStr = new Date().toISOString().split('T')[0];
@@ -84,7 +109,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
     }
     setHasIssuedToday(true);
     setIsDigitalIssued(true);
-  };
+  }, [island]);
 
   useEffect(() => {
     if (isPlayingAd && adTimeLeft > 0) {
@@ -100,7 +125,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       }, 500);
       return () => clearTimeout(timer);
     }
-  }, [isPlayingAd, adTimeLeft]);
+  }, [isPlayingAd, adTimeLeft, issueDigital]);
 
   // Mock Trial Status (Ideally fetched from Supabase profiles.trial_ends_at)
   const isTrialActive = true; 
@@ -120,7 +145,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       // In a real app, check if user already paid for this island's certificate
       setIsDigitalIssued(false);
     }
-  }, [isOpen, island, user, contextTravelerName]);
+  }, [isOpen, island, user, contextTravelerName, tempCheckInDate, tempCheckInPhotoUrl]);
 
   const handleOrderSubmit = async () => {
     if (!recipientName.trim() || !address.trim() || !postalCode.trim() || !phoneNumber.trim()) {
@@ -224,10 +249,30 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
 
       // Subtle radial glow
       const gradient = ctx.createRadialGradient(width / 2, height / 2, 100, width / 2, height / 2, 800);
-      gradient.addColorStop(0, '#1E293B');
-      gradient.addColorStop(1, '#0F172A');
+      
+      if (hasHologram) {
+        // Holographic rare background
+        gradient.addColorStop(0, '#3B0764'); // Deep Purple
+        gradient.addColorStop(0.3, '#1E1B4B'); // Indigo
+        gradient.addColorStop(0.6, '#064E3B'); // Emerald
+        gradient.addColorStop(1, '#0F172A');
+      } else {
+        gradient.addColorStop(0, '#1E293B');
+        gradient.addColorStop(1, '#0F172A');
+      }
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
+
+      // Holographic Rainbow Overlay
+      if (hasHologram) {
+        const holoGradient = ctx.createLinearGradient(0, 0, width, height);
+        holoGradient.addColorStop(0, 'rgba(236, 72, 153, 0.15)'); // Pink
+        holoGradient.addColorStop(0.3, 'rgba(139, 92, 246, 0.15)'); // Violet
+        holoGradient.addColorStop(0.7, 'rgba(14, 165, 233, 0.15)'); // Sky
+        holoGradient.addColorStop(1, 'rgba(16, 185, 129, 0.15)'); // Emerald
+        ctx.fillStyle = holoGradient;
+        ctx.fillRect(0, 0, width, height);
+      }
 
       // Outer Gold Border
       ctx.strokeStyle = '#D4AF37';
@@ -254,10 +299,10 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       drawCorner(width - 46, height - 46, -1, -1);
 
       // Header Title
-      ctx.fillStyle = '#F3E5AB';
+      ctx.fillStyle = hasHologram ? '#F472B6' : '#F3E5AB';
       ctx.font = 'bold 24px serif';
       ctx.textAlign = 'center';
-      ctx.fillText('KIRATABI VERIFIED RECORD OF ARRIVAL', width / 2, 110);
+      ctx.fillText(hasHologram ? 'KIRATABI VERIFIED PHOTO DIARY RECORD' : 'KIRATABI VERIFIED RECORD OF ARRIVAL', width / 2, 110);
 
       ctx.fillStyle = '#D4AF37';
       ctx.font = 'light 48px serif';
@@ -424,8 +469,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       applyToCanvas(fullscreenCanvasRef.current);
     };
     img.src = customImage || island?.image_url || '/placeholders/trop.jpg';
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [island, travelerName, visitDate, customImage, assignedSerial, includeCompanionStamp, companionChar, companionStage]);
+  }, [island, travelerName, visitDate, customImage, assignedSerial, includeCompanionStamp, companionChar, companionStage, hasHologram]);
 
   useEffect(() => {
     if (!isOpen || !island) return;
@@ -945,7 +989,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                     <div className="bg-slate-800/80 border border-amber-500/40 rounded-2xl p-4 max-w-sm mx-auto text-left space-y-2 my-4">
                       <div className="text-xs text-slate-400 flex justify-between">
                         <span>受付番号:</span>
-                        <strong className="text-amber-400 font-mono">{orderNumber || 'ORD-2026-0001'}</strong>
+                        <strong className="text-amber-400 font-mono">ORD-2026-0001</strong>
                       </div>
                       <div className="text-xs text-slate-400 flex justify-between">
                         <span>公認シリアルNo:</span>

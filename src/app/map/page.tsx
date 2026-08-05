@@ -2,9 +2,11 @@
 
 import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { ArrowLeft, Search, Compass } from 'lucide-react';
+import { ArrowLeft, Search, Compass, Bot, ArrowRightLeft } from 'lucide-react';
 import MapClient from '@/components/Map/MapClient';
 import SearchModal from '@/components/SearchModal';
+import AiConcierge from '@/components/AiConcierge';
+import IslandCompareModal from '@/components/IslandCompareModal';
 import { useTravel } from '@/context/TravelContext';
 import { getIslandDifficulty } from '@/lib/difficulty';
 import { fetchAllIslands } from '@/lib/supabase';
@@ -21,6 +23,8 @@ function GlobalMapContent() {
   const [error, setError] = useState(false);
   const [difficultyFilter, setDifficultyFilter] = useState<number | null>(null);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAiOpen, setIsAiOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [manualBounds, setManualBounds] = useState<[[number, number], [number, number]] | null>(null);
 
   const regionParam = searchParams.get('region');
@@ -220,7 +224,27 @@ function GlobalMapContent() {
         </div>
       </div>
 
+      {/* Floating Action Buttons for Phase 2 Features */}
+      <div className="absolute bottom-24 right-4 sm:right-6 lg:right-12 z-[1000] flex flex-col gap-3 pointer-events-auto">
+        <button 
+          onClick={() => setIsAiOpen(true)}
+          className="bg-indigo-600 text-white p-3 lg:p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.15)] hover:scale-105 hover:bg-indigo-700 transition-all flex items-center gap-2 group"
+          title="AIコンシェルジュ"
+        >
+          <Bot className="w-6 h-6" />
+        </button>
+        <button 
+          onClick={() => setIsCompareOpen(true)}
+          className="bg-emerald-600 text-white p-3 lg:p-4 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.15)] hover:scale-105 hover:bg-emerald-700 transition-all flex items-center gap-2 group"
+          title="2島じまん比較"
+        >
+          <ArrowRightLeft className="w-6 h-6" />
+        </button>
+      </div>
+
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onSelectIsland={handleSelectIsland} />
+      <AiConcierge isOpen={isAiOpen} onClose={() => setIsAiOpen(false)} />
+      <IslandCompareModal isOpen={isCompareOpen} onClose={() => setIsCompareOpen(false)} />
     </main>
   );
 }

@@ -146,6 +146,12 @@ export default function MyPage() {
     );
   }
 
+  const photoDiaryCount = myDiaries.filter(d => d.photo_url).length;
+  let reporterTitle = null;
+  if (photoDiaryCount >= 50) reporterTitle = { name: "ゴールドレポーター", icon: "👑", color: "text-amber-400", bg: "bg-amber-900/30", border: "border-amber-500/50" };
+  else if (photoDiaryCount >= 10) reporterTitle = { name: "シルバーレポーター", icon: "💎", color: "text-slate-300", bg: "bg-slate-700/50", border: "border-slate-400/50" };
+  else if (photoDiaryCount >= 1) reporterTitle = { name: "ブロンズレポーター", icon: "🥉", color: "text-orange-400", bg: "bg-orange-900/30", border: "border-orange-500/50" };
+
   const SectionHeader = ({ id, icon: Icon, title, subtitle }: { id: string, icon: any, title: string, subtitle?: string }) => (
     <div 
       className="flex items-center justify-between cursor-pointer py-4 hover:bg-slate-800/50 rounded-xl transition-colors -mx-2 px-2"
@@ -237,7 +243,15 @@ export default function MyPage() {
               </form>
             )}
 
-            <div className="text-xs text-slate-400 font-mono mb-4 bg-slate-800/50 inline-block px-3 py-1 rounded-lg border border-slate-700/50">ID: {user?.id?.slice(0, 12) || 'ANON-GUEST'}</div>
+            <div className="flex flex-wrap items-center gap-2 mb-4">
+              <div className="text-xs text-slate-400 font-mono bg-slate-800/50 px-3 py-1 rounded-lg border border-slate-700/50">ID: {user?.id?.slice(0, 12) || 'ANON-GUEST'}</div>
+              {reporterTitle && (
+                <div className={`text-xs font-bold ${reporterTitle.color} ${reporterTitle.bg} px-3 py-1 rounded-lg border ${reporterTitle.border} flex items-center gap-1.5 shadow-sm`}>
+                  <span>{reporterTitle.icon}</span>
+                  <span>{reporterTitle.name}</span>
+                </div>
+              )}
+            </div>
             
             <div className="mb-8 max-w-lg mx-auto md:mx-0">
               {!isEditingBio ? (

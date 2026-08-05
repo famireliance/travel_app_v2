@@ -37,6 +37,7 @@ export const metadata: Metadata = {
     description: '日本全国432の離島を訪れてスタンプを集めよう',
     images: ['/logo.png'],
   },
+  manifest: '/manifest.json',
 };
 
 export const viewport: Viewport = {

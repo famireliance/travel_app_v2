@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, Award, Bot, Shield, Check, ChevronRight, Lock, Heart, Droplets, Flame, Moon, BookOpen } from 'lucide-react';
+import { X, Sparkles, Bot, Check, ChevronRight, Lock, BookOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
 import { COMPANION_CHARACTERS, CompanionId } from '@/lib/companion';
@@ -52,8 +52,12 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
           {/* Current Status Banner */}
           <div className="bg-slate-50 border-b border-slate-200/80 px-6 py-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 flex-shrink-0">
             <div className="flex items-center gap-4">
-              <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-5xl shadow-md border-2 border-white shrink-0`}>
-                {companionStage.icon}
+              <div className={`w-20 h-20 rounded-3xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-5xl shadow-md border-2 border-white shrink-0 overflow-hidden`}>
+                {companionStage.image ? (
+                  <img src={companionStage.image} alt={companionStage.name} className="w-full h-full object-cover" />
+                ) : (
+                  companionStage.icon
+                )}
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -109,8 +113,12 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
                       )}
                       <div>
                         <div className="flex items-start gap-4">
-                          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm shrink-0 border border-white`}>
-                            {activeStage.icon}
+                          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${activeStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm shrink-0 border border-white overflow-hidden`}>
+                            {activeStage.image ? (
+                              <img src={activeStage.image} alt={activeStage.name} className="w-full h-full object-cover" />
+                            ) : (
+                              activeStage.icon
+                            )}
                           </div>
                           <div className="pr-16">
                             <span className="text-[0.65rem] font-bold text-blue-600 tracking-wider uppercase block">
@@ -184,8 +192,12 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
                         </div>
 
                         <div className="flex items-center gap-3 my-3">
-                          <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${st.badgeGradient} flex items-center justify-center text-3xl shadow-sm border border-white shrink-0`}>
-                            {st.icon}
+                          <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${st.badgeGradient} flex items-center justify-center text-3xl shadow-sm border border-white shrink-0 overflow-hidden`}>
+                            {st.image ? (
+                              <img src={st.image} alt={st.name} className="w-full h-full object-cover" />
+                            ) : (
+                              st.icon
+                            )}
                           </div>
                           <div>
                             <p className="text-xs font-bold text-slate-900 leading-tight">

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, Star, Award, X } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import { IslandFairy } from '@/lib/fairies';
 import confetti from 'canvas-confetti';
@@ -114,6 +114,7 @@ export default function FairyDiscoveryModal() {
                   className={`relative flex items-center justify-center filter drop-shadow-2xl ${currentFairy.visual.shadowColor}`}
                 >
                   {currentFairy.visual.imageUrl ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
                     <img src={currentFairy.visual.imageUrl} alt={currentFairy.name} className="w-48 h-48 object-contain mix-blend-multiply" />
                   ) : (
                     <span className="text-[120px]">{currentFairy.visual.icon}</span>

@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 // Import Globe only on client side to avoid SSR issues with canvas/WebGL
 const Globe = dynamic(() => import('react-globe.gl'), { ssr: false });
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 interface GlobeSatelliteMapProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   islands: any[];

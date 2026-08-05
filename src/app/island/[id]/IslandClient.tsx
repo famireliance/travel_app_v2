@@ -290,6 +290,69 @@ export default function IslandDetail() {
           </div>
         </div>
 
+        {/* Practical Info Section */}
+        <div className="mb-10 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+          <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <h3 className="text-sm font-bold tracking-widest text-slate-800 flex items-center gap-2">
+              <CheckSquare className="w-4 h-4 text-slate-500" />
+              インフラ・実用情報
+            </h3>
+            <span className="text-[10px] md:text-xs text-slate-500 font-medium">データ出典: 国土交通省 国土数値情報 / 各自治体公開データ等</span>
+          </div>
+          <div className="p-6">
+            {island.is_uninhabited === true ? (
+              <div className="text-center py-6">
+                <span className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold tracking-widest mb-2">無人島</span>
+                <p className="text-sm text-slate-500 mt-3">この島は定住者がいない無人島のため、インフラ設備は基本的にありません。</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <CreditCard className={`w-5 h-5 mb-2 ${island.has_atm === true ? 'text-blue-500' : island.has_atm === false ? 'text-rose-400' : 'text-slate-300'}`} />
+                  <span className="text-xs text-slate-500 font-medium mb-1">ATM/郵便局</span>
+                  <span className={`text-sm font-bold ${island.has_atm === true ? 'text-slate-800' : island.has_atm === false ? 'text-rose-500' : 'text-slate-400'}`}>
+                    {island.has_atm === true ? 'あり' : island.has_atm === false ? 'なし' : '不明'}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <Stethoscope className={`w-5 h-5 mb-2 ${island.has_clinic === true ? 'text-emerald-500' : island.has_clinic === false ? 'text-rose-400' : 'text-slate-300'}`} />
+                  <span className="text-xs text-slate-500 font-medium mb-1">診療所/病院</span>
+                  <span className={`text-sm font-bold ${island.has_clinic === true ? 'text-slate-800' : island.has_clinic === false ? 'text-rose-500' : 'text-slate-400'}`}>
+                    {island.has_clinic === true ? 'あり' : island.has_clinic === false ? 'なし' : '不明'}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <Store className={`w-5 h-5 mb-2 ${island.has_store === true ? 'text-amber-500' : island.has_store === false ? 'text-rose-400' : 'text-slate-300'}`} />
+                  <span className="text-xs text-slate-500 font-medium mb-1">商店/売店</span>
+                  <span className={`text-sm font-bold ${island.has_store === true ? 'text-slate-800' : island.has_store === false ? 'text-rose-500' : 'text-slate-400'}`}>
+                    {island.has_store === true ? 'あり' : island.has_store === false ? 'なし' : '不明'}
+                  </span>
+                </div>
+                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
+                  <Wifi className={`w-5 h-5 mb-2 ${island.signal_status ? 'text-indigo-500' : 'text-slate-300'}`} />
+                  <span className="text-xs text-slate-500 font-medium mb-1">携帯電波</span>
+                  <span className={`text-sm font-bold ${island.signal_status ? 'text-slate-800' : 'text-slate-400'} leading-tight`}>
+                    {island.signal_status || '不明'}
+                  </span>
+                </div>
+              </div>
+            )}
+            {island.is_uninhabited !== true && (
+              <div className="mt-4 pt-4 border-t border-slate-100">
+                <div className="flex items-center gap-3">
+                  <Sunrise className="w-5 h-5 text-orange-400 shrink-0" />
+                  <div className="flex-1">
+                    <span className="text-xs text-slate-500 font-medium block">日帰り訪問</span>
+                    <span className={`text-sm font-bold ${island.day_trip === true ? 'text-emerald-600' : island.day_trip === false ? 'text-rose-500' : 'text-slate-400'}`}>
+                      {island.day_trip === true ? '本土・主要島から可能' : island.day_trip === false ? '宿泊推奨（船便都合など）' : '不明'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Ecosystem Portal Section (Kira-Tabi Guide & Article) */}
         {(island.guide_url || island.article_url) && (
           <div className="mb-14">

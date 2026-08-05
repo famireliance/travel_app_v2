@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X, Star } from 'lucide-react';
+import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X, Star, MessageCircle } from 'lucide-react';
 import regionsData from '../data/regions.json';
 import heroSlides from '../data/hero_slides.json';
 import SearchModal from '@/components/SearchModal';
@@ -163,7 +163,7 @@ export default function Home() {
       setCurrentSlide(prev => (prev + 1) % slides.length);
     }, 7000);
     return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+     
   }, [isMounted, currentSlide, slides.length]); // currentSlideが変更されたらタイマーをリセット
 
   const nextSlide = () => setCurrentSlide(prev => (prev + 1) % slides.length);
@@ -226,6 +226,7 @@ export default function Home() {
         <div className="hidden md:flex items-center gap-8 mr-8">
           <motion.button onClick={() => setIsSearchOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>探す</motion.button>
           <motion.button onClick={() => router.push('/map')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>マップ</motion.button>
+          <motion.button onClick={() => router.push('/timeline')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>島ノート</motion.button>
           <motion.button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>
             {user ? 'マイページ' : 'ログイン'}
           </motion.button>
@@ -265,6 +266,12 @@ export default function Home() {
               className="text-left font-serif text-base text-slate-800 py-2 border-b border-slate-100 flex items-center gap-3"
             >
               <Map size={18} /> マップ
+            </button>
+            <button
+              onClick={() => { setIsMobileMenuOpen(false); router.push('/timeline'); }}
+              className="text-left font-serif text-base text-slate-800 py-2 border-b border-slate-100 flex items-center gap-3"
+            >
+              <MessageCircle size={18} /> 島ノート
             </button>
             <button
               onClick={() => { setIsMobileMenuOpen(false); if (user) router.push('/mypage'); else setIsAuthOpen(true); }}
@@ -334,7 +341,7 @@ export default function Home() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <h1 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-[1.6] tracking-widest drop-shadow-lg mb-6 whitespace-nowrap">
+                <h1 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-[1.4] md:leading-[1.6] tracking-widest drop-shadow-lg mb-6 max-w-2xl break-words">
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[0] : slides[0].title[0]}<br />
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[1] : slides[0].title[1]}
                 </h1>
@@ -409,8 +416,12 @@ export default function Home() {
                 className="mt-4 p-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 backdrop-blur-md transition-all cursor-pointer group/comp relative z-10 flex items-center justify-between"
               >
                 <div className="flex items-center gap-4">
-                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm border border-white/60 shrink-0 group-hover/comp:scale-105 transition-transform`}>
-                    {companionStage.icon}
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm border border-white/60 shrink-0 group-hover/comp:scale-105 transition-transform overflow-hidden`}>
+                    {companionStage.image ? (
+                      <img src={companionStage.image} alt={companionStage.name} className="w-full h-full object-cover" />
+                    ) : (
+                      companionStage.icon
+                    )}
                   </div>
                   <div>
                     <span className="text-[0.6rem] font-bold tracking-wider uppercase text-amber-300 flex items-center gap-1">

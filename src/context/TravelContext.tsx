@@ -120,12 +120,12 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       // ユーザーのニックネームをSupabaseから取得
       if (currentUser) {
         try {
-          const { data, error } = await supabase.from('user_profiles').select('nickname').eq('id', currentUser.id).single();
+          const { data } = await supabase.from('user_profiles').select('nickname').eq('id', currentUser.id).single();
           if (data && data.nickname && isMounted) {
             setTravelerName(data.nickname);
             localStorage.setItem('kiratabi_traveler_name', data.nickname);
           }
-        } catch(e) {}
+        } catch (_) {}
         
         if (currentUser.user_metadata?.bio) {
           setBio(currentUser.user_metadata.bio);
@@ -161,7 +161,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
           if (currentUser.user_metadata?.bio) {
             setBio(currentUser.user_metadata.bio);
           }
-        } catch(e) {}
+        } catch (_) {}
       }
 
       loadLocalData(currentUser?.id, isMounted);
@@ -194,7 +194,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsed = JSON.parse(guestStored);
         if (typeof parsed === 'object' && parsed !== null) guestData = parsed;
-      } catch (e) {}
+      } catch (_) {}
     }
 
     // 2. ユーザーデータまたはゲストデータをベースにローカルデータを構築
@@ -211,7 +211,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
             // ユーザーデータが存在すれば、ゲストデータを上書きマージ
             localData = { ...localData, ...parsed };
           }
-        } catch (e) {}
+        } catch (_) {}
       }
     }
     

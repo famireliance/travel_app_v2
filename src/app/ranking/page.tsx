@@ -1,7 +1,7 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Award, ArrowLeft, Trophy, Medal, Star, Compass } from 'lucide-react';
+import { ArrowLeft, Trophy, Medal, Star, Compass } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
 

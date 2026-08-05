@@ -18,6 +18,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
 
   useEffect(() => {
     fetchDiaries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [islandId]);
 
   const fetchDiaries = async () => {
@@ -100,7 +101,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
           <MessageCircle className="w-5 h-5" />
         </div>
         <div>
-          <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800">みんなの島ログ</h2>
+          <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800">みんなの島ノート</h2>
           <p className="text-xs text-slate-400 mt-1">この島を訪れた旅人の記録と写真</p>
         </div>
       </div>
@@ -118,6 +119,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
           
           {photoDataUrl && (
             <div className="relative mb-3 inline-block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={photoDataUrl} alt="Preview" className="h-32 rounded-lg border border-slate-200 object-cover" />
               <button
                 type="button"
@@ -158,7 +160,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
         </form>
       ) : (
         <div className="mb-10 bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center">
-          <p className="text-sm text-slate-500 font-bold">島ログを投稿するにはログインが必要です</p>
+          <p className="text-sm text-slate-500 font-bold">島ノートを投稿するにはログインが必要です</p>
         </div>
       )}
 
@@ -169,7 +171,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
         ) : diaries.length === 0 ? (
           <div className="text-center py-10 text-slate-400">
             <MessageCircle className="w-12 h-12 mx-auto opacity-20 mb-3" />
-            <p className="font-serif text-sm">まだ島ログがありません。<br/>最初の記録を残してみませんか？</p>
+            <p className="font-serif text-sm">まだ島ノートがありません。<br/>最初の記録を残してみませんか？</p>
           </div>
         ) : (
           diaries.map((diary) => (
@@ -188,6 +190,7 @@ export default function IslandDiaries({ islandId }: { islandId: string }) {
               </p>
               {diary.photo_url && (
                 <div className="mt-3 pl-11">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={diary.photo_url} alt="User posted photo" className="rounded-xl max-h-64 object-cover border border-slate-200" />
                 </div>
               )}
