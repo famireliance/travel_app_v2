@@ -27,11 +27,11 @@ export async function POST(request: Request) {
     }
 
     // Fetch islands from Supabase to provide context to the AI
+    // We fetch ALL islands (up to 1000) and include 'access' so AI knows real transportation routes
     const { data: islands, error } = await supabase
       .from('islands')
-      .select('id, name, prefecture, description')
-      .eq('is_published', true)
-      .limit(100); // Limit to top 100 for context size
+      .select('id, name, prefecture, access')
+      .eq('is_published', true);
 
     if (error) {
       console.error('Error fetching islands:', error);
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
     }
 
     // Create a compact string of islands for the AI prompt
-    const islandsContext = islands.map(i => `${i.name}(${i.prefecture}) - ID:${i.id}`).join(', ');
+    const islandsContext = islands.map(i => `${i.name}(${i.prefecture}) - ID:${i.id} - アクセス:${i.access || '不明'}`).join('\\n');
 
 
 
@@ -62,8 +62,8 @@ export async function POST(request: Request) {
                 day: { type: Type.INTEGER, description: "何日目か" },
                 islandId: { type: Type.STRING, description: "データベースのID" },
                 islandName: { type: Type.STRING, description: "島名" },
-                activity: { type: Type.STRING, description: "その島でのおすすめの過ごし方" },
-                transportation: { type: Type.STRING, description: "次の目的地または拠点からの移動手段の目安" }
+                activity: { type: Type.STRING, description: "その島でのおすすめの過ごし方（具体的に）" },
+                transportation: { type: Type.STRING, description: "次の目的地または拠点からの移動手段（アクセス情報を元に現実的に）" }
               },
               required: ["day", "islandId", "islandName", "activity", "transportation"]
             }
@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     };
 
     const prompt = `
-あなたは日本の離島専門の優秀なトラベルプランナーAI「島巡りコンシェルジュ」です。
+あなたは日本の離島専門の超一流トラベルプランナーAI「島巡りコンシェルジュ」です。
 ユーザーから以下の要望を受け取りました。
 
 【出発地/拠点】: ${startLocation || '指定なし'}
@@ -82,14 +82,17 @@ export async function POST(request: Request) {
 【希望・テーマ】: ${preferences || '特になし'}
 【最大訪問島数】: ${maxIslands || 3} 島
 
-以下の島データベース（抜粋）から、最適なアイランドホッピング（島巡り）ルートを提案してください。
-データベース: ${islandsContext}
+以下の全国島データベースから、最適なアイランドホッピング（島巡り）ルートを提案してください。
+データベースには各島の「アクセス情報」も記載されています。これらを元に、絶対に物理的に移動可能なルートを構築してください。
 
-【プラン作成の厳格なルール】
-1. **必ず3つの異なるプランを提案すること**: 「王道・定番ルート」「秘境・リラックスルート」「テーマ特化ルート」など、コンセプトを明確に分けた3つのプランを出力してください。
-2. **地理的・物理的な現実性（最重要）**: 北海道と沖縄を1日で移動するなど、物理的に不可能なルートは絶対に作成しないでください。必ず「同じ県」や「同じ諸島（例: 八重山諸島、伊豆諸島、瀬戸内海など）」といった近接エリア内に限定してルートを組んでください。
-3. **移動の実現性**: 実際にフェリーや橋、飛行機で移動できる範囲の島々を選んでください。移動時間がかかりすぎる過密スケジュールは避けてください。
-4. **洗練された提案**: 回答内容は長すぎず、ユーザーが読みやすいように簡潔かつ魅力的にまとめてください。誰もが「実際に行ってみたい！」と思えるような現実的で魅力的なプランにしてください。
+【島データベース】
+${islandsContext}
+
+【プラン作成の厳格なルール（絶対遵守）】
+1. **必ず3つの全く異なるプランを提案すること**: 「王道ルート」「秘境ルート」「ユーザー特化ルート」など、選ぶ島や地域が被らないように、全国の様々な島から多様性のある3プランを出力してください。毎回同じ島（例: 伊豆諸島や八重山諸島だけ）ばかり提案するのは禁止です。
+2. **毎日異なる島を巡ること**: 1日目から最終日まで、同じ島が重複して登場しないようにしてください。（例: 1日目と3日目が同じ島になるのはNG。真のアイランドホッピングにしてください）。
+3. **現実的なアクセス（最重要）**: データベースの「アクセス情報」を読み解き、フェリーの航路や橋の有無などを考慮して、実際に移動可能な島同士を組み合わせてください。北海道と沖縄を1日で移動するなどの非現実的なワープは厳禁です。
+4. **超高品質な旅行計画**: 単なる地名の羅列ではなく、「なぜその島へ行くのか」「そこでどんな最高の体験ができるのか」を具体的に描写し、プロの旅行会社が販売できるレベルの実用的で魅力的な旅行計画にしてください。
 `;
 
     const response = await ai.models.generateContent({
