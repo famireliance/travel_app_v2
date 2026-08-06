@@ -332,7 +332,7 @@ export default function Home() {
           className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-12 lg:pb-32 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-12"
           style={{ opacity: headerOpacity, y: headerY }}
         >
-          <div className="mb-4 lg:mb-0 min-h-[140px] flex-1 min-w-0">
+          <div className="mb-4 lg:mb-0 shrink-0 min-w-0">
             <AnimatePresence mode="wait">
               <motion.div 
                 key={currentSlide}
@@ -957,11 +957,9 @@ export default function Home() {
             <Map size={22} strokeWidth={1.5} />
             <span className="text-[0.6rem] font-bold tracking-widest">マップ</span>
           </button>
-          <button onClick={() => setIsCompanionModalOpen(true)} className="flex flex-col items-center gap-1.5 text-amber-500 hover:text-amber-600 hover:scale-110 transition-all -translate-y-2">
-            <div className="bg-amber-100 p-2 rounded-full shadow-sm border border-amber-200">
-              <Sparkles size={24} strokeWidth={1.5} />
-            </div>
-            <span className="text-[0.6rem] font-bold tracking-widest text-amber-600">図鑑</span>
+          <button onClick={() => setIsCompanionModalOpen(true)} className="flex flex-col items-center gap-2 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all">
+            <Sparkles size={22} strokeWidth={1.5} />
+            <span className="text-[0.6rem] font-bold tracking-widest">図鑑</span>
           </button>
           <button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="flex flex-col items-center gap-2 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all">
             <User size={22} strokeWidth={1.5} />

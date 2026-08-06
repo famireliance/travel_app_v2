@@ -268,22 +268,22 @@ export default function IslandDetail() {
 
         {/* Info Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center min-w-0">
             <MapPin className="w-5 h-5 text-blue-500 mb-2" strokeWidth={1.5} />
             <span className="text-xs text-slate-500 font-medium tracking-widest mb-1">面積</span>
             {island.area ? <span className="text-lg font-serif text-slate-800">{island.area} <span className="text-xs">km²</span></span> : <span className="text-sm font-serif text-slate-400">調査中</span>}
           </div>
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center min-w-0">
             <Users className="w-5 h-5 text-blue-500 mb-2" strokeWidth={1.5} />
             <span className="text-xs text-slate-500 font-medium tracking-widest mb-1">人口</span>
             {island.population ? <span className="text-lg font-serif text-slate-800">{island.population} <span className="text-xs">人</span></span> : <span className="text-sm font-serif text-slate-400">調査中</span>}
           </div>
-          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center">
-            <Navigation className="w-5 h-5 text-blue-500 mb-2" strokeWidth={1.5} />
-            <span className="text-xs text-slate-500 font-medium tracking-widest mb-1">アクセス</span>
-            <span className="text-xs font-serif text-slate-800 leading-tight">{island.access}</span>
+          <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-100 flex flex-col items-center justify-center text-center min-w-0">
+            <Navigation className="w-5 h-5 text-blue-500 mb-2 shrink-0" strokeWidth={1.5} />
+            <span className="text-xs text-slate-500 font-medium tracking-widest mb-1 shrink-0">アクセス</span>
+            <span className="text-xs font-serif text-slate-800 leading-tight break-words w-full line-clamp-3">{island.access}</span>
           </div>
-          <div className="bg-gradient-to-br from-amber-50 to-yellow-50 p-4 rounded-2xl shadow-sm border border-amber-100 flex flex-col items-center justify-center text-center col-span-3 sm:col-span-1 sm:row-start-1 sm:col-start-4">
+          <div className="bg-gradient-to-br from-amber-50 to-yellow-50 p-4 rounded-2xl shadow-sm border border-amber-100 flex flex-col items-center justify-center text-center min-w-0">
             <Star className="w-5 h-5 text-amber-500 mb-2" strokeWidth={1.5} />
             <span className="text-xs text-amber-700 font-medium tracking-widest mb-1">公式到達ポイント</span>
             <span className="text-lg font-mono font-bold text-amber-600">{island.points || 0} <span className="text-xs">pt</span></span>
