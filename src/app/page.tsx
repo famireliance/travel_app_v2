@@ -371,25 +371,6 @@ export default function Home() {
             </AnimatePresence>
             <p className="text-white/80 text-xs md:text-sm font-medium tracking-[0.4em] uppercase drop-shadow-sm mb-6">Japan Islands - {ALL_ISLANDS_COUNT} Destinations</p>
 
-            {/* App Store Badges (Coming Soon) */}
-            <div className="flex flex-col items-start gap-2 mb-8 relative z-20">
-              <span className="text-[0.65rem] font-bold text-amber-400 tracking-widest uppercase bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm border border-amber-400/30">近日公開予定 - Coming Soon</span>
-              <div className="flex flex-wrap items-center gap-3 opacity-70">
-                <div className="flex items-center justify-center gap-2 bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
-                  <div className="flex flex-col items-start leading-none">
-                    <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">Download on the</span>
-                    <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 text-white/80">App Store</span>
-                  </div>
-                </div>
-                <div className="flex items-center justify-center gap-2 bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
-                  <div className="flex flex-col items-start leading-none">
-                    <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">GET IT ON</span>
-                    <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 text-white/80">Google Play</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
             {/* Manual Navigation Controls */}
             {isMounted && slides.length > 1 && (
               <div className="flex items-center gap-4">
@@ -758,6 +739,31 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* App Coming Soon Banner */}
+      <div className="max-w-5xl mx-auto px-6 lg:px-12 pb-16">
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 border border-slate-700 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+          <div>
+            <span className="text-[0.65rem] font-bold text-amber-400 tracking-widest uppercase bg-amber-400/10 px-2.5 py-1 rounded border border-amber-400/30 mb-4 inline-block">近日公開予定</span>
+            <h3 className="font-serif text-xl lg:text-2xl text-white tracking-widest mb-2">公式ネイティブアプリ</h3>
+            <p className="text-sm text-slate-400">iOS / Androidアプリを現在開発中です。GPSチェックインがよりスムーズに、より楽しくなります。</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-3 opacity-70 shrink-0">
+            <div className="flex items-center justify-center gap-2 bg-black/80 text-white px-5 py-2.5 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
+              <div className="flex flex-col items-start leading-none">
+                <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">Download on the</span>
+                <span className="text-base font-sans font-semibold tracking-wide mt-0.5 text-white/80">App Store</span>
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-2 bg-black/80 text-white px-5 py-2.5 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
+              <div className="flex flex-col items-start leading-none">
+                <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">GET IT ON</span>
+                <span className="text-base font-sans font-semibold tracking-wide mt-0.5 text-white/80">Google Play</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Monetization / Pricing Plan Section */}
