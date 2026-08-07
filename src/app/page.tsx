@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X, Star, MessageCircle } from 'lucide-react';
+import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X, Star, MessageCircle, CheckCircle } from 'lucide-react';
 import regionsData from '../data/regions.json';
 import heroSlides from '../data/hero_slides.json';
 import SearchModal from '@/components/SearchModal';
@@ -371,20 +371,23 @@ export default function Home() {
             </AnimatePresence>
             <p className="text-white/80 text-xs md:text-sm font-medium tracking-[0.4em] uppercase drop-shadow-sm mb-6">Japan Islands - {ALL_ISLANDS_COUNT} Destinations</p>
 
-            {/* App Store Badges */}
-            <div className="flex flex-wrap items-center gap-3 mb-8 relative z-20">
-              <button className="flex items-center justify-center gap-2 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-xl hover:bg-black/80 transition-colors border border-white/20 shadow-lg group">
-                <div className="flex flex-col items-start leading-none">
-                  <span className="text-[0.55rem] text-white/70 font-sans tracking-wide">Download on the</span>
-                  <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 group-hover:scale-105 transition-transform">App Store</span>
+            {/* App Store Badges (Coming Soon) */}
+            <div className="flex flex-col items-start gap-2 mb-8 relative z-20">
+              <span className="text-[0.65rem] font-bold text-amber-400 tracking-widest uppercase bg-black/40 px-2 py-0.5 rounded backdrop-blur-sm border border-amber-400/30">近日公開予定 - Coming Soon</span>
+              <div className="flex flex-wrap items-center gap-3 opacity-70">
+                <div className="flex items-center justify-center gap-2 bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
+                  <div className="flex flex-col items-start leading-none">
+                    <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">Download on the</span>
+                    <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 text-white/80">App Store</span>
+                  </div>
                 </div>
-              </button>
-              <button className="flex items-center justify-center gap-2 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-xl hover:bg-black/80 transition-colors border border-white/20 shadow-lg group">
-                <div className="flex flex-col items-start leading-none">
-                  <span className="text-[0.55rem] text-white/70 font-sans tracking-wide">GET IT ON</span>
-                  <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 group-hover:scale-105 transition-transform">Google Play</span>
+                <div className="flex items-center justify-center gap-2 bg-black/80 backdrop-blur-md text-white px-4 py-2 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
+                  <div className="flex flex-col items-start leading-none">
+                    <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">GET IT ON</span>
+                    <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 text-white/80">Google Play</span>
+                  </div>
                 </div>
-              </button>
+              </div>
             </div>
 
             {/* Manual Navigation Controls */}

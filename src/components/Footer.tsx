@@ -16,19 +16,22 @@ export default function Footer() {
           <p className="text-xs text-slate-500 leading-relaxed mb-4">
             日本全国432の有人離島・無人離島を巡る冒険トラッカー。あなたの人生に、一生モノの探求心を。
           </p>
-          <div className="flex gap-2 mt-2">
-            <button className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition-colors border border-slate-700 shadow-sm">
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">Download on the</span>
-                <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">App Store</span>
+          <div className="flex flex-col items-start gap-1.5 mt-2">
+            <span className="text-[0.6rem] font-bold text-amber-500 tracking-widest uppercase bg-black/20 px-1.5 py-0.5 rounded border border-amber-500/20">近日公開予定</span>
+            <div className="flex gap-2 opacity-60">
+              <div className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg border border-slate-700 shadow-sm cursor-not-allowed">
+                <div className="flex flex-col items-start leading-none">
+                  <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">Download on the</span>
+                  <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">App Store</span>
+                </div>
               </div>
-            </button>
-            <button className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition-colors border border-slate-700 shadow-sm">
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">GET IT ON</span>
-                <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">Google Play</span>
+              <div className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg border border-slate-700 shadow-sm cursor-not-allowed">
+                <div className="flex flex-col items-start leading-none">
+                  <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">GET IT ON</span>
+                  <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">Google Play</span>
+                </div>
               </div>
-            </button>
+            </div>
           </div>
         </div>
 

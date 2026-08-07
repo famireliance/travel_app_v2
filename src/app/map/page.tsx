@@ -16,11 +16,6 @@ import { X, Layers, Map as MapIcon, Image as ImageIcon, CheckCircle, Navigation 
 import Image from 'next/image';
 import type { Metadata } from 'next';
 
-export const metadata: Metadata = {
-  title: '日本全国離島マップ | キラ旅',
-  description: '日本全国432島の位置情報、難易度、チェックイン状況を確認できるインタラクティブな離島マップです。',
-};
-
 const ARCHIPELAGOS = [
   { name: '八重山', bounds: [[24.0, 123.5], [24.6, 124.5]] as [[number, number], [number, number]] },
   { name: '宮古', bounds: [[24.6, 125.0], [25.0, 125.5]] as [[number, number], [number, number]] },
