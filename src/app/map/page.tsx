@@ -11,7 +11,20 @@ import { useTravel } from '@/context/TravelContext';
 import { getIslandDifficulty } from '@/lib/difficulty';
 import { fetchAllIslands } from '@/lib/supabase';
 import Breadcrumb from '@/components/Breadcrumb';
+import type { MapStyle } from '@/components/Map/InteractiveMap';
+import { X, Layers, Map as MapIcon, Image as ImageIcon, CheckCircle, Navigation } from 'lucide-react';
+import Image from 'next/image';
 
+const ARCHIPELAGOS = [
+  { name: '八重山', bounds: [[24.0, 123.5], [24.6, 124.5]] as [[number, number], [number, number]] },
+  { name: '宮古', bounds: [[24.6, 125.0], [25.0, 125.5]] as [[number, number], [number, number]] },
+  { name: '沖縄本島', bounds: [[25.8, 127.0], [27.0, 128.5]] as [[number, number], [number, number]] },
+  { name: '奄美', bounds: [[27.0, 128.0], [28.5, 130.2]] as [[number, number], [number, number]] },
+  { name: '小笠原', bounds: [[26.5, 142.0], [27.2, 142.3]] as [[number, number], [number, number]] },
+  { name: '伊豆', bounds: [[33.0, 139.0], [34.8, 140.0]] as [[number, number], [number, number]] },
+  { name: '五島', bounds: [[32.5, 128.5], [33.5, 129.5]] as [[number, number], [number, number]] },
+  { name: '瀬戸内', bounds: [[33.8, 131.0], [34.8, 135.0]] as [[number, number], [number, number]] },
+];
 function GlobalMapContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -26,6 +39,9 @@ function GlobalMapContent() {
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
   const [manualBounds, setManualBounds] = useState<[[number, number], [number, number]] | null>(null);
+  
+  const [mapStyle, setMapStyle] = useState<MapStyle>('voyager');
+  const [selectedIslandId, setSelectedIslandId] = useState<string | null>(null);
 
   const regionParam = searchParams.get('region');
   const filterParam = searchParams.get('filter'); // currently unused but can be mapped to categories later
@@ -125,12 +141,15 @@ function GlobalMapContent() {
       const lat = parseFloat(latStr);
       const lng = parseFloat(lngStr);
       if (!isNaN(lat) && !isNaN(lng)) {
-        // Zoom tightly into the single island
-        setManualBounds([[lat - 0.1, lng - 0.1], [lat + 0.1, lng + 0.1]]);
-        setDifficultyFilter(null);
+        // Just fly to the island, don't set filter
+        setManualBounds([[lat - 0.05, lng - 0.05], [lat + 0.05, lng + 0.05]]);
+        setSelectedIslandId(islandId);
       }
     }
   };
+
+  const selectedIsland = allIslands.find(i => i.id === selectedIslandId);
+  const selectedStatus = selectedIsland ? (islandStatuses[selectedIsland.id] || 'none') : 'none';
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] overflow-hidden fixed inset-0 flex flex-col font-sans">
@@ -182,8 +201,33 @@ function GlobalMapContent() {
         )}
       </div>
 
-      {/* Difficulty Tier Filter Bar */}
-      <div className="absolute top-28 lg:top-24 left-1/2 -translate-x-1/2 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200 px-3 py-1.5 rounded-full shadow-lg flex items-center gap-1.5 overflow-x-auto max-w-[95vw] pointer-events-auto">
+      {/* Archipelago Quick Nav (諸島ナビ) */}
+      <div className="absolute top-28 lg:top-24 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center gap-2 w-full pointer-events-auto">
+        <div className="bg-white/80 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] hide-scrollbar">
+          <button 
+            onClick={() => { setManualBounds(null); setDifficultyFilter(null); }} 
+            className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all bg-slate-900 text-white shrink-0 shadow-sm"
+          >
+            全国
+          </button>
+          <div className="w-px h-4 bg-slate-300 mx-1 shrink-0" />
+          {ARCHIPELAGOS.map(arch => (
+            <button
+              key={arch.name}
+              onClick={() => {
+                setManualBounds(arch.bounds);
+                setSelectedIslandId(null);
+              }}
+              className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all text-slate-700 hover:bg-slate-100 hover:text-slate-900 shrink-0 border border-transparent hover:border-slate-200"
+            >
+              {arch.name}
+            </button>
+          ))}
+        </div>
+
+        {/* Difficulty Tier Filter Bar */}
+        <div className="bg-white/80 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] hide-scrollbar">
+
         <button 
           onClick={() => { setDifficultyFilter(null); setManualBounds(null); router.replace('/map'); }} 
           className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${!difficultyFilter && !regionParam ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
@@ -200,10 +244,42 @@ function GlobalMapContent() {
           </button>
         ))}
       </div>
+      </div>
 
       {/* Map Area */}
-      <div className="flex-1 relative w-full h-full z-0">
-        <MapClient islands={filteredIslands} zoom={5} bounds={calculatedBounds} />
+      <div className="flex-1 relative w-full h-full z-0" onClick={() => setSelectedIslandId(null)}>
+        <MapClient 
+          islands={filteredIslands} 
+          zoom={5} 
+          bounds={calculatedBounds} 
+          mapStyle={mapStyle} 
+          onIslandSelect={handleSelectIsland} 
+        />
+      </div>
+
+      {/* Map Style Toggle Layer */}
+      <div className="absolute top-44 lg:top-36 right-4 sm:right-6 lg:right-12 z-[1000] flex flex-col gap-2 pointer-events-auto">
+        <button 
+          onClick={() => setMapStyle('voyager')}
+          className={`w-10 h-10 rounded-xl shadow-md flex items-center justify-center transition-all ${mapStyle === 'voyager' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
+          title="デザインマップ"
+        >
+          <MapIcon size={18} />
+        </button>
+        <button 
+          onClick={() => setMapStyle('satellite')}
+          className={`w-10 h-10 rounded-xl shadow-md flex items-center justify-center transition-all ${mapStyle === 'satellite' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
+          title="衛星写真"
+        >
+          <ImageIcon size={18} />
+        </button>
+        <button 
+          onClick={() => setMapStyle('dark')}
+          className={`w-10 h-10 rounded-xl shadow-md flex items-center justify-center transition-all ${mapStyle === 'dark' ? 'bg-blue-600 text-white' : 'bg-slate-800 text-white hover:bg-slate-700'}`}
+          title="ダークモード"
+        >
+          <Layers size={18} />
+        </button>
       </div>
 
       {/* Floating Legend & Filter Bar */}
@@ -240,6 +316,64 @@ function GlobalMapContent() {
         >
           <ArrowRightLeft className="w-6 h-6" />
         </button>
+      </div>
+
+      {/* Island Bottom Sheet Preview */}
+      <div className={`absolute bottom-0 left-0 right-0 z-[2000] transition-transform duration-500 ease-out flex justify-center pointer-events-none ${selectedIsland ? 'translate-y-0' : 'translate-y-[120%]'}`}>
+        <div className="bg-white/95 backdrop-blur-2xl w-full max-w-2xl rounded-t-3xl shadow-[0_-20px_40px_rgba(0,0,0,0.1)] border-t border-slate-200/50 pointer-events-auto overflow-hidden">
+          {selectedIsland && (
+            <div className="flex flex-col">
+              <div className="flex items-center justify-between px-6 pt-4 pb-2 border-b border-slate-100/50">
+                <div className="w-12 h-1.5 bg-slate-200 rounded-full mx-auto absolute left-1/2 -translate-x-1/2 top-2" />
+                <button onClick={() => setSelectedIslandId(null)} className="ml-auto w-8 h-8 flex items-center justify-center bg-slate-100 text-slate-500 rounded-full hover:bg-slate-200 transition-colors">
+                  <X size={16} />
+                </button>
+              </div>
+              <div className="p-6 pt-4">
+                <div className="flex gap-4">
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden shadow-md shrink-0 relative bg-slate-100">
+                    {selectedIsland.thumbnail_url ? (
+                      <Image src={selectedIsland.thumbnail_url} alt={selectedIsland.name} fill className="object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
+                        <ImageIcon size={24} />
+                        <span className="text-[10px] font-bold">No Image</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 flex flex-col justify-center">
+                    <p className="text-xs font-bold text-slate-500 mb-0.5">{selectedIsland.yomi}</p>
+                    <h3 className="text-xl sm:text-2xl font-serif font-bold text-slate-900 mb-1">{selectedIsland.name}</h3>
+                    <div className="flex items-center gap-2 flex-wrap text-xs font-bold mb-3">
+                      <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded-md">★{getIslandDifficulty(selectedIsland).level}</span>
+                      {selectedIsland.category && <span className="px-2 py-1 bg-blue-50 text-blue-600 rounded-md">{selectedIsland.category}</span>}
+                    </div>
+                    {selectedStatus === 'visited' || selectedStatus === 'verified_visited' ? (
+                      <div className="flex items-center gap-1.5 text-amber-600 font-bold text-sm bg-amber-50 px-3 py-1.5 rounded-lg w-max">
+                        <CheckCircle size={16} /> 到達済み
+                      </div>
+                    ) : selectedStatus === 'planning' ? (
+                      <div className="flex items-center gap-1.5 text-blue-600 font-bold text-sm bg-blue-50 px-3 py-1.5 rounded-lg w-max">
+                        ⭐️ 行きたい
+                      </div>
+                    ) : null}
+                  </div>
+                </div>
+                <p className="mt-4 text-sm text-slate-600 leading-relaxed line-clamp-2">
+                  {selectedIsland.description || 'まだ詳細な説明が登録されていません。'}
+                </p>
+                <div className="mt-6 flex gap-3">
+                  <button 
+                    onClick={() => router.push(`/island/${selectedIsland.id}`)}
+                    className="flex-1 bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition-colors shadow-md flex items-center justify-center gap-2"
+                  >
+                    <Navigation size={18} /> 詳細を見る
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
 
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} onSelectIsland={handleSelectIsland} />
