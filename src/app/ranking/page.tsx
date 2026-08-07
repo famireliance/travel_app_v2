@@ -5,13 +5,19 @@ import { ArrowLeft, Trophy, Medal, Star, Compass } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
 
-// Mock data since we might not have enough users yet
+// 競合との比較を考慮し、実際に活気のあるサービスに見えるよう、
+// モックデータとして10名のトップトラベラーを配置（β版としてのデモデータ）
 const MOCK_RANKING = [
-  { id: '1', username: 'KIRA_Adventurer', visited: 142, points: 42500, title: '伝説の旅人' },
-  { id: '2', username: 'Island_Hopper99', visited: 98, points: 29400, title: '海神の使い' },
-  { id: '3', username: 'BlueOcean', visited: 76, points: 22800, title: '熟練の島巡り' },
-  { id: '4', username: 'SunnyWalker', visited: 54, points: 16200, title: '旅の達人' },
-  { id: '5', username: 'StarGazer', visited: 41, points: 12300, title: '中級探検家' },
+  { id: '1', username: 'KIRA_Adventurer', visited: 215, points: 64500, title: '伝説の島旅王' },
+  { id: '2', username: 'Island_Hopper99', visited: 184, points: 55200, title: '海神の使い' },
+  { id: '3', username: 'BlueOcean_77', visited: 156, points: 46800, title: '伝説の旅人' },
+  { id: '4', username: 'SunnyWalker', visited: 128, points: 38400, title: '熟練の島巡り' },
+  { id: '5', username: 'StarGazer', visited: 112, points: 33600, title: '熟練の島巡り' },
+  { id: '6', username: 'YamaUmi_Lover', visited: 95, points: 28500, title: '旅の達人' },
+  { id: '7', username: 'NekoTraveler', visited: 82, points: 24600, title: '旅の達人' },
+  { id: '8', username: 'WanderingSoul', visited: 67, points: 20100, title: '中級探検家' },
+  { id: '9', username: 'SunsetChaser', visited: 54, points: 16200, title: '中級探検家' },
+  { id: '10', username: 'AquaMarine', visited: 42, points: 12600, title: '冒険者の卵' },
 ];
 
 export default function RankingPage() {

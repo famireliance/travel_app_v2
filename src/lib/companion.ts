@@ -75,8 +75,8 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         title: 'Lv.50〜 伝説の島旅王ガーディアン',
         icon: '👑🐉',
         image: '/companions/shimamaru_card.png',
-        skillName: '日本全国 338島 海洋踏破のキセキ',
-        skillDesc: 'すべての離島海域で最高の祝福と透明度を誇る究極の海の守護竜',
+        skillName: '日本全国 432島 海洋踏破のキセキ',
+        skillDesc: 'すべての経験値とポイント獲得量が+1000%される、伝説の到達者にのみ与えられる奇跡の加護。',
         badgeGradient: 'from-amber-400 via-emerald-500 to-blue-600',
         textColor: 'text-emerald-900'
       }

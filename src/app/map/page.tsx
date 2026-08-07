@@ -14,6 +14,12 @@ import Breadcrumb from '@/components/Breadcrumb';
 import type { MapStyle } from '@/components/Map/InteractiveMap';
 import { X, Layers, Map as MapIcon, Image as ImageIcon, CheckCircle, Navigation } from 'lucide-react';
 import Image from 'next/image';
+import type { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: '日本全国離島マップ | キラ旅',
+  description: '日本全国432島の位置情報、難易度、チェックイン状況を確認できるインタラクティブな離島マップです。',
+};
 
 const ARCHIPELAGOS = [
   { name: '八重山', bounds: [[24.0, 123.5], [24.6, 124.5]] as [[number, number], [number, number]] },
@@ -385,7 +391,30 @@ function GlobalMapContent() {
 
 export default function GlobalMap() {
   return (
-    <Suspense fallback={<div>Loading map...</div>}>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
+        <h1 className="text-3xl font-serif font-bold text-slate-900 mb-4">日本全国離島マップ</h1>
+        <p className="text-slate-600 mb-8 max-w-xl text-center leading-relaxed">
+          日本全国432島の位置や難易度、ご当地妖精の情報を確認できるインタラクティブマップを読み込んでいます。
+          GPSチェックインによる島制覇記録の確認や、次に行く島のルート検索が可能です。
+        </p>
+        <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
+        
+        {/* SEO用の非表示テキスト群 */}
+        <div className="sr-only">
+          <h2>主な対応諸島</h2>
+          <ul>
+            <li>八重山諸島（石垣島、西表島など）</li>
+            <li>宮古諸島（宮古島、伊良部島など）</li>
+            <li>奄美群島（奄美大島、与論島など）</li>
+            <li>小笠原諸島（父島、母島など）</li>
+            <li>伊豆諸島（大島、八丈島など）</li>
+            <li>五島列島（福江島など）</li>
+            <li>瀬戸内海の島々（小豆島、直島など）</li>
+          </ul>
+        </div>
+      </div>
+    }>
       <GlobalMapContent />
     </Suspense>
   );

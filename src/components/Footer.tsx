@@ -13,9 +13,23 @@ export default function Footer() {
             <Compass className="w-6 h-6 text-blue-400" />
             <span className="font-serif font-bold text-xl text-white tracking-widest">KIRATABI</span>
           </div>
-          <p className="text-xs text-slate-500 leading-relaxed">
+          <p className="text-xs text-slate-500 leading-relaxed mb-4">
             日本全国432の有人離島・無人離島を巡る冒険トラッカー。あなたの人生に、一生モノの探求心を。
           </p>
+          <div className="flex gap-2 mt-2">
+            <button className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition-colors border border-slate-700 shadow-sm">
+              <div className="flex flex-col items-start leading-none">
+                <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">Download on the</span>
+                <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">App Store</span>
+              </div>
+            </button>
+            <button className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg hover:bg-slate-800 transition-colors border border-slate-700 shadow-sm">
+              <div className="flex flex-col items-start leading-none">
+                <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">GET IT ON</span>
+                <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">Google Play</span>
+              </div>
+            </button>
+          </div>
         </div>
 
         {/* Links: Main */}

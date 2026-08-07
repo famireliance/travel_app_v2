@@ -26,6 +26,16 @@ const getIslandIdFromLocation = (location: string) => {
   return null;
 };
 
+const getFallbackPlaceholder = (areaOrPrefecture: string) => {
+  if (!areaOrPrefecture) return '/placeholders/subtropical.jpg';
+  if (areaOrPrefecture.includes('沖縄')) return '/placeholders/tropical.jpg';
+  if (areaOrPrefecture.includes('北海道') || areaOrPrefecture.includes('東北') || areaOrPrefecture.includes('北陸')) return '/placeholders/northern.jpg';
+  if (areaOrPrefecture.includes('四国') || areaOrPrefecture.includes('中国') || areaOrPrefecture.includes('近畿')) return '/placeholders/setouchi.jpg';
+  if (areaOrPrefecture.includes('関東') || areaOrPrefecture.includes('伊豆') || areaOrPrefecture.includes('小笠原')) return '/placeholders/volcanic.jpg';
+  if (areaOrPrefecture.includes('九州')) return '/placeholders/subtropical.jpg';
+  return '/placeholders/subtropical.jpg';
+};
+
 export default function Home() {
   const router = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -361,6 +371,22 @@ export default function Home() {
             </AnimatePresence>
             <p className="text-white/80 text-xs md:text-sm font-medium tracking-[0.4em] uppercase drop-shadow-sm mb-6">Japan Islands - {ALL_ISLANDS_COUNT} Destinations</p>
 
+            {/* App Store Badges */}
+            <div className="flex flex-wrap items-center gap-3 mb-8 relative z-20">
+              <button className="flex items-center justify-center gap-2 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-xl hover:bg-black/80 transition-colors border border-white/20 shadow-lg group">
+                <div className="flex flex-col items-start leading-none">
+                  <span className="text-[0.55rem] text-white/70 font-sans tracking-wide">Download on the</span>
+                  <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 group-hover:scale-105 transition-transform">App Store</span>
+                </div>
+              </button>
+              <button className="flex items-center justify-center gap-2 bg-black/60 backdrop-blur-md text-white px-4 py-2 rounded-xl hover:bg-black/80 transition-colors border border-white/20 shadow-lg group">
+                <div className="flex flex-col items-start leading-none">
+                  <span className="text-[0.55rem] text-white/70 font-sans tracking-wide">GET IT ON</span>
+                  <span className="text-sm font-sans font-semibold tracking-wide mt-0.5 group-hover:scale-105 transition-transform">Google Play</span>
+                </div>
+              </button>
+            </div>
+
             {/* Manual Navigation Controls */}
             {isMounted && slides.length > 1 && (
               <div className="flex items-center gap-4">
@@ -528,8 +554,9 @@ export default function Home() {
                 <div className="h-40 bg-slate-200 relative overflow-hidden">
                   <img src={`/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget;
-                    if (!t.src.endsWith('/placeholders/trop.jpg')) {
-                      t.src = '/placeholders/trop.jpg';
+                    const fallback = getFallbackPlaceholder(island.prefecture || '');
+                    if (!t.src.endsWith(fallback)) {
+                      t.src = fallback;
                     } else {
                       t.style.display = 'none';
                     }
@@ -686,8 +713,9 @@ export default function Home() {
                             src={`/region/${isl.region_id || 'okinawa_main'}.jpg`}
                             onError={(e) => {
                               const t = e.currentTarget;
-                              if (!t.src.endsWith('/placeholders/trop.jpg')) {
-                                t.src = '/placeholders/trop.jpg';
+                              const fallback = getFallbackPlaceholder(isl.prefecture || '');
+                              if (!t.src.endsWith(fallback)) {
+                                t.src = fallback;
                               } else {
                                 t.style.display = 'none';
                               }
@@ -727,6 +755,41 @@ export default function Home() {
             </motion.div>
           )}
         </AnimatePresence>
+      </div>
+
+      {/* Monetization / Pricing Plan Section */}
+      <div className="bg-slate-900 py-20 px-6 lg:px-12 text-white">
+        <div className="max-w-5xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-2xl lg:text-3xl tracking-widest mb-4">キラ旅 プラン表</h2>
+            <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">基本機能はすべて無料。公式到達認定書やプレミアム機能を楽しみたい旅人のための特別なプランもご用意しています。</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
+              <h3 className="text-xl font-bold mb-2 text-white">Free / 無料プラン</h3>
+              <p className="text-slate-400 text-sm mb-6 h-10">日本全国の離島巡りを楽しむための基本機能</p>
+              <div className="text-3xl font-serif mb-8">¥0<span className="text-sm text-slate-500 font-sans"> / 永遠に無料</span></div>
+              <ul className="space-y-4 text-sm text-slate-300">
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 432島すべてへのGPSチェックイン</li>
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> ご当地妖精の収集・育成機能</li>
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> デジタル島ノート（タイムライン投稿）</li>
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 全国旅人ランキング参加</li>
+              </ul>
+            </div>
+            <div className="bg-gradient-to-br from-blue-900 to-indigo-900 rounded-2xl p-8 border border-blue-700 relative overflow-hidden shadow-2xl">
+              <div className="absolute top-0 right-0 bg-amber-500 text-amber-950 text-xs font-bold px-4 py-1 rounded-bl-lg">おすすめ</div>
+              <h3 className="text-xl font-bold mb-2 text-white">Premium / プレミアム</h3>
+              <p className="text-blue-200 text-sm mb-6 h-10">一生の思い出を形に残す、特別なコレクション</p>
+              <div className="text-3xl font-serif mb-8 text-amber-300">¥480<span className="text-sm text-blue-300 font-sans"> / 月</span></div>
+              <ul className="space-y-4 text-sm text-blue-100">
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 無料プランの全機能</li>
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> <strong className="text-white">公式到達デジタル＆紙認定書</strong>の発行権</li>
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 広告非表示＆プレミアムUIテーマ</li>
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 妖精の「伝説の進化」解放ルート</li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Magazine-style Region Cards */}
@@ -786,14 +849,7 @@ export default function Home() {
             if (regionSpecificSlides.length > 0) {
               regionImg = regionSpecificSlides[hash % regionSpecificSlides.length].src;
             } else {
-              const climateMap: Record<string, string> = {
-                "北海道地方": "/placeholders/cold.jpg",
-                "東北地方": "/placeholders/cold.jpg",
-                "北陸地方": "/placeholders/cold.jpg",
-                "九州地方": "/placeholders/trop.jpg",
-                "沖縄地方": "/placeholders/trop.jpg"
-              };
-              regionImg = climateMap[region.area] || "/placeholders/temp.jpg";
+              regionImg = getFallbackPlaceholder(region.area);
             }
             
             const isSelected = selectedRegionId === region.id;
