@@ -330,6 +330,57 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       }
     }
     
+    // --- 遡及的妖精付与ロジック ---
+    // islandStatusesはあるが、キャッシュクリア等で妖精が消えている場合の復旧
+    const targetStatuses = (userId && isMounted) ? (() => {
+      try {
+        const stored = localStorage.getItem(storageKey);
+        if (stored) return JSON.parse(stored);
+      } catch(e){}
+      return localData;
+    })() : localData;
+
+    let newFairiesAdded = false;
+    const currentF = [...fLocal];
+    const currentD = { ...dLocal };
+    
+    const prefectureMap: Record<string, string> = {
+      '沖縄県': 'okinawa_main', '東京都': 'ogasawara', '鹿児島県': 'amami', '長崎県': 'goto', '島根県': 'oki'
+    };
+
+    Object.entries(targetStatuses).forEach(([islandId, status]) => {
+      if (status === 'visited' || status === 'verified_visited') {
+        const islandObj = ALL_ISLANDS_MASTER_DICTIONARY[islandId];
+        if (islandObj) {
+          const rId = islandObj.region_id || islandObj.region || prefectureMap[islandObj.prefecture] || 'unknown';
+          const foundFairies = FAIRIES_MASTER.filter(f => {
+            if (f.island_id && f.island_id === islandId) return true;
+            if (!f.island_id && f.region_id === rId) return true;
+            return false;
+          });
+          foundFairies.forEach(f => {
+            if (!currentF.includes(f.id)) {
+              currentF.push(f.id);
+              currentD[f.id] = new Date().toISOString();
+              newFairiesAdded = true;
+            }
+          });
+        }
+      }
+    });
+
+    if (newFairiesAdded) {
+      if (isMounted) {
+        setCollectedFairies(currentF);
+        setCollectedFairyDates(currentD);
+      }
+      const fKey2 = userId ? `island_fairies_${userId}` : 'island_fairies_anon';
+      const dKey2 = userId ? `island_fairies_dates_${userId}` : 'island_fairies_dates_anon';
+      localStorage.setItem(fKey2, JSON.stringify(currentF));
+      localStorage.setItem(dKey2, JSON.stringify(currentD));
+    }
+    // ----------------------------
+
     if (isMounted) {
       setIsDataLoaded(true);
     }
