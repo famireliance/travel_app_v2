@@ -237,6 +237,7 @@ export default function Home() {
           <motion.button onClick={() => setIsSearchOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>探す</motion.button>
           <motion.button onClick={() => router.push('/map')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>マップ</motion.button>
           <motion.button onClick={() => router.push('/timeline')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>島ノート</motion.button>
+          <motion.button onClick={() => setIsCompanionModalOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>図鑑</motion.button>
           <motion.button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>
             {user ? 'マイページ' : 'ログイン'}
           </motion.button>
@@ -282,6 +283,12 @@ export default function Home() {
               className="text-left font-serif text-base text-slate-800 py-2 border-b border-slate-100 flex items-center gap-3"
             >
               <MessageCircle size={18} /> 島ノート
+            </button>
+            <button
+              onClick={() => { setIsMobileMenuOpen(false); setIsCompanionModalOpen(true); }}
+              className="text-left font-serif text-base text-slate-800 py-2 border-b border-slate-100 flex items-center gap-3"
+            >
+              <Sparkles size={18} /> 図鑑
             </button>
             <button
               onClick={() => { setIsMobileMenuOpen(false); if (user) router.push('/mypage'); else setIsAuthOpen(true); }}
@@ -1013,22 +1020,26 @@ export default function Home() {
       {/* Floating Bottom Nav - Ultra Minimal (Mobile Only) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
         <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/90 to-transparent" />
-        <div className="relative max-w-sm mx-auto px-6 pb-[calc(24px+env(safe-area-inset-bottom))] pt-12 flex justify-between items-end pointer-events-auto">
-          <button onClick={() => setIsSearchOpen(true)} className="flex flex-col items-center gap-2 text-slate-800 hover:scale-110 transition-transform">
+        <div className="relative max-w-md mx-auto px-4 pb-[calc(24px+env(safe-area-inset-bottom))] pt-12 flex justify-between items-end pointer-events-auto">
+          <button onClick={() => setIsSearchOpen(true)} className="flex flex-col items-center gap-1.5 text-slate-800 hover:scale-110 transition-transform flex-1">
             <Compass size={22} strokeWidth={1.5} />
-            <span className="text-[0.6rem] font-bold tracking-widest">探す</span>
+            <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">探す</span>
           </button>
-          <button onClick={() => router.push('/map')} className="flex flex-col items-center gap-2 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all">
+          <button onClick={() => router.push('/map')} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
             <Map size={22} strokeWidth={1.5} />
-            <span className="text-[0.6rem] font-bold tracking-widest">マップ</span>
+            <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">マップ</span>
           </button>
-          <button onClick={() => setIsCompanionModalOpen(true)} className="flex flex-col items-center gap-2 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all">
+          <button onClick={() => router.push('/timeline')} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
+            <MessageCircle size={22} strokeWidth={1.5} />
+            <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">ノート</span>
+          </button>
+          <button onClick={() => setIsCompanionModalOpen(true)} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
             <Sparkles size={22} strokeWidth={1.5} />
-            <span className="text-[0.6rem] font-bold tracking-widest">図鑑</span>
+            <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">図鑑</span>
           </button>
-          <button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="flex flex-col items-center gap-2 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all">
+          <button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
             <User size={22} strokeWidth={1.5} />
-            <span className="text-[0.6rem] font-bold tracking-widest">マイページ</span>
+            <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">マイページ</span>
           </button>
         </div>
       </div>

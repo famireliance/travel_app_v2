@@ -39,11 +39,11 @@ export default function Footer() {
         <div>
           <h4 className="font-bold text-sm text-white tracking-widest mb-4">コンテンツ</h4>
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
-            <li><Link href="/" className="hover:text-white transition-colors">トップページ</Link></li>
+            <li><Link href="/" className="hover:text-white transition-colors">探す（ホーム）</Link></li>
             <li><Link href="/map" className="hover:text-white transition-colors">全国離島マップ</Link></li>
+            <li><Link href="/timeline" className="hover:text-white transition-colors">みんなの島ノート</Link></li>
             <li><Link href="/companion" className="hover:text-white transition-colors">精霊キャラクター図鑑</Link></li>
-            <li><Link href="/mypage" className="hover:text-white transition-colors">マイページ (旅の記録)</Link></li>
-            <li><Link href="/ranking" className="hover:text-white transition-colors">旅人ランキング</Link></li>
+            <li><Link href="/mypage" className="hover:text-white transition-colors">マイページ・ログイン</Link></li>
           </ul>
         </div>
 
@@ -51,7 +51,7 @@ export default function Footer() {
         <div>
           <h4 className="font-bold text-sm text-white tracking-widest mb-4">連携サービス</h4>
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
-            <li><a href="https://shima-senka.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Ship size={14}/> 島専科</a></li>
+            <li><a href="https://shima-senka.com" target="_blank" rel="nofollow noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Ship size={14}/> 島専科</a></li>
             <li><a href="https://guide.kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><FileText size={14}/> KIRATABIガイド</a></li>
           </ul>
         </div>
@@ -60,9 +60,9 @@ export default function Footer() {
         <div>
           <h4 className="font-bold text-sm text-white tracking-widest mb-4">サポート・規約</h4>
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
-            <li><a href="#" className="hover:text-white transition-colors flex items-center gap-1.5"><Mail size={14}/> お問い合わせ</a></li>
-            <li><a href="#" className="hover:text-white transition-colors flex items-center gap-1.5"><ShieldAlert size={14}/> 利用規約・免責事項</a></li>
-            <li><a href="#" className="hover:text-white transition-colors flex items-center gap-1.5"><ShieldAlert size={14}/> プライバシーポリシー</a></li>
+            <li><Link href="/contact" className="hover:text-white transition-colors flex items-center gap-1.5"><Mail size={14}/> お問い合わせ</Link></li>
+            <li><Link href="/terms" className="hover:text-white transition-colors flex items-center gap-1.5"><ShieldAlert size={14}/> 利用規約・免責事項</Link></li>
+            <li><Link href="/privacy" className="hover:text-white transition-colors flex items-center gap-1.5"><ShieldAlert size={14}/> プライバシーポリシー</Link></li>
           </ul>
         </div>
 
