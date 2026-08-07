@@ -1,17 +1,19 @@
 'use client';
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
 import { Cloud, X, ChevronRight } from 'lucide-react';
 import AuthModal from './AuthModal';
 
 export default function AuthReminderBanner() {
   const { user } = useTravel();
+  const pathname = usePathname();
   const [isDismissed, setIsDismissed] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-  // If user is logged in or banner was dismissed, don't show
-  if (user || isDismissed) return null;
+  // If user is logged in, banner was dismissed, or on map page, don't show
+  if (user || isDismissed || pathname === '/map') return null;
 
   return (
     <>
