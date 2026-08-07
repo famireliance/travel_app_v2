@@ -1019,25 +1019,25 @@ export default function Home() {
 
       {/* Floating Bottom Nav - Ultra Minimal (Mobile Only) */}
       <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 pointer-events-none">
-        <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/90 to-transparent" />
-        <div className="relative max-w-md mx-auto px-4 pb-[calc(24px+env(safe-area-inset-bottom))] pt-12 flex justify-between items-end pointer-events-auto">
-          <button onClick={() => setIsSearchOpen(true)} className="flex flex-col items-center gap-1.5 text-slate-800 hover:scale-110 transition-transform flex-1">
+        <div className="absolute inset-0 bg-gradient-to-t from-[#F8FAFC] via-[#F8FAFC]/90 to-transparent pointer-events-none" />
+        <div className="relative max-w-md mx-auto px-4 pb-[calc(24px+env(safe-area-inset-bottom))] pt-12 flex justify-between items-end">
+          <button onClick={() => setIsSearchOpen(true)} className="pointer-events-auto flex flex-col items-center gap-1.5 text-slate-800 hover:scale-110 transition-transform flex-1">
             <Compass size={22} strokeWidth={1.5} />
             <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">探す</span>
           </button>
-          <button onClick={() => router.push('/map')} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
+          <button onClick={() => router.push('/map')} className="pointer-events-auto flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
             <Map size={22} strokeWidth={1.5} />
             <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">マップ</span>
           </button>
-          <button onClick={() => router.push('/timeline')} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
+          <button onClick={() => router.push('/timeline')} className="pointer-events-auto flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
             <MessageCircle size={22} strokeWidth={1.5} />
             <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">ノート</span>
           </button>
-          <button onClick={() => setIsCompanionModalOpen(true)} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
+          <button onClick={() => setIsCompanionModalOpen(true)} className="pointer-events-auto flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
             <Sparkles size={22} strokeWidth={1.5} />
             <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">図鑑</span>
           </button>
-          <button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
+          <button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="pointer-events-auto flex flex-col items-center gap-1.5 text-slate-400 hover:text-slate-800 hover:scale-110 transition-all flex-1">
             <User size={22} strokeWidth={1.5} />
             <span className="text-[0.55rem] font-bold tracking-widest whitespace-nowrap">マイページ</span>
           </button>
