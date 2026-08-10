@@ -27,13 +27,13 @@ const getIslandIdFromLocation = (location: string) => {
 };
 
 const getFallbackPlaceholder = (areaOrPrefecture: string) => {
-  if (!areaOrPrefecture) return '/placeholders/subtropical.jpg';
-  if (areaOrPrefecture.includes('沖縄')) return '/placeholders/tropical.jpg';
-  if (areaOrPrefecture.includes('北海道') || areaOrPrefecture.includes('東北') || areaOrPrefecture.includes('北陸')) return '/placeholders/northern.jpg';
-  if (areaOrPrefecture.includes('四国') || areaOrPrefecture.includes('中国') || areaOrPrefecture.includes('近畿')) return '/placeholders/setouchi.jpg';
-  if (areaOrPrefecture.includes('関東') || areaOrPrefecture.includes('伊豆') || areaOrPrefecture.includes('小笠原')) return '/placeholders/volcanic.jpg';
-  if (areaOrPrefecture.includes('九州')) return '/placeholders/subtropical.jpg';
-  return '/placeholders/subtropical.jpg';
+  if (!areaOrPrefecture) return '/region/subtropical.jpg';
+  if (areaOrPrefecture.includes('沖縄')) return '/region/tropical.jpg';
+  if (areaOrPrefecture.includes('北海道') || areaOrPrefecture.includes('東北') || areaOrPrefecture.includes('北陸')) return '/region/northern.jpg';
+  if (areaOrPrefecture.includes('四国') || areaOrPrefecture.includes('中国') || areaOrPrefecture.includes('近畿')) return '/region/setouchi.jpg';
+  if (areaOrPrefecture.includes('関東') || areaOrPrefecture.includes('伊豆') || areaOrPrefecture.includes('小笠原')) return '/region/volcanic.jpg';
+  if (areaOrPrefecture.includes('九州')) return '/region/subtropical.jpg';
+  return '/region/subtropical.jpg';
 };
 
 export default function Home() {

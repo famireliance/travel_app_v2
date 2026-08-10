@@ -468,7 +468,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
       applyToCanvas(canvasRef.current);
       applyToCanvas(fullscreenCanvasRef.current);
     };
-    img.src = customImage || island?.image_url || '/placeholders/trop.jpg';
+    img.src = customImage || island?.image_url || '/region/tropical.jpg';
   }, [island, travelerName, visitDate, customImage, assignedSerial, includeCompanionStamp, companionChar, companionStage, hasHologram]);
 
   useEffect(() => {

@@ -144,11 +144,11 @@ export default function IslandDetail() {
   const ferries = parseJsonSafe(island.aff_ferry_url).filter((f: any) => f.url && f.url.trim() !== '');
   const jobs = parseJsonSafe(island.aff_job_url).filter((j: any) => j.url && j.url.trim() !== '');
 
-  let defaultFallback = '/placeholders/temp.jpg';
+  let defaultFallback = '/region/subtropical.jpg';
   if (island.prefecture === '北海道' || island.prefecture === '青森県' || island.region_id?.includes('hokkaido')) {
-    defaultFallback = '/placeholders/cold.jpg';
+    defaultFallback = '/region/northern.jpg';
   } else if (island.prefecture === '沖縄県' || island.prefecture === '鹿児島県' || island.region_id === 'ogasawara') {
-    defaultFallback = '/placeholders/trop.jpg';
+    defaultFallback = '/region/tropical.jpg';
   }
 
   const fallbackImage = island.hero_image_url || `/region/${island.region_id}.jpg`;
