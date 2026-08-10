@@ -227,8 +227,8 @@ export default function Home() {
             className="font-serif font-bold text-sm lg:text-base tracking-[0.1em] flex flex-col sm:flex-row sm:items-baseline sm:gap-1.5"
             style={{ color: navColor }}
           >
-            <span>輝旅 島専科</span>
-            <span className="text-[0.65rem] lg:text-xs opacity-80">(kiratabi -shimasenka)</span>
+            <span>キラ旅</span>
+            <span className="text-[0.65rem] lg:text-xs opacity-80">KIRATABI</span>
           </motion.span>
         </div>
         

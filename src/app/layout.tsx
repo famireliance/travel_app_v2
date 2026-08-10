@@ -27,9 +27,6 @@ export const metadata: Metadata = {
   },
   description: '日本全国432の離島を訪れてスタンプを集めよう。GPS・写真チェックインで公式到達認定。ご当地妖精の図鑑や3D地球儀フライトトラッカーで旅の記録を彩ります。',
   keywords: ['離島', '日本の島', '旅行', 'GPS', 'チェックイン', '沖縄', '八重山', '小笠原', '離島制覇', 'キラ旅', '島旅'],
-  alternates: {
-    canonical: 'https://island.kira-tabi.com',
-  },
   openGraph: {
     title: 'キラ旅 | 日本の離島432島を制覇しよう',
     description: '日本全国432の離島をGPSチェックインで制覇。守護精霊を集めて、旅の記録を彩ろう。',
