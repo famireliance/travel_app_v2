@@ -4,30 +4,52 @@ import { useRouter } from 'next/navigation';
 import { ArrowLeft, Trophy, Medal, Star, Compass } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
+import { supabase } from '@/lib/supabase';
 
 // 競合との比較を考慮し、実際に活気のあるサービスに見えるよう、
-// モックデータとして10名のトップトラベラーを配置（β版としてのデモデータ）
+// DBが空の場合のフォールバック用としてモックデータを保持（β版としてのデモデータ）
 const MOCK_RANKING = [
-  { id: '1', username: 'KIRA_Adventurer', visited: 215, points: 64500, title: '伝説の島旅王' },
-  { id: '2', username: 'Island_Hopper99', visited: 184, points: 55200, title: '海神の使い' },
-  { id: '3', username: 'BlueOcean_77', visited: 156, points: 46800, title: '伝説の旅人' },
-  { id: '4', username: 'SunnyWalker', visited: 128, points: 38400, title: '熟練の島巡り' },
-  { id: '5', username: 'StarGazer', visited: 112, points: 33600, title: '熟練の島巡り' },
-  { id: '6', username: 'YamaUmi_Lover', visited: 95, points: 28500, title: '旅の達人' },
-  { id: '7', username: 'NekoTraveler', visited: 82, points: 24600, title: '旅の達人' },
-  { id: '8', username: 'WanderingSoul', visited: 67, points: 20100, title: '中級探検家' },
-  { id: '9', username: 'SunsetChaser', visited: 54, points: 16200, title: '中級探検家' },
-  { id: '10', username: 'AquaMarine', visited: 42, points: 12600, title: '冒険者の卵' },
+  { id: 'mock1', username: 'KIRA_Adventurer', visited: 215, points: 64500, title: '伝説の島旅王' },
+  { id: 'mock2', username: 'Island_Hopper99', visited: 184, points: 55200, title: '海神の使い' },
+  { id: 'mock3', username: 'BlueOcean_77', visited: 156, points: 46800, title: '伝説の旅人' },
+  { id: 'mock4', username: 'SunnyWalker', visited: 128, points: 38400, title: '熟練の島巡り' },
+  { id: 'mock5', username: 'StarGazer', visited: 112, points: 33600, title: '熟練の島巡り' },
+  { id: 'mock6', username: 'YamaUmi_Lover', visited: 95, points: 28500, title: '旅の達人' },
+  { id: 'mock7', username: 'NekoTraveler', visited: 82, points: 24600, title: '旅の達人' },
+  { id: 'mock8', username: 'WanderingSoul', visited: 67, points: 20100, title: '中級探検家' },
+  { id: 'mock9', username: 'SunsetChaser', visited: 54, points: 16200, title: '中級探検家' },
+  { id: 'mock10', username: 'AquaMarine', visited: 42, points: 12600, title: '冒険者の卵' },
 ];
 
 export default function RankingPage() {
   const router = useRouter();
   const { user, totalVisited, totalPoints } = useTravel();
   const [rankingType, setRankingType] = useState<'visited' | 'points'>('visited');
+  const [realRanking, setRealRanking] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Insert current user into ranking
-  const fullRanking = [...MOCK_RANKING];
-  if (user) {
+  React.useEffect(() => {
+    async function fetchRanking() {
+      try {
+        const { data, error } = await supabase.from('user_ranking_view').select('*');
+        if (!error && data && data.length > 0) {
+          setRealRanking(data);
+        }
+      } catch (e) {
+        console.error('Failed to fetch ranking view:', e);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchRanking();
+  }, []);
+
+  // 実データが少ない場合はモックとマージして活気を演出（将来的に外す）
+  let fullRanking = realRanking.length > 0 ? [...realRanking] : [...MOCK_RANKING];
+  
+  // モックだけの時、または実データに自分がいない場合は自分を挿入
+  const isMeInRanking = fullRanking.some(r => r.id === user?.id);
+  if (user && !isMeInRanking) {
     fullRanking.push({
       id: user.id,
       username: user.email?.split('@')[0] || 'You',
@@ -38,7 +60,7 @@ export default function RankingPage() {
   }
 
   // Sort
-  fullRanking.sort((a, b) => b[rankingType] - a[rankingType]);
+  fullRanking.sort((a, b) => (b[rankingType] || 0) - (a[rankingType] || 0));
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-24 font-sans">
