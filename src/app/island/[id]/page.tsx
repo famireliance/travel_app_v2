@@ -30,24 +30,33 @@ export async function generateMetadata(
     }
   }
 
-  // クエリ意図に合わせたSEO最強タイトル
-  const title = `${islandName}の観光・アクセス・人口情報｜島ログ対抗版 KIRATABI`;
+  // SEOに最適化されたタイトル・説明
+  const title = `${islandName}の観光・アクセス情報 | キラ旅`;
   
   // descriptionsを適度に切り詰める (最大120字程度)
-  const metaDesc = `${islandName}（${population}）。${description.replace(/\\n/g, '').substring(0, 100)}... 島の透明度やアクセス手段、サウナ等の実用情報を徹底解説！`;
+  const metaDesc = `${islandName}${population ? `（${population}）` : ''}。${description.replace(/\\n/g, '').substring(0, 100)}。アクセス方法や見どころを紹介。キラ旅でGPSチェックインして離島制覇を目指そう！`;
 
   return {
     title,
     description: metaDesc,
+    alternates: {
+      canonical: `https://island.kira-tabi.com/island/${id}`,
+    },
+    keywords: [islandName, '離島', '観光', 'アクセス', '旅行', 'キラ旅'],
     openGraph: {
       title,
       description: metaDesc,
+      url: `https://island.kira-tabi.com/island/${id}`,
+      siteName: 'キラ旅',
+      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${islandName} | キラ旅` }],
       type: 'website',
+      locale: 'ja_JP',
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description: metaDesc,
+      images: ['/og-image.png'],
     }
   };
 }

@@ -20,22 +20,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'キラ旅 | 日本の離島制覇アプリ',
+  metadataBase: new URL('https://island.kira-tabi.com'),
+  title: {
+    default: 'キラ旅 | 日本の離島制覇アプリ',
+    template: '%s | キラ旅',
+  },
   description: '日本全国432の離島を訪れてスタンプを集めよう。GPS・写真チェックインで公式到達認定。ご当地妖精の図鑑や3D地球儀フライトトラッカーで旅の記録を彩ります。',
+  keywords: ['離島', '日本の島', '旅行', 'GPS', 'チェックイン', '沖縄', '八重山', '小笠原', '離島制覇', 'キラ旅', '島旅'],
+  alternates: {
+    canonical: 'https://island.kira-tabi.com',
+  },
   openGraph: {
-    title: 'キラ旅 | 日本の離島制覇アプリ',
-    description: '日本全国432の離島を訪れてスタンプを集めよう',
+    title: 'キラ旅 | 日本の離島432島を制覇しよう',
+    description: '日本全国432の離島をGPSチェックインで制覇。守護精霊を集めて、旅の記録を彩ろう。',
     url: 'https://island.kira-tabi.com',
     siteName: 'キラ旅',
-    images: [{ url: '/logo.png', width: 1200, height: 630 }],
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'キラ旅 - 日本の離島432島を制覇しよう' }],
     locale: 'ja_JP',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'キラ旅 | 日本の離島制覇アプリ',
-    description: '日本全国432の離島を訪れてスタンプを集めよう',
-    images: ['/logo.png'],
+    title: 'キラ旅 | 日本の離島432島を制覇しよう',
+    description: '日本全国432の離島をGPSチェックインで制覇。守護精霊を集めて旅を記録しよう。',
+    images: ['/og-image.png'],
   },
   manifest: '/manifest.json',
   formatDetection: {
