@@ -8,6 +8,7 @@ import AuthReminderBanner from "@/components/AuthReminderBanner";
 import { Toaster } from 'react-hot-toast';
 import GlobalRadar from '@/components/GlobalRadar';
 import Footer from '@/components/Footer';
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -60,9 +61,15 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ja">
+      <head>
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#F8FAFC]`}
       >
+        <GoogleAnalytics />
         <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
         <TravelProvider>
           <AuthReminderBanner />

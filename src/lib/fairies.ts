@@ -31,7 +31,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🐬',
-      imageUrl: '/fairies/ruri.png',
+      imageUrl: '/fairies/ruri.jpg',
       colorFrom: 'from-cyan-400',
       colorTo: 'to-blue-600',
       shadowColor: 'shadow-cyan-500/50',
@@ -47,7 +47,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🌺',
-      imageUrl: '/fairies/tida.png',
+      imageUrl: '/fairies/tida.jpg',
       colorFrom: 'from-rose-400',
       colorTo: 'to-orange-500',
       shadowColor: 'shadow-rose-500/50',
@@ -63,7 +63,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🌿',
-      imageUrl: '/fairies/shida.png',
+      imageUrl: '/fairies/shida.jpg',
       colorFrom: 'from-emerald-400',
       colorTo: 'to-teal-600',
       shadowColor: 'shadow-emerald-500/50',
@@ -79,7 +79,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'EPIC',
     visual: {
       icon: '🦋',
-      imageUrl: '/fairies/blue.png',
+      imageUrl: '/fairies/blue.jpg',
       colorFrom: 'from-sky-300',
       colorTo: 'to-blue-700',
       shadowColor: 'shadow-sky-500/60',
@@ -95,7 +95,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'EPIC',
     visual: {
       icon: '🐋',
-      imageUrl: '/fairies/hoshi.png',
+      imageUrl: '/fairies/hoshi.jpg',
       colorFrom: 'from-indigo-400',
       colorTo: 'to-purple-700',
       shadowColor: 'shadow-indigo-500/50',
@@ -111,7 +111,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🌸',
-      imageUrl: '/fairies/tsubaki.png',
+      imageUrl: '/fairies/tsubaki.jpg',
       colorFrom: 'from-pink-400',
       colorTo: 'to-rose-600',
       shadowColor: 'shadow-pink-500/50',
@@ -127,7 +127,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'SPOT_EXCLUSIVE',
     visual: {
       icon: '🐘',
-      imageUrl: '/fairies/zou.png',
+      imageUrl: '/fairies/zou.jpg',
       colorFrom: 'from-green-600',
       colorTo: 'to-slate-800',
       shadowColor: 'shadow-green-500/50',
@@ -143,7 +143,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'SPOT_EXCLUSIVE',
     visual: {
       icon: '🐠',
-      imageUrl: '/fairies/kabira.png',
+      imageUrl: '/fairies/kabira.jpg',
       colorFrom: 'from-teal-300',
       colorTo: 'to-emerald-600',
       shadowColor: 'shadow-teal-500/50',
@@ -159,7 +159,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'SPOT_EXCLUSIVE',
     visual: {
       icon: '🐚',
-      imageUrl: '/fairies/mai.png',
+      imageUrl: '/fairies/mai.jpg',
       colorFrom: 'from-amber-100',
       colorTo: 'to-orange-300',
       shadowColor: 'shadow-amber-500/50',
@@ -175,7 +175,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'SPOT_EXCLUSIVE',
     visual: {
       icon: '🐊',
-      imageUrl: '/fairies/guru.png',
+      imageUrl: '/fairies/guru.jpg',
       colorFrom: 'from-lime-500',
       colorTo: 'to-green-900',
       shadowColor: 'shadow-lime-500/50',
@@ -192,7 +192,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🦊',
-      imageUrl: '/fairies/yuki.png', colorFrom: 'from-blue-100', colorTo: 'to-slate-300', shadowColor: 'shadow-blue-200/50', sparkleColor: 'text-blue-100' },
+      imageUrl: '/fairies/yuki.jpg', colorFrom: 'from-blue-100', colorTo: 'to-slate-300', shadowColor: 'shadow-blue-200/50', sparkleColor: 'text-blue-100' },
     description: '北海道のふかふかの雪から生まれたキタキツネの妖精。冷たい風に乗って旅人を優しく見守ります。'
   },
   {
@@ -203,7 +203,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🍎',
-      imageUrl: '/fairies/rin.png', colorFrom: 'from-red-400', colorTo: 'to-rose-700', shadowColor: 'shadow-red-500/50', sparkleColor: 'text-red-200' },
+      imageUrl: '/fairies/rin.jpg', colorFrom: 'from-red-400', colorTo: 'to-rose-700', shadowColor: 'shadow-red-500/50', sparkleColor: 'text-red-200' },
     description: '東北の豊かな森と美味しいりんごの精霊。出会うと心が温まり、お腹が空いてくると言われています。'
   },
   {
@@ -214,7 +214,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🏙️',
-      imageUrl: '/fairies/light.png', colorFrom: 'from-slate-300', colorTo: 'to-indigo-600', shadowColor: 'shadow-slate-500/50', sparkleColor: 'text-slate-200' },
+      imageUrl: '/fairies/light.jpg', colorFrom: 'from-slate-300', colorTo: 'to-indigo-600', shadowColor: 'shadow-slate-500/50', sparkleColor: 'text-slate-200' },
     description: '都会のネオンと港町の潮風が混ざり合って生まれた近代的な妖精。'
   },
   {
@@ -225,7 +225,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🦀',
-      imageUrl: '/fairies/kaniya.png', colorFrom: 'from-orange-400', colorTo: 'to-red-600', shadowColor: 'shadow-orange-500/50', sparkleColor: 'text-orange-200' },
+      imageUrl: '/fairies/kaniya.jpg', colorFrom: 'from-orange-400', colorTo: 'to-red-600', shadowColor: 'shadow-orange-500/50', sparkleColor: 'text-orange-200' },
     description: '北陸の厳しい冬の海からやってきた陽気なカニの精霊。美味しい海の幸が集まる場所に現れます。'
   },
   {
@@ -236,7 +236,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🍵',
-      imageUrl: '/fairies/chacha.png', colorFrom: 'from-green-400', colorTo: 'to-emerald-700', shadowColor: 'shadow-green-500/50', sparkleColor: 'text-green-200' },
+      imageUrl: '/fairies/chacha.jpg', colorFrom: 'from-green-400', colorTo: 'to-emerald-700', shadowColor: 'shadow-green-500/50', sparkleColor: 'text-green-200' },
     description: '香り高いお茶の葉と、遠くに見える富士山のパワーを宿したほっこり系の妖精。'
   },
   {
@@ -247,7 +247,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🦌',
-      imageUrl: '/fairies/miyabi.png', colorFrom: 'from-amber-600', colorTo: 'to-orange-900', shadowColor: 'shadow-amber-700/50', sparkleColor: 'text-amber-200' },
+      imageUrl: '/fairies/miyabi.jpg', colorFrom: 'from-amber-600', colorTo: 'to-orange-900', shadowColor: 'shadow-amber-700/50', sparkleColor: 'text-amber-200' },
     description: '古都の長い歴史を見守ってきたシカの精霊。雅なオーラで旅人を優雅な気持ちにさせます。'
   },
   {
@@ -258,7 +258,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🍋',
-      imageUrl: '/fairies/remo.png', colorFrom: 'from-yellow-300', colorTo: 'to-amber-500', shadowColor: 'shadow-yellow-500/50', sparkleColor: 'text-yellow-100' },
+      imageUrl: '/fairies/remo.jpg', colorFrom: 'from-yellow-300', colorTo: 'to-amber-500', shadowColor: 'shadow-yellow-500/50', sparkleColor: 'text-yellow-100' },
     description: '瀬戸内海の穏やかな気候と太陽をたっぷり浴びて育ったレモンの妖精。とてもフレッシュ。'
   },
   {
@@ -269,7 +269,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🍊',
-      imageUrl: '/fairies/mika.png', colorFrom: 'from-orange-300', colorTo: 'to-orange-600', shadowColor: 'shadow-orange-500/50', sparkleColor: 'text-orange-100' },
+      imageUrl: '/fairies/mika.jpg', colorFrom: 'from-orange-300', colorTo: 'to-orange-600', shadowColor: 'shadow-orange-500/50', sparkleColor: 'text-orange-100' },
     description: '四国の温かい気候で育ったみかんの精霊。旅人の疲れを癒やすお接待の心を持っています。'
   },
   {
@@ -280,7 +280,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'NORMAL',
     visual: {
       icon: '🌋',
-      imageUrl: '/fairies/magu.png', colorFrom: 'from-red-500', colorTo: 'to-slate-900', shadowColor: 'shadow-red-600/50', sparkleColor: 'text-red-300' },
+      imageUrl: '/fairies/magu.jpg', colorFrom: 'from-red-500', colorTo: 'to-slate-900', shadowColor: 'shadow-red-600/50', sparkleColor: 'text-red-300' },
     description: '九州の力強い火山と温泉の熱から生まれた情熱的な精霊。エネルギーに満ち溢れています。'
   },
 
@@ -293,7 +293,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🪶',
-      imageUrl: '/fairies/tokine.png', colorFrom: 'from-rose-200', colorTo: 'to-yellow-600', shadowColor: 'shadow-yellow-500/50', sparkleColor: 'text-rose-100' },
+      imageUrl: '/fairies/tokine.jpg', colorFrom: 'from-rose-200', colorTo: 'to-yellow-600', shadowColor: 'shadow-yellow-500/50', sparkleColor: 'text-rose-100' },
     description: '佐渡島の上空を舞う美しいトキと、眠る金脈の輝きから生まれた優雅な妖精。'
   },
   {
@@ -304,7 +304,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🧅',
-      imageUrl: '/fairies/tama.png', colorFrom: 'from-amber-200', colorTo: 'to-orange-400', shadowColor: 'shadow-amber-400/50', sparkleColor: 'text-amber-100' },
+      imageUrl: '/fairies/tama.jpg', colorFrom: 'from-amber-200', colorTo: 'to-orange-400', shadowColor: 'shadow-amber-400/50', sparkleColor: 'text-amber-100' },
     description: '国生み神話の地、淡路島の甘いタマネギの精霊。涙ではなく笑顔を引き出します。'
   },
   {
@@ -315,7 +315,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🫒',
-      imageUrl: '/fairies/oribi.png', colorFrom: 'from-lime-400', colorTo: 'to-green-700', shadowColor: 'shadow-lime-500/50', sparkleColor: 'text-lime-200' },
+      imageUrl: '/fairies/oribi.jpg', colorFrom: 'from-lime-400', colorTo: 'to-green-700', shadowColor: 'shadow-lime-500/50', sparkleColor: 'text-lime-200' },
     description: '小豆島のオリーブ畑を吹き抜ける風の妖精。平和と豊穣のシンボルです。'
   },
   {
@@ -326,7 +326,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'EPIC',
     visual: {
       icon: '⛩️',
-      imageUrl: '/fairies/itsuku.png', colorFrom: 'from-red-500', colorTo: 'to-orange-700', shadowColor: 'shadow-red-600/50', sparkleColor: 'text-red-200' },
+      imageUrl: '/fairies/itsuku.jpg', colorFrom: 'from-red-500', colorTo: 'to-orange-700', shadowColor: 'shadow-red-600/50', sparkleColor: 'text-red-200' },
     description: '海に浮かぶ大鳥居と神の使いである鹿の力を宿した神聖な妖精。'
   },
   {
@@ -337,7 +337,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🐉',
-      imageUrl: '/fairies/ryu.png', colorFrom: 'from-teal-400', colorTo: 'to-blue-800', shadowColor: 'shadow-teal-500/50', sparkleColor: 'text-teal-200' },
+      imageUrl: '/fairies/ryu.jpg', colorFrom: 'from-teal-400', colorTo: 'to-blue-800', shadowColor: 'shadow-teal-500/50', sparkleColor: 'text-teal-200' },
     description: '江の島の伝説に伝わる五頭龍の末裔。湘南の海を颯爽と泳ぎ回ります。'
   },
   {
@@ -348,7 +348,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🐈',
-      imageUrl: '/fairies/yama.png', colorFrom: 'from-stone-400', colorTo: 'to-stone-700', shadowColor: 'shadow-stone-500/50', sparkleColor: 'text-stone-200' },
+      imageUrl: '/fairies/yama.jpg', colorFrom: 'from-stone-400', colorTo: 'to-stone-700', shadowColor: 'shadow-stone-500/50', sparkleColor: 'text-stone-200' },
     description: '国境の島、対馬の深い森に隠れ住むヤマネコの妖精。とても警戒心が強いが一度懐くと離れない。'
   },
   {
@@ -359,7 +359,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'EPIC',
     visual: {
       icon: '🌲',
-      imageUrl: '/fairies/kodama.png', colorFrom: 'from-green-600', colorTo: 'to-emerald-900', shadowColor: 'shadow-green-700/50', sparkleColor: 'text-green-300' },
+      imageUrl: '/fairies/kodama.jpg', colorFrom: 'from-green-600', colorTo: 'to-emerald-900', shadowColor: 'shadow-green-700/50', sparkleColor: 'text-green-300' },
     description: '何千年も生きる屋久杉の森から生まれた古代の精霊。生命の神秘そのものです。'
   },
   {
@@ -370,7 +370,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🎃',
-      imageUrl: '/fairies/art.png', colorFrom: 'from-yellow-400', colorTo: 'to-red-500', shadowColor: 'shadow-yellow-500/50', sparkleColor: 'text-yellow-200' },
+      imageUrl: '/fairies/art.jpg', colorFrom: 'from-yellow-400', colorTo: 'to-red-500', shadowColor: 'shadow-yellow-500/50', sparkleColor: 'text-yellow-200' },
     description: '直島の現代アートから飛び出してきたような、前衛的でポップなカボチャの妖精。'
   },
   {
@@ -381,7 +381,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🐄',
-      imageUrl: '/fairies/ushima.png', colorFrom: 'from-slate-200', colorTo: 'to-slate-600', shadowColor: 'shadow-slate-400/50', sparkleColor: 'text-slate-100' },
+      imageUrl: '/fairies/ushima.jpg', colorFrom: 'from-slate-200', colorTo: 'to-slate-600', shadowColor: 'shadow-slate-400/50', sparkleColor: 'text-slate-100' },
     description: '隠岐の島の絶壁に立つ力強い牛の妖精。日本海の荒波にも負けない力強さを持つ。'
   },
   {
@@ -392,7 +392,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'RARE',
     visual: {
       icon: '🔥',
-      imageUrl: '/fairies/igni.png', colorFrom: 'from-red-600', colorTo: 'to-orange-900', shadowColor: 'shadow-red-600/50', sparkleColor: 'text-red-300' },
+      imageUrl: '/fairies/igni.jpg', colorFrom: 'from-red-600', colorTo: 'to-orange-900', shadowColor: 'shadow-red-600/50', sparkleColor: 'text-red-300' },
     description: '桜島の噴火と共に生まれる情熱の妖精。触ると少し熱い。'
   },
   
@@ -403,7 +403,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '沖縄の守り神シーサー',
     island_id: 'okinawa_main',
     rarity: 'RARE',
-    visual: { icon: '🦁', imageUrl: '/fairies/shisa.png', colorFrom: 'from-orange-500', colorTo: 'to-red-700', shadowColor: 'shadow-orange-600/50', sparkleColor: 'text-orange-300' },
+    visual: { icon: '🦁', imageUrl: '/fairies/shisa.jpg', colorFrom: 'from-orange-500', colorTo: 'to-red-700', shadowColor: 'shadow-orange-600/50', sparkleColor: 'text-orange-300' },
     description: '沖縄の家々を守るシーサーから生まれた力強い妖精。悪い運気を追い払ってくれます。'
   },
   {
@@ -412,7 +412,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '与那国馬と最西端の風',
     island_id: 'yonaguni',
     rarity: 'RARE',
-    visual: { icon: '🐴', imageUrl: '/fairies/yonaguni_horse.png', colorFrom: 'from-amber-400', colorTo: 'to-yellow-800', shadowColor: 'shadow-amber-500/50', sparkleColor: 'text-amber-200' },
+    visual: { icon: '🐴', imageUrl: '/fairies/yonaguni_horse.jpg', colorFrom: 'from-amber-400', colorTo: 'to-yellow-800', shadowColor: 'shadow-amber-500/50', sparkleColor: 'text-amber-200' },
     description: '日本最西端の与那国島で力強く生きる与那国馬の妖精。たくましい足腰を持っています。'
   },
   {
@@ -421,7 +421,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '宮古馬とサトウキビ畑',
     island_id: 'miyako',
     rarity: 'RARE',
-    visual: { icon: '🐎', imageUrl: '/fairies/miyako_horse.png', colorFrom: 'from-yellow-200', colorTo: 'to-amber-600', shadowColor: 'shadow-yellow-400/50', sparkleColor: 'text-yellow-100' },
+    visual: { icon: '🐎', imageUrl: '/fairies/miyako_horse.jpg', colorFrom: 'from-yellow-200', colorTo: 'to-amber-600', shadowColor: 'shadow-yellow-400/50', sparkleColor: 'text-yellow-100' },
     description: '宮古島の風土と共に育った宮古馬の妖精。のんびりとした性格で癒やされます。'
   },
   {
@@ -430,7 +430,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '雪の妖精シマエナガ',
     region_id: 'hokkaido',
     rarity: 'EPIC',
-    visual: { icon: '🐦', imageUrl: '/fairies/shimaenaga.png', colorFrom: 'from-slate-50', colorTo: 'to-slate-200', shadowColor: 'shadow-slate-300/50', sparkleColor: 'text-white' },
+    visual: { icon: '🐦', imageUrl: '/fairies/shimaenaga.jpg', colorFrom: 'from-slate-50', colorTo: 'to-slate-200', shadowColor: 'shadow-slate-300/50', sparkleColor: 'text-white' },
     description: '雪の妖精とも呼ばれるシマエナガの精霊。真っ白でふわふわな真ん丸の体をしています。'
   },
   {
@@ -439,7 +439,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '波照間の南十字星',
     island_id: 'hateruma',
     rarity: 'EPIC',
-    visual: { icon: '✨', imageUrl: '/fairies/hateruma_cross.png', colorFrom: 'from-indigo-300', colorTo: 'to-purple-800', shadowColor: 'shadow-indigo-400/50', sparkleColor: 'text-indigo-100' },
+    visual: { icon: '✨', imageUrl: '/fairies/hateruma_cross.jpg', colorFrom: 'from-indigo-300', colorTo: 'to-purple-800', shadowColor: 'shadow-indigo-400/50', sparkleColor: 'text-indigo-100' },
     description: '日本最南端・波照間島の夜空に輝く南十字星の妖精。星降る夜にだけ姿を見せます。'
   },
   {
@@ -448,7 +448,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     theme: '小笠原のザトウクジラ',
     island_id: 'ogasawara', // 父島のID
     rarity: 'EPIC',
-    visual: { icon: '🐋', imageUrl: '/fairies/ogasawara_whale.png', colorFrom: 'from-blue-400', colorTo: 'to-indigo-800', shadowColor: 'shadow-blue-500/50', sparkleColor: 'text-blue-200' },
+    visual: { icon: '🐋', imageUrl: '/fairies/ogasawara_whale.jpg', colorFrom: 'from-blue-400', colorTo: 'to-indigo-800', shadowColor: 'shadow-blue-500/50', sparkleColor: 'text-blue-200' },
     description: 'ボニンブルーの海を雄大に泳ぐザトウクジラの妖精。ダイナミックなジャンプで旅人を歓迎します。'
   },
 
@@ -463,7 +463,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     rarity: 'SPOT_EXCLUSIVE',
     visual: {
       icon: '🏨',
-      imageUrl: '/fairies/ruri_kirahotel.png', // 制限解除後に別衣装の画像を割り当て予定
+      imageUrl: '/fairies/ruri_kirahotel.jpg', // 制限解除後に別衣装の画像を割り当て予定
       colorFrom: 'from-purple-400', 
       colorTo: 'to-pink-600', 
       shadowColor: 'shadow-purple-500/50', 
