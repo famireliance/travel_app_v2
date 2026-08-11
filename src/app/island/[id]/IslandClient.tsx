@@ -772,7 +772,7 @@ export default function IslandDetail() {
         </div>
 
         {/* Island Diaries (島ログ) */}
-        <IslandDiaries islandId={islandId} />
+        <IslandDiaries islandId={islandId} islandName={island.name} />
 
         {/* Action Buttons */}
         <div className="fixed bottom-0 left-0 right-0 p-4 lg:p-6 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-center gap-4 z-40">
