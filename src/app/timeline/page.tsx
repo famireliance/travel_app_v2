@@ -1,16 +1,49 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
-import { MessageCircle, Camera, MapPin, Sparkles, Navigation2 } from 'lucide-react';
+import { MessageCircle, Camera, MapPin, Sparkles, Navigation2, Heart } from 'lucide-react';
 import Link from 'next/link';
+import { useTravel } from '@/context/TravelContext';
+
+interface TimelineDiary {
+  id: string;
+  user_id: string;
+  island_id: string;
+  content: string;
+  photo_url: string;
+  created_at: string;
+  companion_type?: string;
+}
+
+interface TimelineProfile {
+  id: string;
+  nickname: string;
+  avatar_url?: string;
+}
 
 export default function TimelinePage() {
-  const [diaries, setDiaries] = useState<any[]>([]);
+  const { updateStatus } = useTravel();
+  const [diaries, setDiaries] = useState<TimelineDiary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [profiles, setProfiles] = useState<Record<string, any>>({});
+  const [profiles, setProfiles] = useState<Record<string, TimelineProfile>>({});
+  const [selectedPrefecture, setSelectedPrefecture] = useState<string>('');
+  const [selectedStyle, setSelectedStyle] = useState<string>('');
+
+  const prefectures = useMemo(() => {
+    return Array.from(new Set(Object.values(ALL_ISLANDS_MASTER_DICTIONARY).map(i => i.prefecture).filter(Boolean))).sort();
+  }, []);
+
+  const filteredDiaries = useMemo(() => {
+    return diaries.filter(diary => {
+      const island = ALL_ISLANDS_MASTER_DICTIONARY[diary.island_id];
+      if (selectedPrefecture && island?.prefecture !== selectedPrefecture) return false;
+      if (selectedStyle && diary.companion_type !== selectedStyle) return false;
+      return true;
+    });
+  }, [diaries, selectedPrefecture, selectedStyle]);
 
   useEffect(() => {
     fetchTimeline();
@@ -41,7 +74,7 @@ export default function TimelinePage() {
           .in('id', userIds);
 
         if (!profilesError && profilesData) {
-          const profileMap: Record<string, any> = {};
+          const profileMap: Record<string, TimelineProfile> = {};
           profilesData.forEach(p => {
             profileMap[p.id] = p;
           });
@@ -84,11 +117,33 @@ export default function TimelinePage() {
           </motion.p>
         </div>
 
+        <div className="flex flex-wrap gap-4 justify-center mb-8">
+          <select 
+            value={selectedPrefecture} 
+            onChange={(e) => setSelectedPrefecture(e.target.value)} 
+            className="px-4 py-2 rounded-full border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+          >
+            <option value="">すべての都道府県</option>
+            {prefectures.map(p => <option key={p} value={p}>{p}</option>)}
+          </select>
+          <select 
+            value={selectedStyle} 
+            onChange={(e) => setSelectedStyle(e.target.value)} 
+            className="px-4 py-2 rounded-full border border-slate-200 text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white shadow-sm"
+          >
+            <option value="">すべての旅スタイル</option>
+            <option value="ひとり旅">ひとり旅</option>
+            <option value="カップル">カップル</option>
+            <option value="家族">家族</option>
+            <option value="友人グループ">友人グループ</option>
+          </select>
+        </div>
+
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
           </div>
-        ) : diaries.length === 0 ? (
+        ) : filteredDiaries.length === 0 ? (
           <div className="text-center py-20 text-slate-400">
             <MessageCircle className="w-16 h-16 mx-auto opacity-20 mb-4" />
             <p className="font-serif">まだ記録がありません。</p>
@@ -96,7 +151,7 @@ export default function TimelinePage() {
         ) : (
           <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
             <AnimatePresence>
-              {diaries.map((diary, index) => {
+              {filteredDiaries.map((diary, index) => {
                 const island = ALL_ISLANDS_MASTER_DICTIONARY[diary.island_id];
                 const profile = profiles[diary.user_id];
                 const hasPhoto = !!diary.photo_url;
@@ -109,6 +164,7 @@ export default function TimelinePage() {
                     transition={{ delay: Math.min(index * 0.05, 0.5) }}
                     className="break-inside-avoid bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow group relative"
                   >
+                    <Link href={`/island/${diary.island_id}`} className="absolute inset-0 z-0" />
                     {hasPhoto && (
                       <div className="relative aspect-[4/5] bg-slate-100 overflow-hidden">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -118,8 +174,8 @@ export default function TimelinePage() {
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         />
                         {/* Island Label Overlay */}
-                        <div className="absolute top-4 left-4 right-4 flex justify-between items-start">
-                          <Link href={`/island/${diary.island_id}`} className="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5 hover:bg-black/60 transition-colors">
+                        <div className="absolute top-4 left-4 right-4 flex justify-between items-start z-10 pointer-events-none">
+                          <Link href={`/island/${diary.island_id}`} className="bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20 flex items-center gap-1.5 hover:bg-black/60 transition-colors pointer-events-auto">
                             <MapPin className="w-3.5 h-3.5 text-amber-400" />
                             <span className="text-xs font-bold text-white shadow-sm">
                               {island ? island.name : 'Unknown Island'}
@@ -129,9 +185,9 @@ export default function TimelinePage() {
                       </div>
                     )}
                     
-                    <div className="p-5">
+                    <div className="p-5 relative z-10 pointer-events-none">
                       {!hasPhoto && island && (
-                        <Link href={`/island/${diary.island_id}`} className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold mb-3 hover:bg-blue-100 transition-colors">
+                        <Link href={`/island/${diary.island_id}`} className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold mb-3 hover:bg-blue-100 transition-colors pointer-events-auto">
                           <Navigation2 className="w-3.5 h-3.5" />
                           {island.name} ({island.prefecture})
                         </Link>
@@ -141,7 +197,7 @@ export default function TimelinePage() {
                         {diary.content}
                       </p>
                       
-                      <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                      <div className="flex items-center justify-between pt-4 border-t border-slate-100 pointer-events-auto">
                         <div className="flex items-center gap-2">
                           <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-200 to-orange-300 flex items-center justify-center text-amber-800 font-bold text-[10px] uppercase shadow-sm">
                             {profile?.nickname ? profile.nickname.substring(0, 2) : diary.user_id.substring(0, 2)}
@@ -157,9 +213,17 @@ export default function TimelinePage() {
                             )}
                           </div>
                         </div>
-                        <span className="text-[10px] text-slate-400 font-mono">
-                          {new Date(diary.created_at).toLocaleDateString('ja-JP')}
-                        </span>
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateStatus(diary.island_id, 'planning'); }}
+                            className="bg-rose-50 text-rose-500 hover:bg-rose-100 px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-colors"
+                          >
+                            <Heart className="w-3 h-3" /> 行きたい
+                          </button>
+                          <span className="text-[10px] text-slate-400 font-mono">
+                            {new Date(diary.created_at).toLocaleDateString('ja-JP')}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   </motion.div>

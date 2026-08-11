@@ -9,14 +9,21 @@ import SearchModal from '@/components/SearchModal';
 import { fetchAllIslands } from '@/lib/supabase';
 import Breadcrumb from '@/components/Breadcrumb';
 
+interface IslandData {
+  id: string;
+  name: string;
+  region_id?: string;
+  coordinates?: string;
+  prefecture?: string;
+}
+
 export default function RegionMap() {
   const params = useParams();
   const router = useRouter();
   const regionId = params.id as string;
   const region = regionsData.find(r => r.id === regionId);
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [regionIslands, setRegionIslands] = useState<any[]>([]);
+  const [regionIslands, setRegionIslands] = useState<IslandData[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -27,8 +34,7 @@ export default function RegionMap() {
     }
     fetchAllIslands()
       .then(islands => {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const filtered = (islands || []).filter((i: any) => i.region_id === regionId);
+        const filtered = (islands || []).filter((i: IslandData) => i.region_id === regionId);
         setRegionIslands(filtered);
         setLoading(false);
       })
@@ -118,7 +124,7 @@ export default function RegionMap() {
       <SearchModal 
         isOpen={isSearchOpen} 
         onClose={() => setIsSearchOpen(false)} 
-        onSelectIsland={(island: any) => {
+        onSelectIsland={(island: IslandData) => {
           setIsSearchOpen(false);
           router.push(`/island/${island.id}`);
         }}

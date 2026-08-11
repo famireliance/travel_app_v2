@@ -2,7 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Send, Camera, Star, Droplets, Navigation, Users, Calendar, AlertTriangle } from 'lucide-react';
+import { X, Send, Camera, Star, Droplets, Navigation, Users, Calendar, AlertTriangle, LucideIcon } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import imageCompression from 'browser-image-compression';
@@ -126,7 +126,7 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
     }
   };
 
-  const RatingStars = ({ value, onChange, icon: Icon, colorClass }: { value: number, onChange: (v: number) => void, icon: any, colorClass: string }) => {
+  const RatingStars = ({ value, onChange, icon: Icon, colorClass }: { value: number, onChange: (v: number) => void, icon: LucideIcon, colorClass: string }) => {
     return (
       <div className="flex gap-1">
         {[1, 2, 3, 4, 5].map((star) => (
@@ -209,6 +209,7 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
                   
                   {photoUrl && (
                     <div className="mt-3 relative rounded-xl overflow-hidden bg-slate-100 inline-block border border-slate-200">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={photoUrl} alt="Preview" className="h-40 object-cover" />
                       <button
                         type="button"

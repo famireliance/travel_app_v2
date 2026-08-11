@@ -1,0 +1,185 @@
+
+> travel_app_v2@0.1.0 lint
+> eslint
+
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/check_db.mjs
+   9:25  warning  'countErr' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  13:34  warning  'kErr' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  17:33  warning  'yErr' is assigned a value but never used      @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/check_schema.mjs
+  11:17  warning  'error' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/scripts/add_population_column.js
+  1:10  warning  'createClient' is defined but never used          @typescript-eslint/no-unused-vars
+  6:7   warning  'supabaseUrl' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  7:7   warning  'supabaseKey' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/scripts/enrich_islands_data.mjs
+  4:8  warning  'fs' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/scripts/enrich_islands_data_gemini.mjs
+  26:67  warning  'fallbackDesc' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/scripts/fix-coordinates.js
+   1:1   error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+   2:26  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  13:20  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/scripts/update_conquest_master.mjs
+  43:7   warning  'matchCount' is assigned a value but never used                     @typescript-eslint/no-unused-vars
+  54:11  warning  'blockRegex' is assigned a value but never used                     @typescript-eslint/no-unused-vars
+  55:11  warning  'blockRegex2' is assigned a value but never used                    @typescript-eslint/no-unused-vars
+  64:11  warning  'ALL_ISLANDS_MASTER_DICTIONARY' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/admin/post/page.tsx
+    9:42  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   30:19  warning  'error' is assigned a value but never used                                                                                                                                                                                                                                               @typescript-eslint/no-unused-vars
+   56:19  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  102:19  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  216:21  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/api/admin/generate-post/route.ts
+  40:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/api/ai-recommend/route.ts
+  85:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/api/ai-route/route.ts
+  122:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/api/weather/route.ts
+  36:12  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/checkin/page.tsx
+  19:10  warning  'distanceInfo' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/companion/page.tsx
+    5:39  warning  'Droplets' is defined but never used                                                                                                                                                                                                                                                     @typescript-eslint/no-unused-vars
+    5:56  warning  'Moon' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+    5:82  warning  'ChevronRight' is defined but never used                                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+    5:96  warning  'Info' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+  144:23  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  226:55  warning  'idx' is defined but never used                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+  263:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  345:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  353:33  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/globe/GlobeSatelliteMap.tsx
+   91:9   warning  The 'visitedIds' object construction makes the dependencies of useMemo Hook (at line 132) change on every render. To fix this, wrap the initialization of 'visitedIds' in its own useMemo() Hook  react-hooks/exhaustive-deps
+  106:6   warning  React Hook useMemo has missing dependencies: 'tokyoHub.lat' and 'tokyoHub.lng'. Either include them or remove the dependency array                                                                react-hooks/exhaustive-deps
+  181:23  warning  'd' is defined but never used                                                                                                                                                                     @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/globe/page.tsx
+   8:14  warning  'Download' is defined but never used             @typescript-eslint/no-unused-vars
+   8:30  warning  'RotateCw' is defined but never used             @typescript-eslint/no-unused-vars
+   8:58  warning  'Award' is defined but never used                @typescript-eslint/no-unused-vars
+   9:12  warning  'GlobeIcon' is defined but never used            @typescript-eslint/no-unused-vars
+   9:23  warning  'Share2' is defined but never used               @typescript-eslint/no-unused-vars
+   9:31  warning  'Eye' is defined but never used                  @typescript-eslint/no-unused-vars
+   9:45  warning  'ShieldCheck' is defined but never used          @typescript-eslint/no-unused-vars
+  10:28  warning  'Clock' is defined but never used                @typescript-eslint/no-unused-vars
+  10:35  warning  'BarChart3' is defined but never used            @typescript-eslint/no-unused-vars
+  10:60  warning  'RefreshCw' is defined but never used            @typescript-eslint/no-unused-vars
+  11:3   warning  'ZoomIn' is defined but never used               @typescript-eslint/no-unused-vars
+  11:11  warning  'ZoomOut' is defined but never used              @typescript-eslint/no-unused-vars
+  11:27  warning  'Volume2' is defined but never used              @typescript-eslint/no-unused-vars
+  11:36  warning  'Info' is defined but never used                 @typescript-eslint/no-unused-vars
+  11:42  warning  'Star' is defined but never used                 @typescript-eslint/no-unused-vars
+  14:10  warning  'getIslandDifficulty' is defined but never used  @typescript-eslint/no-unused-vars
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/island/[id]/IslandClient.tsx
+    5:48  warning  'Compass' is defined but never used                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+    5:99  warning  'Bot' is defined but never used                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+   12:23  warning  'getAiCompanionUrl' is defined but never used                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   12:42  warning  'ECOSYSTEM_CONFIG' is defined but never used                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   26:10  warning  'siteSettings' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   26:52  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   27:50  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   28:54  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   29:56  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  134:41  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  145:65  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  146:71  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  147:66  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  148:61  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  173:9   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  220:17  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  757:31  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  766:34  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  775:32  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  784:29  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/kira-system-panel-9f2/page.tsx
+   15:36  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   20:44  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   33:52  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   39:42  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+   99:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  129:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  176:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  202:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  227:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  262:19  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  377:41  error  Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/map/page.tsx
+   17:15  warning  'Metadata' is defined but never used                                                                                              @typescript-eslint/no-unused-vars
+  118:6   warning  React Hook useMemo has missing dependencies: 'filterParam' and 'regionParam'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/mypage/page.tsx
+    6:94   warning  'Video' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+    6:120  warning  'Compass' is defined but never used                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+    8:18   warning  'AnimatePresence' is defined but never used                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+   10:30   warning  'getIslandMastery' is defined but never used                                                                                                                                                                                                                                             @typescript-eslint/no-unused-vars
+   16:144  warning  'spotsVisited' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   16:189  warning  'collectedFairyDates' is assigned a value but never used                                                                                                                                                                                                                                 @typescript-eslint/no-unused-vars
+   40:46   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  105:9    warning  'diffStats' is assigned a value but never used                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  319:53   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+  355:25   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  399:29   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  443:25   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/order/success/page.tsx
+   5:24  warning  'Download' is defined but never used      @typescript-eslint/no-unused-vars
+  11:46  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/app/page.tsx
+     6:54   warning  'Wind' is defined but never used                                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+     6:163  warning  'Bot' is defined but never used                                                                                                                                                                                                                                                          @typescript-eslint/no-unused-vars
+     6:168  warning  'Award' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+     6:212  warning  'AlertTriangle' is defined but never used                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+    51:10   warning  'siteSettings' is assigned a value but never used                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+    51:52   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+    52:50   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+    53:48   error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                 @typescript-eslint/no-explicit-any
+   100:6    warning  React Hook useEffect has a missing dependency: 'slides.length'. Either include it or remove the dependency array                                                                                                                                                                         react-hooks/exhaustive-deps
+   175:9    warning  'progressPct' is assigned a value but never used                                                                                                                                                                                                                                         @typescript-eslint/no-unused-vars
+   425:23   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   485:22   warning  'error' is defined but never used                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+   582:19   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   617:110  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`                                                                                                                                                                                                                          react/no-unescaped-entities
+   632:19   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   672:19   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   712:19   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   752:19   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   792:19   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   826:17   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   827:17   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   828:17   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   829:17   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+   957:27   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  1144:17   warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/components/BannerCarousel.tsx
+  51:13  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+/Users/masahito/.gemini/antigravity/scratch/travel_app_v2/src/components/CompanionModal.tsx
+   57:19  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  118:31  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  197:31  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+✖ 130 problems (40 errors, 90 warnings)
+

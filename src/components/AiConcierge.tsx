@@ -13,16 +13,26 @@ interface AiConciergeProps {
   onClose: () => void;
 }
 
+interface AiPlan {
+  id: string;
+  theme: string;
+  reason: string;
+  name?: string;
+  prefecture?: string;
+  is_uninhabited?: boolean;
+  access?: string;
+  points?: number;
+}
+
 export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
   const { islandStatuses } = useTravel();
   const [userInput, setUserInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [plans, setPlans] = useState<any[] | null>(null);
+  const [plans, setPlans] = useState<AiPlan[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const visitedIds = Object.entries(islandStatuses)
-    .filter(([_, status]) => status === 'visited' || status === 'verified_visited')
+    .filter(([, status]) => status === 'visited' || status === 'verified_visited')
     .map(([id]) => id);
 
   const handleSearch = async (e?: React.FormEvent, overrideInput?: string) => {
@@ -48,7 +58,7 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
       if (!res.ok) throw new Error(data.error || 'Failed to fetch recommendations');
 
       // Map AI returned IDs to real local DB objects to prevent hallucination
-      const verifiedPlans = data.plans.map((p: any) => {
+      const verifiedPlans = data.plans.map((p: AiPlan) => {
         const localData = ALL_ISLANDS_MASTER_DICTIONARY[p.id];
         if (localData) {
           return { ...p, ...localData };
@@ -57,8 +67,12 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
       }).filter(Boolean); // Filter out any hallucinations
 
       setPlans(verifiedPlans);
-    } catch (err: any) {
-      setError(err.message || 'AIとの通信に失敗しました');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message || 'AIとの通信に失敗しました');
+      } else {
+        setError('AIとの通信に失敗しました');
+      }
     } finally {
       setIsLoading(false);
     }
@@ -174,7 +188,7 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
                   </button>
                 </div>
                 
-                {plans.map((plan: any, idx: number) => (
+                {plans.map((plan: AiPlan, idx: number) => (
                   <div key={idx} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-4 hover:shadow-md transition-shadow relative overflow-hidden group">
                     <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-indigo-400 to-blue-500"></div>
                     <div className="flex-1">

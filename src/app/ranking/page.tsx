@@ -1,32 +1,27 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { ArrowLeft, Trophy, Medal, Star, Compass } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
 import { supabase } from '@/lib/supabase';
 
-// 競合との比較を考慮し、実際に活気のあるサービスに見えるよう、
-// DBが空の場合のフォールバック用としてモックデータを保持（β版としてのデモデータ）
-const MOCK_RANKING = [
-  { id: 'mock1', username: 'KIRA_Adventurer', visited: 215, points: 64500, title: '伝説の島旅王' },
-  { id: 'mock2', username: 'Island_Hopper99', visited: 184, points: 55200, title: '海神の使い' },
-  { id: 'mock3', username: 'BlueOcean_77', visited: 156, points: 46800, title: '伝説の旅人' },
-  { id: 'mock4', username: 'SunnyWalker', visited: 128, points: 38400, title: '熟練の島巡り' },
-  { id: 'mock5', username: 'StarGazer', visited: 112, points: 33600, title: '熟練の島巡り' },
-  { id: 'mock6', username: 'YamaUmi_Lover', visited: 95, points: 28500, title: '旅の達人' },
-  { id: 'mock7', username: 'NekoTraveler', visited: 82, points: 24600, title: '旅の達人' },
-  { id: 'mock8', username: 'WanderingSoul', visited: 67, points: 20100, title: '中級探検家' },
-  { id: 'mock9', username: 'SunsetChaser', visited: 54, points: 16200, title: '中級探検家' },
-  { id: 'mock10', username: 'AquaMarine', visited: 42, points: 12600, title: '冒険者の卵' },
-];
+
+
+interface RankingUser {
+  id: string;
+  username: string;
+  visited: number;
+  points: number;
+  title: string;
+}
 
 export default function RankingPage() {
   const router = useRouter();
   const { user, totalVisited, totalPoints } = useTravel();
   const [rankingType, setRankingType] = useState<'visited' | 'points'>('visited');
-  const [realRanking, setRealRanking] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [realRanking, setRealRanking] = useState<RankingUser[]>([]);
 
   React.useEffect(() => {
     async function fetchRanking() {
@@ -37,17 +32,15 @@ export default function RankingPage() {
         }
       } catch (e) {
         console.error('Failed to fetch ranking view:', e);
-      } finally {
-        setLoading(false);
       }
     }
     fetchRanking();
   }, []);
 
-  // 実データが少ない場合はモックとマージして活気を演出（将来的に外す）
-  let fullRanking = realRanking.length > 0 ? [...realRanking] : [...MOCK_RANKING];
+  // 実データをそのまま使用する
+  const fullRanking = [...realRanking];
   
-  // モックだけの時、または実データに自分がいない場合は自分を挿入
+  // 実データに自分がいない場合は自分を一時的に挿入して順位を見せる（0島でも参加しているように見せる）
   const isMeInRanking = fullRanking.some(r => r.id === user?.id);
   if (user && !isMeInRanking) {
     fullRanking.push({
@@ -84,6 +77,18 @@ export default function RankingPage() {
 
       <div className="max-w-3xl mx-auto px-6 py-6">
         <Breadcrumb items={[{ label: 'ランキング' }]} className="mb-6" />
+
+        {!user && (
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl mb-8 flex flex-col md:flex-row items-center justify-between shadow-lg">
+            <div className="mb-4 md:mb-0">
+              <h3 className="text-xl font-bold mb-2">ログインしてキラ旅をもっと楽しもう！</h3>
+              <p className="text-blue-100 text-sm">進行状況の保存、ランキング参加、島ノートの投稿など、すべての機能が利用可能になります。</p>
+            </div>
+            <Link href="/mypage" className="px-6 py-3 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-blue-50 transition-colors whitespace-nowrap">
+              ログイン / 新規登録
+            </Link>
+          </div>
+        )}
 
         <div className="bg-white rounded-full p-1 flex shadow-sm border border-slate-100 mb-8">
           <button

@@ -10,10 +10,11 @@ import MiniMapClient from '@/components/Map/MiniMapClient';
 import CheckInModal from '@/components/CheckInModal';
 import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import { getGuideUrl, getAiCompanionUrl, ECOSYSTEM_CONFIG } from '@/lib/ecosystem';
+import { getIslandDifficulty } from '@/lib/difficulty';
 import Breadcrumb from '@/components/Breadcrumb';
 import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
-import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain } from 'lucide-react';
+import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert } from 'lucide-react';
 
 export default function IslandDetail() {
   const params = useParams();
@@ -25,6 +26,7 @@ export default function IslandDetail() {
   const [siteSettings, setSiteSettings] = useState<any>(null);
   const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
   const [weatherAlerts, setWeatherAlerts] = useState<any[]>([]);
+  const [currentWeather, setCurrentWeather] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
@@ -73,6 +75,7 @@ export default function IslandDetail() {
             .then(res => res.json())
             .then(data => {
               if (data.alerts) setWeatherAlerts(data.alerts);
+              if (data.current) setCurrentWeather(data.current);
             }).catch(() => {});
         }
       } else {
@@ -160,6 +163,8 @@ export default function IslandDetail() {
     '電波状況広く圏内': <Wifi className="w-4 h-4 text-emerald-500" />,
   };
 
+  const difficultyInfo = island ? getIslandDifficulty(island) : null;
+
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans relative">
       {/* Hero Image Section */}
@@ -202,6 +207,28 @@ export default function IslandDetail() {
           >
             {island.name}
           </motion.h1>
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap items-center gap-3 mt-4">
+            {difficultyInfo && difficultyInfo.level > 0 && (
+              <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-md ${difficultyInfo.badgeColor}`}>
+                <span className="tracking-widest">{difficultyInfo.stars}</span>
+                <span>{difficultyInfo.label}</span>
+              </div>
+            )}
+            
+            {currentWeather && (
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-md bg-white/90 backdrop-blur-sm text-slate-800 border border-white/50">
+                <img src={`https://openweathermap.org/img/wn/${currentWeather.icon}.png`} alt={currentWeather.description} className="w-5 h-5 -my-1" />
+                <span>{currentWeather.temp}°C {currentWeather.description}</span>
+              </div>
+            )}
+            
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`【キラ旅】${island.name}に到達！`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&hashtags=キラ旅,離島`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-[#1DA1F2] transition-colors shadow-md" aria-label="Share on X">
+              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </a>
+            <a href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-[#06C755] transition-colors shadow-md" aria-label="Share on LINE">
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.122.298.08.683.04.945l-.173 1.057c-.053.33-.25.992.871.52 1.121-.471 6.035-3.553 8.351-6.171C22.612 14.869 24 12.721 24 10.304zM7.747 12.632H5.666c-.347 0-.629-.281-.629-.629V8.058c0-.347.282-.628.629-.628h2.081c.347 0 .628.281.628.628s-.281.628-.628.628H6.924v2.69h.823c.347 0 .628.281.628.628s-.281.627-.628.627zm4.331-.629c0 .348-.281.629-.628.629h-2.08c-.347 0-.629-.281-.629-.629V8.058c0-.347.282-.628.629-.628h.629v3.945h1.451c.347 0 .628.281.628.628zm2.493 0c0 .348-.281.629-.628.629h-.002c-.347 0-.628-.281-.628-.629V8.058c0-.347.281-.628.628-.628h.002c.347 0 .628.281.628.628v3.945zm5.291-3.316c0 .347-.282.628-.629.628h-1.451v.965h1.451c.347 0 .629.281.629.628s-.282.628-.629.628h-2.081c-.347 0-.628-.281-.628-.628V8.058c0-.347.281-.628.628-.628h2.081c.347 0 .629.281.629.628z"/></svg>
+            </a>
+          </motion.div>
         </div>
       </div>
 
@@ -350,6 +377,35 @@ export default function IslandDetail() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Communications & Disaster Info Section */}
+        <div className="mb-10 bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden">
+          <div className="bg-rose-50 border-b border-rose-100 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+            <h3 className="text-sm font-bold tracking-widest text-rose-800 flex items-center gap-2">
+              <PhoneCall className="w-4 h-4 text-rose-500" />
+              通信環境・防災情報について
+            </h3>
+            <span className="text-[10px] md:text-xs text-rose-600 font-medium">※ご旅行前に必ずご確認ください</span>
+          </div>
+          <div className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="flex flex-col gap-1 p-4 rounded-xl bg-white border border-rose-100 shadow-sm">
+                <span className="text-xs text-slate-500 font-bold flex items-center gap-1"><Radio className="w-4 h-4" /> 通信・電波状況</span>
+                <span className="text-sm font-bold text-slate-800">各通信キャリアの提供エリアをご確認ください</span>
+              </div>
+              <div className="flex flex-col gap-1 p-4 rounded-xl bg-white border border-rose-100 shadow-sm">
+                <span className="text-xs text-slate-500 font-bold flex items-center gap-1"><ShieldAlert className="w-4 h-4" /> 避難所・緊急連絡先</span>
+                <span className="text-sm font-bold text-slate-800">各自治体の公式防災マップをご確認ください</span>
+              </div>
+            </div>
+            <div className="mt-4 p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-3">
+              <Phone className="w-5 h-5 text-slate-400 shrink-0 mt-0.5" />
+              <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                島内の通信環境は本土と異なり、集落を離れると携帯電話の電波が届かないエリアが存在する場合があります。気象条件によるフェリーの欠航や緊急時に備え、あらかじめ自治体（{island.prefecture}等）が発信している公式の防災情報や避難所マップをご確認いただくことを強く推奨します。
+              </p>
+            </div>
           </div>
         </div>
 

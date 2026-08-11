@@ -3,14 +3,14 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
-import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X, Star, MessageCircle, CheckCircle } from 'lucide-react';
+import { Search, Map, Compass, User, Droplets, Moon, Wind, BedDouble, ChevronRight, ChevronLeft, Waves, MapPin, Menu, ArrowRight, Sparkles, Coffee, Heart, Flame, Bot, Award, X, Star, MessageCircle, CheckCircle, AlertTriangle, Users, Trophy, Medal } from 'lucide-react';
 import regionsData from '../data/regions.json';
 import heroSlides from '../data/hero_slides.json';
 import SearchModal from '@/components/SearchModal';
 import AuthModal from '@/components/AuthModal';
 import CompanionModal from '@/components/CompanionModal';
 import { useTravel } from '@/context/TravelContext';
-import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
+import { supabase, fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import BannerCarousel from '@/components/BannerCarousel';
 import { calculateDistanceKm } from '@/lib/geo';
 
@@ -50,6 +50,7 @@ export default function Home() {
   const [allIslands, setAllIslands] = useState<any[]>([]);
   const [siteSettings, setSiteSettings] = useState<any>(null);
   const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
+  const [topRankers, setTopRankers] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [selectedAreaTab, setSelectedAreaTab] = useState<string>('全て');
@@ -80,6 +81,9 @@ export default function Home() {
     });
     fetchAdCampaigns().then(data => {
       setAdCampaigns(data || []);
+    });
+    supabase.from('user_ranking_view').select('*').order('visited', { ascending: false }).limit(3).then(({ data }) => {
+      if (data) setTopRankers(data);
     });
 
     // メール確認リンクから戻ってきた場合の通知
@@ -118,33 +122,16 @@ export default function Home() {
     
     // カテゴリーごとの厳格なファクトチェック済み島名リスト
     const VERIFIED_CATEGORY_MAP: Record<string, string[]> = {
-      // ケラマブルー・ミヤコブルー等、環境省国立公園・シュノーケル/ダイビング世界屈指の実績島
-      'transparency': [
-        '座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '池間島', '下地島', 
-        '波照間島', '古宇利島', '水納島', '式根島', '神津島', '柏島', '沖之島', '屋我地島'
-      ],
-      // 国際ダークスカイ協会「星空保護区」認定および天文台・南十字星観測スポット実在島
-      'stars': [
-        '波照間島', '神津島', '小浜島', '竹富島', '父島', '母島', 
-        '八丈島', '与那国島', '黒島', '多良間島', '青ケ島', '西表島'
-      ],
-      // 屋久島海中温泉・式根島地鉈足付温泉・八丈島みはらしの湯・硫黄島東温泉など絶景野湯＆温泉実在島
-      'onsen': [
-        '屋久島', '式根島', '八丈島', '硫黄島（鹿児島）', '伊豆大島', '小豆島', '壱岐島', '奥尻島', '利尻島'
-      ],
-      // 直島I♥湯・式根島絶景テントサウナ・八丈島・オリビアン小豆島・宮古島リゾートサウナ実稼働島
-      'sauna': [
-        '直島', '式根島', '八丈島', '小豆島', '伊豆大島', '宮古島', '石垣島', '新島', '壱岐島'
-      ],
-      // 女子旅・島カフェ＆絶景リトリート（治安・おしゃれカフェ・コスメ・安全快適・フォトジェニック厳選）
-      'retreat': [
-        '直島', '豊島（香川）', '小豆島', '古宇利島', '瀬底島', '水納島', 
-        '小浜島', '竹富島', '神津島', '生口島', '屋久島', '奄美大島', '壱岐島'
-      ],
-      // 1泊数万〜数十万クラスの最高峰5つ星ラグジュアリーヴィラ＆リゾートホテル実在島
-      'luxury': [
-        '宮古島', '伊良部島', '石垣島', '小浜島', '直島', '屋久島', '奄美大島', '古宇利島', '瀬底島'
-      ]
+      'transparency': ['座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '池間島', '下地島', '波照間島', '古宇利島', '水納島', '式根島', '神津島', '柏島', '沖之島', '屋我地島'],
+      'stars': ['波照間島', '神津島', '小浜島', '竹富島', '父島', '母島', '八丈島', '与那国島', '黒島', '多良間島', '青ケ島', '西表島'],
+      'retreat': ['直島', '豊島（香川）', '小豆島', '古宇利島', '瀬底島', '水納島', '小浜島', '竹富島', '神津島', '生口島', '屋久島', '奄美大島', '壱岐島'],
+      'family': ['石垣島', '宮古島', '小豆島', '淡路島', '伊豆大島', '佐渡島', '伊江島', '古宇利島', '瀬底島', '屋代島', '大三島'],
+      'onsen_sauna': ['屋久島', '式根島', '八丈島', '硫黄島（鹿児島）', '伊豆大島', '小豆島', '壱岐島', '奥尻島', '利尻島', '直島', '宮古島'],
+      'luxury': ['宮古島', '伊良部島', '石垣島', '小浜島', '直島', '屋久島', '奄美大島', '古宇利島', '瀬底島'],
+      'remote': ['青ケ島', '南大東島', '北大東島', '悪石島', '宝島', '硫黄島（鹿児島）', '御蔵島', '与那国島', '波照間島', '小笠原'],
+      'nature': ['西表島', '屋久島', '知床', '小笠原', '奄美大島', '徳之島', '御蔵島', '座間味島'],
+      'gourmet': ['小豆島', '淡路島', '壱岐島', '五島列島', '石垣島', '宮古島', '隠岐', '佐渡島', '礼文島'],
+      'daytrip': ['江の島', '猿島', '友ヶ島', '能古島', '相島', '水納島', '瀬底島', '古宇利島', '伊江島', '日間賀島', '佐久島']
     };
 
     const targetNames = VERIFIED_CATEGORY_MAP[selectedCategory] || [];
@@ -523,15 +510,60 @@ export default function Home() {
         </motion.div>
       </div>
 
+      {/* Top Ranking Widget */}
+      {isMounted && topRankers.length > 0 && (
+        <div className="px-8 lg:px-12 pt-16 pb-8 bg-white">
+          <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl p-6 lg:p-10 border border-blue-100 shadow-sm">
+            <div className="lg:w-1/3 text-center lg:text-left">
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">TOP TRAVELERS</p>
+              <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest flex items-center justify-center lg:justify-start gap-2 mb-4">
+                <Trophy className="text-amber-500 w-6 h-6 lg:w-8 lg:h-8" />
+                トップトラベラー
+              </h2>
+              <p className="text-sm text-slate-600 mb-6">全国の島巡りプレイヤーの頂点。<br/>あなたも冒険に出かけてランキング入りを目指そう！</p>
+              <button 
+                onClick={() => router.push('/ranking')}
+                className="px-6 py-2.5 bg-white text-blue-600 border border-blue-200 font-bold rounded-full shadow-sm hover:bg-blue-50 transition-colors text-sm"
+              >
+                ランキング全体を見る
+              </button>
+            </div>
+            <div className="lg:w-2/3 w-full flex flex-col gap-3">
+              {topRankers.map((ranker, idx) => (
+                <div key={ranker.id} className="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-white hover:border-blue-200 transition-colors cursor-pointer" onClick={() => router.push('/ranking')}>
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
+                    idx === 0 ? 'bg-amber-100 text-amber-600' : 
+                    idx === 1 ? 'bg-slate-200 text-slate-600' :
+                    'bg-orange-100 text-orange-700'
+                  }`}>
+                    {idx === 0 ? <Trophy size={20} /> : <Medal size={20} />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <h3 className="font-bold text-slate-800 truncate">{ranker.username}</h3>
+                      <span className="text-[0.6rem] px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full shrink-0">{ranker.title}</span>
+                    </div>
+                    <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
+                      <span className="flex items-center gap-1"><Compass size={12} className="text-blue-500"/> {ranker.visited} 島</span>
+                      <span className="flex items-center gap-1"><Star size={12} className="text-amber-500"/> {ranker.points.toLocaleString()} XP</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Featured & Popular Islands Section */}
       {isMounted && allIslands.filter(i => i.is_featured).length > 0 && (
         <div className="px-8 lg:px-12 pt-20 lg:pt-28 pb-10 bg-white">
           <div className="mb-10 flex items-center justify-between max-w-7xl mx-auto">
             <div>
-              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-amber-500 mb-2">FEATURED DESTINATIONS</p>
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-amber-500 mb-2">TOP RATED ISLANDS</p>
               <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest flex items-center gap-2">
                 <Star className="text-amber-400 fill-amber-400 w-6 h-6 lg:w-8 lg:h-8" />
-                ピックアップ・人気の島
+                人気の島ランキング
               </h2>
             </div>
           </div>
@@ -540,10 +572,64 @@ export default function Home() {
               <div 
                 key={`featured-${island.id}-${idx}`}
                 onClick={() => router.push(`/island/${island.id}`)}
-                className="w-[280px] sm:w-[320px] shrink-0 snap-start bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden cursor-pointer group hover:shadow-xl hover:shadow-amber-500/10 transition-all hover:-translate-y-1"
+                className="w-[280px] sm:w-[320px] shrink-0 snap-start bg-slate-50 rounded-3xl border border-slate-200 overflow-hidden cursor-pointer group hover:shadow-xl hover:shadow-amber-500/10 transition-all hover:-translate-y-1 relative"
               >
+                <div className="absolute top-0 left-5 z-10 w-10 h-12 bg-gradient-to-b from-amber-400 to-orange-500 text-white shadow-lg flex flex-col items-center justify-center font-bold font-serif shadow-amber-500/30 rounded-b-lg">
+                  <span className="text-[0.55rem] leading-none mb-0.5 opacity-90">No.</span>
+                  <span className="text-xl leading-none">{idx + 1}</span>
+                </div>
                 <div className="h-40 bg-slate-200 relative overflow-hidden">
                   <img src={`/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                    const t = e.currentTarget as HTMLImageElement;
+                    const fallback = getFallbackPlaceholder(island.prefecture || '');
+                    if (!t.src.endsWith(fallback)) {
+                      t.src = fallback;
+                    } else {
+                      t.style.display = 'none';
+                    }
+                  }} />
+                </div>
+                <div className="p-5">
+                  <div className="text-[0.65rem] font-bold text-slate-400 tracking-widest mb-1">{island.prefecture}</div>
+                  <h3 className="font-serif text-lg font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">{island.name}</h3>
+                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recommended Islands Section Header */}
+      {isMounted && (
+        <div className="px-8 lg:px-12 pt-20 pb-4 bg-white text-center">
+          <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">CURATED FOR YOU</p>
+          <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest">目的別おすすめの島</h2>
+          <div className="w-12 h-[1.5px] bg-blue-600 mx-auto mt-6" />
+        </div>
+      )}
+
+      {/* KIRATABI's Recommendations Section */}
+      {isMounted && allIslands.filter(i => ['淡路島', '江の島', '小豆島', '瀬底島', '古宇利島', '初島', '能古島', '日間賀島', '伊江島'].some(name => i.name.includes(name))).length > 0 && (
+        <div className="px-8 lg:px-12 pt-10 pb-10 bg-white">
+          <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
+            <div>
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-amber-500 mb-1">KIRATABI'S CHOICE</p>
+              <h2 className="font-serif text-xl lg:text-2xl text-slate-900 tracking-widest flex items-center gap-2">
+                <Sparkles className="text-amber-400 fill-amber-400 w-5 h-5 lg:w-6 lg:h-6" />
+                KIRATABIのオススメ
+              </h2>
+            </div>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
+            {allIslands.filter(i => ['淡路島', '江の島', '小豆島', '瀬底島', '古宇利島', '初島', '能古島', '日間賀島', '伊江島'].some(name => i.name.includes(name))).slice(0,8).map((island, idx) => (
+              <div 
+                key={`kiratabi-${island.id}-${idx}`}
+                onClick={() => router.push(`/island/${island.id}`)}
+                className="w-[240px] shrink-0 snap-start bg-amber-50/50 rounded-2xl border border-amber-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
+              >
+                <div className="h-28 bg-slate-200 relative overflow-hidden">
+                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget;
                     const fallback = getFallbackPlaceholder(island.prefecture || '');
                     if (!t.src.endsWith(fallback)) {
@@ -552,14 +638,170 @@ export default function Home() {
                       t.style.display = 'none';
                     }
                   }} />
-                  <div className="absolute top-3 left-3 bg-amber-500 text-white text-[0.6rem] font-bold px-2 py-1 rounded shadow-sm flex items-center gap-1">
-                    <Star size={10} className="fill-white" /> PICKUP
-                  </div>
                 </div>
-                <div className="p-5">
-                  <div className="text-[0.65rem] font-bold text-slate-400 tracking-widest mb-1">{island.prefecture}</div>
-                  <h3 className="font-serif text-lg font-bold text-slate-800 mb-2 group-hover:text-amber-600 transition-colors">{island.name}</h3>
-                  <p className="text-xs text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
+                <div className="p-4">
+                  <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-amber-600 transition-colors">{island.name}</h3>
+                  <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recommended for Women Section */}
+      {isMounted && allIslands.filter(i => ['直島', '小豆島', '古宇利島', '神津島', '竹富島', '生口島'].some(name => i.name.includes(name))).length > 0 && (
+        <div className="px-8 lg:px-12 pt-4 pb-10 bg-white">
+          <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
+            <div>
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-rose-500 mb-1">RECOMMENDED FOR WOMEN</p>
+              <h2 className="font-serif text-xl lg:text-2xl text-slate-900 tracking-widest flex items-center gap-2">
+                <Heart className="text-rose-400 fill-rose-400 w-5 h-5 lg:w-6 lg:h-6" />
+                女性・ひとり旅に人気の島
+              </h2>
+            </div>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
+            {allIslands.filter(i => ['直島', '小豆島', '古宇利島', '神津島', '竹富島', '生口島'].some(name => i.name.includes(name))).slice(0,6).map((island, idx) => (
+              <div 
+                key={`women-${island.id}-${idx}`}
+                onClick={() => router.push(`/island/${island.id}`)}
+                className="w-[240px] shrink-0 snap-start bg-rose-50/50 rounded-2xl border border-rose-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
+              >
+                <div className="h-28 bg-slate-200 relative overflow-hidden">
+                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                    const t = e.currentTarget;
+                    const fallback = getFallbackPlaceholder(island.prefecture || '');
+                    if (!t.src.endsWith(fallback)) {
+                      t.src = fallback;
+                    } else {
+                      t.style.display = 'none';
+                    }
+                  }} />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-rose-600 transition-colors">{island.name}</h3>
+                  <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Recommended for Families Section */}
+      {isMounted && allIslands.filter(i => ['石垣島', '宮古島', '淡路島', '伊豆大島', '伊江島', '佐渡島'].some(name => i.name.includes(name))).length > 0 && (
+        <div className="px-8 lg:px-12 pt-4 pb-16 bg-white">
+          <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
+            <div>
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-emerald-500 mb-1">RECOMMENDED FOR FAMILIES</p>
+              <h2 className="font-serif text-xl lg:text-2xl text-slate-900 tracking-widest flex items-center gap-2">
+                <Users className="text-emerald-500 fill-emerald-500 w-5 h-5 lg:w-6 lg:h-6" />
+                家族・子連れにおすすめの島
+              </h2>
+            </div>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
+            {allIslands.filter(i => ['石垣島', '宮古島', '淡路島', '伊豆大島', '伊江島', '佐渡島'].some(name => i.name.includes(name))).slice(0,6).map((island, idx) => (
+              <div 
+                key={`family-${island.id}-${idx}`}
+                onClick={() => router.push(`/island/${island.id}`)}
+                className="w-[240px] shrink-0 snap-start bg-emerald-50/50 rounded-2xl border border-emerald-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
+              >
+                <div className="h-28 bg-slate-200 relative overflow-hidden">
+                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                    const t = e.currentTarget;
+                    const fallback = getFallbackPlaceholder(island.prefecture || '');
+                    if (!t.src.endsWith(fallback)) {
+                      t.src = fallback;
+                    } else {
+                      t.style.display = 'none';
+                    }
+                  }} />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-emerald-600 transition-colors">{island.name}</h3>
+                  <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Accessible Islands Section */}
+      {isMounted && allIslands.filter(i => ['江の島', '猿島', '友ヶ島', '能古島', '相島', '水納島', '瀬底島', '日間賀島', '初島'].some(name => i.name.includes(name))).length > 0 && (
+        <div className="px-8 lg:px-12 pt-4 pb-16 bg-white">
+          <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
+            <div>
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-500 mb-1">EASILY ACCESSIBLE</p>
+              <h2 className="font-serif text-xl lg:text-2xl text-slate-900 tracking-widest flex items-center gap-2">
+                <MapPin className="text-blue-500 fill-blue-500/20 w-5 h-5 lg:w-6 lg:h-6" />
+                アクセスが容易にできる島
+              </h2>
+            </div>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
+            {allIslands.filter(i => ['江の島', '猿島', '友ヶ島', '能古島', '相島', '水納島', '瀬底島', '日間賀島', '初島'].some(name => i.name.includes(name))).slice(0,8).map((island, idx) => (
+              <div 
+                key={`accessible-${island.id}-${idx}`}
+                onClick={() => router.push(`/island/${island.id}`)}
+                className="w-[240px] shrink-0 snap-start bg-blue-50/50 rounded-2xl border border-blue-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
+              >
+                <div className="h-28 bg-slate-200 relative overflow-hidden">
+                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                    const t = e.currentTarget;
+                    const fallback = getFallbackPlaceholder(island.prefecture || '');
+                    if (!t.src.endsWith(fallback)) {
+                      t.src = fallback;
+                    } else {
+                      t.style.display = 'none';
+                    }
+                  }} />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors">{island.name}</h3>
+                  <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Remote Islands Section */}
+      {isMounted && allIslands.filter(i => ['父島', '母島', '青ケ島', '御蔵島', '与那国島', '波照間島', '北大東島', '南大東島'].some(name => i.name.includes(name))).length > 0 && (
+        <div className="px-8 lg:px-12 pt-4 pb-16 bg-white">
+          <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
+            <div>
+              <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-indigo-500 mb-1">REMOTE ISLANDS</p>
+              <h2 className="font-serif text-xl lg:text-2xl text-slate-900 tracking-widest flex items-center gap-2">
+                <Compass className="text-indigo-500 fill-indigo-500/20 w-5 h-5 lg:w-6 lg:h-6" />
+                アクセス困難な秘境島
+              </h2>
+            </div>
+          </div>
+          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
+            {allIslands.filter(i => ['父島', '母島', '青ケ島', '御蔵島', '与那国島', '波照間島', '北大東島', '南大東島'].some(name => i.name.includes(name))).slice(0,8).map((island, idx) => (
+              <div 
+                key={`remote-${island.id}-${idx}`}
+                onClick={() => router.push(`/island/${island.id}`)}
+                className="w-[240px] shrink-0 snap-start bg-indigo-50/50 rounded-2xl border border-indigo-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
+              >
+                <div className="h-28 bg-slate-200 relative overflow-hidden">
+                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                    const t = e.currentTarget as HTMLImageElement;
+                    const fallback = getFallbackPlaceholder(island.prefecture || '');
+                    if (!t.src.endsWith(fallback)) {
+                      t.src = fallback;
+                    } else {
+                      t.style.display = 'none';
+                    }
+                  }} />
+                </div>
+                <div className="p-4">
+                  <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">{island.name}</h3>
+                  <p className="text-[10px] text-slate-500 line-clamp-2 leading-relaxed">{island.description}</p>
                 </div>
               </div>
             ))}
@@ -601,12 +843,16 @@ export default function Home() {
         
         <div className="flex justify-start md:justify-center gap-4 md:gap-8 overflow-x-auto hide-scrollbar -mx-8 px-8 snap-x pb-8 pt-4">
           {[
-            { id: 'transparency', icon: Droplets, label: '海の透明度', badge: 'ブルー・サンゴ' },
-            { id: 'stars', icon: Moon, label: '星空保護区', badge: 'ダークスカイ' },
-            { id: 'onsen', icon: Flame, label: '絶景秘湯・温泉', badge: '海中温泉・野湯' },
-            { id: 'sauna', icon: Wind, label: '極上サウナ', badge: 'アウトドアサウナ' },
-            { id: 'retreat', icon: Heart, label: '女子旅・リトリート', badge: 'カフェ＆癒やし' },
-            { id: 'luxury', icon: BedDouble, label: '高級宿・ヴィラ', badge: '5つ星リゾート' }
+            { id: 'transparency', icon: Droplets, label: '海の透明度No.1', badge: 'ダイビング' },
+            { id: 'stars', icon: Moon, label: '満天の星空', badge: '保護区' },
+            { id: 'retreat', icon: Heart, label: '女子・ひとり旅', badge: '安心・カフェ' },
+            { id: 'family', icon: Users, label: '家族・子連れ旅', badge: '体験・安全' },
+            { id: 'onsen_sauna', icon: Flame, label: '秘湯・サウナ', badge: '野湯・絶景' },
+            { id: 'luxury', icon: BedDouble, label: '高級リゾート', badge: 'ヴィラ' },
+            { id: 'remote', icon: Compass, label: '秘境・無人島', badge: '難易度高め' },
+            { id: 'nature', icon: Waves, label: '野生動物・自然', badge: 'クジラ' },
+            { id: 'gourmet', icon: Coffee, label: '島グルメ・食', badge: '島飯' },
+            { id: 'daytrip', icon: MapPin, label: '日帰り島', badge: '気軽' }
           ].map((cat) => {
             const isSelected = selectedCategory === cat.id;
             return (
@@ -654,10 +900,14 @@ export default function Home() {
                       <span>
                         {selectedCategory === 'transparency' && '極上のケラマ＆ミヤコブルー・透明度を誇る島々'}
                         {selectedCategory === 'stars' && '国際星空保護区＆満天の南十字星と出会う島々'}
-                        {selectedCategory === 'onsen' && '潮騒を浴びる無人絶景海中温泉＆秘湯の島々'}
-                        {selectedCategory === 'sauna' && 'アート銭湯＆絶景アウトドアサウナの島々'}
                         {selectedCategory === 'retreat' && '女子旅・島カフェ＆安心安全フォトジェニックの島々'}
+                        {selectedCategory === 'family' && '家族や子連れで楽しめる安全なビーチと体験がある島々'}
+                        {selectedCategory === 'onsen_sauna' && '潮騒を浴びる絶景海中温泉＆極上アウトドアサウナの島々'}
                         {selectedCategory === 'luxury' && '非日常を極める最高峰5つ星リゾート＆ヴィラの島々'}
+                        {selectedCategory === 'remote' && '難易度MAX！手付かずの自然が残る秘境と絶海孤島'}
+                        {selectedCategory === 'nature' && 'クジラやウミガメ、独自の固有種に出会える野生の宝庫'}
+                        {selectedCategory === 'gourmet' && '新鮮な海の幸と独自の島グルメ・食文化を堪能できる島々'}
+                        {selectedCategory === 'daytrip' && '主要都市や本島からフェリーですぐ行ける日帰りアイランド'}
                       </span>
                     </h3>
                     <p className="text-xs text-slate-500 mt-1">気になった島をタップすると詳しい解説とスポットを確認できます（もう一度アイコンを押すと閉じます）</p>
@@ -678,10 +928,14 @@ export default function Home() {
                     <span>
                       {selectedCategory === 'transparency' && '環境省国立公園指定・世界基準シュノーケル＆ダイビング実績地より厳選'}
                       {selectedCategory === 'stars' && '国際ダークスカイ協会「星空保護区」認定および天文台・南十字星観測実績地より厳選'}
-                      {selectedCategory === 'onsen' && '屋久島海中温泉・式根島地鉈足付温泉・八丈島みはらしの湯・硫黄島東温泉など野湯実在確認地'}
-                      {selectedCategory === 'sauna' && '島内に著名なアート銭湯・絶景テントサウナ・オーシャンビューサウナ等の実稼働施設が確認された島より厳選'}
                       {selectedCategory === 'retreat' && '治安良好・洗練島カフェ＆オリーブコスメ・現代アート・初心者＆女子旅高評価リトリート島より厳選'}
+                      {selectedCategory === 'family' && '遠浅で波の穏やかなビーチやファミリー向けリゾート施設・体験プログラムの充実度より厳選'}
+                      {selectedCategory === 'onsen_sauna' && '屋久島海中温泉など野湯実在確認地および絶景テントサウナ等実稼働施設より厳選'}
                       {selectedCategory === 'luxury' && '1泊数万〜数十万クラスの最高峰5つ星級リゾートホテル・高級プライベートヴィラ実在島より厳選'}
+                      {selectedCategory === 'remote' && 'フェリー就航率の低さや上陸難易度が高い絶海孤島、および無人島ツアー開催地より厳選'}
+                      {selectedCategory === 'nature' && '世界自然遺産登録地やホエールウォッチング、固有種（ヤンバルクイナ等）生息地より厳選'}
+                      {selectedCategory === 'gourmet' && '特産品（黒毛和牛、新鮮な海鮮）や独自の島料理が有名な美食の島より厳選'}
+                      {selectedCategory === 'daytrip' && '本土から片道1時間以内でアクセス可能、かつ日帰り観光ルートが確立している島より厳選'}
                     </span>
                   </div>
                   <span className="text-[0.65rem] text-slate-400 sm:text-right shrink-0">
@@ -834,6 +1088,7 @@ export default function Home() {
         </div>
 
         {/* Group by Area */}
+        <div className="space-y-4 mb-20">
         {Object.entries(
           allRegions.reduce((acc, region) => {
             if (selectedAreaTab !== '全て' && region.area !== selectedAreaTab) return acc;
@@ -842,11 +1097,17 @@ export default function Home() {
             return acc;
           }, {} as Record<string, typeof allRegions>)
         ).map(([area, regions]) => (
-          <div key={area} className="mb-20">
-            <h3 className="font-serif text-xl lg:text-2xl text-slate-700 tracking-widest border-b border-slate-200 pb-4 mb-8">
-              {area}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+          <details key={area} className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm" open={selectedAreaTab !== '全て'}>
+            <summary className="font-serif text-xl lg:text-2xl text-slate-800 tracking-widest p-5 lg:p-6 cursor-pointer list-none flex justify-between items-center hover:bg-slate-50 transition-colors">
+              <span className="flex items-center gap-3">
+                <MapPin className="w-5 h-5 text-slate-400" />
+                {area}
+                <span className="text-xs font-sans font-bold bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">{regions.length}</span>
+              </span>
+              <ChevronRight className="w-5 h-5 text-slate-400 group-open:rotate-90 transition-transform" />
+            </summary>
+            <div className="p-5 lg:p-6 pt-0 border-t border-slate-100 bg-slate-50/50">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mt-6">
           {regions.map((region) => {
             const pct = region.total > 0 ? (region.visited / region.total) * 100 : 0;
             const hash = region.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
@@ -914,9 +1175,11 @@ export default function Home() {
               </motion.div>
             );
           })}
+              </div>
             </div>
-          </div>
+          </details>
         ))}
+        </div>
 
         {/* 選択された諸島（Archipelago）のインページカード展開アコーディオン */}
         <AnimatePresence>

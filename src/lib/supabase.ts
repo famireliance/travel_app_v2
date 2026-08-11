@@ -13,7 +13,7 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 
 
 
-export async function fetchAllIslands(): Promise<any[]> {
+export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
   try {
     // Only fetch published islands for the user app, ordered by popularity
     const { data, error } = await supabase
@@ -25,12 +25,12 @@ export async function fetchAllIslands(): Promise<any[]> {
     if (!error && data && data.length > 0) {
       return data;
     }
-  } catch (err) {
+  } catch {
   }
   return FALLBACK_ISLANDS;
 }
 
-export async function fetchSiteSettings(): Promise<any | null> {
+export async function fetchSiteSettings(): Promise<Record<string, unknown> | null> {
   try {
     const { data, error } = await supabase
       .from('site_settings')

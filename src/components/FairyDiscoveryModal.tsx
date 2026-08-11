@@ -21,7 +21,7 @@ export default function FairyDiscoveryModal() {
       const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 100 };
 
       const randomInRange = (min: number, max: number) => Math.random() * (max - min) + min;
-      const interval: any = setInterval(function() {
+      const interval: ReturnType<typeof setInterval> = setInterval(function() {
         const timeLeft = animationEnd - Date.now();
         if (timeLeft <= 0) {
           return clearInterval(interval);

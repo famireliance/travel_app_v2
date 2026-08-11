@@ -22,12 +22,20 @@ function AuthCallbackContent() {
     }
 
     if (code) {
-      // クライアント側でコードをセッションに交換
-      // ※ localStorageに保存されたPKCE code verifierを使用するため、クライアントで実行必須
+      // クライアント側でコードをセッションに交換 (PKCE)
       supabase.auth.exchangeCodeForSession(code).then(({ error: exchangeError }) => {
         if (exchangeError) {
           console.error('Auth callback error:', exchangeError);
           router.replace('/?auth_error=メール確認に失敗しました。再度お試しください。');
+        } else {
+          router.replace('/?auth_success=1');
+        }
+      });
+    } else if (typeof window !== 'undefined' && window.location.hash.includes('access_token')) {
+      // 暗黙的フロー（マジックリンクのハッシュ）の場合、supabase-jsが自動でハッシュを解析するのを待つ
+      supabase.auth.getSession().then(({ data, error: sessionError }) => {
+        if (sessionError || !data.session) {
+          router.replace('/?auth_error=マジックリンクの有効期限が切れているか、無効です。');
         } else {
           router.replace('/?auth_success=1');
         }

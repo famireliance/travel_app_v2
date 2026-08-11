@@ -4,11 +4,18 @@ import { calculateDistanceKm } from '@/lib/geo';
 import { useTravel } from '@/context/TravelContext';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MapPin, Bell, Navigation2 } from 'lucide-react';
+import { Bell, Navigation2 } from 'lucide-react';
 import { fetchAllIslands } from '@/lib/supabase';
 
+interface RadarIsland {
+  id: string;
+  name: string;
+  coordinates?: string;
+  distance?: number;
+}
+
 export default function GlobalRadar() {
-  const [nearbyIsland, setNearbyIsland] = useState<any | null>(null);
+  const [nearbyIsland, setNearbyIsland] = useState<RadarIsland | null>(null);
   const [isVisible, setIsVisible] = useState(false);
   const { islandStatuses } = useTravel();
   const router = useRouter();
@@ -27,7 +34,7 @@ export default function GlobalRadar() {
         (position) => {
           if (!mounted) return;
           const { latitude: userLat, longitude: userLng } = position.coords;
-          let closestIsland: any = null;
+          let closestIsland: RadarIsland | null = null;
           let minDistance = Infinity;
 
           islands.forEach(island => {

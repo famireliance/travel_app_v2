@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
+import { User } from '@supabase/supabase-js';
 import { calculateIslandXP, getPlayerLevelInfo } from '@/lib/gamification';
 import { CompanionId, CompanionStageInfo, CompanionCharacter, COMPANION_CHARACTERS, getCompanionStageInfo } from '@/lib/companion';
 import { IslandFairy, FAIRIES_MASTER } from '@/lib/fairies';
@@ -11,8 +12,7 @@ import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 export type IslandStatus = 'visited' | 'planning' | 'none' | 'verified_visited';
 
 interface TravelContextType {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  user: any | null;
+  user: User | null;
   islandStatuses: Record<string, IslandStatus>;
   updateStatus: (islandId: string, status: IslandStatus) => void;
   decrementVisitCount: (islandId: string) => Promise<void>;
@@ -37,8 +37,7 @@ interface TravelContextType {
   collectedFairyDates: Record<string, string>; // { fairyId: '2026-07-19T12:00:00Z' }
   newlyDiscoveredFairies: IslandFairy[];
   clearDiscoveredFairy: (fairyId: string) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  addIslandVisit: (islandId: string, islandObj?: any, newSpots?: number, isVerified?: boolean) => { xpGained: number; error?: string };
+  addIslandVisit: (islandId: string, islandObj?: Record<string, unknown>, newSpots?: number, isVerified?: boolean) => { xpGained: number; error?: string };
   addSpotVisit: (spotId: string) => boolean;
   lastVisitDates: Record<string, string>;
   // For passthrough from CheckInModal to CertificateModal
@@ -81,8 +80,7 @@ const TravelContext = createContext<TravelContextType>({
 });
 
 export function TravelProvider({ children }: { children: React.ReactNode }) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [islandStatuses, setIslandStatuses] = useState<Record<string, IslandStatus>>({});
   const [travelerName, setTravelerName] = useState<string>('島旅トラベラー');
   const [bio, setBio] = useState<string>('');
@@ -125,7 +123,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
             setTravelerName(data.nickname);
             localStorage.setItem('kiratabi_traveler_name', data.nickname);
           }
-        } catch (_) {}
+        } catch {}
         
         if (currentUser.user_metadata?.bio) {
           setBio(currentUser.user_metadata.bio);
@@ -161,7 +159,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
           if (currentUser.user_metadata?.bio) {
             setBio(currentUser.user_metadata.bio);
           }
-        } catch (_) {}
+        } catch {}
       }
 
       loadLocalData(currentUser?.id, isMounted);
@@ -194,7 +192,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       try {
         const parsed = JSON.parse(guestStored);
         if (typeof parsed === 'object' && parsed !== null) guestData = parsed;
-      } catch (_) {}
+      } catch {}
     }
 
     // 2. ユーザーデータまたはゲストデータをベースにローカルデータを構築
@@ -211,7 +209,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
             // ユーザーデータが存在すれば、ゲストデータを上書きマージ
             localData = { ...localData, ...parsed };
           }
-        } catch (_) {}
+        } catch {}
       }
     }
     
@@ -220,11 +218,11 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // 訪問回数のマージ
     let vLocal: Record<string, number> = {};
     const guestVStored = localStorage.getItem('island_visits_count_anon');
-    if (guestVStored) { try { const p = JSON.parse(guestVStored); if(p) vLocal = {...p}; } catch(e){} }
+    if (guestVStored) { try { const p = JSON.parse(guestVStored); if(p) vLocal = {...p}; } catch{} }
     const vKey = userId ? `island_visits_count_${userId}` : 'island_visits_count_anon';
     if (userId) {
        const userVStored = localStorage.getItem(vKey);
-       if (userVStored) { try { const p = JSON.parse(userVStored); if(p) vLocal = {...vLocal, ...p}; } catch(e){} }
+       if (userVStored) { try { const p = JSON.parse(userVStored); if(p) vLocal = {...vLocal, ...p}; } catch{} }
     }
     // データが無ければステータスから最低1回を付与
     if (Object.keys(vLocal).length === 0) {
@@ -237,34 +235,34 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // 最終訪問日のマージ
     let lvLocal: Record<string, string> = {};
     const guestLVStored = localStorage.getItem('island_last_visit_dates_anon');
-    if (guestLVStored) { try { const p = JSON.parse(guestLVStored); if(p) lvLocal = {...p}; } catch(e){} }
+    if (guestLVStored) { try { const p = JSON.parse(guestLVStored); if(p) lvLocal = {...p}; } catch{} }
     const lvKey = userId ? `island_last_visit_dates_${userId}` : 'island_last_visit_dates_anon';
     if (userId) {
        const userLVStored = localStorage.getItem(lvKey);
-       if (userLVStored) { try { const p = JSON.parse(userLVStored); if(p) lvLocal = {...lvLocal, ...p}; } catch(e){} }
+       if (userLVStored) { try { const p = JSON.parse(userLVStored); if(p) lvLocal = {...lvLocal, ...p}; } catch{} }
     }
     if (isMounted) setLastVisitDates(lvLocal);
 
     // スポットの復元とマージ
     let sLocal: Record<string, number> = {};
     const guestSStored = localStorage.getItem('island_spots_anon');
-    if (guestSStored) { try { const p = JSON.parse(guestSStored); if(p) sLocal = {...p}; } catch(e){} }
+    if (guestSStored) { try { const p = JSON.parse(guestSStored); if(p) sLocal = {...p}; } catch{} }
     const sKey = userId ? `island_spots_${userId}` : 'island_spots_anon';
     if (userId) {
        const userSStored = localStorage.getItem(sKey);
-       if (userSStored) { try { const p = JSON.parse(userSStored); if(p) sLocal = {...sLocal, ...p}; } catch(e){} }
+       if (userSStored) { try { const p = JSON.parse(userSStored); if(p) sLocal = {...sLocal, ...p}; } catch{} }
     }
     if (isMounted) setSpotsVisited(sLocal);
 
     // 妖精の復元とマージ
     let fLocal: string[] = [];
     const guestFStored = localStorage.getItem('island_fairies_anon');
-    if (guestFStored) { try { const p = JSON.parse(guestFStored); if(Array.isArray(p)) fLocal = [...p]; } catch(e){} }
+    if (guestFStored) { try { const p = JSON.parse(guestFStored); if(Array.isArray(p)) fLocal = [...p]; } catch{} }
     const fKey = userId ? `island_fairies_${userId}` : 'island_fairies_anon';
     if (userId) {
        const userFStored = localStorage.getItem(fKey);
        if (userFStored) {
-          try { const p = JSON.parse(userFStored); if(Array.isArray(p)) fLocal = Array.from(new Set([...fLocal, ...p])); } catch(e){}
+          try { const p = JSON.parse(userFStored); if(Array.isArray(p)) fLocal = Array.from(new Set([...fLocal, ...p])); } catch{}
        }
     }
     if (isMounted) setCollectedFairies(fLocal);
@@ -272,11 +270,11 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // 妖精日付の復元とマージ
     let dLocal: Record<string, string> = {};
     const guestDStored = localStorage.getItem('island_fairies_dates_anon');
-    if (guestDStored) { try { const p = JSON.parse(guestDStored); if(p) dLocal = {...p}; } catch(e){} }
+    if (guestDStored) { try { const p = JSON.parse(guestDStored); if(p) dLocal = {...p}; } catch{} }
     const dKey = userId ? `island_fairies_dates_${userId}` : 'island_fairies_dates_anon';
     if (userId) {
        const userDStored = localStorage.getItem(dKey);
-       if (userDStored) { try { const p = JSON.parse(userDStored); if(p) dLocal = {...dLocal, ...p}; } catch(e){} }
+       if (userDStored) { try { const p = JSON.parse(userDStored); if(p) dLocal = {...dLocal, ...p}; } catch{} }
     }
     if (isMounted) setCollectedFairyDates(dLocal);
 
@@ -336,7 +334,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       try {
         const stored = localStorage.getItem(storageKey);
         if (stored) return JSON.parse(stored);
-      } catch(e){}
+      } catch{}
       return localData;
     })() : localData;
 

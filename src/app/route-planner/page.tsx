@@ -25,7 +25,7 @@ export default function RoutePlannerPage() {
   const [startLocation, setStartLocation] = useState('東京');
   const [durationDays, setDurationDays] = useState(3);
   const [preferences, setPreferences] = useState('');
-  const [maxIslands, setMaxIslands] = useState(3);
+  const [maxIslands] = useState(3);
   const [excludeVisited, setExcludeVisited] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [result, setResult] = useState<RoutePlan[] | null>(null);
@@ -63,9 +63,13 @@ export default function RoutePlannerPage() {
 
       setResult(data);
       setActiveTab(0);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setErrorMsg(err.message || 'エラーが発生しました。APIキーが設定されていない可能性があります。');
+      if (err instanceof Error) {
+        setErrorMsg(err.message || 'エラーが発生しました。APIキーが設定されていない可能性があります。');
+      } else {
+        setErrorMsg('エラーが発生しました。APIキーが設定されていない可能性があります。');
+      }
     } finally {
       setIsLoading(false);
     }

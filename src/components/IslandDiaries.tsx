@@ -6,9 +6,24 @@ import { useTravel } from '@/context/TravelContext';
 import { MessageCircle, Edit3, Star, Droplets, Users, ShieldCheck } from 'lucide-react';
 import DiaryPostModal from './DiaryPostModal';
 
+interface IslandDiary {
+  id: string;
+  user_id: string;
+  created_at: string;
+  is_official?: boolean;
+  overall_rating?: number;
+  tags?: string[];
+  water_clarity?: number;
+  starry_sky?: number;
+  visit_month?: number;
+  companion_type?: string;
+  content: string;
+  photo_url?: string;
+}
+
 export default function IslandDiaries({ islandId, islandName }: { islandId: string, islandName: string }) {
   const { user } = useTravel();
-  const [diaries, setDiaries] = useState<any[]>([]);
+  const [diaries, setDiaries] = useState<IslandDiary[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Sparkles, Shield, Droplets, Flame, Moon, Lock, CheckCircle2, ChevronRight, Info, Award, Heart, BookOpen } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useTravel } from '@/context/TravelContext';
 import { COMPANION_CHARACTERS, CompanionId } from '@/lib/companion';
 import { getPlayerLevelInfo } from '@/lib/gamification';
@@ -14,7 +15,7 @@ type ViewMode = 'COMPANION' | 'FAIRIES';
 
 export default function CompanionPage() {
   const router = useRouter();
-  const { totalXP, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates } = useTravel();
+  const { totalXP, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, user } = useTravel();
   const playerLvInfo = getPlayerLevelInfo(totalXP);
   
   const [viewMode, setViewMode] = useState<ViewMode>('COMPANION');
@@ -66,6 +67,17 @@ export default function CompanionPage() {
       </header>
 
       <main className="relative z-10 pb-32">
+        {!user && (
+          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl mx-6 lg:mx-12 mt-8 flex flex-col md:flex-row items-center justify-between shadow-lg">
+            <div className="mb-4 md:mb-0">
+              <h3 className="text-xl font-bold mb-2">ログインしてキラ旅をもっと楽しもう！</h3>
+              <p className="text-blue-100 text-sm">進行状況の保存、ランキング参加、島ノートの投稿など、すべての機能が利用可能になります。</p>
+            </div>
+            <Link href="/mypage" className="px-6 py-3 bg-white text-blue-600 font-bold rounded-full shadow-md hover:bg-blue-50 transition-colors whitespace-nowrap">
+              ログイン / 新規登録
+            </Link>
+          </div>
+        )}
         {viewMode === 'COMPANION' ? (
           <>
             {/* Hero Section (Companion) */}
@@ -294,7 +306,8 @@ export default function CompanionPage() {
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
               {FAIRIES_MASTER.map(fairy => {
-                const isDiscovered = collectedFairies.includes(fairy.id);
+                // 開発環境ではテスト確認用にすべて開放状態にする
+                const isDiscovered = process.env.NODE_ENV === 'development' || collectedFairies.includes(fairy.id);
                 const isRareOrEpic = fairy.rarity === 'RARE' || fairy.rarity === 'EPIC' || fairy.rarity === 'SPOT_EXCLUSIVE';
 
                 return (

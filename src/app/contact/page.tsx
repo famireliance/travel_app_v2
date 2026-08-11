@@ -48,10 +48,10 @@ export default function ContactPage() {
                 内容を確認次第、担当者より順次ご返信させていただきます。
               </p>
               <a 
-                href="mailto:kiratabi@icloud.com" 
+                href="mailto:support@kira-tabi.com" 
                 className="inline-flex items-center gap-2 text-lg font-mono font-bold text-blue-600 hover:text-blue-700 transition-colors bg-blue-50 px-6 py-3 rounded-xl"
               >
-                kiratabi@icloud.com
+                support@kira-tabi.com
               </a>
             </div>
             
