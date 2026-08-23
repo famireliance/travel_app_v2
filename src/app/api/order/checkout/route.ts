@@ -12,25 +12,35 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 // プラン別の価格・名称定義
 const PLANS: Record<string, { name: string; amount: number; description: string }> = {
   standard: {
-    name: '公式到達証明書（スタンダード版）',
+    name: 'KIRATABI公式到達証明書（台紙付き）',
     amount: 1500,
     description: 'A4サイズ・高品質印刷・シリアルナンバー入り',
   },
-  premium: {
-    name: '公式到達証明書（プレミアム額装版）',
+  frame_simple: {
+    name: 'KIRATABI公式到達証明書（簡易フレーム装飾）',
     amount: 3000,
-    description: 'A4サイズ・高品質印刷・額付き・シリアルナンバー入り',
+    description: 'A4サイズ・簡易フレーム付き',
+  },
+  frame_wood: {
+    name: 'KIRATABI公式到達証明書（高級木製フレーム）',
+    amount: 6000,
+    description: 'A4サイズ・高級木製フレーム',
+  },
+  frame_acrylic: {
+    name: 'KIRATABI公式到達証明書（アクリル額装プレミアム）',
+    amount: 10000,
+    description: 'A4サイズ・最高級アクリル額装',
   },
 };
 
-export async function POST(req: NextRequest) {
+  export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const { plan, travelerName, recipientName, address, islandId, islandName, visitDate, userId } = body;
+    const { plan, travelerName, recipientName, postalCode, address, phone, islandId, islandName, visitDate, userId } = body;
 
     // バリデーション
-    if (!recipientName?.trim() || !address?.trim() || !travelerName?.trim()) {
-      return NextResponse.json({ error: '必須項目（旅人ネーム・お届け先名・住所）が不足しています' }, { status: 400 });
+    if (!recipientName?.trim() || !address?.trim() || !travelerName?.trim() || !postalCode?.trim()) {
+      return NextResponse.json({ error: '必須項目（旅人ネーム・お届け先名・郵便番号・住所）が不足しています' }, { status: 400 });
     }
     if (!islandId && !islandName) {
       return NextResponse.json({ error: '島の情報が不足しています' }, { status: 400 });
@@ -68,13 +78,16 @@ export async function POST(req: NextRequest) {
         plan: plan || 'standard',
         traveler_name: travelerName,
         recipient_name: recipientName,
+        postal_code: postalCode,
         address: address.slice(0, 500),
+        phone: phone || '',
         island_id: islandId || '',
         island_name: islandName || '',
         visit_date: visitDate || new Date().toISOString().slice(0, 10),
         user_id: userId || 'anonymous',
         pending_serial: pendingSerial,
       },
+      allow_promotion_codes: true,
       locale: 'ja',
     });
 
@@ -84,23 +97,20 @@ export async function POST(req: NextRequest) {
         const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
           auth: { autoRefreshToken: false, persistSession: false }
         });
-        await adminClient.from('orders').insert([{
-          order_number: `ORD-PENDING-${timestampSuffix}`,
-          serial_number: pendingSerial,
-          stripe_session_id: session.id,
+        await adminClient.from('physical_orders').insert([{
           user_id: userId || 'anonymous',
           island_id: islandId || 'unknown',
-          island_name: islandName || 'unknown',
-          plan: plan || 'standard',
-          traveler_name: travelerName,
-          recipient_name: recipientName,
-          address: address,
-          visit_date: visitDate || new Date().toISOString().slice(0, 10),
+          type: plan || 'standard',
+          shipping_name: recipientName,
+          shipping_postal_code: postalCode,
+          shipping_address: address,
+          shipping_phone: phone || null,
           status: 'pending_payment',
-          created_at: new Date().toISOString(),
+          stripe_session_id: session.id,
+          ordered_at: new Date().toISOString(),
         }]);
       } catch {
-        // orders テーブルが存在しない場合は無視
+        // テーブルが存在しない場合は無視
       }
     }
 

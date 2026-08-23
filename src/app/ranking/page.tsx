@@ -2,10 +2,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Trophy, Medal, Star, Compass } from 'lucide-react';
+import { ArrowLeft, Trophy, Medal, Star, Compass, MapPin, Award, User } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
 import { supabase } from '@/lib/supabase';
+import { getPlayerLevelInfo } from '@/lib/gamification';
 
 
 
@@ -105,34 +106,82 @@ export default function RankingPage() {
           </button>
         </div>
 
-        <div className="space-y-4">
+        <div className="space-y-5">
           {fullRanking.map((p, index) => {
             const isMe = user && p.id === user.id;
             const rank = index + 1;
+            const levelInfo = getPlayerLevelInfo(p.points);
+            
             return (
               <div 
                 key={p.id}
-                className={`relative overflow-hidden p-5 rounded-2xl flex items-center gap-4 border transition-all ${isMe ? 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-md scale-[1.02]' : 'bg-white border-slate-100 shadow-sm'}`}
+                className={`relative overflow-hidden p-6 rounded-3xl flex items-center gap-5 border transition-all hover:scale-[1.01] ${isMe ? 'bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 border-indigo-400 shadow-[0_0_20px_rgba(79,70,229,0.3)] text-white' : 'bg-white border-slate-100 shadow-sm hover:shadow-md'}`}
               >
-                {isMe && <div className="absolute top-0 right-0 px-3 py-1 bg-blue-600 text-white text-[0.6rem] font-bold tracking-widest rounded-bl-xl">YOU</div>}
+                {isMe && (
+                  <div className="absolute top-0 right-0 px-6 py-1.5 bg-gradient-to-r from-amber-400 to-orange-500 text-white text-[0.7rem] font-bold tracking-widest rounded-bl-2xl shadow-md z-10 flex items-center gap-1.5">
+                    <User size={12} />
+                    YOUR RANK
+                  </div>
+                )}
                 
-                <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
-                  rank === 1 ? 'bg-amber-100 text-amber-600' : 
-                  rank === 2 ? 'bg-slate-200 text-slate-600' :
-                  rank === 3 ? 'bg-orange-100 text-orange-700' :
-                  'bg-slate-50 text-slate-400'
-                }`}>
-                  {rank === 1 ? <Trophy size={20} /> : rank === 2 ? <Medal size={20} /> : rank === 3 ? <Medal size={20} /> : rank}
+                {/* ランクバッジ */}
+                <div className="relative shrink-0">
+                  <div className={`w-14 h-14 lg:w-16 lg:h-16 rounded-full flex items-center justify-center font-bold text-xl lg:text-2xl shadow-inner border-2 ${
+                    rank === 1 ? 'bg-gradient-to-br from-yellow-100 to-amber-200 text-amber-700 border-amber-300 shadow-amber-500/20' : 
+                    rank === 2 ? 'bg-gradient-to-br from-slate-100 to-slate-300 text-slate-700 border-slate-300 shadow-slate-500/20' :
+                    rank === 3 ? 'bg-gradient-to-br from-orange-50 to-orange-200 text-orange-800 border-orange-300 shadow-orange-500/20' :
+                    'bg-slate-50 text-slate-400 border-slate-100'
+                  }`}>
+                    {rank === 1 ? <Trophy size={28} className="drop-shadow-sm" /> : rank === 2 ? <Medal size={28} className="drop-shadow-sm" /> : rank === 3 ? <Medal size={28} className="drop-shadow-sm" /> : rank}
+                  </div>
+                  {rank <= 3 && (
+                    <div className="absolute -bottom-2 -right-1">
+                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-white shadow-md border-2 border-white ${
+                        rank === 1 ? 'bg-amber-500' : rank === 2 ? 'bg-slate-400' : 'bg-orange-500'
+                      }`}>
+                        <Award size={12} />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
+                {/* ユーザー情報 */}
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className={`font-bold truncate ${isMe ? 'text-blue-900' : 'text-slate-800'}`}>{p.username}</h3>
-                    <span className="text-[0.6rem] px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full shrink-0">{p.title}</span>
+                  <div className="flex flex-wrap items-center gap-2 mb-2">
+                    <h3 className={`font-bold text-lg truncate ${isMe ? 'text-white drop-shadow-md' : 'text-slate-800'}`}>{p.username}</h3>
+                    <span className={`text-[0.65rem] px-2.5 py-0.5 rounded-full font-bold shadow-sm shrink-0 ${
+                      p.visited > 100 ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white' :
+                      p.visited > 50 ? 'bg-gradient-to-r from-amber-400 to-orange-500 text-white' :
+                      'bg-slate-100 text-slate-500'
+                    }`}>
+                      {p.title}
+                    </span>
+                    <span className={`text-[0.65rem] px-2 py-0.5 rounded-full font-bold ${isMe ? 'bg-white/20 text-white border-white/30 backdrop-blur-sm' : 'bg-blue-50 text-blue-600 border-blue-100'}`}>
+                      Lv.{levelInfo.level}
+                    </span>
                   </div>
-                  <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
-                    <span className="flex items-center gap-1"><Compass size={12} className={rankingType === 'visited' ? 'text-blue-500' : ''}/> {p.visited} 島</span>
-                    <span className="flex items-center gap-1"><Star size={12} className={rankingType === 'points' ? 'text-amber-500' : ''}/> {p.points.toLocaleString()} XP</span>
+                  
+                  {/* スコア・プログレス */}
+                  <div className="grid grid-cols-2 gap-4 mt-1">
+                    <div className="flex flex-col gap-1">
+                      <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/80' : 'text-slate-500'}`}>
+                        <span className="flex items-center gap-1.5"><Compass size={14} className={rankingType === 'visited' ? 'text-blue-500' : 'text-slate-400'}/> 制覇島数</span>
+                        <span className={rankingType === 'visited' ? 'text-blue-600 text-sm' : ''}>{p.visited} 島</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
+                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.visited / 432) * 100)}%` }} />
+                      </div>
+                    </div>
+                    
+                    <div className="flex flex-col gap-1">
+                      <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/80' : 'text-slate-500'}`}>
+                        <span className="flex items-center gap-1.5"><Star size={14} className={rankingType === 'points' ? 'text-amber-500' : 'text-slate-400'}/> 冒険XP</span>
+                        <span className={rankingType === 'points' ? 'text-amber-600 text-sm' : ''}>{p.points.toLocaleString()} XP</span>
+                      </div>
+                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
+                        <div className={`h-full rounded-full ${rankingType === 'points' ? 'bg-amber-400' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.points / (levelInfo.nextLevelXP || p.points || 1)) * 100)}%` }} />
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>

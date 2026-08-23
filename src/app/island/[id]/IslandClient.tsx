@@ -16,7 +16,26 @@ import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
 import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert } from 'lucide-react';
 
-export default function IslandDetail() {
+interface IslandDiarySSR {
+  id: string;
+  user_id: string;
+  created_at: string;
+  is_official?: boolean;
+  overall_rating?: number;
+  tags?: string[];
+  water_clarity?: number;
+  starry_sky?: number;
+  visit_month?: number;
+  companion_type?: string;
+  content: string;
+  photo_url?: string;
+}
+
+interface Props {
+  initialDiaries?: IslandDiarySSR[];
+}
+
+export default function IslandDetail({ initialDiaries = [] }: Props) {
   const params = useParams();
   const router = useRouter();
   const islandId = params.id as string;
@@ -65,12 +84,12 @@ export default function IslandDetail() {
       if (found) {
         setIsland(found);
         
-        // Phase 6: Fetch Targeted Ads
-        fetchAdCampaigns(found.id, found.region_id).then(ads => setAdCampaigns(ads || []));
+        // Phase 6: Fetch Targeted Ads (including prefecture and area)
+        fetchAdCampaigns(found.id as string, found.region_id as string | undefined, found.prefecture as string | undefined, found.area as string | undefined).then(ads => setAdCampaigns(ads || []));
 
         // Phase 6: Fetch Automated Weather Alerts
         if (found.coordinates) {
-          const [lat, lon] = found.coordinates.split(',').map((s: string) => s.trim());
+          const [lat, lon] = (found.coordinates as string).split(',').map((s: string) => s.trim());
           fetch(`/api/weather?lat=${lat}&lon=${lon}`)
             .then(res => res.json())
             .then(data => {
@@ -827,8 +846,8 @@ export default function IslandDetail() {
           )}
         </div>
 
-        {/* Island Diaries (島ログ) */}
-        <IslandDiaries islandId={islandId} islandName={island.name} />
+        {/* Island Diaries (島ログ) - SEOのために初期データを渡す */}
+        <IslandDiaries islandId={islandId} islandName={island.name} initialDiaries={initialDiaries} />
 
         {/* Action Buttons */}
         <div className="fixed bottom-0 left-0 right-0 p-4 lg:p-6 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-center gap-4 z-40">
@@ -841,13 +860,15 @@ export default function IslandDetail() {
             {status === 'verified_visited' ? '公式認定済！' : status === 'visited' ? '行った！(記録済)' : '行った！(到達登録)'}
           </button>
           
-          <button 
-            onClick={() => handleStatusChange('planning')}
-            className={`flex-1 max-w-xs py-4 rounded-2xl font-bold tracking-widest text-sm transition-all shadow-lg flex items-center justify-center gap-2
-              ${status === 'planning' ? 'bg-amber-500 text-white shadow-amber-500/25 scale-[1.02]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
-          >
-            <Star className="w-4 h-4" /> 行きたい ({status === 'planning' ? '検討中' : '登録'})
-          </button>
+          {status !== 'visited' && status !== 'verified_visited' && (
+            <button 
+              onClick={() => handleStatusChange('planning')}
+              className={`flex-1 max-w-xs py-4 rounded-2xl font-bold tracking-widest text-sm transition-all shadow-lg flex items-center justify-center gap-2
+                ${status === 'planning' ? 'bg-amber-500 text-white shadow-amber-500/25 scale-[1.02]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+            >
+              <Star className="w-4 h-4" /> 行きたい ({status === 'planning' ? '検討中' : '登録'})
+            </button>
+          )}
 
           {status !== 'none' && (
             <button

@@ -51,6 +51,17 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
       if (fullExif) {
         const dateObj = fullExif.DateTimeOriginal || fullExif.CreateDate;
         if (dateObj instanceof Date && !isNaN(dateObj.getTime())) {
+          const now = new Date();
+          const diffTime = now.getTime() - dateObj.getTime();
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          
+          if (diffDays > 7) {
+            setResultStatus('error');
+            setErrorMessage(`写真の撮影日時が古すぎます（約${diffDays}日前）。\n不正防止のため、過去7日以内に現地で撮影された写真のみ認定可能です。`);
+            setIsProcessing(false);
+            return;
+          }
+          
           parsedDateStr = `${dateObj.getFullYear()}.${String(dateObj.getMonth() + 1).padStart(2, '0')}.${String(dateObj.getDate()).padStart(2, '0')}`;
         }
       }

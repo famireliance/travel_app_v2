@@ -89,3 +89,66 @@ body {
     height: 100dvh !important;
   }
 }
+
+/* Hologram Rare Effect for Fairies */
+.hologram-effect {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.hologram-effect::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 0%,
+    transparent 25%,
+    rgba(255, 255, 255, 0.4) 45%,
+    rgba(255, 215, 0, 0.5) 50%,
+    rgba(255, 255, 255, 0.4) 55%,
+    transparent 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: hologram-shimmer 3s infinite linear;
+  mix-blend-mode: color-dodge;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.hologram-effect::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at center,
+    rgba(255, 105, 180, 0.2) 0%,
+    rgba(147, 112, 219, 0.2) 33%,
+    rgba(0, 255, 255, 0.2) 66%,
+    rgba(255, 215, 0, 0.2) 100%
+  );
+  mix-blend-mode: overlay;
+  z-index: 2;
+  pointer-events: none;
+  animation: hologram-pulse 4s infinite alternate;
+}
+
+@keyframes hologram-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes hologram-pulse {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}

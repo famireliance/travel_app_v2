@@ -99,6 +99,26 @@ export default function Home() {
     }
   }, []);
 
+  const handleCheckout = async (tier: 'premium' | 'ultimate') => {
+    if (!user) {
+      setIsAuthOpen(true);
+      return;
+    }
+    try {
+      const res = await fetch('/api/subscription/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: user.id, tier }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      window.location.href = data.url; // Stripeのチェックアウト画面へ遷移
+    } catch (err: any) {
+      alert(err.message || 'サブスクリプション手続きの開始に失敗しました');
+    }
+  };
+
+
 
   useEffect(() => {
     if (selectedCategory && categoryRef.current) {
@@ -122,24 +142,33 @@ export default function Home() {
     
     // カテゴリーごとの厳格なファクトチェック済み島名リスト
     const VERIFIED_CATEGORY_MAP: Record<string, string[]> = {
-      'transparency': ['座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '池間島', '下地島', '波照間島', '古宇利島', '水納島', '式根島', '神津島', '柏島', '沖之島', '屋我地島'],
-      'stars': ['波照間島', '神津島', '小浜島', '竹富島', '父島', '母島', '八丈島', '与那国島', '黒島', '多良間島', '青ケ島', '西表島'],
-      'retreat': ['直島', '豊島（香川）', '小豆島', '古宇利島', '瀬底島', '水納島', '小浜島', '竹富島', '神津島', '生口島', '屋久島', '奄美大島', '壱岐島'],
-      'family': ['石垣島', '宮古島', '小豆島', '淡路島', '伊豆大島', '佐渡島', '伊江島', '古宇利島', '瀬底島', '屋代島', '大三島'],
-      'onsen_sauna': ['屋久島', '式根島', '八丈島', '硫黄島（鹿児島）', '伊豆大島', '小豆島', '壱岐島', '奥尻島', '利尻島', '直島', '宮古島'],
-      'luxury': ['宮古島', '伊良部島', '石垣島', '小浜島', '直島', '屋久島', '奄美大島', '古宇利島', '瀬底島'],
-      'remote': ['青ケ島', '南大東島', '北大東島', '悪石島', '宝島', '硫黄島（鹿児島）', '御蔵島', '与那国島', '波照間島', '小笠原'],
-      'nature': ['西表島', '屋久島', '知床', '小笠原', '奄美大島', '徳之島', '御蔵島', '座間味島'],
-      'gourmet': ['小豆島', '淡路島', '壱岐島', '五島列島', '石垣島', '宮古島', '隠岐', '佐渡島', '礼文島'],
-      'daytrip': ['江の島', '猿島', '友ヶ島', '能古島', '相島', '水納島', '瀬底島', '古宇利島', '伊江島', '日間賀島', '佐久島']
+      'transparency': ['座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '伊良部島', '下地島', '池間島', '来間島'],
+      'stars': ['波照間島', '神津島', '石垣島', '西表島', '竹富島', '小浜島', '黒島'],
+      'retreat': ['直島', '豊島（香川）', '小豆島', '古宇利島', '瀬底島', '生口島', '竹富島', '与論島'],
+      'family': ['石垣島', '宮古島', '淡路島', '伊豆大島', '佐渡島', '小豆島', '初島'],
+      'onsen_sauna': ['式根島', '屋久島', '硫黄島（鹿児島）', '八丈島', '直島', '桜島'],
+      'luxury': ['宮古島', '伊良部島', '石垣島', '小浜島', '屋久島', '奄美大島', '淡路島'],
+      'remote': ['青ヶ島', '南大東島', '北大東島', '悪石島', '宝島', '与那国島', '波照間島'],
+      'nature': ['西表島', '屋久島', '知床', '父島', '母島', '奄美大島', '徳之島', '御蔵島'],
+      'gourmet': ['淡路島', '小豆島', '壱岐島', '福江島', '利尻島', '礼文島', '佐渡島', '隠岐'],
+      'daytrip': ['江の島', '猿島', '友ヶ島', '能古島', '日間賀島', '佐久島', '相島', '水納島', '伊江島']
     };
 
     const targetNames = VERIFIED_CATEGORY_MAP[selectedCategory] || [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return allIslands.filter((island: any) => {
       const name = island.name || '';
-      return targetNames.some((verifiedName: string) => name.includes(verifiedName) || verifiedName.includes(name));
-    }).slice(0, 8);
+      return targetNames.some((verifiedName: string) => {
+        const cleanName = verifiedName.split('（')[0]; // 「豊島（香川）」などを「豊島」としてマッチングさせる
+        return name === cleanName || name.includes(cleanName) || cleanName.includes(name);
+      });
+    }).sort((a, b) => {
+      const getIndex = (islandName: string) => targetNames.findIndex(n => {
+        const clean = n.split('（')[0];
+        return islandName === clean || islandName.includes(clean) || clean.includes(islandName);
+      });
+      return getIndex(a.name || '') - getIndex(b.name || '');
+    });
   }, [selectedCategory, allIslands]);
 
   const selectedRegionObj = useMemo(() => {
@@ -152,6 +181,42 @@ export default function Home() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return allIslands.filter((island: any) => island.region_id === selectedRegionId);
   }, [selectedRegionId, allIslands]);
+
+  const kiratabiChoice = useMemo(() => {
+    const list = ['宮古島', '石垣島', '父島', '屋久島', '奄美大島', '佐渡島', '直島', '淡路島', '西表島'];
+    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
+      .sort((a, b) => {
+        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
+        return getIdx(a.name) - getIdx(b.name);
+      });
+  }, [allIslands]);
+
+  const recommendedForWomen = useMemo(() => {
+    const list = ['直島', '小豆島', '淡路島', '宮古島', '竹富島', '江の島'];
+    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
+      .sort((a, b) => {
+        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
+        return getIdx(a.name) - getIdx(b.name);
+      });
+  }, [allIslands]);
+
+  const recommendedForFamilies = useMemo(() => {
+    const list = ['淡路島', '宮古島', '石垣島', '小豆島', '初島', '瀬底島', '沖縄本島'];
+    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
+      .sort((a, b) => {
+        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
+        return getIdx(a.name) - getIdx(b.name);
+      });
+  }, [allIslands]);
+
+  const easilyAccessible = useMemo(() => {
+    const list = ['淡路島', '江の島', '瀬底島', '古宇利島', '宮古島', '石垣島', '八丈島', '奄美大島'];
+    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
+      .sort((a, b) => {
+        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
+        return getIdx(a.name) - getIdx(b.name);
+      });
+  }, [allIslands]);
 
 
   useEffect(() => {
@@ -421,8 +486,10 @@ export default function Home() {
               >
                 <div className="flex items-center gap-4">
                   <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${companionStage.badgeGradient} flex items-center justify-center text-4xl shadow-sm border border-white/60 shrink-0 group-hover/comp:scale-105 transition-transform overflow-hidden`}>
-                    {companionStage.image ? (
-                      <img src={companionStage.image} alt={companionStage.name} className="w-full h-full object-cover" />
+                    {(companionChar as any).image_url ? (
+                      <img src={(companionChar as any).image_url} alt={companionChar.name} className={`w-full h-full object-cover ${((user as any)?.subscription_tier === 'premium' || (user as any)?.subscription_tier === 'ultimate') ? 'hologram-effect' : ''}`} />
+                    ) : companionStage.image ? (
+                      <img src={companionStage.image} alt={companionStage.name} className={`w-full h-full object-cover ${((user as any)?.subscription_tier === 'premium' || (user as any)?.subscription_tier === 'ultimate') ? 'hologram-effect' : ''}`} />
                     ) : (
                       companionStage.icon
                     )}
@@ -528,26 +595,44 @@ export default function Home() {
                 ランキング全体を見る
               </button>
             </div>
-            <div className="lg:w-2/3 w-full flex flex-col gap-3">
-              {topRankers.map((ranker, idx) => (
-                <div key={ranker.id} className="bg-white rounded-2xl p-4 flex items-center gap-4 shadow-sm border border-white hover:border-blue-200 transition-colors cursor-pointer" onClick={() => router.push('/ranking')}>
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg shrink-0 ${
-                    idx === 0 ? 'bg-amber-100 text-amber-600' : 
-                    idx === 1 ? 'bg-slate-200 text-slate-600' :
-                    'bg-orange-100 text-orange-700'
+            <div className="lg:w-2/3 w-full grid grid-cols-1 md:grid-cols-3 gap-4">
+              {topRankers.slice(0, 3).map((ranker, idx) => (
+                <div key={ranker.id} className={`relative bg-white rounded-2xl p-5 shadow-sm border transition-all hover:-translate-y-1 hover:shadow-md cursor-pointer flex flex-col items-center text-center ${idx === 0 ? 'border-amber-200 bg-gradient-to-b from-white to-amber-50/30' : idx === 1 ? 'border-slate-200' : 'border-orange-200 bg-gradient-to-b from-white to-orange-50/30'}`} onClick={() => router.push('/ranking')}>
+                  {/* Rank Badge */}
+                  <div className={`absolute -top-3 -left-3 w-8 h-8 rounded-full flex items-center justify-center font-bold text-white shadow-md ${idx === 0 ? 'bg-amber-500' : idx === 1 ? 'bg-slate-400' : 'bg-orange-500'}`}>
+                    {idx + 1}
+                  </div>
+                  
+                  <div className={`w-14 h-14 rounded-full flex items-center justify-center font-bold text-2xl mb-3 shadow-inner border-2 ${
+                    idx === 0 ? 'bg-gradient-to-br from-yellow-100 to-amber-200 text-amber-700 border-amber-300 shadow-amber-500/20' : 
+                    idx === 1 ? 'bg-gradient-to-br from-slate-100 to-slate-300 text-slate-700 border-slate-300 shadow-slate-500/20' :
+                    'bg-gradient-to-br from-orange-50 to-orange-200 text-orange-800 border-orange-300 shadow-orange-500/20'
                   }`}>
-                    {idx === 0 ? <Trophy size={20} /> : <Medal size={20} />}
+                    {idx === 0 ? <Trophy size={24} className="drop-shadow-sm" /> : idx === 1 ? <Medal size={24} className="drop-shadow-sm" /> : <Medal size={24} className="drop-shadow-sm" />}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-bold text-slate-800 truncate">{ranker.username}</h3>
-                      <span className="text-[0.6rem] px-2 py-0.5 bg-slate-100 text-slate-500 rounded-full shrink-0">{ranker.title}</span>
+                  
+                  <h3 className="font-bold text-slate-800 w-full truncate mb-1">{ranker.username}</h3>
+                  <span className="text-[0.65rem] px-2.5 py-0.5 bg-slate-100 text-slate-500 rounded-full mb-3">{ranker.title}</span>
+                  
+                  <div className="w-full space-y-2 mt-auto">
+                    <div className="flex items-center justify-between text-xs font-medium text-slate-600 bg-white/60 p-1.5 rounded-lg border border-slate-100">
+                      <span className="flex items-center gap-1"><Compass size={12} className="text-blue-500"/> 島数</span>
+                      <span className="font-bold">{ranker.visited}</span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs font-medium text-slate-500">
-                      <span className="flex items-center gap-1"><Compass size={12} className="text-blue-500"/> {ranker.visited} 島</span>
-                      <span className="flex items-center gap-1"><Star size={12} className="text-amber-500"/> {ranker.points.toLocaleString()} XP</span>
+                    <div className="flex items-center justify-between text-xs font-medium text-slate-600 bg-white/60 p-1.5 rounded-lg border border-slate-100">
+                      <span className="flex items-center gap-1"><Star size={12} className="text-amber-500"/> XP</span>
+                      <span className="font-bold text-amber-600">{ranker.points.toLocaleString()}</span>
                     </div>
                   </div>
+                </div>
+              ))}
+              
+              {/* Fill empty spots if less than 3 rankers */}
+              {Array.from({ length: Math.max(0, 3 - topRankers.length) }).map((_, i) => (
+                <div key={`empty-${i}`} className="bg-slate-50/50 rounded-2xl p-5 border border-dashed border-slate-200 flex flex-col items-center justify-center text-center opacity-70">
+                  <div className="w-12 h-12 rounded-full bg-slate-100 border border-slate-200 mb-3" />
+                  <div className="h-4 w-20 bg-slate-200 rounded animate-pulse mb-2" />
+                  <div className="h-3 w-16 bg-slate-100 rounded animate-pulse" />
                 </div>
               ))}
             </div>
@@ -567,7 +652,8 @@ export default function Home() {
               </h2>
             </div>
           </div>
-          <div className="flex gap-6 overflow-x-auto pb-8 hide-scrollbar max-w-7xl mx-auto snap-x">
+          <div className="flex gap-6 overflow-x-auto pb-8 hide-scrollbar max-w-7xl mx-auto snap-x px-4 lg:px-0 scroll-pl-4 lg:scroll-pl-0 relative">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-32 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
             {allIslands.filter(i => i.is_featured).map((island, idx) => (
               <div 
                 key={`featured-${island.id}-${idx}`}
@@ -579,7 +665,7 @@ export default function Home() {
                   <span className="text-xl leading-none">{idx + 1}</span>
                 </div>
                 <div className="h-40 bg-slate-200 relative overflow-hidden">
-                  <img src={`/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget as HTMLImageElement;
                     const fallback = getFallbackPlaceholder(island.prefecture || '');
                     if (!t.src.endsWith(fallback)) {
@@ -610,7 +696,7 @@ export default function Home() {
       )}
 
       {/* KIRATABI's Recommendations Section */}
-      {isMounted && allIslands.filter(i => ['淡路島', '江の島', '小豆島', '瀬底島', '古宇利島', '初島', '能古島', '日間賀島', '伊江島'].some(name => i.name.includes(name))).length > 0 && (
+      {isMounted && kiratabiChoice.length > 0 && (
         <div className="px-8 lg:px-12 pt-10 pb-10 bg-white">
           <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
             <div>
@@ -620,16 +706,18 @@ export default function Home() {
                 KIRATABIのオススメ
               </h2>
             </div>
+            
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
-            {allIslands.filter(i => ['淡路島', '江の島', '小豆島', '瀬底島', '古宇利島', '初島', '能古島', '日間賀島', '伊江島'].some(name => i.name.includes(name))).slice(0,8).map((island, idx) => (
+          <div className="flex gap-4 overflow-x-auto pb-6 hide-scrollbar max-w-7xl mx-auto snap-x px-4 lg:px-0 scroll-pl-4 lg:scroll-pl-0 relative">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
+            {kiratabiChoice.map((island, idx) => (
               <div 
                 key={`kiratabi-${island.id}-${idx}`}
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-amber-50/50 rounded-2xl border border-amber-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
                 <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget;
                     const fallback = getFallbackPlaceholder(island.prefecture || '');
                     if (!t.src.endsWith(fallback)) {
@@ -646,11 +734,19 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <div className="mt-6 flex justify-center max-w-7xl mx-auto px-4 lg:px-0">
+            <button 
+              onClick={() => router.push('/search')}
+              className="text-sm font-bold text-slate-500 hover:text-amber-600 flex items-center gap-1 transition-colors bg-slate-100 hover:bg-amber-50 px-6 py-2.5 rounded-full shadow-sm"
+            >
+              続きをみる <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
       {/* Recommended for Women Section */}
-      {isMounted && allIslands.filter(i => ['直島', '小豆島', '古宇利島', '神津島', '竹富島', '生口島'].some(name => i.name.includes(name))).length > 0 && (
+      {isMounted && recommendedForWomen.length > 0 && (
         <div className="px-8 lg:px-12 pt-4 pb-10 bg-white">
           <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
             <div>
@@ -660,16 +756,18 @@ export default function Home() {
                 女性・ひとり旅に人気の島
               </h2>
             </div>
+            
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
-            {allIslands.filter(i => ['直島', '小豆島', '古宇利島', '神津島', '竹富島', '生口島'].some(name => i.name.includes(name))).slice(0,6).map((island, idx) => (
+          <div className="flex gap-4 overflow-x-auto pb-6 hide-scrollbar max-w-7xl mx-auto snap-x px-4 lg:px-0 scroll-pl-4 lg:scroll-pl-0 relative">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
+            {recommendedForWomen.map((island, idx) => (
               <div 
                 key={`women-${island.id}-${idx}`}
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-rose-50/50 rounded-2xl border border-rose-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
                 <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget;
                     const fallback = getFallbackPlaceholder(island.prefecture || '');
                     if (!t.src.endsWith(fallback)) {
@@ -686,11 +784,19 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <div className="mt-6 flex justify-center max-w-7xl mx-auto px-4 lg:px-0">
+            <button 
+              onClick={() => router.push('/search')}
+              className="text-sm font-bold text-slate-500 hover:text-rose-600 flex items-center gap-1 transition-colors bg-slate-100 hover:bg-rose-50 px-6 py-2.5 rounded-full shadow-sm"
+            >
+              続きをみる <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       )}
 
       {/* Recommended for Families Section */}
-      {isMounted && allIslands.filter(i => ['石垣島', '宮古島', '淡路島', '伊豆大島', '伊江島', '佐渡島'].some(name => i.name.includes(name))).length > 0 && (
+      {isMounted && recommendedForFamilies.length > 0 && (
         <div className="px-8 lg:px-12 pt-4 pb-16 bg-white">
           <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
             <div>
@@ -700,16 +806,18 @@ export default function Home() {
                 家族・子連れにおすすめの島
               </h2>
             </div>
+            
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
-            {allIslands.filter(i => ['石垣島', '宮古島', '淡路島', '伊豆大島', '伊江島', '佐渡島'].some(name => i.name.includes(name))).slice(0,6).map((island, idx) => (
+          <div className="flex gap-4 overflow-x-auto pb-6 hide-scrollbar max-w-7xl mx-auto snap-x px-4 lg:px-0 scroll-pl-4 lg:scroll-pl-0 relative">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
+            {recommendedForFamilies.map((island, idx) => (
               <div 
                 key={`family-${island.id}-${idx}`}
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-emerald-50/50 rounded-2xl border border-emerald-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
                 <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget;
                     const fallback = getFallbackPlaceholder(island.prefecture || '');
                     if (!t.src.endsWith(fallback)) {
@@ -730,7 +838,7 @@ export default function Home() {
       )}
 
       {/* Accessible Islands Section */}
-      {isMounted && allIslands.filter(i => ['江の島', '猿島', '友ヶ島', '能古島', '相島', '水納島', '瀬底島', '日間賀島', '初島'].some(name => i.name.includes(name))).length > 0 && (
+      {isMounted && easilyAccessible.length > 0 && (
         <div className="px-8 lg:px-12 pt-4 pb-16 bg-white">
           <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
             <div>
@@ -740,16 +848,18 @@ export default function Home() {
                 アクセスが容易にできる島
               </h2>
             </div>
+            
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
-            {allIslands.filter(i => ['江の島', '猿島', '友ヶ島', '能古島', '相島', '水納島', '瀬底島', '日間賀島', '初島'].some(name => i.name.includes(name))).slice(0,8).map((island, idx) => (
+          <div className="flex gap-4 overflow-x-auto pb-6 hide-scrollbar max-w-7xl mx-auto snap-x px-4 lg:px-0 scroll-pl-4 lg:scroll-pl-0 relative">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
+            {easilyAccessible.map((island, idx) => (
               <div 
                 key={`accessible-${island.id}-${idx}`}
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-blue-50/50 rounded-2xl border border-blue-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
                 <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget;
                     const fallback = getFallbackPlaceholder(island.prefecture || '');
                     if (!t.src.endsWith(fallback)) {
@@ -770,7 +880,7 @@ export default function Home() {
       )}
 
       {/* Remote Islands Section */}
-      {isMounted && allIslands.filter(i => ['父島', '母島', '青ケ島', '御蔵島', '与那国島', '波照間島', '北大東島', '南大東島'].some(name => i.name.includes(name))).length > 0 && (
+      {isMounted && allIslands.filter(i => ['青ヶ島', '御蔵島', '水納島', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'].some(name => i.name === name)).length > 0 && (
         <div className="px-8 lg:px-12 pt-4 pb-16 bg-white">
           <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
             <div>
@@ -780,16 +890,28 @@ export default function Home() {
                 アクセス困難な秘境島
               </h2>
             </div>
+            
           </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar max-w-7xl mx-auto snap-x">
-            {allIslands.filter(i => ['父島', '母島', '青ケ島', '御蔵島', '与那国島', '波照間島', '北大東島', '南大東島'].some(name => i.name.includes(name))).slice(0,8).map((island, idx) => (
+          <div className="flex gap-4 overflow-x-auto pb-6 hide-scrollbar max-w-7xl mx-auto snap-x px-4 lg:px-0 scroll-pl-4 lg:scroll-pl-0 relative">
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
+            {allIslands.filter(i => ['青ヶ島', '御蔵島', '水納島', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'].some(name => {
+              const clean = name.split('（')[0];
+              return i.name === clean || i.name.includes(clean);
+            })).sort((a, b) => {
+              const list = ['青ヶ島', '御蔵島', '水納島', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'];
+              const getIdx = (n: string) => list.findIndex(l => {
+                const clean = l.split('（')[0];
+                return n === clean || n.includes(clean);
+              });
+              return getIdx(a.name) - getIdx(b.name);
+            }).map((island, idx) => (
               <div 
                 key={`remote-${island.id}-${idx}`}
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-indigo-50/50 rounded-2xl border border-indigo-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
                 <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
+                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
                     const t = e.currentTarget as HTMLImageElement;
                     const fallback = getFallbackPlaceholder(island.prefecture || '');
                     if (!t.src.endsWith(fallback)) {
@@ -823,10 +945,10 @@ export default function Home() {
               className="inline-flex items-center gap-2.5 px-5 py-3 rounded-2xl bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all group/btn border border-blue-500/30"
             >
               <div className="flex -space-x-1 overflow-hidden">
-                <img src="/fairies/ruri.png" alt="ルリ" className="w-6 h-6 rounded-full object-cover border border-white bg-blue-50 shadow-sm" />
-                <img src="/fairies/shisa.png" alt="シーサー" className="w-6 h-6 rounded-full object-cover border border-white bg-orange-50 shadow-sm" />
-                <img src="/fairies/blue.png" alt="ブルー" className="w-6 h-6 rounded-full object-cover border border-white bg-indigo-50 shadow-sm" />
-                <img src="/fairies/shida.png" alt="シダ" className="w-6 h-6 rounded-full object-cover border border-white bg-green-50 shadow-sm" />
+                <img src="/fairies/ruri.jpg" alt="ルリ" className="w-6 h-6 rounded-full object-cover border border-white bg-blue-50 shadow-sm" />
+                <img src="/fairies/shisa.jpg" alt="シーサー" className="w-6 h-6 rounded-full object-cover border border-white bg-orange-50 shadow-sm" />
+                <img src="/fairies/ryu.png" alt="リュウ" className="w-6 h-6 rounded-full object-cover border border-white bg-indigo-50 shadow-sm" />
+                <img src="/fairies/shida.jpg" alt="シダ" className="w-6 h-6 rounded-full object-cover border border-white bg-green-50 shadow-sm" />
               </div>
               <span className="text-xs sm:text-sm font-bold tracking-wider text-amber-300">
                 オリジナル進化キャラクター大図鑑ページへ ＞
@@ -841,44 +963,50 @@ export default function Home() {
           <div className="w-12 h-[1.5px] bg-blue-600 mx-auto mt-6" />
         </div>
         
-        <div className="flex justify-start md:justify-center gap-4 md:gap-8 overflow-x-auto hide-scrollbar -mx-8 px-8 snap-x pb-8 pt-4">
-          {[
-            { id: 'transparency', icon: Droplets, label: '海の透明度No.1', badge: 'ダイビング' },
-            { id: 'stars', icon: Moon, label: '満天の星空', badge: '保護区' },
-            { id: 'retreat', icon: Heart, label: '女子・ひとり旅', badge: '安心・カフェ' },
-            { id: 'family', icon: Users, label: '家族・子連れ旅', badge: '体験・安全' },
-            { id: 'onsen_sauna', icon: Flame, label: '秘湯・サウナ', badge: '野湯・絶景' },
-            { id: 'luxury', icon: BedDouble, label: '高級リゾート', badge: 'ヴィラ' },
-            { id: 'remote', icon: Compass, label: '秘境・無人島', badge: '難易度高め' },
-            { id: 'nature', icon: Waves, label: '野生動物・自然', badge: 'クジラ' },
-            { id: 'gourmet', icon: Coffee, label: '島グルメ・食', badge: '島飯' },
-            { id: 'daytrip', icon: MapPin, label: '日帰り島', badge: '気軽' }
-          ].map((cat) => {
-            const isSelected = selectedCategory === cat.id;
-            return (
-              <div 
-                key={cat.id} 
-                onClick={() => setSelectedCategory(isSelected ? null : cat.id)} 
-                className="snap-center flex flex-col items-center gap-2.5 cursor-pointer group shrink-0 min-w-[5.5rem]"
-              >
-                <div className={`w-16 h-16 lg:w-20 lg:h-20 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm border relative ${
-                  isSelected
-                    ? 'bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white border-blue-500 shadow-lg shadow-blue-900/25 scale-105 ring-4 ring-blue-500/20'
-                    : 'bg-slate-50/80 text-slate-500 border-slate-200/80 group-hover:bg-white group-hover:text-slate-800 group-hover:shadow-md group-hover:scale-105'
-                }`}>
-                  <cat.icon size={26} strokeWidth={isSelected ? 1.8 : 1.3} className={isSelected ? 'text-amber-400' : ''} />
-                  <span className="absolute -top-2.5 px-2 py-0.5 rounded-full bg-slate-900 text-white text-[0.6rem] font-bold tracking-tight shadow-sm opacity-90 group-hover:opacity-100">
-                    {cat.badge}
+        <div className="relative">
+          <div className="flex justify-start lg:justify-center gap-5 md:gap-8 overflow-x-auto hide-scrollbar px-6 lg:px-8 snap-x pb-8 pt-6 scroll-pl-6 lg:scroll-pl-0">
+            {[
+              { id: 'transparency', icon: Droplets, label: '海の透明度No.1', badge: 'ダイビング', gradient: 'from-blue-400 to-cyan-500', shadow: 'shadow-blue-500/20' },
+              { id: 'stars', icon: Moon, label: '満天の星空', badge: '保護区', gradient: 'from-indigo-400 to-purple-600', shadow: 'shadow-indigo-500/20' },
+              { id: 'retreat', icon: Heart, label: '女子・ひとり旅', badge: '安心・カフェ', gradient: 'from-rose-400 to-pink-500', shadow: 'shadow-rose-500/20' },
+              { id: 'family', icon: Users, label: '家族・子連れ旅', badge: '体験・安全', gradient: 'from-emerald-400 to-teal-500', shadow: 'shadow-emerald-500/20' },
+              { id: 'onsen_sauna', icon: Flame, label: '秘湯・サウナ', badge: '野湯・絶景', gradient: 'from-orange-400 to-red-500', shadow: 'shadow-orange-500/20' },
+              { id: 'luxury', icon: BedDouble, label: '高級リゾート', badge: 'ヴィラ', gradient: 'from-amber-300 to-yellow-600', shadow: 'shadow-amber-500/20' },
+              { id: 'remote', icon: Compass, label: '秘境・無人島', badge: '難易度高め', gradient: 'from-slate-600 to-slate-800', shadow: 'shadow-slate-500/20' },
+              { id: 'nature', icon: Waves, label: '野生動物・自然', badge: 'クジラ', gradient: 'from-lime-500 to-green-600', shadow: 'shadow-lime-500/20' },
+              { id: 'gourmet', icon: Coffee, label: '島グルメ・食', badge: '島飯', gradient: 'from-amber-600 to-orange-700', shadow: 'shadow-amber-700/20' },
+              { id: 'daytrip', icon: MapPin, label: '日帰り島', badge: '気軽', gradient: 'from-sky-400 to-blue-600', shadow: 'shadow-sky-500/20' }
+            ].map((cat) => {
+              const isSelected = selectedCategory === cat.id;
+              return (
+                <div 
+                  key={cat.id} 
+                  onClick={() => setSelectedCategory(isSelected ? null : cat.id)} 
+                  className="snap-center flex flex-col items-center gap-3 cursor-pointer group shrink-0 w-[5.5rem] lg:w-[6.5rem]"
+                >
+                  <div className={`w-16 h-16 lg:w-[72px] lg:h-[72px] rounded-3xl flex items-center justify-center transition-all duration-300 shadow-md relative ${
+                    isSelected
+                      ? `bg-gradient-to-br ${cat.gradient} text-white shadow-lg ${cat.shadow} scale-110 ring-4 ring-offset-2 ring-blue-100`
+                      : 'bg-white text-slate-500 border border-slate-200 hover:text-white hover:scale-105'
+                  }`}>
+                    <div className="absolute inset-0 rounded-3xl overflow-hidden pointer-events-none">
+                      <div className={`absolute inset-0 bg-gradient-to-br ${cat.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${isSelected ? 'hidden' : ''}`} />
+                    </div>
+                    <cat.icon size={28} strokeWidth={isSelected ? 2 : 1.5} className={`relative z-10 ${isSelected ? 'text-white' : 'group-hover:text-white'}`} />
+                    <span className="absolute -top-2 -right-2 px-2 py-0.5 rounded-full bg-slate-800 text-white text-[0.55rem] font-bold tracking-tight shadow-md z-20 group-hover:scale-110 transition-transform whitespace-nowrap">
+                      {cat.badge}
+                    </span>
+                  </div>
+                  <span className={`text-[0.65rem] lg:text-xs font-bold tracking-widest transition-colors text-center ${
+                    isSelected ? 'text-blue-600' : 'text-slate-500 group-hover:text-slate-800'
+                  }`}>
+                    {cat.label}
                   </span>
                 </div>
-                <span className={`text-xs font-bold tracking-widest transition-colors ${
-                  isSelected ? 'text-blue-900 font-extrabold' : 'text-slate-600 group-hover:text-slate-900'
-                }`}>
-                  {cat.label}
-                </span>
-              </div>
-            );
-          })}
+              );
+            })}
+          </div>
+          <div className="absolute right-0 top-1/2 -translate-y-1/2 w-16 h-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
         </div>
 
         {/* Curated Results Grid */}
@@ -955,7 +1083,7 @@ export default function Home() {
                       >
                         <div className="relative h-36 overflow-hidden bg-slate-100">
                           <img
-                            src={`/region/${isl.region_id || 'okinawa_main'}.jpg`}
+                            src={isl.hero_image_url || isl.image_url || `/region/${isl.region_id || 'okinawa_main'}.jpg`}
                             onError={(e) => {
                               const t = e.currentTarget;
                               const fallback = getFallbackPlaceholder(isl.prefecture || '');
@@ -1028,7 +1156,7 @@ export default function Home() {
       </div>
 
       {/* Monetization / Pricing Plan Section */}
-      <div className="bg-slate-900 py-20 px-6 lg:px-12 text-white">
+      <div id="pricing" className="bg-slate-900 py-20 px-6 lg:px-12 text-white">
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="font-serif text-2xl lg:text-3xl tracking-widest mb-4">キラ旅 プラン表</h2>
@@ -1057,6 +1185,12 @@ export default function Home() {
                 <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 広告非表示＆プレミアムUIテーマ</li>
                 <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 妖精の「伝説の進化」解放ルート</li>
               </ul>
+              <button 
+                onClick={() => handleCheckout('premium')}
+                className="w-full mt-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-amber-950 font-bold py-4 rounded-xl shadow-lg transition-transform hover:scale-[1.02]"
+              >
+                プレミアムプランを選択する
+              </button>
             </div>
           </div>
         </div>
@@ -1125,6 +1259,8 @@ export default function Home() {
             let regionImg = '';
             if (regionSpecificSlides.length > 0) {
               regionImg = regionSpecificSlides[hash % regionSpecificSlides.length].src;
+            } else if (region.hero_image_url) {
+              regionImg = region.hero_image_url;
             } else {
               regionImg = getFallbackPlaceholder(region.area);
             }

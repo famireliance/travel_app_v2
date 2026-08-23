@@ -208,9 +208,9 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
                   </label>
                   
                   {photoUrl && (
-                    <div className="mt-3 relative rounded-xl overflow-hidden bg-slate-100 inline-block border border-slate-200">
+                    <div className="mt-3 relative rounded-xl overflow-hidden bg-slate-100 w-full max-w-sm border border-slate-200">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={photoUrl} alt="Preview" className="h-40 object-cover" />
+                      <img src={photoUrl} alt="Preview" className="h-48 w-full object-contain" />
                       <button
                         type="button"
                         onClick={() => { setPhotoUrl(''); if (fileInputRef.current) fileInputRef.current.value = ''; }}

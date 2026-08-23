@@ -39,23 +39,23 @@ export default function GlobalRadar() {
 
           islands.forEach(island => {
             if (island.coordinates) {
-              const [islandLatStr, islandLngStr] = island.coordinates.split(',').map((s: string) => s.trim());
+              const [islandLatStr, islandLngStr] = (island.coordinates as string).split(',').map((s: string) => s.trim());
               const islandLat = parseFloat(islandLatStr);
               const islandLng = parseFloat(islandLngStr);
               const distance = calculateDistanceKm(userLat, userLng, islandLat, islandLng);
               
               if (distance < minDistance) {
                 minDistance = distance;
-                closestIsland = island;
+                closestIsland = island as any;
               }
             }
           });
 
           // If closest island is within 10km and not verified visited yet
           if (closestIsland && minDistance <= 10) {
-            const status = islandStatuses[closestIsland.id];
+            const status = islandStatuses[(closestIsland as any).id];
             if (status !== 'verified_visited') {
-              setNearbyIsland({ ...closestIsland, distance: minDistance });
+              setNearbyIsland({ ...(closestIsland as any), distance: minDistance });
               setIsVisible(true);
             }
           }
@@ -103,7 +103,7 @@ export default function GlobalRadar() {
             <div className="flex-1 pr-4">
               <p className="text-[0.6rem] font-bold text-blue-600 tracking-wider mb-0.5">NEARBY RADAR</p>
               <h3 className="font-serif font-bold text-slate-800 text-sm mb-1">{nearbyIsland.name}が近くにあります！</h3>
-              <p className="text-xs text-slate-500 mb-3 leading-relaxed">現在地から約 {nearbyIsland.distance.toFixed(1)} kmです。チェックインして公式到達証明を発行しませんか？</p>
+              <p className="text-xs text-slate-500 mb-3 leading-relaxed">現在地から約 {nearbyIsland.distance!.toFixed(1)} kmです。チェックインして公式到達証明を発行しませんか？</p>
               <div className="flex gap-2">
                 <button 
                   onClick={() => router.push(`/island/${nearbyIsland.id}`)}

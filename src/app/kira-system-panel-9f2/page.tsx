@@ -2,6 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import IslandManagement from '@/components/admin/IslandManagement';
+import AdminOrders from '@/components/admin/AdminOrders';
+import AdminContacts from '@/components/admin/AdminContacts';
+import AdminCoupons from '@/components/admin/AdminCoupons';
+import AdminPromoCodes from '@/components/admin/AdminPromoCodes';
+import FairyManagement from '@/components/admin/FairyManagement';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -32,6 +38,11 @@ export default function AdminPage() {
   const [grantMessage, setGrantMessage] = useState('');
   const [grantHistory, setGrantHistory] = useState<any[]>([]);
 
+  // Premium Grant State
+  const [premiumTier, setPremiumTier] = useState('premium');
+  const [premiumMonths, setPremiumMonths] = useState(12);
+  const [premiumMessage, setPremiumMessage] = useState('');
+
   // Sections
   const [activeTab, setActiveTab] = useState('user'); // 'user' | 'password' | 'moderation'
 
@@ -39,6 +50,13 @@ export default function AdminPage() {
   const [diaries, setDiaries] = useState<any[]>([]);
   const [isLoadingDiaries, setIsLoadingDiaries] = useState(false);
   const [diariesMessage, setDiariesMessage] = useState('');
+
+  // Certificate Requests State
+  const [certRequests, setCertRequests] = useState<any[]>([]);
+  const [isLoadingCerts, setIsLoadingCerts] = useState(false);
+  const [certStatusFilter, setCertStatusFilter] = useState<'all' | 'pending' | 'processing' | 'shipped' | 'cancelled'>('all');
+  const [certMemoEditing, setCertMemoEditing] = useState<string | null>(null);
+  const [certMemoText, setCertMemoText] = useState('');
 
   useEffect(() => {
     const savedPassword = sessionStorage.getItem('admin_password');
@@ -178,6 +196,29 @@ export default function AdminPage() {
     }
   };
 
+  const handleGrantPremium = async () => {
+    if (!user) return;
+    setPremiumMessage('');
+    if (!window.confirm(`「${user.email}」を「${premiumTier}」プランに設定しますか？（${premiumMonths}ヶ月間）`)) return;
+    try {
+      const res = await fetch('/api/admin/grant-premium', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify({ userId: user.id, tier: premiumTier, months: premiumMonths })
+      });
+      const data = await res.json();
+      if (res.status === 401) { handleLogout(); return; }
+      if (!res.ok) { setPremiumMessage(`エラー: ${data.error}`); return; }
+      toast.success(data.message);
+      setPremiumMessage(data.message);
+    } catch (err: any) {
+      setPremiumMessage(`エラー: ${err.message}`);
+    }
+  };
+
   const handleChangePassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setChangePasswordMessage('');
@@ -300,6 +341,18 @@ export default function AdminPage() {
             ユーザー管理・付与
           </button>
           <button 
+            onClick={() => setActiveTab('islands')}
+            className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'islands' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`}
+          >
+            🏝️ 島データ管理
+          </button>
+          <button 
+            onClick={() => setActiveTab('fairies')}
+            className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'fairies' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`}
+          >
+            🧚 妖精データ管理
+          </button>
+          <button 
             onClick={() => setActiveTab('password')}
             className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'password' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`}
           >
@@ -310,6 +363,30 @@ export default function AdminPage() {
             className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'moderation' ? 'bg-blue-600 text-white' : 'hover:bg-gray-700'}`}
           >
             投稿管理
+          </button>
+          <button 
+            onClick={() => setActiveTab('orders')}
+            className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'orders' ? 'bg-amber-600 text-white' : 'hover:bg-gray-700'}`}
+          >
+            📦 注文管理
+          </button>
+          <button 
+            onClick={() => setActiveTab('contacts')}
+            className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'contacts' ? 'bg-amber-600 text-white' : 'hover:bg-gray-700'}`}
+          >
+            ✉️ お問い合わせ管理
+          </button>
+          <button 
+            onClick={() => setActiveTab('newsletter')}
+            className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'newsletter' ? 'bg-amber-600 text-white' : 'hover:bg-gray-700'}`}
+          >
+            📧 メルマガ配信
+          </button>
+          <button 
+            onClick={() => setActiveTab('coupons')}
+            className={`w-full text-left px-4 py-2 rounded transition-colors ${activeTab === 'coupons' ? 'bg-amber-600 text-white' : 'hover:bg-gray-700'}`}
+          >
+            🎟️ クーポン管理
           </button>
         </nav>
         <button onClick={handleLogout} className="mt-8 text-sm text-gray-400 hover:text-white text-left px-4 py-2">
@@ -416,7 +493,51 @@ export default function AdminPage() {
                     <p><span className="text-gray-400 block">最終ログイン:</span> {user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleString() : 'なし'}</p>
                     <p><span className="text-gray-400 block">島訪問数:</span> <span className="text-xl font-bold text-white">{user.visitCount}</span></p>
                   </div>
+
+                  {/* VIPプラン付与セクション */}
+                  <div className="mt-6 pt-6 border-t border-gray-700">
+                    <h4 className="text-sm font-bold text-amber-400 mb-3">👑 VIP プレミアム付与</h4>
+                    <div className="space-y-3">
+                      <div>
+                        <label className="block text-xs font-medium text-gray-400 mb-1">プラン</label>
+                        <select
+                          className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm focus:outline-none focus:border-amber-500"
+                          value={premiumTier}
+                          onChange={(e) => setPremiumTier(e.target.value)}
+                        >
+                          <option value="premium">Premium (¥480/月相当)</option>
+                          <option value="ultimate">Ultimate (¥980/月相当)</option>
+                          <option value="free">Free (プレミアム解除)</option>
+                        </select>
+                      </div>
+                      {premiumTier !== 'free' && (
+                        <div>
+                          <label className="block text-xs font-medium text-gray-400 mb-1">有効期間（ヶ月）</label>
+                          <input
+                            type="number"
+                            min={1}
+                            max={120}
+                            className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm focus:outline-none focus:border-amber-500"
+                            value={premiumMonths}
+                            onChange={(e) => setPremiumMonths(Number(e.target.value))}
+                          />
+                        </div>
+                      )}
+                      <button
+                        onClick={handleGrantPremium}
+                        className="w-full bg-amber-600 hover:bg-amber-700 py-2 rounded text-sm font-bold transition-colors"
+                      >
+                        {premiumTier === 'free' ? '無料プランに戻す' : `${premiumTier} を付与する`}
+                      </button>
+                      {premiumMessage && (
+                        <p className={`text-xs mt-2 ${premiumMessage.includes('エラー') ? 'text-red-400' : 'text-green-400'}`}>
+                          {premiumMessage}
+                        </p>
+                      )}
+                    </div>
+                  </div>
                 </div>
+
 
                 <div className="bg-gray-800 p-6 rounded-lg shadow border border-gray-700">
                   <h3 className="text-xl font-semibold mb-4 text-purple-400">到達記録付与</h3>
@@ -630,6 +751,180 @@ export default function AdminPage() {
             </div>
           </div>
         )}
+
+        {activeTab === 'islands' && (
+          <IslandManagement password={password} />
+        )}
+
+        {activeTab === 'fairies' && (
+          <FairyManagement password={password} />
+        )}
+
+        {activeTab === 'certificates' && (
+          <div>
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl font-bold">📜 証明書申請管理</h2>
+              <div className="flex gap-2 items-center">
+                <select
+                  value={certStatusFilter}
+                  onChange={e => setCertStatusFilter(e.target.value as any)}
+                  className="bg-gray-800 border border-gray-600 text-white text-sm rounded px-3 py-1.5"
+                >
+                  <option value="all">すべて</option>
+                  <option value="pending">未対応</option>
+                  <option value="processing">対応中</option>
+                  <option value="shipped">発送済</option>
+                  <option value="cancelled">キャンセル</option>
+                </select>
+                <button
+                  onClick={() => {
+                    const filtered = certRequests.filter(r => certStatusFilter === 'all' || r.status === certStatusFilter);
+                    const csv = [
+                      ['申請ID', '島名', '氏名', '郵便番号', '住所', '電話番号', 'ステータス', '申請日', '発送日'].join(','),
+                      ...filtered.map(r => [
+                        r.id, r.island_name, r.recipient_name, r.postal_code,
+                        `"${r.address}"`, r.phone, r.status,
+                        r.requested_at ? new Date(r.requested_at).toLocaleDateString('ja-JP') : '',
+                        r.shipped_at ? new Date(r.shipped_at).toLocaleDateString('ja-JP') : ''
+                      ].join(','))
+                    ].join('\n');
+                    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csv], { type: 'text/csv;charset=utf-8;' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a'); a.href = url; a.download = 'certificate_requests.csv'; a.click();
+                  }}
+                  className="bg-green-700 hover:bg-green-600 text-white text-sm px-3 py-1.5 rounded"
+                >
+                  CSVエクスポート
+                </button>
+                <button
+                  onClick={() => {
+                    setIsLoadingCerts(true);
+                    fetch('/api/admin/certificate-requests', { headers: { 'x-admin-password': password } })
+                      .then(r => r.json())
+                      .then(data => { setCertRequests(data.requests || []); setIsLoadingCerts(false); })
+                      .catch(() => setIsLoadingCerts(false));
+                  }}
+                  className="bg-gray-700 hover:bg-gray-600 text-white text-sm px-3 py-1.5 rounded"
+                >
+                  更新
+                </button>
+              </div>
+            </div>
+
+            {isLoadingCerts ? (
+              <p className="text-gray-400">読み込み中...</p>
+            ) : (
+              <div className="space-y-4">
+                {certRequests
+                  .filter(r => certStatusFilter === 'all' || r.status === certStatusFilter)
+                  .map(req => (
+                    <div key={req.id} className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                              req.status === 'pending' ? 'bg-yellow-900 text-yellow-300' :
+                              req.status === 'processing' ? 'bg-blue-900 text-blue-300' :
+                              req.status === 'shipped' ? 'bg-green-900 text-green-300' :
+                              'bg-gray-700 text-gray-400'
+                            }`}>
+                              {req.status === 'pending' ? '未対応' : req.status === 'processing' ? '対応中' : req.status === 'shipped' ? '発送済' : 'キャンセル'}
+                            </span>
+                            <span className="text-amber-400 font-bold text-sm">🏝️ {req.island_name}</span>
+                            <span className="text-gray-400 text-xs">{req.requested_at ? new Date(req.requested_at).toLocaleDateString('ja-JP') : ''}申請</span>
+                          </div>
+                          <p className="text-white text-sm font-bold">{req.recipient_name}</p>
+                          <p className="text-gray-400 text-xs">〒{req.postal_code} {req.address}</p>
+                          <p className="text-gray-400 text-xs">📞 {req.phone}</p>
+                          {req.shipped_at && <p className="text-green-400 text-xs mt-1">✅ 発送日: {new Date(req.shipped_at).toLocaleDateString('ja-JP')}</p>}
+                        </div>
+                        <div className="flex flex-col gap-1.5">
+                          {req.status === 'pending' && (
+                            <button
+                              onClick={async () => {
+                                await fetch('/api/admin/certificate-requests', {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+                                  body: JSON.stringify({ id: req.id, status: 'processing' })
+                                });
+                                setCertRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'processing' } : r));
+                              }}
+                              className="text-xs bg-blue-700 hover:bg-blue-600 text-white px-3 py-1 rounded"
+                            >対応中に変更</button>
+                          )}
+                          {(req.status === 'pending' || req.status === 'processing') && (
+                            <button
+                              onClick={async () => {
+                                const shipped_at = new Date().toISOString();
+                                await fetch('/api/admin/certificate-requests', {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+                                  body: JSON.stringify({ id: req.id, status: 'shipped', shipped_at })
+                                });
+                                setCertRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'shipped', shipped_at } : r));
+                              }}
+                              className="text-xs bg-green-700 hover:bg-green-600 text-white px-3 py-1 rounded"
+                            >発送済にする</button>
+                          )}
+                          {req.status !== 'cancelled' && req.status !== 'shipped' && (
+                            <button
+                              onClick={async () => {
+                                if (!confirm('キャンセルしますか？')) return;
+                                await fetch('/api/admin/certificate-requests', {
+                                  method: 'PATCH',
+                                  headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+                                  body: JSON.stringify({ id: req.id, status: 'cancelled' })
+                                });
+                                setCertRequests(prev => prev.map(r => r.id === req.id ? { ...r, status: 'cancelled' } : r));
+                              }}
+                              className="text-xs bg-red-900 hover:bg-red-800 text-white px-3 py-1 rounded"
+                            >キャンセル</button>
+                          )}
+                        </div>
+                      </div>
+                      {/* メモ欄 */}
+                      {certMemoEditing === req.id ? (
+                        <div className="mt-3 flex gap-2">
+                          <input type="text" value={certMemoText} onChange={e => setCertMemoText(e.target.value)}
+                            className="flex-1 bg-gray-700 border border-gray-600 text-white text-sm rounded px-3 py-1 focus:outline-none"
+                            placeholder="運営メモ..."
+                          />
+                          <button onClick={async () => {
+                            await fetch('/api/admin/certificate-requests', {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+                              body: JSON.stringify({ id: req.id, note: certMemoText })
+                            });
+                            setCertRequests(prev => prev.map(r => r.id === req.id ? { ...r, note: certMemoText } : r));
+                            setCertMemoEditing(null);
+                          }} className="text-xs bg-gray-600 text-white px-3 py-1 rounded">保存</button>
+                          <button onClick={() => setCertMemoEditing(null)} className="text-xs text-gray-400">✕</button>
+                        </div>
+                      ) : (
+                        <div className="mt-2 flex items-center gap-2">
+                          <p className="text-gray-400 text-xs">{req.note || 'メモなし'}</p>
+                          <button onClick={() => { setCertMemoEditing(req.id); setCertMemoText(req.note || ''); }}
+                            className="text-xs text-gray-500 hover:text-white">✏️ 編集</button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                {certRequests.filter(r => certStatusFilter === 'all' || r.status === certStatusFilter).length === 0 && (
+                  <p className="text-gray-500">該当する申請はありません。</p>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Orders Tab */}
+        {activeTab === 'orders' && <AdminOrders password={password} />}
+
+        {/* Contacts Tab */}
+        {activeTab === 'contacts' && <AdminContacts password={password} />}
+
+        {/* Coupons Tab */}
+        {activeTab === 'coupons' && <AdminCoupons password={password} />}
       </div>
     </div>
   );

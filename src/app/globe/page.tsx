@@ -120,7 +120,7 @@ export default function GlobeTrackerPage() {
             .map(([id]) => id)
         );
 
-        let visited = allIslands.filter(i => visitedIds.has(i.id));
+        let visited = allIslands.filter(i => visitedIds.has(i.id as string));
         if (visited.length === 0 && allIslands.length > 0) {
           visited = allIslands.slice(0, 3);
         }
@@ -218,7 +218,7 @@ export default function GlobeTrackerPage() {
   const nextRecommendedIslands = useMemo(() => {
     const visitedIds = new Set(visitedList.map(v => v.id));
     return allIslandsList
-      .filter(i => !visitedIds.has(i.id))
+      .filter(i => !visitedIds.has(i.id as string))
       .slice(0, 3);
   }, [allIslandsList, visitedList]);
 

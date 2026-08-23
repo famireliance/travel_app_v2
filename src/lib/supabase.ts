@@ -27,7 +27,7 @@ export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
     }
   } catch {
   }
-  return FALLBACK_ISLANDS;
+  return FALLBACK_ISLANDS as any;
 }
 
 export async function fetchSiteSettings(): Promise<Record<string, unknown> | null> {
@@ -47,15 +47,17 @@ export async function fetchSiteSettings(): Promise<Record<string, unknown> | nul
 // ==========================================
 // Phase 6: アドサーバー (Ad Campaigns)
 // ==========================================
-export const fetchAdCampaigns = async (islandId?: string, regionId?: string) => {
+export const fetchAdCampaigns = async (islandId?: string, regionId?: string, prefecture?: string, area?: string) => {
   try {
     let query = supabase.from('ad_campaigns').select('*')
       .eq('is_active', true)
       .neq('banner_url', ''); // 安全対策: バナーURLが空のものをシステムレベルでブロック
     
-    if (islandId || regionId) {
+    if (islandId || regionId || prefecture || area) {
       let orString = 'target_type.eq.global';
       if (regionId) orString += `,and(target_type.eq.region,target_id.eq.${regionId})`;
+      if (prefecture) orString += `,and(target_type.eq.prefecture,target_id.eq.${prefecture})`;
+      if (area) orString += `,and(target_type.eq.area,target_id.eq.${area})`;
       if (islandId) orString += `,and(target_type.eq.island,target_id.ilike.*${islandId}*)`; // JSON配列文字列の部分一致検索
       
       query = query.or(orString);
@@ -68,7 +70,7 @@ export const fetchAdCampaigns = async (islandId?: string, regionId?: string) => 
     
     return (data || []).sort(() => Math.random() - 0.5);
   } catch (error) {
-    console.error('Error fetching ad campaigns:', error);
+    console.error('Error fetching ad campaigns:', (error as any)?.message || JSON.stringify(error) || error);
     return [];
   }
 };

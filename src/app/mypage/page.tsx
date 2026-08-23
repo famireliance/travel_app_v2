@@ -4,18 +4,22 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
 import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map } from 'lucide-react';
+import { PlanChangeModal } from '@/components/PlanChangeModal';
+import OrderHistory from '@/components/OrderHistory';
 import { supabase, fetchAllIslands } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateDifficultyStats, getIslandDifficulty } from '@/lib/difficulty';
-import { getPlayerLevelInfo, getIslandMastery, getSpecialTitles } from '@/lib/gamification';
+import { getPlayerLevelInfo, getIslandMastery, getSpecialTitles, getRegionMastery } from '@/lib/gamification';
 import { FAIRIES_MASTER } from '@/lib/fairies';
+import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function MyPage() {
   const router = useRouter();
-  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, bio, updateBio, totalPoints, conquestTargetCount, visitCounts, spotsVisited, companionChar, companionStage, collectedFairyDates } = useTravel();
+  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, bio, updateBio, totalPoints, conquestTargetCount, visitCounts, spotsVisited, companionChar, companionStage, collectedFairyDates, allFairies, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed, setAnniversaryCertUsed } = useTravel();
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [showPlanModal, setShowPlanModal] = useState(false);
 
   useEffect(() => {
     if (user === null) {
@@ -41,7 +45,104 @@ export default function MyPage() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   
   // Tab State
-  const [activeTab, setActiveTab] = useState<'history' | 'diaries' | 'quests' | 'fairies' | 'planning'>('history');
+  const [activeTab, setActiveTab] = useState<'history' | 'diaries' | 'quests' | 'fairies' | 'planning' | 'orders' | 'settings'>('history');
+  const [filterAttribute, setFilterAttribute] = useState<string | null>(null);
+
+  // 1周年記念特典
+  const [showAnniversaryModal, setShowAnniversaryModal] = useState(false);
+  const [anniversaryIslandId, setAnniversaryIslandId] = useState('');
+  const [anniversaryIslandName, setAnniversaryIslandName] = useState('');
+  const [anniversaryRecipientName, setAnniversaryRecipientName] = useState('');
+  const [anniversaryPostalCode, setAnniversaryPostalCode] = useState('');
+  const [anniversaryAddress, setAnniversaryAddress] = useState('');
+  const [anniversaryPhone, setAnniversaryPhone] = useState('');
+  const [anniversarySubmitting, setAnniversarySubmitting] = useState(false);
+  const [anniversarySuccess, setAnniversarySuccess] = useState(false);
+
+  // Promo Code State
+  const [promoCode, setPromoCode] = useState('');
+  const [isRedeeming, setIsRedeeming] = useState(false);
+
+  // 1周年特典の資格チェック
+  const daysSinceUltimate = ultimateStartedAt
+    ? Math.floor((Date.now() - new Date(ultimateStartedAt).getTime()) / (1000 * 60 * 60 * 24))
+    : 0;
+  const isAnniversaryEligible =
+    subscriptionTier === 'ultimate' &&
+    !!ultimateStartedAt &&
+    daysSinceUltimate >= 365 &&
+    daysSinceUltimate <= 365 + 180 &&
+    !anniversaryCertUsed;
+  const anniversaryDaysLeft = Math.max(0, 365 + 180 - daysSinceUltimate);
+
+  // 訪問済み島リスト（申請フォーム用）
+  const visitedIslandsList = useMemo(() => {
+    return allIslandsData.filter((i: any) => islandStatuses[i.id] === 'visited' || islandStatuses[i.id] === 'verified_visited');
+  }, [allIslandsData, islandStatuses]);
+
+  const handleAnniversarySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!anniversaryIslandId || !anniversaryRecipientName || !anniversaryPostalCode || !anniversaryAddress || !anniversaryPhone) {
+      toast.error('すべての項目を入力してください');
+      return;
+    }
+    setAnniversarySubmitting(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch('/api/certificates/anniversary', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({
+          island_id: anniversaryIslandId,
+          island_name: anniversaryIslandName,
+          recipient_name: anniversaryRecipientName,
+          postal_code: anniversaryPostalCode,
+          address: anniversaryAddress,
+          phone: anniversaryPhone,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || '申請に失敗しました');
+      setAnniversarySuccess(true);
+      setAnniversaryCertUsed(true); // ローカルステートも更新
+      toast.success('申請が完了しました！運営から連絡をお待ちください');
+    } catch (err: any) {
+      toast.error(err.message || '申請に失敗しました');
+    } finally {
+      setAnniversarySubmitting(false);
+    }
+  };
+
+  const handleRedeemCode = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!promoCode) {
+      toast.error('クーポンコードを入力してください');
+      return;
+    }
+    setIsRedeeming(true);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch('/api/user/redeem-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({ code: promoCode }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'クーポンの適用に失敗しました');
+      toast.success(data.message || 'クーポンを適用しました！');
+      setPromoCode('');
+    } catch (err: any) {
+      toast.error(err.message || 'クーポンの適用に失敗しました');
+    } finally {
+      setIsRedeeming(false);
+    }
+  };
 
   useEffect(() => {
     setNameInput(travelerName || '');
@@ -104,10 +205,9 @@ export default function MyPage() {
   const planningList = allIslandsData.filter(i => islandStatuses[i.id] === 'planning');
   const diffStats = calculateDifficultyStats(allIslandsData, islandStatuses);
 
-  const unlockedFairies = FAIRIES_MASTER.map(fairy => {
-    // 開発環境ではテスト確認用にすべて開放状態にする
-    const isDev = process.env.NODE_ENV === 'development';
-    const unlocked = isDev || (fairy.island_id ? (islandStatuses[fairy.island_id] === 'visited' || islandStatuses[fairy.island_id] === 'verified_visited') : (visitedList.some(isl => isl.region_id === fairy.region_id)));
+  const unlockedFairies = allFairies.map(fairy => {
+    // UI確認のため一時的にすべて開放表示
+    const unlocked = true; // collectedFairies.includes(fairy.id);
     return { ...fairy, unlocked };
   });
 
@@ -136,11 +236,14 @@ export default function MyPage() {
     { id: 'quests', label: 'クエスト・称号', icon: Award, count: specialTitles.filter(t => t.unlocked).length },
     { id: 'fairies', label: '妖精図鑑', icon: Sparkles, count: unlockedFairies.filter(f => f.unlocked).length },
     { id: 'planning', label: 'お気に入り', icon: Heart, count: planningList.length },
+    { id: 'orders', label: '注文履歴', icon: MapPin, count: undefined }, // Will load async
+    { id: 'settings', label: '設定', icon: Edit3, count: undefined },
   ];
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-32 font-sans relative text-slate-800">
       
+
       <header className="px-6 lg:px-12 py-4 border-b border-slate-200/60 flex items-center justify-between sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm">
         <button onClick={() => router.push('/')} className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors">
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
@@ -258,6 +361,64 @@ export default function MyPage() {
               )}
             </div>
 
+            {/* 1周年記念特典バナー */}
+            {isAnniversaryEligible && (
+              <div className="mb-6 p-5 rounded-2xl bg-gradient-to-r from-yellow-900/90 via-amber-800/90 to-yellow-900/90 border border-amber-400/50 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(255,200,0,0.3) 10px, rgba(255,200,0,0.3) 20px)' }} />
+                <div className="relative flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                  <div>
+                    <p className="text-amber-300 text-[0.65rem] font-bold tracking-widest uppercase mb-1">🎖️ ULTIMATE 1周年記念特典</p>
+                    <h3 className="text-white font-serif text-lg font-bold mb-1">1周年おめでとうございます！</h3>
+                    <p className="text-amber-200 text-xs leading-relaxed">特別版の紙の実物証明書を1通、無料でお届けします。</p>
+                    <p className="text-amber-400 text-xs font-bold mt-2">⏰ 申請期限まで あと <span className="text-white text-lg">{anniversaryDaysLeft}</span> 日</p>
+                  </div>
+                  <button
+                    onClick={() => setShowAnniversaryModal(true)}
+                    className="shrink-0 px-5 py-2.5 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-900 font-bold text-sm rounded-xl shadow-lg transition-all"
+                  >
+                    特別版証明書を申請する
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Subscription Status */}
+            <div className="mb-8 p-4 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xs font-bold text-slate-500">現在のプラン</span>
+                  <span className={`px-2 py-0.5 rounded-md text-[0.65rem] font-bold uppercase tracking-wider ${
+                    subscriptionTier === 'ultimate' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
+                    subscriptionTier === 'premium' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                    'bg-slate-100 text-slate-600 border border-slate-200'
+                  }`}>
+                    {subscriptionTier === 'ultimate' ? 'KIRATABI Ultimate' : subscriptionTier === 'premium' ? 'KIRATABI Premium' : 'Free (無料ユーザー)'}
+                  </span>
+                </div>
+                {subscriptionTier !== 'free' && premiumUntil && (
+                  <p className="text-[0.65rem] text-slate-500">
+                    有効期限: {new Date(premiumUntil).toLocaleDateString('ja-JP')}
+                  </p>
+                )}
+                <p className="text-xs text-slate-600 mt-1">
+                  {subscriptionTier === 'free' ? '公式証明書(高画質)の発行や、より強力な相棒精霊の解放にはプレミアムプランをご利用ください。' : 'プレミアム特典が適用されています。公式証明書が何度でも無料で発行可能です！'}
+                </p>
+              </div>
+              <button 
+                onClick={() => {
+                  if (subscriptionTier === 'free') {
+                    router.push('/#pricing');
+                    return;
+                  }
+                  setShowPlanModal(true);
+                }}
+                className="shrink-0 px-4 py-2 bg-white hover:bg-slate-50 text-blue-600 border border-blue-200 text-xs font-bold rounded-xl shadow-sm transition-colors"
+              >
+                {subscriptionTier === 'free' ? 'プランをアップグレード' : 'プラン変更・管理'}
+              </button>
+
+            </div>
+
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex flex-col items-center md:items-start">
@@ -352,7 +513,7 @@ export default function MyPage() {
                         onClick={() => router.push(`/island/${island.id}`)}
                         className="group cursor-pointer aspect-[3/4] bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden relative shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300"
                       >
-                        <img src={`/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => { e.currentTarget.src = 'https://images.unsplash.com/photo-1542259009477-d625272157b7?q=80&w=800&auto=format&fit=crop'; }} />
+                        <img src={`https://picsum.photos/seed/${island.id}/400/600`} alt={island.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/80 z-10" />
                         <div className="absolute inset-0 flex flex-col justify-end p-4 z-20">
                           <div className="flex flex-wrap items-center gap-1.5 mb-2">
@@ -411,19 +572,40 @@ export default function MyPage() {
           {activeTab === 'quests' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2 space-y-8">
               <div>
-                <h3 className="text-sm font-bold tracking-widest text-slate-800 border-l-4 border-amber-500 pl-3 mb-4">特別称号コレクション</h3>
+                <h3 className="text-sm font-bold tracking-widest text-slate-800 border-l-4 border-amber-500 pl-3 mb-4">諸島マスター</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {Object.entries(getRegionMastery(allIslandsData, visitCounts)).map(([region, mastery]) => (
+                    <div key={region} className={`p-4 rounded-2xl border transition-all ${mastery.isMaster ? 'bg-amber-50 border-amber-200' : 'bg-white border-slate-200'}`}>
+                      <div className="flex justify-between items-center mb-2">
+                        <h4 className={`font-bold font-serif ${mastery.isMaster ? 'text-amber-800' : 'text-slate-700'}`}>{mastery.title}</h4>
+                        {mastery.isMaster && <span className="text-xs font-bold px-2 py-1 bg-amber-500 text-white rounded-full">MASTER</span>}
+                      </div>
+                      <div className="w-full bg-slate-100 rounded-full h-2 overflow-hidden mb-1">
+                        <div className={`h-full ${mastery.isMaster ? 'bg-amber-500' : 'bg-blue-500'}`} style={{ width: `${(mastery.visited / mastery.total) * 100}%` }}></div>
+                      </div>
+                      <div className="flex justify-between text-[0.65rem] text-slate-500 font-bold">
+                        <span>進行度</span>
+                        <span>{mastery.visited} / {mastery.total} 島</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <h3 className="text-sm font-bold tracking-widest text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">特別称号コレクション</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {specialTitles.map(t => (
-                    <div key={t.id} className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-4 ${t.unlocked ? 'bg-amber-50 border-amber-200 shadow-sm' : 'bg-slate-50 border-slate-200 grayscale opacity-70'}`}>
+                    <div key={t.id} className={`p-5 rounded-2xl border transition-all flex flex-col justify-between gap-4 ${t.unlocked ? 'bg-blue-50 border-blue-200 shadow-sm' : 'bg-slate-50 border-slate-200 grayscale opacity-70'}`}>
                       <div className="flex items-start justify-between">
                         <span className="text-3xl drop-shadow-sm">{t.icon}</span>
-                        <span className={`text-[0.6rem] font-bold px-2 py-1 rounded-full uppercase tracking-widest ${t.unlocked ? 'bg-amber-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
+                        <span className={`text-[0.6rem] font-bold px-2 py-1 rounded-full uppercase tracking-widest ${t.unlocked ? 'bg-blue-500 text-white' : 'bg-slate-200 text-slate-500'}`}>
                           {t.unlocked ? '👑 獲得済' : `進行度: ${t.progress}%`}
                         </span>
                       </div>
                       <div>
-                        <h4 className={`font-serif font-black text-base mb-1 ${t.unlocked ? 'text-amber-800' : 'text-slate-600'}`}>{t.name}</h4>
-                        <p className={`text-[0.65rem] leading-relaxed ${t.unlocked ? 'text-amber-700/80' : 'text-slate-500'}`}>{t.description}</p>
+                        <h4 className={`font-serif font-black text-base mb-1 ${t.unlocked ? 'text-blue-800' : 'text-slate-600'}`}>{t.name}</h4>
+                        <p className={`text-[0.65rem] leading-relaxed ${t.unlocked ? 'text-blue-700/80' : 'text-slate-500'}`}>{t.description}</p>
                       </div>
                     </div>
                   ))}
@@ -435,18 +617,55 @@ export default function MyPage() {
           {/* Fairies Tab */}
           {activeTab === 'fairies' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
-              <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4 bg-white p-6 rounded-3xl shadow-sm border border-slate-200">
-                {unlockedFairies.map((fairy) => (
-                  <div key={fairy.id} className="flex flex-col items-center gap-2 group">
-                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-3xl transition-all relative overflow-hidden ${fairy.unlocked ? `bg-gradient-to-br ${fairy.visual.colorFrom} ${fairy.visual.colorTo} shadow-md` : 'bg-slate-100 border border-slate-200 grayscale opacity-50'}`}>
+              {/* Filter UI */}
+              <div className="flex flex-wrap gap-2 mb-4 px-1">
+                <button onClick={() => setFilterAttribute(null)} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors ${!filterAttribute ? 'bg-slate-800 text-white' : 'bg-white text-slate-500 border border-slate-200'}`}>すべて</button>
+                <button onClick={() => setFilterAttribute('WATER')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'WATER' ? 'bg-blue-500 text-white' : 'bg-white text-slate-500 border border-slate-200'}`}>💧 水</button>
+                <button onClick={() => setFilterAttribute('NATURE')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'NATURE' ? 'bg-green-500 text-white' : 'bg-white text-slate-500 border border-slate-200'}`}>🌿 自然</button>
+                <button onClick={() => setFilterAttribute('FIRE')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'FIRE' ? 'bg-red-500 text-white' : 'bg-white text-slate-500 border border-slate-200'}`}>🔥 火</button>
+                <button onClick={() => setFilterAttribute('LIGHT')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'LIGHT' ? 'bg-amber-400 text-white' : 'bg-white text-slate-500 border border-slate-200'}`}>✨ 光</button>
+                <button onClick={() => setFilterAttribute('EARTH')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'EARTH' ? 'bg-amber-700 text-white' : 'bg-white text-slate-500 border border-slate-200'}`}>🪨 地</button>
+                <button onClick={() => setFilterAttribute('WIND')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'WIND' ? 'bg-teal-400 text-white' : 'bg-white text-slate-500 border border-slate-200'}`}>🌪️ 風</button>
+                <button onClick={() => setFilterAttribute('ICE')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'ICE' ? 'bg-cyan-300 text-slate-800' : 'bg-white text-slate-500 border border-slate-200'}`}>❄️ 氷</button>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-transparent pt-2">
+                {unlockedFairies.filter(f => !filterAttribute || (f as any).attribute === filterAttribute).map((fairy) => (
+                  <div key={fairy.id} className={`relative flex flex-col items-center bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:-translate-y-1 hover:shadow-md ${fairy.unlocked ? 'border-slate-200' : 'border-slate-100 grayscale opacity-60'}`}>
+                    {/* Card Header (Rarity & Attr) */}
+                    {fairy.unlocked && (
+                      <div className="absolute top-2 w-full px-2 flex justify-between items-center z-10">
+                        <span className={`text-[0.55rem] font-black tracking-widest px-1.5 py-0.5 rounded-sm text-white shadow-sm ${
+                          fairy.rarity === 'EPIC' ? 'bg-gradient-to-r from-purple-500 to-indigo-500' : 
+                          fairy.rarity === 'RARE' ? 'bg-gradient-to-r from-amber-400 to-orange-500' : 
+                          fairy.rarity === 'SPOT_EXCLUSIVE' ? 'bg-gradient-to-r from-rose-500 to-pink-600' : 'bg-slate-700'
+                        }`}>
+                          {fairy.rarity.replace('_EXCLUSIVE', '')}
+                        </span>
+                        {(fairy as any).attribute && (
+                          <div className="bg-white/90 backdrop-blur-md rounded-full w-6 h-6 flex items-center justify-center text-[0.65rem] shadow-sm">
+                            {{ WATER: '💧', NATURE: '🌿', FIRE: '🔥', LIGHT: '✨', EARTH: '🪨', WIND: '🌪️', ICE: '❄️' }[(fairy as any).attribute as string] || ''}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    
+                    {/* Image Area */}
+                    <div className={`w-full aspect-[3/4] flex items-center justify-center text-5xl relative ${fairy.unlocked ? `bg-gradient-to-b ${fairy.visual.colorFrom} ${fairy.visual.colorTo}` : 'bg-slate-100'}`}>
                       {fairy.unlocked && fairy.visual.imageUrl ? (
-                        <img src={fairy.visual.imageUrl} alt={fairy.name} className="w-full h-full object-contain p-1" />
+                        <img src={fairy.visual.imageUrl} alt={fairy.name} className="w-full h-full object-contain p-2 drop-shadow-md" />
                       ) : (
                         <span>{fairy.visual.icon}</span>
                       )}
                     </div>
-                    <div className={`text-[0.6rem] font-bold text-center w-full truncate px-1 ${fairy.unlocked ? 'text-slate-700' : 'text-slate-400'}`}>
-                      {fairy.unlocked ? fairy.name : '???'}
+                    
+                    {/* Card Footer (Name & Theme) */}
+                    <div className="p-3 w-full text-center bg-white border-t border-slate-100">
+                      <div className={`text-xs font-black truncate ${fairy.unlocked ? 'text-slate-800' : 'text-slate-400'}`}>
+                        {fairy.unlocked ? fairy.name : '???'}
+                      </div>
+                      <div className="text-[0.55rem] text-slate-500 truncate mt-0.5">
+                        {fairy.unlocked ? fairy.theme : '未発見の妖精'}
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -479,8 +698,141 @@ export default function MyPage() {
             </motion.div>
           )}
 
+          {/* Orders Tab */}
+          {activeTab === 'orders' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
+              <OrderHistory />
+            </motion.div>
+          )}
+
+          {/* Settings Tab */}
+          {activeTab === 'settings' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
+                <h3 className="text-sm font-bold tracking-widest text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">クーポン・招待コード</h3>
+                <form onSubmit={handleRedeemCode} className="flex flex-col gap-3 max-w-sm">
+                  <p className="text-xs text-slate-500 mb-1">お持ちのクーポンコードを入力して特典を受け取りましょう。</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={promoCode}
+                      onChange={(e) => setPromoCode(e.target.value)}
+                      placeholder="クーポンコードを入力"
+                      className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-4 py-2 text-sm text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isRedeeming || !promoCode}
+                      className="px-4 py-2 bg-blue-500 text-white text-sm font-bold rounded-xl hover:bg-blue-600 disabled:opacity-50 transition-colors shadow-sm"
+                    >
+                      {isRedeeming ? '適用中...' : '適用する'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </motion.div>
+          )}
         </div>
       </div>
+
+      {/* 1周年記念証明書 申請モーダル */}
+      <AnimatePresence>
+        {showAnniversaryModal && (
+          <motion.div
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            onClick={(e) => { if (e.target === e.currentTarget) setShowAnniversaryModal(false); }}
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-gradient-to-b from-slate-900 to-slate-800 rounded-3xl border border-amber-400/40 shadow-2xl w-full max-w-lg overflow-hidden"
+            >
+              {/* ヘッダー */}
+              <div className="p-6 border-b border-amber-400/20 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-5" style={{ backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(255,200,0,0.5) 8px, rgba(255,200,0,0.5) 16px)' }} />
+                <div className="relative">
+                  <p className="text-amber-400 text-[0.6rem] font-bold tracking-widest uppercase mb-1">🎖️ KIRATABI ULTIMATE 1ST ANNIVERSARY</p>
+                  <h2 className="text-white font-serif text-xl font-bold">特別版証明書 無料申請</h2>
+                  <p className="text-amber-200/70 text-xs mt-1">訪問した島を1つ選んで、特別版の実物証明書をお届けします</p>
+                </div>
+              </div>
+
+              <div className="p-6 max-h-[70vh] overflow-y-auto">
+                {anniversarySuccess ? (
+                  <div className="text-center py-8">
+                    <div className="w-16 h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center mx-auto mb-4">
+                      <Award className="w-8 h-8 text-amber-400" />
+                    </div>
+                    <h3 className="text-white font-serif text-lg font-bold mb-2">申請が完了しました！</h3>
+                    <p className="text-slate-400 text-sm leading-relaxed">運営から発送準備が整い次第、メールにてご連絡いたします。<br />到着まで今しばらくお待ちください。</p>
+                    <button onClick={() => setShowAnniversaryModal(false)} className="mt-6 px-6 py-2 bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-sm rounded-xl">閉じる</button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleAnniversarySubmit} className="space-y-4">
+                    {/* 島を選択 */}
+                    <div>
+                      <label className="text-amber-300 text-xs font-bold mb-1.5 block">証明書にしたい島を選択</label>
+                      <select
+                        className="w-full bg-slate-700 border border-slate-600 text-white text-sm rounded-xl p-3 focus:outline-none focus:border-amber-400"
+                        value={anniversaryIslandId}
+                        onChange={e => {
+                          setAnniversaryIslandId(e.target.value);
+                          const found = visitedIslandsList.find((i: any) => i.id === e.target.value);
+                          setAnniversaryIslandName(found?.name || '');
+                        }}
+                        required
+                      >
+                        <option value="">-- 訪問済みの島から選ぶ --</option>
+                        {visitedIslandsList.map((i: any) => (
+                          <option key={i.id} value={i.id}>{i.name}（{i.prefecture}）</option>
+                        ))}
+                      </select>
+                    </div>
+
+                    {/* 送付先情報 */}
+                    <div className="pt-2 border-t border-slate-700">
+                      <p className="text-amber-300 text-xs font-bold mb-3">送付先情報</p>
+                      <div className="space-y-3">
+                        <input type="text" placeholder="氏名（フルネーム）" required value={anniversaryRecipientName} onChange={e => setAnniversaryRecipientName(e.target.value)}
+                          className="w-full bg-slate-700 border border-slate-600 text-white placeholder-slate-400 text-sm rounded-xl p-3 focus:outline-none focus:border-amber-400" />
+                        <input type="text" placeholder="郵便番号（例：123-4567）" required value={anniversaryPostalCode} onChange={e => setAnniversaryPostalCode(e.target.value)}
+                          className="w-full bg-slate-700 border border-slate-600 text-white placeholder-slate-400 text-sm rounded-xl p-3 focus:outline-none focus:border-amber-400" />
+                        <input type="text" placeholder="住所（都道府県〜番地・部屋番号まで）" required value={anniversaryAddress} onChange={e => setAnniversaryAddress(e.target.value)}
+                          className="w-full bg-slate-700 border border-slate-600 text-white placeholder-slate-400 text-sm rounded-xl p-3 focus:outline-none focus:border-amber-400" />
+                        <input type="tel" placeholder="電話番号（ハイフンなし）" required value={anniversaryPhone} onChange={e => setAnniversaryPhone(e.target.value)}
+                          className="w-full bg-slate-700 border border-slate-600 text-white placeholder-slate-400 text-sm rounded-xl p-3 focus:outline-none focus:border-amber-400" />
+                      </div>
+                    </div>
+
+                    <p className="text-slate-400 text-[0.65rem] leading-relaxed">※ 申請は1度のみ有効です。申請後の変更はお受けできません。個人情報は証明書の発送目的のみに使用します。</p>
+
+                    <div className="flex gap-3 pt-2">
+                      <button type="button" onClick={() => setShowAnniversaryModal(false)}
+                        className="flex-1 py-3 bg-slate-700 hover:bg-slate-600 text-white text-sm font-bold rounded-xl transition-colors">
+                        キャンセル
+                      </button>
+                      <button type="submit" disabled={anniversarySubmitting}
+                        className="flex-1 py-3 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-900 font-bold text-sm rounded-xl shadow-lg transition-all disabled:opacity-60">
+                        {anniversarySubmitting ? '送信中...' : '申請する'}
+                      </button>
+                    </div>
+                  </form>
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      <PlanChangeModal
+        isOpen={showPlanModal}
+        onClose={() => setShowPlanModal(false)}
+        currentTier={subscriptionTier as 'premium' | 'ultimate'}
+        onPlanChanged={(newTier) => {
+          toast.success(`KIRATABI ${newTier === 'ultimate' ? 'Ultimate' : 'Premium'} に変更しました！`);
+          // リロードしてContextを更新
+          setTimeout(() => window.location.reload(), 1500);
+        }}
+      />
     </main>
   );
 }

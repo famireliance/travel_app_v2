@@ -21,9 +21,17 @@ interface IslandDiary {
   photo_url?: string;
 }
 
-export default function IslandDiaries({ islandId, islandName }: { islandId: string, islandName: string }) {
+export default function IslandDiaries({ 
+  islandId, 
+  islandName,
+  initialDiaries = []
+}: { 
+  islandId: string, 
+  islandName: string,
+  initialDiaries?: IslandDiary[]
+}) {
   const { user } = useTravel();
-  const [diaries, setDiaries] = useState<IslandDiary[]>([]);
+  const [diaries, setDiaries] = useState<IslandDiary[]>(initialDiaries);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -160,7 +168,7 @@ export default function IslandDiaries({ islandId, islandName }: { islandId: stri
               {diary.photo_url && (
                 <div className="mt-3 pl-11">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={diary.photo_url} alt="User posted photo" className="rounded-xl max-h-72 w-full object-cover border border-slate-200 shadow-sm" />
+                  <img src={diary.photo_url} alt="User posted photo" className="rounded-xl max-h-80 w-full md:w-3/4 object-contain bg-slate-100 border border-slate-200 shadow-sm" />
                 </div>
               )}
             </div>

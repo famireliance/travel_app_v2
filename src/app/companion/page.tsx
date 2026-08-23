@@ -15,7 +15,7 @@ type ViewMode = 'COMPANION' | 'FAIRIES';
 
 export default function CompanionPage() {
   const router = useRouter();
-  const { totalXP, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, user } = useTravel();
+  const { totalXP, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, user, allFairies } = useTravel();
   const playerLvInfo = getPlayerLevelInfo(totalXP);
   
   const [viewMode, setViewMode] = useState<ViewMode>('COMPANION');
@@ -300,12 +300,12 @@ export default function CompanionPage() {
                 企業コラボの超激レア妖精も隠れているかも…？全国を飛び回ってコレクションをコンプリートしよう！
               </p>
               <div className="mt-6 inline-flex items-center gap-2 bg-indigo-900/30 border border-indigo-500/30 px-6 py-2 rounded-full text-indigo-300 font-bold text-sm">
-                収集率: {collectedFairies.length} / {FAIRIES_MASTER.length}
+                収集率: {collectedFairies.length} / {allFairies.length}
               </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-8">
-              {FAIRIES_MASTER.map(fairy => {
+              {allFairies.map(fairy => {
                 // 開発環境ではテスト確認用にすべて開放状態にする
                 const isDiscovered = process.env.NODE_ENV === 'development' || collectedFairies.includes(fairy.id);
                 const isRareOrEpic = fairy.rarity === 'RARE' || fairy.rarity === 'EPIC' || fairy.rarity === 'SPOT_EXCLUSIVE';

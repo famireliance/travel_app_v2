@@ -9,6 +9,7 @@ import { Toaster } from 'react-hot-toast';
 import GlobalRadar from '@/components/GlobalRadar';
 import Footer from '@/components/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import LevelUpModal from '@/components/LevelUpModal';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -75,6 +76,7 @@ export default function RootLayout({
           <AuthReminderBanner />
           {children}
           <FairyDiscoveryModal />
+          <LevelUpModal />
           <GlobalRadar />
           <Footer />
         </TravelProvider>

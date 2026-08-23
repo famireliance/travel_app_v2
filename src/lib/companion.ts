@@ -50,7 +50,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '蒼海の竜姫 シママル・エメラルド',
         title: 'Lv.10〜24 外洋サンゴの守護者',
         icon: '🐬',
-        image: '/companions/shimamaru_card.png',
+        image: '/companions/shimamaru_stage2.png',
         skillName: 'サンゴ礁と海流ナビゲート',
         skillDesc: 'ウミガメとの遭遇率が高い秘境ポイントやケラマブルー・ミヤコブルー絶景を検知',
         badgeGradient: 'from-teal-500 to-cyan-600',
@@ -62,7 +62,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '海神リヴァイアサン・シママル',
         title: 'Lv.25〜49 八百万の海の支配竜',
         icon: '🐉',
-        image: '/companions/shimamaru_card.png',
+        image: '/companions/shimamaru_stage3.png',
         skillName: '全海域・天候潮流パーフェクト予測',
         skillDesc: '絶海諸島へのフェリー欠航リスク回避と最高のシュノーケル日和を導き出す',
         badgeGradient: 'from-blue-600 to-indigo-700',
@@ -74,7 +74,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '神話の守護海神竜皇「極・シママル」',
         title: 'Lv.50〜 伝説の島旅王ガーディアン',
         icon: '👑🐉',
-        image: '/companions/shimamaru_card.png',
+        image: '/companions/shimamaru_stage4.png',
         skillName: '日本全国 432島 海洋踏破のキセキ',
         skillDesc: 'すべての経験値とポイント獲得量が+1000%される、伝説の到達者にのみ与えられる奇跡の加護。',
         badgeGradient: 'from-amber-400 via-emerald-500 to-blue-600',
@@ -107,7 +107,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '銀河の天星使者 ホシダマ・ルナ',
         title: 'Lv.10〜24 南十字星観測の賢者',
         icon: '🌌',
-        image: '/companions/hoshidama_card.png',
+        image: '/companions/hoshidama_stage2.png',
         skillName: 'ダークスカイ＆流星群キャッチ',
         skillDesc: '波照間島や神津島などで南十字星や天の川を完璧に捕捉する観測時間帯を案内',
         badgeGradient: 'from-purple-600 to-pink-600',
@@ -119,7 +119,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '鳳凰・ダークスカイフェニックス',
         title: 'Lv.25〜49 宇宙銀河を飛翔する神鳥',
         icon: '🦅✨',
-        image: '/companions/hoshidama_card.png',
+        image: '/companions/hoshidama_stage3.png',
         skillName: '月齢ゼロ・極夜天体パーフェクトナビ',
         skillDesc: '新月と快晴が重なる奇跡の夜空と小笠原・八重山・隠岐の秘密天体スポットを開放',
         badgeGradient: 'from-violet-600 to-indigo-900',
@@ -131,7 +131,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '極・大宇宙と銀河の天星神 ホシダマ',
         title: 'Lv.50〜 宇宙をまといし守護大天使',
         icon: '👑🌌',
-        image: '/companions/hoshidama_card.png',
+        image: '/companions/hoshidama_stage4.png',
         skillName: '日本全国 星空保護区コンプリート神話',
         skillDesc: '日本の夜空を愛するすべての人に捧ぐ、最も輝かしい星の精霊王',
         badgeGradient: 'from-amber-400 via-purple-600 to-indigo-950',
@@ -164,7 +164,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '癒やしとヴィラリトリートの女神 ナギサ',
         title: 'Lv.10〜24 フォトジェニック＆コスメの達人',
         icon: '🍹',
-        image: '/companions/nagisa_card.png',
+        image: '/companions/nagisa_stage2.png',
         skillName: '島ハーブスパ＆現代アート巡り',
         skillDesc: '直島アート銭湯や小豆島オリーブスパ、絶景オーシャンビューホテルなどのご褒美旅を厳選',
         badgeGradient: 'from-rose-500 to-amber-500',
@@ -176,7 +176,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '極上デトックスの楽園プリンセス',
         title: 'Lv.25〜49 五感を磨くリトリートマスター',
         icon: '👑💖',
-        image: '/companions/nagisa_card.png',
+        image: '/companions/nagisa_stage3.png',
         skillName: '隠れ家プライベートリトリート開拓',
         skillDesc: '心と体を究極に癒やすオーベルジュやヨガスポット、治安最高クラスの安心ルートを確約',
         badgeGradient: 'from-fuchsia-600 to-pink-600',
@@ -188,7 +188,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '愛と楽園の太陽女神「極・ナギサ」',
         title: 'Lv.50〜 日本中の島々を魅了する女神',
         icon: '👑☀️',
-        image: '/companions/nagisa_card.png',
+        image: '/companions/nagisa_stage4.png',
         skillName: '日本全国 女子旅リトリート完全制覇',
         skillDesc: 'すべての旅行者に癒やしと最高の輝きを与える、太陽と美の最高守護神',
         badgeGradient: 'from-amber-400 via-pink-500 to-rose-600',
@@ -221,7 +221,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '秘湯とロウリュのシーサー神 イワビコ',
         title: 'Lv.10〜24 ととのい＆海中温泉探求者',
         icon: '🦁🔥',
-        image: '/companions/iwabiko_card.png',
+        image: '/companions/iwabiko_stage2.png',
         skillName: '潮見表＆絶景サウナタイミング導出',
         skillDesc: '平内海中温泉や地鉈温泉など、干満の差で現れる幻の野湯の入浴ベストタイムを予測',
         badgeGradient: 'from-orange-600 to-red-600',
@@ -233,7 +233,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: 'マグニチュード秘湯の大地神獣',
         title: 'Lv.25〜49 極上の温浴＆ロウリュマスター',
         icon: '🌋🧖‍♂️',
-        image: '/companions/iwabiko_card.png',
+        image: '/companions/iwabiko_stage3.png',
         skillName: 'アウトドアテントサウナ＆絶景露天制覇',
         skillDesc: '日本各地のリゾートホテルサウナと、大自然の中での冷水浴スポットを完璧に網羅',
         badgeGradient: 'from-red-600 to-amber-700',
@@ -245,7 +245,7 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
         name: '日本全国温泉とサウナの大霊神「極・イワビコ」',
         title: 'Lv.50〜 究極のととのい＆秘湯大王',
         icon: '👑🔥',
-        image: '/companions/iwabiko_card.png',
+        image: '/companions/iwabiko_stage4.png',
         skillName: '日本の島湯・サウナ聖地コンプリート',
         skillDesc: '大地の熱と海風を融合させ、あらゆる旅人に最高潮のととのいを与える温泉の大霊神',
         badgeGradient: 'from-yellow-400 via-orange-600 to-red-700',
@@ -258,12 +258,15 @@ export const COMPANION_CHARACTERS: Record<CompanionId, CompanionCharacter> = {
 /**
  * プレイヤーの経験値やレベルをもとに、選択したコンパニオンの進化段階情報を取得する
  */
-export function getCompanionStageInfo(companionId: CompanionId, playerLevel: number): CompanionStageInfo {
+export function getCompanionStageInfo(companionId: CompanionId, playerLevel: number, subscriptionTier: string = 'free'): CompanionStageInfo {
   const char = COMPANION_CHARACTERS[companionId] || COMPANION_CHARACTERS.shimamaru;
   let currentStage = char.stages[0];
 
   for (const stage of char.stages) {
     if (playerLevel >= stage.minLevel) {
+      if (stage.stage === 4 && subscriptionTier !== 'ultimate') {
+        continue;
+      }
       currentStage = stage;
     }
   }

@@ -12,14 +12,16 @@ interface CertificateModalProps {
   island: any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: any;
+  anniversaryMode?: boolean;
 }
 
 import { useTravel } from '@/context/TravelContext';
 import { getFormattedSerial, getIslandDifficulty } from '@/lib/difficulty';
 import { supabase } from '@/lib/supabase';
 
-export default function CertificateModal({ isOpen, onClose, island, user }: CertificateModalProps) {
-  const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses, tempCheckInPhotoUrl, tempCheckInDate } = useTravel();
+export default function CertificateModal({ isOpen, onClose, island, user, anniversaryMode = false }: CertificateModalProps) {
+  const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses, tempCheckInPhotoUrl, tempCheckInDate, subscriptionTier } = useTravel();
+  const isPremium = subscriptionTier === 'premium' || subscriptionTier === 'ultimate';
   const status = island ? (islandStatuses[island.id] || 'none') : 'none';
   const isVerified = status === 'verified_visited';
   const [travelerName, setTravelerName] = useState<string>('');
@@ -29,7 +31,7 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [includeCompanionStamp, setIncludeCompanionStamp] = useState(true);
   const [isOrdering, setIsOrdering] = useState(false);
-  const [orderPlan, setOrderPlan] = useState<'card' | 'postcard' | 'a4'>('card');
+  const [orderPlan, setOrderPlan] = useState<'standard' | 'frame_simple' | 'frame_wood' | 'frame_acrylic'>('standard');
   const [orderDesign, setOrderDesign] = useState<'horizontal' | 'vertical'>('horizontal');
   const [isLaminated, setIsLaminated] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
@@ -49,6 +51,8 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   const [isPlayingAd, setIsPlayingAd] = useState(false);
   const [adTimeLeft, setAdTimeLeft] = useState(0);
   const [hasHologram, setHasHologram] = useState(false);
+  const [limitReachedError, setLimitReachedError] = useState(false);
+  const [limitErrorMessage, setLimitErrorMessage] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fullscreenCanvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -80,20 +84,24 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
   // Use useEffect to check localStorage for daily issue count
   useEffect(() => {
     if (isOpen && island) {
+      setLimitReachedError(false);
+      // Check local storage for today's issue
       const issuedKey = `kiratabi_issued_${island.id}`;
       const lastIssuedDate = localStorage.getItem(issuedKey);
       const todayStr = new Date().toISOString().split('T')[0];
+      
       if (lastIssuedDate === todayStr) {
         setHasIssuedToday(true);
+        setIsDigitalIssued(true);
       } else {
         setHasIssuedToday(false);
+        setIsDigitalIssued(false);
       }
     }
   }, [isOpen, island]);
 
-  const handleIssueCertificate = () => {
-    if (hasIssuedToday) {
-      // Need to watch ad
+  const handleDigitalIssueClick = (type?: string) => {
+    if (!isPremium) {
       setIsPlayingAd(true);
       setAdTimeLeft(5);
     } else {
@@ -101,15 +109,41 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
     }
   };
 
-  const issueDigital = useCallback(() => {
-    if (island) {
-      const issuedKey = `kiratabi_issued_${island.id}`;
-      const todayStr = new Date().toISOString().split('T')[0];
-      localStorage.setItem(issuedKey, todayStr);
+  const issueDigital = useCallback(async () => {
+    if (!island) return;
+    
+    if (user) {
+      try {
+        const res = await fetch('/api/certificates', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ islandId: island.id, userId: user.id })
+        });
+        const data = await res.json();
+        
+        if (!res.ok) {
+          if (data.error === 'FREE_LIMIT_REACHED') {
+            setLimitReachedError(true);
+            return;
+          }
+          throw new Error(data.error || 'Failed to issue');
+        }
+        
+        if (data.certificate) {
+          setAssignedSerial(`No.${String(data.certificate.serial_number).padStart(4, '0')}`);
+        }
+      } catch (err) {
+        console.error('Failed to issue certificate on server:', err);
+      }
     }
+
+    const issuedKey = `kiratabi_issued_${island.id}`;
+    const todayStr = new Date().toISOString().split('T')[0];
+    localStorage.setItem(issuedKey, todayStr);
+
     setHasIssuedToday(true);
     setIsDigitalIssued(true);
-  }, [island]);
+  }, [island, user]);
 
   useEffect(() => {
     if (isPlayingAd && adTimeLeft > 0) {
@@ -243,9 +277,181 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
     const height = 900;
 
     const renderContent = (ctx: CanvasRenderingContext2D, heroImg?: HTMLImageElement) => {
-      // Background fill
-      ctx.fillStyle = '#0F172A'; // Slate 900
-      ctx.fillRect(0, 0, width, height);
+      // ======================================================
+      // 1周年記念特別版デザイン
+      // ======================================================
+      if (anniversaryMode) {
+        // Deep navy background
+        ctx.fillStyle = '#0A0F2E';
+        ctx.fillRect(0, 0, width, height);
+
+        // Midnight blue radial
+        const grad = ctx.createRadialGradient(width / 2, height / 2, 80, width / 2, height / 2, 750);
+        grad.addColorStop(0, '#1a2060');
+        grad.addColorStop(0.5, '#0d1240');
+        grad.addColorStop(1, '#060816');
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, width, height);
+
+        // Gold outer border (thick)
+        ctx.strokeStyle = '#C9A84C';
+        ctx.lineWidth = 14;
+        ctx.strokeRect(25, 25, width - 50, height - 50);
+
+        // Platinum inner border
+        const platGrad = ctx.createLinearGradient(0, 0, width, height);
+        platGrad.addColorStop(0, '#FFFFFF');
+        platGrad.addColorStop(0.5, '#C0C0C0');
+        platGrad.addColorStop(1, '#E8E8E8');
+        ctx.strokeStyle = platGrad;
+        ctx.lineWidth = 2.5;
+        ctx.strokeRect(44, 44, width - 88, height - 88);
+
+        // Corner ornaments — diamond shape
+        const drawDiamond = (cx: number, cy: number) => {
+          ctx.save();
+          ctx.translate(cx, cy);
+          ctx.beginPath();
+          ctx.moveTo(0, -18); ctx.lineTo(18, 0); ctx.lineTo(0, 18); ctx.lineTo(-18, 0);
+          ctx.closePath();
+          ctx.fillStyle = '#C9A84C';
+          ctx.fill();
+          ctx.restore();
+        };
+        drawDiamond(44, 44); drawDiamond(width - 44, 44);
+        drawDiamond(44, height - 44); drawDiamond(width - 44, height - 44);
+
+        // Horizontal decorative lines with stars
+        const drawStarLine = (y: number) => {
+          ctx.strokeStyle = 'rgba(201,168,76,0.5)';
+          ctx.lineWidth = 1;
+          ctx.beginPath(); ctx.moveTo(80, y); ctx.lineTo(width / 2 - 120, y); ctx.stroke();
+          ctx.beginPath(); ctx.moveTo(width / 2 + 120, y); ctx.lineTo(width - 80, y); ctx.stroke();
+          ctx.fillStyle = '#C9A84C';
+          ctx.font = '18px serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('★', width / 2, y + 6);
+        };
+        drawStarLine(200);
+        drawStarLine(height - 140);
+
+        // Anniversary ribbon at top
+        ctx.fillStyle = 'rgba(201,168,76,0.12)';
+        ctx.fillRect(0, 55, width, 140);
+
+        // Title area
+        ctx.textAlign = 'center';
+        const titleGrad = ctx.createLinearGradient(0, 80, 0, 130);
+        titleGrad.addColorStop(0, '#FFFFFF');
+        titleGrad.addColorStop(0.5, '#C9A84C');
+        titleGrad.addColorStop(1, '#E8D5A3');
+        ctx.fillStyle = titleGrad;
+        ctx.font = 'bold 20px monospace';
+        ctx.fillText('★★★ KIRATABI ULTIMATE 1ST ANNIVERSARY ★★★', width / 2, 95);
+
+        ctx.fillStyle = '#E8D5A3';
+        ctx.font = 'bold 50px serif';
+        ctx.fillText('山 旅 到 達 記 念 証', width / 2, 170);
+
+        // Subtitle
+        ctx.fillStyle = 'rgba(255,255,255,0.6)';
+        ctx.font = '18px sans-serif';
+        ctx.fillText('ONE YEAR ULTIMATE MEMBER SPECIAL EDITION', width / 2, 215);
+
+        // Body text
+        ctx.fillStyle = '#CBD5E1';
+        ctx.font = '26px sans-serif';
+        ctx.fillText('以下の旅人が1周年を超える久しく島島を巡る旅を続け、', width / 2, 270);
+        ctx.fillText('見事この地を蹏破したことをKIRATABIシステムにより特別公認する。', width / 2, 310);
+
+        // Traveler Name
+        ctx.fillStyle = 'rgba(201,168,76,0.2)';
+        ctx.fillRect(width / 2 - 380, 345, 760, 85);
+        ctx.strokeStyle = '#C9A84C';
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(width / 2 - 380, 345, 760, 85);
+
+        const nameGrad = ctx.createLinearGradient(0, 350, 0, 420);
+        nameGrad.addColorStop(0, '#FFFFFF');
+        nameGrad.addColorStop(1, '#E8D5A3');
+        ctx.fillStyle = nameGrad;
+        ctx.font = 'bold 46px serif';
+        ctx.fillText(travelerName || 'Voyager', width / 2, 402);
+
+        // Island name
+        const diff = getIslandDifficulty(island);
+        ctx.fillStyle = '#C9A84C';
+        ctx.font = 'bold 26px sans-serif';
+        ctx.fillText(`【 到達島 】 ${island.name} (${island.region_id || 'Japan'})`, width / 2, 472);
+        ctx.fillStyle = '#94A3B8';
+        ctx.font = 'bold 18px sans-serif';
+        ctx.fillText(`【 冠険難易度 】 ${diff.stars} (${diff.shortLabel})`, width / 2, 508);
+
+        // Date
+        ctx.fillStyle = '#64748B';
+        ctx.font = '20px monospace';
+        ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, width / 2, 545);
+
+        // Hero Image
+        if (heroImg) {
+          ctx.save();
+          const heroX = width / 2 - 220; const heroY = 568;
+          const heroW = 440; const heroH = 180;
+          ctx.beginPath(); ctx.rect(heroX, heroY, heroW, heroH); ctx.clip();
+          const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
+          const dw = heroImg.width * scale; const dh = heroImg.height * scale;
+          ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
+          ctx.restore();
+          ctx.strokeStyle = '#C9A84C'; ctx.lineWidth = 3;
+          ctx.strokeRect(heroX, heroY, heroW, heroH);
+        }
+
+        // ANNIV Special Seal (platinum ring)
+        const cx = width - 175; const cy = height - 165;
+        ctx.beginPath(); ctx.arc(cx, cy, 68, 0, Math.PI * 2);
+        const sealGrad = ctx.createLinearGradient(cx - 68, cy - 68, cx + 68, cy + 68);
+        sealGrad.addColorStop(0, '#FFFFFF'); sealGrad.addColorStop(0.5, '#C9A84C'); sealGrad.addColorStop(1, '#E8D5A3');
+        ctx.strokeStyle = sealGrad; ctx.lineWidth = 6; ctx.stroke();
+        ctx.beginPath(); ctx.arc(cx, cy, 58, 0, Math.PI * 2); ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = '#C9A84C'; ctx.font = 'bold 13px serif';
+        ctx.fillText('KIRATABI', cx, cy - 20);
+        ctx.font = 'bold 16px serif'; ctx.fillText('ULTIMATE', cx, cy + 4);
+        ctx.font = 'bold 12px monospace'; ctx.fillText('1ST ANNIV', cx, cy + 24);
+        ctx.font = '11px monospace'; ctx.fillText('★ SPECIAL ★', cx, cy + 44);
+
+        // Companion stamp (gold-tinted)
+        if (includeCompanionStamp && companionChar && companionStage) {
+          ctx.save();
+          const bx = 68; const by = height - 195;
+          ctx.fillStyle = 'rgba(10,15,46,0.9)'; ctx.fillRect(bx, by, 420, 88);
+          ctx.strokeStyle = '#C9A84C'; ctx.lineWidth = 2; ctx.strokeRect(bx, by, 420, 88);
+          ctx.beginPath(); ctx.arc(bx + 44, by + 44, 30, 0, Math.PI * 2);
+          ctx.fillStyle = '#060816'; ctx.fill();
+          ctx.strokeStyle = '#C9A84C'; ctx.lineWidth = 2; ctx.stroke();
+          ctx.font = '30px sans-serif'; ctx.textAlign = 'center';
+          ctx.fillText(companionStage.icon || '🐢', bx + 44, by + 54);
+          ctx.textAlign = 'left';
+          ctx.fillStyle = '#E8D5A3'; ctx.font = 'bold 14px sans-serif';
+          ctx.fillText(`同行精霊: ${companionChar.name} (STAGE ${companionStage.stage})`, bx + 88, by + 28);
+          ctx.fillStyle = '#FFFFFF'; ctx.font = 'bold 16px serif';
+          ctx.fillText(`${companionStage.name}`, bx + 88, by + 52);
+          ctx.fillStyle = '#C9A84C'; ctx.font = '11px monospace';
+          ctx.fillText('【 守護精霊パートナー公認証 】', bx + 88, by + 74);
+          ctx.restore();
+        }
+
+        // ANNIV serial
+        const anniversarySerial = `ANNIV-${String(Math.abs(island.id?.split('').reduce((a: number, c: string) => a + c.charCodeAt(0), 0) ?? 0) % 9000 + 1000)}`;
+        ctx.fillStyle = '#4A5568'; ctx.font = '16px monospace'; ctx.textAlign = 'left';
+        ctx.fillText(`SERIAL: ${anniversarySerial}`, 80, height - 80);
+        ctx.fillText(`VERIFY AT: https://island.kira-tabi.com`, 80, height - 55);
+
+        return; // anniversaryMode end — skip normal rendering
+      }
+
+      // ======================================================
+      // 通常版デザイン（以下変更なし）
+      // ======================================================
 
       // Subtle radial glow
       const gradient = ctx.createRadialGradient(width / 2, height / 2, 100, width / 2, height / 2, 800);
@@ -744,48 +950,66 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                             <User className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                             <h4 className="font-bold text-slate-800 mb-2">ログインが必要です</h4>
                             <p className="text-xs text-slate-500 mb-4">公式認定デジタル証明書を発行・保存するには、無料のユーザー登録が必要です。</p>
-                            <p className="text-xs font-bold text-rose-600 mb-4 animate-pulse">【特典】今登録すると3ヶ月間発行無料！</p>
                             <button onClick={onClose} className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm rounded-xl">
                               閉じてログイン画面へ
                             </button>
                           </div>
-                        ) : isTrialActive ? (
-                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border-2 border-amber-400">
-                            <Sparkles className="w-12 h-12 text-amber-500 mx-auto mb-3" />
-                            <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">簡易デジタル版を発行</h4>
+                        ) : limitReachedError ? (
+                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border-2 border-red-400 pointer-events-auto">
+                            <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">無料枠の上限に達しました</h4>
                             <p className="text-xs text-slate-600 mb-4 leading-relaxed">
-                              この島の公式認定デジタル証明書を発行し、透かしを解除してダウンロード可能にします。
+                              {limitErrorMessage}
                             </p>
-                            <div className="bg-rose-50 text-rose-600 font-bold text-xs p-3 rounded-xl mb-4 border border-rose-200">
-                              【各島1日1回無料】<br/>
-                              2回目以降は動画広告視聴で再発行できます。
-                            </div>
                             <button 
-                              onClick={(e) => { e.stopPropagation(); handleIssueCertificate(); }}
-                              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2"
+                              onClick={() => { onClose(); /* Optionally navigate to upgrade page */ }}
+                              className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-900 font-bold text-sm rounded-xl shadow-lg"
                             >
-                              {hasIssuedToday ? (
-                                <><span>広告を見て再発行</span></>
-                              ) : (
-                                <>無料で公認証明書を発行する</>
-                              )}
+                              プランを確認する
                             </button>
+                          </div>
+                        ) : isPremium ? (
+                          <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border-2 border-amber-400 pointer-events-auto">
+                            <Sparkles className="w-12 h-12 text-amber-500 mx-auto mb-3" />
+                            <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">公式証明書を発行します</h4>
+                            <p className="text-xs text-slate-600 mb-4 leading-relaxed">
+                              用途に合わせて発行する証明書のタイプを選択してください。
+                            </p>
+                            <div className="flex flex-col gap-2">
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleDigitalIssueClick('card'); }}
+                                className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition-colors border border-slate-200"
+                              >
+                                【無料・無制限】簡易カード版を発行
+                              </button>
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleDigitalIssueClick('high_quality'); }}
+                                className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm rounded-xl shadow-lg transition-colors flex items-center justify-center gap-1.5"
+                              >
+                                <Sparkles className="w-4 h-4" /> 公式高画質版を発行 (Free:1枚/Premium:月5枚)
+                              </button>
+                            </div>
                           </div>
                         ) : (
                           <div className="bg-white p-6 rounded-2xl shadow-xl text-center max-w-sm border border-slate-200 pointer-events-auto">
                             <Award className="w-12 h-12 text-blue-500 mx-auto mb-3" />
-                            <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">簡易デジタル版を発行</h4>
+                            <h4 className="font-bold text-slate-800 mb-2 font-serif text-lg">公式証明書を発行します</h4>
                             <p className="text-xs text-slate-600 mb-4 leading-relaxed">
-                              無料トライアル期間が終了しました。KIRATABI公認デジタル証明書の発行には決済が必要です。
+                              用途に合わせて発行する証明書のタイプを選択してください。
                             </p>
-                            <button 
-                              onClick={(e) => { e.stopPropagation(); setIsDigitalIssued(true); }}
-                              className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl shadow-lg flex items-center justify-center gap-2"
-                            >
-                              <span>Stripe決済へ進む</span>
-                              <span className="bg-slate-700 px-2 py-0.5 rounded text-xs">¥100</span>
-                            </button>
-                            <p className="text-[10px] text-slate-400 mt-3">※テスト環境のため実際には課金されません</p>
+                            <div className="flex flex-col gap-2">
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleDigitalIssueClick('card'); }}
+                                className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm rounded-xl transition-colors border border-slate-200"
+                              >
+                                【無料・無制限】簡易カード版を発行
+                              </button>
+                              <button 
+                                onClick={(e) => { e.stopPropagation(); handleDigitalIssueClick('high_quality'); }}
+                                className="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm rounded-xl shadow-lg transition-colors flex items-center justify-center gap-1.5"
+                              >
+                                <Sparkles className="w-4 h-4" /> 公式高画質版を発行 (Free:1枚/Premium:月5枚)
+                              </button>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -854,36 +1078,46 @@ export default function CertificateModal({ isOpen, onClose, island, user }: Cert
                   <div className="space-y-6 bg-slate-900/60 p-6 rounded-3xl border border-slate-700">
                     <h4 className="font-serif font-bold text-white text-xl text-center">プラン選択と配送先入力</h4>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div
-                        onClick={() => setOrderPlan('card')}
+                        onClick={() => setOrderPlan('standard')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'card' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                          orderPlan === 'standard' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
                         }`}
                       >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">カードサイズ</span>
-                        <div className="text-lg font-bold text-white mb-2">¥500</div>
-                        <p className="text-[10px] text-slate-300">財布に入る免許証サイズ。</p>
-                      </div>
-                      <div
-                        onClick={() => setOrderPlan('postcard')}
-                        className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'postcard' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
-                        }`}
-                      >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">ハガキサイズ</span>
-                        <div className="text-lg font-bold text-white mb-2">¥800</div>
-                        <p className="text-[10px] text-slate-300">飾りやすい定番サイズ。</p>
-                      </div>
-                      <div
-                        onClick={() => setOrderPlan('a4')}
-                        className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'a4' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
-                        }`}
-                      >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">A4大判サイズ</span>
+                        <span className="text-xs font-bold text-amber-400 block mb-1">台紙付き (基本)</span>
                         <div className="text-lg font-bold text-white mb-2">¥1,500</div>
-                        <p className="text-[10px] text-slate-300">部屋に飾る本格的な証書。</p>
+                        <p className="text-[10px] text-slate-300">A4高品質印刷・特製台紙付き。</p>
+                      </div>
+                      <div
+                        onClick={() => setOrderPlan('frame_simple')}
+                        className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                          orderPlan === 'frame_simple' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-amber-400 block mb-1">簡易フレーム [OP]</span>
+                        <div className="text-lg font-bold text-white mb-2">¥3,000</div>
+                        <p className="text-[10px] text-slate-300">壁掛け・卓上両対応の軽量フレーム。</p>
+                      </div>
+                      <div
+                        onClick={() => setOrderPlan('frame_wood')}
+                        className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                          orderPlan === 'frame_wood' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-amber-400 block mb-1">高級木製フレーム [OP]</span>
+                        <div className="text-lg font-bold text-white mb-2">¥6,000</div>
+                        <p className="text-[10px] text-slate-300">重厚感のある木製フレーム装飾。</p>
+                      </div>
+                      <div
+                        onClick={() => setOrderPlan('frame_acrylic')}
+                        className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                          orderPlan === 'frame_acrylic' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                        }`}
+                      >
+                        <span className="text-xs font-bold text-amber-400 block mb-1">アクリル額装プレミアム [OP]</span>
+                        <div className="text-lg font-bold text-white mb-2">¥10,000</div>
+                        <p className="text-[10px] text-slate-300">浮き出し加工の最高級アクリル額。</p>
                       </div>
                     </div>
 

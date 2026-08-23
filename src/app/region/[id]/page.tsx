@@ -34,8 +34,8 @@ export default function RegionMap() {
     }
     fetchAllIslands()
       .then(islands => {
-        const filtered = (islands || []).filter((i: IslandData) => i.region_id === regionId);
-        setRegionIslands(filtered);
+        const filtered = (islands || []).filter((i: any) => i.region_id === regionId);
+        setRegionIslands(filtered as unknown as IslandData[]);
         setLoading(false);
       })
       .catch(err => {
@@ -50,7 +50,7 @@ export default function RegionMap() {
     const validCoords = regionIslands
       .filter(i => i.coordinates)
       .map(i => {
-        const [lat, lng] = i.coordinates.split(',').map(parseFloat);
+        const [lat, lng] = i.coordinates!.split(',').map(parseFloat);
         return { lat, lng };
       })
       .filter(c => !isNaN(c.lat) && !isNaN(c.lng));
@@ -124,9 +124,9 @@ export default function RegionMap() {
       <SearchModal 
         isOpen={isSearchOpen} 
         onClose={() => setIsSearchOpen(false)} 
-        onSelectIsland={(island: IslandData) => {
+        onSelectIsland={(islandId: string) => {
           setIsSearchOpen(false);
-          router.push(`/island/${island.id}`);
+          router.push(`/island/${islandId}`);
         }}
       />
     </main>

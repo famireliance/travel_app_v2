@@ -33,6 +33,7 @@ interface TravelContextType {
   companionChar: CompanionCharacter;
   companionStage: CompanionStageInfo;
   // Island Fairies Collection
+  allFairies: IslandFairy[];
   collectedFairies: string[];
   collectedFairyDates: Record<string, string>; // { fairyId: '2026-07-19T12:00:00Z' }
   newlyDiscoveredFairies: IslandFairy[];
@@ -45,6 +46,12 @@ interface TravelContextType {
   setTempCheckInPhotoUrl: (url: string | null) => void;
   tempCheckInDate: string | null;
   setTempCheckInDate: (date: string | null) => void;
+  isDataLoaded: boolean;
+  subscriptionTier: 'free' | 'premium' | 'ultimate';
+  premiumUntil: string | null;
+  ultimateStartedAt: string | null;
+  anniversaryCertUsed: boolean;
+  setAnniversaryCertUsed: (val: boolean) => void;
 }
 
 const TravelContext = createContext<TravelContextType>({
@@ -66,6 +73,7 @@ const TravelContext = createContext<TravelContextType>({
   updateCompanionId: () => {},
   companionChar: COMPANION_CHARACTERS.shimamaru,
   companionStage: COMPANION_CHARACTERS.shimamaru.stages[0],
+  allFairies: FAIRIES_MASTER,
   collectedFairies: [],
   collectedFairyDates: {},
   newlyDiscoveredFairies: [],
@@ -76,7 +84,13 @@ const TravelContext = createContext<TravelContextType>({
   tempCheckInPhotoUrl: null,
   setTempCheckInPhotoUrl: () => {},
   tempCheckInDate: null,
-  setTempCheckInDate: () => {}
+  setTempCheckInDate: () => {},
+  isDataLoaded: false,
+  subscriptionTier: 'free',
+  premiumUntil: null,
+  ultimateStartedAt: null,
+  anniversaryCertUsed: false,
+  setAnniversaryCertUsed: () => {},
 });
 
 export function TravelProvider({ children }: { children: React.ReactNode }) {
@@ -88,6 +102,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [spotsVisited, setSpotsVisited] = useState<Record<string, number>>({});
   const [totalXP, setTotalXP] = useState<number>(0);
   const [selectedCompanionId, setSelectedCompanionId] = useState<CompanionId>('shimamaru');
+  const [allFairies, setAllFairies] = useState<IslandFairy[]>(FAIRIES_MASTER);
   const [collectedFairies, setCollectedFairies] = useState<string[]>([]);
   const [collectedFairyDates, setCollectedFairyDates] = useState<Record<string, string>>({});
   const [newlyDiscoveredFairies, setNewlyDiscoveredFairies] = useState<IslandFairy[]>([]);
@@ -95,6 +110,10 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [tempCheckInPhotoUrl, setTempCheckInPhotoUrl] = useState<string | null>(null);
   const [tempCheckInDate, setTempCheckInDate] = useState<string | null>(null);
+  const [subscriptionTier, setSubscriptionTier] = useState<'free' | 'premium' | 'ultimate'>('free');
+  const [premiumUntil, setPremiumUntil] = useState<string | null>(null);
+  const [ultimateStartedAt, setUltimateStartedAt] = useState<string | null>(null);
+  const [anniversaryCertUsed, setAnniversaryCertUsed] = useState<boolean>(false);
 
   // Auth & Data Load
   useEffect(() => {
@@ -110,6 +129,30 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       setSelectedCompanionId(savedComp);
     }
 
+    // Fetch dynamic fairies from Supabase
+    supabase.from('fairies').select('*').then(({ data, error }) => {
+      if (!error && data && data.length > 0 && isMounted) {
+        // Map database columns to the frontend IslandFairy format
+        const formattedFairies = data.map(d => ({
+          ...d,
+          id: d.id,
+          name: d.name,
+          theme: d.theme,
+          description: d.description,
+          rarity: d.rarity,
+          visual: {
+            icon: d.icon,
+            imageUrl: d.custom_photo_url || d.image_url,
+            colorFrom: d.color_from,
+            colorTo: d.color_to,
+            shadowColor: d.shadow_color,
+            sparkleColor: d.sparkle_color
+          }
+        }));
+        setAllFairies(formattedFairies as any);
+      }
+    });
+
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!isMounted) return;
       const currentUser = session?.user || null;
@@ -118,12 +161,25 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       // ユーザーのニックネームをSupabaseから取得
       if (currentUser) {
         try {
-          const { data } = await supabase.from('user_profiles').select('nickname').eq('id', currentUser.id).single();
-          if (data && data.nickname && isMounted) {
-            setTravelerName(data.nickname);
-            localStorage.setItem('kiratabi_traveler_name', data.nickname);
+          const res = await fetch(`/api/user/profile?t=${Date.now()}`, {
+            cache: 'no-store',
+            headers: {
+              'Authorization': `Bearer ${session?.access_token || ''}`
+            }
+          });
+          const json = await res.json();
+          const data = json.profile;
+          if (data && isMounted) {
+            if (data.nickname) {
+              setTravelerName(data.nickname);
+              localStorage.setItem('kiratabi_traveler_name', data.nickname);
+            }
+            if (data.subscription_tier) setSubscriptionTier(data.subscription_tier as 'free' | 'premium' | 'ultimate');
+            if (data.premium_until) setPremiumUntil(data.premium_until);
+            if (data.ultimate_started_at) setUltimateStartedAt(data.ultimate_started_at);
+            if (data.anniversary_cert_used !== undefined) setAnniversaryCertUsed(!!data.anniversary_cert_used);
           }
-        } catch {}
+        } catch (err) { console.error("Profile fetch error", err); }
         
         if (currentUser.user_metadata?.bio) {
           setBio(currentUser.user_metadata.bio);
@@ -150,16 +206,29 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       
       if (currentUser && _event === 'SIGNED_IN') {
         try {
-          supabase.from('user_profiles').select('nickname').eq('id', currentUser.id).single().then(({data}) => {
-             if (data && data.nickname && isMounted) {
-               setTravelerName(data.nickname);
-               localStorage.setItem('kiratabi_traveler_name', data.nickname);
-             }
-          });
+          fetch(`/api/user/profile?t=${Date.now()}`, {
+            cache: 'no-store',
+            headers: {
+              'Authorization': `Bearer ${session?.access_token || ''}`
+            }
+          }).then(res => res.json()).then(json => {
+            const data = json.profile;
+            if (data && isMounted) {
+              if (data.nickname) {
+                setTravelerName(data.nickname);
+                localStorage.setItem('kiratabi_traveler_name', data.nickname);
+              }
+              if (data.subscription_tier) setSubscriptionTier(data.subscription_tier as 'free' | 'premium' | 'ultimate');
+              if (data.premium_until) setPremiumUntil(data.premium_until);
+              if (data.ultimate_started_at) setUltimateStartedAt(data.ultimate_started_at);
+              if (data.anniversary_cert_used !== undefined) setAnniversaryCertUsed(!!data.anniversary_cert_used);
+            }
+          }).catch(err => console.error("Profile fetch error on auth change", err));
+          
           if (currentUser.user_metadata?.bio) {
             setBio(currentUser.user_metadata.bio);
           }
-        } catch {}
+        } catch (err) { console.error("Auth change error", err); }
       }
 
       loadLocalData(currentUser?.id, isMounted);
@@ -351,7 +420,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         const islandObj = ALL_ISLANDS_MASTER_DICTIONARY[islandId];
         if (islandObj) {
           const rId = islandObj.region_id || islandObj.region || prefectureMap[islandObj.prefecture] || 'unknown';
-          const foundFairies = FAIRIES_MASTER.filter(f => {
+          const foundFairies = allFairies.filter(f => {
             if (f.island_id && f.island_id === islandId) return true;
             if (!f.island_id && f.region_id === rId) return true;
             return false;
@@ -509,7 +578,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       const rId = islandObj.region_id || islandObj.region || prefectureMap[islandObj.prefecture] || 'unknown';
       const iId = islandId;
       
-      const foundFairies = FAIRIES_MASTER.filter(f => {
+      const foundFairies = allFairies.filter(f => {
         if (f.island_id && f.island_id === iId) return true; // Island specific (Collab)
         if (!f.island_id && f.region_id === rId) return true; // Region specific
         return false;
@@ -560,6 +629,36 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // ステータスを同期
     updateStatus(islandId, isVerified ? 'verified_visited' : 'visited');
 
+    // SupabaseDB同期 (Phase 4: island_visit_logs と user_profiles の更新)
+    if (user) {
+      // 1. Visit Logの追加
+      supabase.from('island_visit_logs').insert({
+        user_id: user.id,
+        island_id: islandId,
+        visited_at: new Date().toISOString(),
+        is_verified: isVerified,
+        earned_xp: gained
+      }).then(({ error }) => {
+        if (error) console.error('Failed to insert visit log', error);
+      });
+
+      // 2. プレイヤーレベルと累計ポイントの更新
+      if (gained > 0) {
+        supabase.from('user_profiles').select('total_points').eq('id', user.id).single().then(({ data }) => {
+          const currentPts = data?.total_points || 0;
+          const newTotal = currentPts + gained;
+          const newLevelInfo = getPlayerLevelInfo(newTotal);
+          
+          supabase.from('user_profiles').update({
+            total_points: newTotal,
+            player_level: newLevelInfo.level
+          }).eq('id', user.id).then(({ error }) => {
+            if (error) console.error('Failed to update user profile', error);
+          });
+        });
+      }
+    }
+
     return { xpGained: gained };
   };
 
@@ -568,7 +667,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem('kiratabi_traveler_name', name);
     if (user) {
       try {
-        await supabase.from('user_profiles').upsert({ id: user.id, nickname: name, email: user.email });
+        await supabase.from('user_profiles').update({ nickname: name }).eq('id', user.id);
       } catch(e) { console.error('Failed to update nickname in DB', e); }
     }
   };
@@ -601,7 +700,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     
     const fairyId = spot.reward_fairy_id;
     if (!collectedFairies.includes(fairyId)) {
-      const fairy = FAIRIES_MASTER.find(f => f.id === fairyId);
+      const fairy = allFairies.find(f => f.id === fairyId);
       if (fairy) {
         setCollectedFairies(prev => {
           const next = [...prev, fairyId];
@@ -641,7 +740,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
   const playerLvInfo = useMemo(() => getPlayerLevelInfo(totalXP), [totalXP]);
   const companionChar = useMemo(() => COMPANION_CHARACTERS[selectedCompanionId] || COMPANION_CHARACTERS.shimamaru, [selectedCompanionId]);
-  const companionStage = useMemo(() => getCompanionStageInfo(selectedCompanionId, playerLvInfo.level), [selectedCompanionId, playerLvInfo.level]);
+  const companionStage = useMemo(() => getCompanionStageInfo(selectedCompanionId, playerLvInfo.level, subscriptionTier), [selectedCompanionId, playerLvInfo.level, subscriptionTier]);
 
   const totalVisited = useMemo(() => Object.values(islandStatuses).filter(s => s === 'visited' || s === 'verified_visited').length, [islandStatuses]);
 
@@ -664,6 +763,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     updateCompanionId,
     companionChar,
     companionStage,
+    allFairies,
     collectedFairies,
     collectedFairyDates,
     newlyDiscoveredFairies,
@@ -674,9 +774,15 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     tempCheckInPhotoUrl,
     setTempCheckInPhotoUrl,
     tempCheckInDate,
-    setTempCheckInDate
+    setTempCheckInDate,
+    isDataLoaded,
+    subscriptionTier,
+    premiumUntil,
+    ultimateStartedAt,
+    anniversaryCertUsed,
+    setAnniversaryCertUsed,
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [user, islandStatuses, totalVisited, travelerName, bio, visitCounts, lastVisitDates, spotsVisited, totalXP, totalPoints, conquestTargetCount, selectedCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, newlyDiscoveredFairies, tempCheckInPhotoUrl, tempCheckInDate]);
+  }), [user, islandStatuses, totalVisited, travelerName, bio, visitCounts, lastVisitDates, spotsVisited, totalXP, totalPoints, conquestTargetCount, selectedCompanionId, companionChar, companionStage, allFairies, collectedFairies, collectedFairyDates, newlyDiscoveredFairies, tempCheckInPhotoUrl, tempCheckInDate, isDataLoaded, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed]);
 
   return (
     <TravelContext.Provider value={contextValue}>

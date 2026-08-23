@@ -57,7 +57,7 @@ export default function Footer() {
         <div>
           <h4 className="font-bold text-sm text-white tracking-widest mb-4">連携サービス</h4>
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
-            <li><a href="https://shima-senka.com" target="_blank" rel="nofollow noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Ship size={14}/> 島専科</a></li>
+            <li><a href="https://kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Compass size={14}/> KIRATABI</a></li>
             <li><a href="https://guide.kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><FileText size={14}/> KIRATABIガイド</a></li>
           </ul>
         </div>
@@ -74,9 +74,8 @@ export default function Footer() {
 
       </div>
       
-      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800/50 flex flex-col md:flex-row items-center justify-between text-xs text-slate-500 font-medium">
+      <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800/50 flex flex-col md:flex-row items-center justify-center text-xs text-slate-500 font-medium">
         <p>&copy; {new Date().getFullYear()} KIRATABI - All rights reserved.</p>
-        <p className="mt-2 md:mt-0">Powered by 島専科</p>
       </div>
     </footer>
   );
