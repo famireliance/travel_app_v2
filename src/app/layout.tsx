@@ -24,7 +24,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://island.kira-tabi.com'),
   title: {
-    default: 'キラ旅 | 日本の離島制覇アプリ',
+    default: 'キラ旅 | 日本の離島432島を制覇しよう',
     template: '%s | キラ旅',
   },
   description: '日本全国432の離島を訪れてスタンプを集めよう。GPS・写真チェックインで公式到達認定。ご当地妖精の図鑑や3D地球儀フライトトラッカーで旅の記録を彩ります。',

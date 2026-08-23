@@ -103,7 +103,7 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
       
       if (error) throw error;
 
-      toast.success('島ノートを投稿しました！');
+      toast.success('みんなの島ノートを投稿しました！');
       
       setContent('');
       setPhotoUrl('');

@@ -81,12 +81,12 @@ export default function IslandDiaries({
             onClick={() => setIsModalOpen(true)}
             className="w-full md:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold rounded-full transition-all shadow-md shadow-blue-500/25 flex items-center justify-center gap-2 mx-auto hover:scale-105"
           >
-            <Edit3 className="w-5 h-5" /> ✍️ リッチな島ノートを書く
+            <Edit3 className="w-5 h-5" /> ✍️ リッチなみんなの島ノートを書く
           </button>
         </div>
       ) : (
         <div className="mb-10 bg-slate-50 p-6 rounded-2xl border border-slate-100 text-center">
-          <p className="text-sm text-slate-500 font-bold">島ノートを投稿するにはログインが必要です</p>
+          <p className="text-sm text-slate-500 font-bold">みんなの島ノートを投稿するにはログインが必要です</p>
         </div>
       )}
 
@@ -106,7 +106,7 @@ export default function IslandDiaries({
         ) : diaries.length === 0 ? (
           <div className="text-center py-10 text-slate-400">
             <MessageCircle className="w-12 h-12 mx-auto opacity-20 mb-3" />
-            <p className="font-serif text-sm">まだ島ノートがありません。<br/>最初の記録を残してみませんか？</p>
+            <p className="font-serif text-sm">まだみんなの島ノートがありません。<br/>最初の記録を残してみませんか？</p>
           </div>
         ) : (
           diaries.map((diary) => (

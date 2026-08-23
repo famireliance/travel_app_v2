@@ -288,7 +288,7 @@ export default function Home() {
         <div className="hidden md:flex items-center gap-8 mr-8">
           <motion.button onClick={() => setIsSearchOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>探す</motion.button>
           <motion.button onClick={() => router.push('/map')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>マップ</motion.button>
-          <motion.button onClick={() => router.push('/timeline')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>島ノート</motion.button>
+          <motion.button onClick={() => router.push('/timeline')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>みんなの島ノート</motion.button>
           <motion.button onClick={() => setIsCompanionModalOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>図鑑</motion.button>
           <motion.button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>
             {user ? 'マイページ' : 'ログイン'}
@@ -334,7 +334,7 @@ export default function Home() {
               onClick={() => { setIsMobileMenuOpen(false); router.push('/timeline'); }}
               className="text-left font-serif text-base text-slate-800 py-2 border-b border-slate-100 flex items-center gap-3"
             >
-              <MessageCircle size={18} /> 島ノート
+              <MessageCircle size={18} /> みんなの島ノート
             </button>
             <button
               onClick={() => { setIsMobileMenuOpen(false); setIsCompanionModalOpen(true); }}
@@ -410,10 +410,11 @@ export default function Home() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <h1 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-snug md:leading-[1.3] tracking-widest drop-shadow-lg mb-6 max-w-2xl break-words">
+                <h1 className="sr-only">日本の離島432島を制覇しよう</h1>
+                <h2 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-snug md:leading-[1.3] tracking-widest drop-shadow-lg mb-6 max-w-2xl break-words">
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[0] : slides[0].title[0]}<br />
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[1] : slides[0].title[1]}
-                </h1>
+                </h2>
                 <div 
                   className="flex items-center gap-2 text-white/90 mb-4 bg-black/20 hover:bg-black/40 backdrop-blur-sm w-fit px-3 py-1.5 rounded-full border border-white/10 cursor-pointer transition-colors group/loc"
                   onClick={() => {

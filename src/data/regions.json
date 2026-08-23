@@ -14,7 +14,7 @@
     "area": "東北地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXR5i0ed1DrRhfD_lQTSMIe7ix_Jy9MUwL6TJujlPff3GY7s6vAvaZ58Bst01bVf7NzArhPy51Qgh9DBwJWRsmT5lP-rYJLEB64y2zbSw90VSTU_Hh3ZBnFSz1-TcxQ8kPzKlC-iv9JhWH88PIq4ggtlplDxcFb9ZFkstsWjbhV53gOq4OQbyu1U1cHqkuNo2V85nv0UKZRtrLrkmJsyuDRNqPx-DNywAX3al7mIS7EnXK5AFgMFMuh1X8St-7HivE6Fc5jN2p6SDnFsPPA6AuMsBfW-nbcLFwhtF08TsfmELm45awZbvx4L8si6liJdKbuGOYUeNSPzfsJo0hCGfYyf0eyWdPwYVtvJaiRrczZKjg0qDU43C80xRDaOiKFz3hKJDhK5dBAA64SD2PGtP07YOXeziI_kT1A3zkt6xHiWyQ&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_sanriku.jpg"
   },
   {
     "id": "oshika",
@@ -23,7 +23,7 @@
     "area": "東北地方",
     "visited": 0,
     "total": 21,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXTluSE5uKyymNc33Wsr0UoMlh3yCaVdPAj_ttb1fMfmllBZnhRbOv0lXjeCN_l1c-SDCK1vMubwjTJtJRIchKtc7J9L9dVOemtTi1vCvP-NJuFqOCn7kwXqyZ4h3rdrMBbngjX0zaQHePTQfy8-y6fEBdcNm0OAgByz6LRCrSMXD7udPSay-A_s0LVdHaxRwMoslv16n24dYNgQCQBgE_G0uaPn69ukVYK93JP6epPS0MR7310-tw0i-yen9H1oVGY_IFCgy-fB9zsrgR7FJNSuK7JuOT6qvRniAuLryhazUa54qVzVzHRJBIoqMbv_q2B02-NKY5lYTSrA0-Bc27PmSbKQmvuqXP-ShQ6yXn5K7N3ywIGyPjfuTDmUgqLULPsBXH9P4QUqxK6erk-ySBNrsrPaHGBaLiUfIun55XZzR8BNk4epGaMfUH4ehwWg&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_oshika.jpg"
   },
   {
     "id": "izu",
@@ -32,7 +32,7 @@
     "area": "関東地方",
     "visited": 0,
     "total": 16,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXSLAxW6U7ly01lJa8Di7Qoku2tmM66L5FuIRJ9ma1wPGOi0dBPsnNMNrPHmu7-A_CXRRCry9CnnChj-kjrRU3IX84vdo9uWoy4a7vq8G2-A0n8jESTgHGjUA65ydvfAEXzDEHFdAqgZA-K6LYqmUmNZCZd2GjJlJzamvPpt-KCiutrxEWX-EcfqFag5mqi6_v0EJB9vGHatgUEZ7EtdELdaJgkS5Pt0GQS0S5CPnybwJFwtUYsyO9zaXVlr_7MZEFu8XyhcS2CrTFCBpBSOpqjaSlwsM_FpHC44uVtayy694jd_ss5eB3LlePI03FiKh6cy_f4Mk2gJlv4ze2WX6d0LHw8-mYuWHWcBFQzKROtbU8iy9N7PK90bJFy2kFjOW5MvaGKLkqaonqXbFY_vLPC-x8G-D11c1OfcZURV5umdeA&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_izu.jpg"
   },
   {
     "id": "ogasawara",
@@ -41,7 +41,7 @@
     "area": "関東地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXSveR9hzXJuTCicg44omq8OLCiS6mvOn_Szj3ycvBFBwmHIh3MU5nJwh9cUp_lpvhJvHtrHQ1pOjXxMk_uYlDxZF4YYbj1T0p1_bvH3tuoEdArc_js1mGulLQ1B8lhpti8WNf27dtP25aNAjVyaJdCg9PACfdKbT5eZ2Gi9WJ3gkc6xZ4RdU_6nozoeRC9xRhhQW6Gh3SL4M4nilcdkJX-QYcUtVsKG1JUlMaUiXqALsB-W0sUAwVYikDiE8RBi8-4zwMoVWYiwdxglLRKQ6eRBxlgSUxi-aYP7_cTRWs22GWJKBlENo9WfA04xN-yklnGOoTMNsD6oq_NFAbNW60fBcMS1b5mGOkw-0PwfkypKkoI-YUrh_k6gVoc4y7nwT-Y8I2-6Q06-ip3WDlBYbbA1uhJEmK4_q_xfSNuUSvl_9U4i&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_ogasawara.jpg"
   },
   {
     "id": "pseudo_kanto",
@@ -50,7 +50,7 @@
     "area": "関東地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXSMjRf3vVC86rWjWFl6iBBFPvKzYpEopzQEAvzfZNEMqI18hniwT8Rl6085Dh-ccvuamPnVn6yZgrsYxeuh7B_9TffCk_YCkoePdzv5t5dSC89wt_JRZWpbJhCsdjee0tPL3podW3lX8oxI-32iBb6EziYm-45SFXGmvD1vVCifVFFUpQt3571Af7o96KsBUyYy4E5bShGfPp2E0NKSK32bt_a9keCGPU143WEJnqy6V3uB7KU-z_o6we9FmHtX_MP4lknDHUUdsa-Bu0zKcsNFR0m48jkSfKW1UwWDksb3aTuDUOTdvVq94lRECqUJ8jrDDGmB2_N8iL2l2ijAY7cIQ3iI_hjeE-5utbIOAe50RBt5suBpTUnfXUW-4SRBeFe8noNuVDUBEcuGlFb8nO5jklCMQCTNHlT9-FU4O3hZ9Lk&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_kanto.jpg"
   },
   {
     "id": "pseudo_hokuriku",
@@ -59,7 +59,7 @@
     "area": "北陸地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXRgGLM7aCk-6PmjUI6tikK05jFQoD8l1_lwGJ0fEVqLcri1q4W9Ab63eGKBZ468F_WWLI8sv1rn69CGAJpcJ-dFgZWFYIpa8nc5oGy8dqljSSYBGitJdd0P_UjNh_k8shBBrDShj4SjDLhxVvpa-YRx90Uq1Ba8C-yFs8Yig82Ql_NmCe4_Z5Gf93N74X4Jfl-Sz3XL1AcdhrwrqChvuFMTs-JSCqwjb8qPBM4tCofJ20n2ceYeEPlMgG84pOAwZXqw7X9AWzF2y0n2Y08BuVggSVBDUcbomlWWhE-6kV56sOPvIASJuPXH54qjK51tpce4ldF4zfZeHs9g4uUwnJTuhTXunuUSekRj4u-DJw1fZQt9OJlTGGxSBrWg36_iqOrE9ZPCmbKi6pqsNEh6pjZ-tTsNU2FNbn8qpNb0UZkR1pxK&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_hokuriku.jpg"
   },
   {
     "id": "aichi_santo",
@@ -68,7 +68,7 @@
     "area": "東海地方",
     "visited": 0,
     "total": 20,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXTKGH6an5kyKD6O0rr5z2J7KYP-sKIgQjOgN1tzo1xvCwoeYcWwFi1DTmhkK9iHhucAd95SoD7wkGIi08z57lx6u19Fg8632zOf0rj5rQ84zz299smoTx3Rzzd0YQ3bwb9fiRW1auOaomSWuCM4zYBC3KMX-Rfjmlyu98p8eH-XIgSi9p7URfygSargoWBrLdD3JWTmKp1pF-_u6DtwLF8gTWtidvqNeIkV1D8_BOVfwFfdCHT7h1MU2qiOGSMFVzu1pUND6BYT8gCsLcwOtY7udXZIl2bPl_l1XnW9PqFrcmulIDkNLRKV5haQOeElEkGYhtILFtTi9nO7FKMtoDZUa5saEs5GgSvEbTKu_m7GEdm9-R8Djv7hGgRnFgCXO0ZukUWivyIicfs0dwfUc2yHsLBYwvHoJMKFphST0818FQ&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_aichi_santo.jpg"
   },
   {
     "id": "ieshima",
@@ -77,7 +77,7 @@
     "area": "近畿地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXTBmD_fG_zGsMrWg7hvCbq_o9kw0KWumREkPwEPxTphz6aB3KmlJcb1dkmBkLUCpifpGrglLqyQ-_56o4Lc0htV0M-Bv-6SORrViHkSYdiNp4646_5JsVfw81HtMlM8qv34Mj6STXUkB5iJJUAWu-1x86oAvSW9vb8EeyOSuivMKJG8bcQCXJ9vbjWtymELAPeE_AAiNO4VwSoP-2R_K-3vugL3v-Y6XjvPreu1XNz5aSUnmG77kACyklywGrDB2odG5Rg1j9-tMWd9Wr6pfqJTGHoB9qdCLg55qmCrIEpo4i1IA2S1a2SQNcbCcex70XM-EibrDTzNGqNro5GQXNvHer8DS_XLopJJ3uYMu0Qe3s7jWxZ4g1yJ9X7qiIrPrWBev6sWXSXS570Zh7nAqdf8g54eVc0FZUJKW6wggFgmDjVJA_wcHCBjz404X5VJ&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_ieshima.jpg"
   },
   {
     "id": "pseudo_awaji",
@@ -94,7 +94,7 @@
     "area": "近畿地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXTUIzhReLSQ8IXNSXAsDjyAS_YXPA0G-XHDq9EBdFtb4yjXOARz_hXm31ObSXZf5k_lotYZSxrUmovcVnTitbxpRZX5HP1pCWGZzdcCUgoITi8ZnHe7EyeZJPQDm4x4xrE499MxnxQhjrpIwPvmVLgOwGuYS69NQ9cdXms4s7t1obikBmMMiWg78z_bvyRevgviqKGmAhmZURmLWffNAXoI3XMcWQu9mkeiclqYL199AuEiF-8g1xtxDMhr-RK8Cg2mX4AGj4zDjPPBAtoxOrf3grjwgsYJJT_7p2AgIrXs7toz6cknktxurzpieCpkfLcJy4BtotszID06XhZCGX4qVE9N_xi7Cg6FEQy4I4-NG0LsdS_D88au5DILMavlC9K1IzbPqedB9QvnYFBo35rAv0TjPcm_DQhbgfWoAv-AIPOc&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_biwako.jpg"
   },
   {
     "id": "kasaoka",
@@ -103,7 +103,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 32,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQaWbKlrnzEe94HtjXUQSB48lxhQc3TymLenpBikOFq3HE_IxonKir8uniBHDbcx0aIZC8PfWrDC0Xb6Cr20pFbiW3XA-e1c1nETfcgjN6NntExrk73MyVZtvVaSUUyHERY11PCTnry6yS115iVEpGt_FO1DTwYHeKLiSvx2Cwwp6r9xOWfivFXX5TY8jMULpUB4xURg4p54iOabwUL78EIbAZSGPPjoTIUIDtJ3fNeoYB_sfnYIeIj7C671lfDqtn8DGB2AGOvtE3HgO5tBtl29adyVB8VG-cXen3ztZ9EztffMZXyKeKUsRB94OOriZ-m1PnKsixZL43d8bSx9k--9GkIW-BgQVxFMti9w68VNmDtcKEUM4v1gs5Gp5E9pgzrlHW7BbUspdyf9BIITcGSurBE5UQfvVKN5OLCHIWY1w&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_kasaoka.jpg"
   },
   {
     "id": "hagi",
@@ -112,7 +112,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 8,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXTa4wHr4fAu5pJivNB7zugWo_maqf2EXIroDwBvuIdLO9EjKi8chzNtq10PTfTBwBNdWUn3dK7jkJejZcDRHDlNyHQZLdLEI3KC8NzS5oIU-RtxaTatmLtk6f46EMEcFuJ80fndCoC-gUhetACmqPobMz0pPH0FXbKU56jI7WkwN4dg_rNtnx4BE0AUAZPgif_HxalwQ_yO1b-PRrX5aQNfjXjC1V_JKghMfkWNckstdbPNItNy5yKCHBjqErZC3PrjiJCrqGgZuNY_Q7R1EX75D_eWHA0ans3qVxPBRoY8_UPqQkquSIHh3AGl7lYrRfxTJezl2w7C-BnyqPB8SJcWKDXJZ1ZdjKIzMDJD1wqY1lk4Z_lgx_h_8x29Itd1hCRpkn_Le0ZM8fFwGOe71Ubvwxh1SD5rGS85MkLd40AJFwjE&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_hagi.jpg"
   },
   {
     "id": "oki",
@@ -121,7 +121,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXSH66QqwnpLsjgSdBubmJlDfSnkyiW_1RlItcFWCWptHzcbTrTUMQwH7GQKiKfoTrAHkLJv1OReORvrS62IXm9EX5TcJOLl2PKjS-mA5CB1TEnIs3wI4z5kuLvoA_g8w_O_iTnm1iGVWyfU8l_3XtRpawP2A7jHVG0dkTHerZnh1cPWCP9HmMCyf1TaTMfGJBzGt8RVRYjAqzjjPVX-c0u_fOfcV2zCBSp7S7fJTYfD1mEZNBnNf8SFqYKYCBkKQ6yLy32J_WlKwRxjUhza4gauq5JaRrb3N13vo6ixA_0bXhE7MaZ-fDpTfzkmF_rQLqnDE1aOK4izjwJzasfRtVLK0HtnaRJEdyvPYiAOCc0M_W7TZH5S6-AemMZU_Ll0mnTnqIHcU89meCifm4UCJl6mIfbXZYbgxdA98w8XqYI&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_oki.jpg"
   },
   {
     "id": "pseudo_san_in",
@@ -130,7 +130,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 3,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQ3KGAZbLnDoUCTG0Y0i4PLHVry_a8NsvBAmnxPxYvuxD03NVgwyZku_cJwdqytp4T8w6UQInevWIDVT3E80RDrFbSPbE0CkcLL3lQxiTyDskMVWM6unaQ8xllPV0_zr9N4xpvIcmMKw4vnoDhuoNAtPo6FFN0qSXsUEnndpWvRlORHCw3rSw9Jr-OTFvd5uS_H9BKHxMvk_LFymkpaOAH7Ekm4G5MLB_R0pxq-sIU7TOyisy-liREU0YGk1epwL9A8l6vtsBvGH3Tx98S_OlN9L0yzkOIJ1uSEyObQI2lPlik1GDdLjSNY6hhkafJhLg8wRd7obDP0WGroG2dTE5MrVRXgWjML6QDG6a1ouL442IiCXsWWItio5qqMUY8EqSyRsP1Pla2mVz327-XI2248Gcx3q0_VTEuB1HSN6dlvGiyL&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_san_in.jpg"
   },
   {
     "id": "suo_oshima",
@@ -139,7 +139,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 12,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXT4z2YAf4NWoJLPJc9fpDSb4V0zq9adb2Ou5Dwg6VxMxixheDgfGk36jsVcbtvjJrUwR7zXW5y5iw6qtQEXggkAuWgMsgatq_F8qScuQcRS4_UGMNW9DvGs7qA9DKBZm1ACJ6EVaKKGFMIGhJ_-Excrrd8AokT6T1lRGp0LyNgzHdFT7F--d39zaoPkRf_IyaGCTXZRumUiskHab_vzNlHeJ_96aKRj_96oncPHDGLCwI6msh7O324eu0CCYKIG0Ej1Wf8nZfaPrqyF2KnGkk3SwRKbqaSm60IU_tHA7qMsCAfhkC2vs6chxrmho7q6TKRlF-x6KrnfjVHxLxiFaNcZQw58AIYB12DoUf3sI_hk1xe8T1MejmAAz_m9LAlRXjV7KCm9cP2jbyOeDWGp_MVi3J8ZwO9NHi78OsRt4bM&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_suo_oshima.jpg"
   },
   {
     "id": "kutsuna",
@@ -148,7 +148,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQvfMvsUkv3TBVhJRV5V8Rx9nn41IFnLeC9zbVPaKKFuMw3TFrc2VhGFIGe99a0b1_DZDPauJWz6ZYg1owfubIIR0Sh1Kj5ROn9wLA5VSOlRqa1_8_RFWElzxRfHazmUZ32kIrCCC1Ue-kj58ZWNu0l8NV1mA4kPfX5ryx8ke1rlyeG7anfkG-_yR2hlyQL0oEXUHL46iz0ZROClxYU73HnvP6GoNQc9mba7cVgqldEvljCbhZLu6aO7A4_KKpStAA4j9cI3R_lHOUmdumdLL0u-F1I29T5XEfaWxA0Z6dVY2LTq1od6oNVe88oLFphB_ZXLozZzvs_SPErapdXrWYCgCoBNnY2Qlm4ZGEncHxl-MEGvstdJyI5TM0Qvl7UNirqgtCCTCoBtpVFFmvtyarFcSjECw5Dtu6j_AL1s3Y&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_kutsuna.jpg"
   },
   {
     "id": "kamijima",
@@ -157,7 +157,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 21,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQL8OXItxfkECsyqUuWijbbIQB0vq2U7usel3-OCwpciL3Lspupwgy1M2QBfQ5QOXfkQnGoYm51sYK1cDvN8G8rixHFq60sYMGvldrxTfbeK2I6eV2iCaYBgkiNQVXKfCWGiSUDLw1R8-izON7J-lTZN8I12jpWbcA9nRXCBKRNldIoneXkLt_i9tqU6yZZfq_1XF7AOt5rPDj6lSHiUEVMqupRKHihTJMMIuIwyd3iEQW2fqZnPShXj01BCQ2-G-KVM-Scq_VugH88qZ9n2fNDPpo-8dwylBrbVJchzx-BkuJZXOWyaXzKuwE9MGnnZ6oitgLrDtl-bUux-1LcomZAjTyVNOJZJtNbPS09k5TBGy0IWIel8bVyMyqgt7g_oX6ZjVbkOz3AWAe0MT-kCxJzuJ2RgMXwFzsX6JDiH6jpIg&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_kamijima.jpg"
   },
   {
     "id": "naoshima",
@@ -166,7 +166,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXT3uImqjmwamX2_Gl0oB4TgLEd9_IAttIq-XCJ9ixTmk2EByoj6gyxZv3FH9DVZQr1ikjBiY2aIz__kjT-7Al8yM5dfDqeWWqu4zpARLe6Z2qRYGqOur4jxp0mvq0cWi8ZUTsVuDaVypVOGTYRGN3lbltQMPpp8H3yEkC_ESL_JZc1XeSNP0sLJ59QGagzsvZMC-HJnK4yCYDVChAxYneNnT7-_1EPb4el8CePAsAsuVatSDnKR4sPn1Ij1Gsyi-1cvN8TT70Mh5nUIipbn4tGfqDdJydTgVsBorYz0_JTTqsxZYxIe9RRlqoKvMRLEV88igw1hfA3qoQ-rOCml8DJQAdEM7oASRT6yhEajDYHBIOzi8GgtvtuddrgmtrOl2kWfNkMlq1q7FTHj72btfm4_jkP83PtB9LMUzQ6u7q7M1g&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_naoshima.jpg"
   },
   {
     "id": "shiwaku",
@@ -183,7 +183,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 9,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQWSfvXxQnbI66UsoqlSmUuLZK7CQ9Krn1ZqltcQMZDeQ2ZsCr7laE72WuUdC7ndn1PGjze48CM1kG7yB0Q9MwE7VO09VAMwOyGw8Oy50NWUY1ZO-eqcE9_2QyjaFGd-sM4EVERHh0NqHiwn244J3ay2fAAboeQAmtbC-nL5ZVuY5xhgL-yg4jRvkN15GenF1QynLSe6c-cIbM0gib98E4WvqsgGOLzjWOAbnr7PLkojKiTdynxm2CzLCPRa9NLfZ03IdYvwOlcMzBcAvKlK8pBuOExx4o9kuqLktR1nzMx2gXRoLFcmprH76MfC6nk9sv8lQPzqorz0speSujvnD1DN7iveawX6KoRcTgOxvLTCk4ilgN5dshejGXNQjFstCXoXGWdHbRZ5vg2cqTfPJDIyk0ZK_7ND36pFfR5r03Agw&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_uwakai.jpg"
   },
   {
     "id": "pseudo_tokushima",
@@ -192,7 +192,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQ-Fc7F5JWvmSoZyx7hJVavSsnhTCvwuIPS3EVeczd7MU9f7m1MBWYswzM-wYPibejmKgP7ZhzMy2krHcttT7OhEGdR4ACgqCK_M1nfSOMc6YwAiACocIR0rylCc4KuGGzvZZV3JerNBTYycwCIvATN2EV4tlCodf5IHcPdxUjq15LHHtmkloM_gukUcvUsogxOEkS28or13fO8Kp_jOCdKJ3ULE-c35vPr-RxRU2IUEL5c5-irCS11vkfpnOdY0aM6Z0-gFImquWsL4UYcUI14jcHVxk9g4AV0KZ_70Ut817hV-Il5rS975bfp_KRHUW-U2qiR6jMhj7DdMKvDSQuCObGF0m0FyL2t_J3imUaOZqelvO1yvDrt5A-O_qQWL0RUVu2Be4UFfx2S71dAHyvTv6ZLw8T7ekpqosiHM23sNA&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_tokushima.jpg"
   },
   {
     "id": "pseudo_tosa",
@@ -201,7 +201,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXRsaJV-YNspCTn7ASzNEzC-tAt8IDff1HeJtVNv62dCs5ENYiqQGlMq2jAqhdxGzMcpaRpNVrRg08a304ntl0QKdI3ml4-WnxOa1qgsd1Um_QNQlW-wEwNRZdgspu4bP1tcVzgeilC7xAPxqo5eCIZvSR8LOx_7DkDraCXGAkoORkgLVluAvIxtUwkC_G2renre1Oj3Wm9a848FuPcEiK9QsqpPvjRx6WMdt9l-2_sIocsoCNVjPYGEkpYntnwYHemUxLN1WGGsF1tqSVwp_LoqIV6baFhrPrcwKEEg2oxFsPSne2x_pprBy19RE2iXS1pEgsLttc7a1yO3WOtsSqZBddtEOg8Cu7oXaof1Wo4dhUh_WPIt7SE2rR_rtBsP2dUctTEeK0owGDSL9WyWFvph9InxGRD27X1nUQB7lvc&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_tosa.jpg"
   },
   {
     "id": "amakusa",
@@ -210,7 +210,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQ1BGRIDT9xKDgqFrs7BSX3tV26sYi3YMyF12t4z3NMoGDCvkpwRzlROzMffPej3eUd3SRzfCEvcoWn2NbPPbCY2MDuf24QPfs8JwBKHxY0vg9KL_o_Zrxl-fDR0h5kmfegVckXswnvZzAkHjOxaonfVuYBvAO96VUqAxUFHxeA3NwKqqLaae5M6_yoCfl9s1c-1mfxHg1GJunKZKFCjPP6K_IkjXKDbnXCR5qoYszuNV288_8yal7sEQbZq7oMCTKhYf2IRrwANGSR5AbRyxAmOPXeNbMb-1Eks2xKoftkn21nQ-07Y_AgPGEESAMk1dpb9Z1P02Fj8gZos33YhOmLRX5p-oNdDbuTJjzEc0mTFpEE6SWBOmle-wMwp6LU2zbiWwg3hV-HHyzjJTCLofxVrB3hwSHruGqGKoFmsZNQbf1Y&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_amakusa.jpg"
   },
   {
     "id": "amami",
@@ -219,7 +219,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 8,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXSXY1r6Y7Uf13rPICof5e1BEnQytuYrRA3yA98MrVIqkOeqm1xrbi0vM0v2RkxfRf6cBvKkF0iXuFFV2_TEaQefnblWNXL-RwxFkLVNWsTNlXvuuyvLfHKdBJviDGsGek7U7SPuUHaRuHdMlfclIpSjobFUDW0ptKxHLnIpCUsdRVF96Jr-iywgBFhbVHwy1LD7e2paBsgDJTccJKHqbUqEg90ynLvMDSYCgZT5FmYeH1NCiNBuJaJrvhbJT2YmMDKfNKkL7JcFvkVk7l8fNTZdu_sDLtuqPcJb3Bf3MtCl8aqDSYU_rTH67U_COVZxUiVX614hKgy74Zd7s3ukYEk6b2FCKioWrqoP238U8MIA9flqJMky_g6QsKG7MSEZTfJ43csWADCUcd8f9iTuxnuPLCZhlvRyH7y15vPuIPgnBLg&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_amami.jpg"
   },
   {
     "id": "bungo",
@@ -228,7 +228,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXTeimUhKNPaizW2byiO6Q24H7to4MKlHt9tHQhKpS2yfqzPsv6zqOYnsia-0Z3WfAtdFhU2Elmayvu_EPBGff9iksvPfo2LlDcMXhSDjTWimWv3IC8hqa9V-u3un_VmmYpWnpthYc74jqv8m2P7WGZVxABLQOsAV3mpJYkDVBo3w5_FIbam-ABAWUp7Pqm1ADGgY7qbz29ks9WTTVEQJt9fuUR7mlnL7xrEHVaLq582zWMWO-_YBP6hTBR5LOGTsxY_7Jxzlh_GqTsDHf1g1Vsq4tjus0X5pWYpBLhyivb3tGmEXu8gEt_nbidSHvLBDd-TdHW4Mf8xqQF1rU2_EPWv4X-mj-O2BexXD0AoTwk6V4dmMEyphJ_x8JBS1Dbo-U6L4-X6kUhePrJmvpTCmmbHfQK47qB4xZ0RNTCd-WTpBOGGNNQR7h32tw07pQ&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_bungo.jpg"
   },
   {
     "id": "chikuzen",
@@ -237,7 +237,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 2,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXT7DtwzxFRar4gQdvvYyWQRjnMC10964GAJs9uoRSfbTWtVJD6bELlnhqkeb-tGPU0GwHeTSc-xYrnB1NM3gLGeNg_dkVupG72ijIewtcUasL902Wv6NxDSS2ajORWPwxx1rG6j_dMzh2IxZPVLZGwFKuT6eKRguFYQEtxw2tuGG4df3OJMnhW0QoyFLc_IFof6-P0J8yjJhOjONfdTrGb-F1bL0rA_e_jZVYfeFnna0eqhAm7VXkk8dX353HCObedg-ZsM8MJxecwa9L5ms5szvUUrCXg8b1HFI05nDgn7GCaKEfM4vqolQs9yWb-cE-glIqbs73yiGECnBgp50JNEh2-pVqrONbnoFVcJ-rWsKk1biBoDF_9F2klAi5GMUr3JCGcgEEKWUQXcAAHwKxf71uoSx-HgDlB2-z8WlAnRDA&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_chikuzen.jpg"
   },
   {
     "id": "genkai",
@@ -246,7 +246,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 16,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXTQpRVaGK2abn3rC1vhblIx2WHHJUwukmzTC11yU7pbPkbfAQFhcTQ05e5S-uSTrJZ5pWhJy77g2TLMyTjNE-XH8Q2DY26pbgwybfQ_w_vCKi3Q3CylLdXiow4Jp0laztsguc3LvRwd2C11C-dt1r8S6b1ELupe23x0a3AxC54uqpqBEvvX4Qn_kznuzhCvL1bNySQlLnFl_0rwZFSVPmncdmh6_PntBzK4YyedRjS1HeFVVJf-oaXCMYUfXVpzHPe2hr4Hrc-XQOPvSVC8Rm6dn_MOdZLwqZRU2m7M1iBlPEQMLH2vTdbu_jlPVN2dT2u16bu3aDBbpCkoRvFRq-wuIkeP_rnbcbNgIyK7GDLIlwvkew0d37BiRHsoufiOWfzQK8Lqyz2MzesKfgs3ufQ2dmRjMgvDRo7vQVluSO5lk59h&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_genkai.jpg"
   },
   {
     "id": "goto",
@@ -255,7 +255,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 23,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXScdfejcBaoQZJ7MlXmmLlCM7_-ArE8bz_zA1Ru-5F963DyzoOI6qCecOvlUT54ThzKLjpil9AQGZUqj8DZv2EN6v4zBmk3nNRnqsmWOqpzYUVoxCga-JcpYdgwRczXZhLJBjQi8BiuVa8hqlWsbftdDRfZUK0BiWv91CDh5pmm3_BMmwj17yZCSMqYxmIZb5bNUJGfwS4JaOl2UMhxm-In1MUk7ZyVMesgDLBe7ha2jl91kX_YlmoAVMU-QXzumFtrmjCkUu1sDjfR2_IbK9Uj_L2gFqXVs0KfqaaBskKHLNhXuW22azyMTFR-NpzNSxDkzvoceAe90HEOtreeV4UUc09ul6xZ6fpQkNSCRXRhgoSo-vLOMjvyo8mFOxLfJ62a6NnIB_SGwno-mMIjw022eLzOnsglYhNhq5lfKXN130c&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_goto.jpg"
   },
   {
     "id": "hirado",
@@ -264,7 +264,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 9,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQSp-pXr_UA83OMB3Of6-5p2uCWYnclLn5w5qphKAzYPNL9MOk1LAihoR8xzX44h5FIIrPv8kYlSe6CQv-tA7UqDJdbJx7Vu3kigUKSBPwrsbl0EMAyJ5eIKQcsdE7GJDMuzVXcJ-3MvI81yFkt_DBBZyUw-HnqHwPT16cXftnd0kncLm2TrRYbCmxviAhBfG1_SXlkVXl6AWjlWF7-dx_EF9hFCVy_Hp2UC8MDb4j10sx5PbPDcloSweC8KdVYsVFkE1Y0ShnP-Wa9KEPW2aPXdM7ZvM2YwYAaN6gxVqKQgGruQu7nCQKkKVQH1t8zGf2-gn7eQdgmKJiORpve48K61tlJOKUvrhAiZgfmDotvCH6WoU1G3sGIYDf3f93JWBcODsY2YLy_QycoD3G_ZMtil7CHaFIzKxZZZqWyrdaL_Q&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_hirado.jpg"
   },
   {
     "id": "iki",
@@ -273,7 +273,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 7,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQvECKA7kq3HLS0Kx0R4FT0wcWgKEtpL1yx_PepxwTydZer8Z7nyg0HRsj55EekQ0N6trONK5sNFtje_wGRmUiP8kEmAEChm1JXMy4gwc41WNTUVuVG_dOMA-FGRQ6fAQvmLMIJkLsxAGy9N7Qx9AjnGp2Q30ef_TEEZdIydxBarPpq10dR6gGUiUe3RHBFYrMzQTHhYXlp7tQNd6KsgxW5h0t-LhCpNv-49ww8uqW1fl7u879ema8T9a55LeLqxiBYcJ7ueIIdRpZkKhaw5hLEUgsciL0OPQvSQ7d8zp4jbTdaDjGBIa9eK1cK_zroWei2CgLh2YBFYsCayjdnMPQ9OQhe0BGWdSExrwl2smMWpKjCfvu7zoR6uSTGSKlx3piU7j2zs1sJRZChmnNO4Aiw7AtaDzdote3qaYvNiW3dycP5&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_iki.jpg"
   },
   {
     "id": "minami_naka",
@@ -282,7 +282,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXRaO1QBJbHS7-V1J_AmDl2IRKB7ctnvGekycKbD4j_hnygY6HWBSkKPxaKqgEEWdw9DP1ROScg_ZAZfgeDbshFTzWyto_IOUaqJjCOjMZ0DiQKXre13jH9YnQuT0ULx_V6aaF4c4v3QcyA7ZBEWpxN5_jk-vx4_2C909l9HFahgYXZKR98anuJpYRPWNouahDhky_BbcDHuSGtdBoEhfNY9vjtBPgOIHK9RGz17OC2h80EdY3iyyC_IRk9aqCkRNUk_xjFjxuFT596XEhju6sHfVrS2cEqueyGfNywedBOkeuD2MZSBu5Mo9-H3lfVEBrxDq3lIEYyS9q8Me8ru484pftx4tgZ24G4Zdt6n8jvEAgW41A_-8ZiC70Fzw7JpzaU4BeBfIWyD5E9dDbwb3zx_-f1KiJkJOAuJQPLL32bDUw&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_minami_naka.jpg"
   },
   {
     "id": "tokara",
@@ -291,7 +291,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 7,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQmFgazsyK-jYvigqp1tF4eeJvyQQ1hKbVzLs6yTmLHxCfJqS-GnRpfXah_sJiAjufcHvsVOpp1OrjgV8rKwAe2zKQpQIJT4nQsRrWEKmzOmRZviVJxERzBaNHoyd5TwpTieTu_Jz4pohYJHPKnKpvSMzZbZ5wgS2aIz7hik1Fq1SW0UR20zojfIUfxedXvVesWuyWmrTa7QB_lTFkcWrYGOTKeyfNMcWkBLiO1_mr4BUvm2e-mW_L3mrYAtPDMizdGD__cqgU4P_-XHuCClisTvT8nbAoSGym68BzWT6O6VqCj44dOCwZgkFRcSJQrDv04Rw7300nsF300iK65N2rbyudiJsduzTJ0Mjl6Oo13SQsvJRH9tj7XzyLjIBNpvd0R2g21rVbdG7hpPOAdvj9LnKsiH0l-ZiloHuG1Me2ngw&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_tokara.jpg"
   },
   {
     "id": "tsushima",
@@ -300,7 +300,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQa6NlRJ-8SdnKh8D6KC9qX-dvLggOHwmErkOyri47LJeeKLFu_fVcPJqgiEuT7Qrlw7rr90uZUQebXiCsg08T9LAX-qB1FWfApjaxEZKgxxKAF6s7xArE5qmM0JJqFigS0bOuDxDep0IN4QUSjGtn0IEWnWt3x16s4yLcYdLhl84UcapMFinE0xMBpmExbVTfIUzt2ubu9dlhkrBg-NE3GwjvqzbvETmPr0p5528xqd55J7N0rIQ7597_GznkBSMU8UUPRKED8bHxJeSGsrFqhplmUkRZ3JH2jmyYL02vvtredkBduDwNS-sEadCOASqJbmNJg_fq0djkf1YpZxgVYxsn9YTDa5ceIhQfDxzwVGb-2u4Lc5r8chj0_0UU22xWVFRxmm8A1b3l2JbhEpi0yLP1U-4p7lsjGdQ7E6NcEA74m&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_tsushima.jpg"
   },
   {
     "id": "osumi",
@@ -309,7 +309,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXSkxb9gfEokbJngSei1Rx7faOf4DvFgzbI6CtaK3i95Tm1KI9UztU9pnoPKh5A09VqYRHH4F5UwDyirAikuYWWLceo4NZeuPZAlDE1nXjlD7NyQjiHQOdtBf4mt-slKvOwUReWd723IsioZhraSAvHIPow59DmOYhDu3lRoI7dzldB8xp-mQEQrxWB-xwmmqddS9p9BeEZQnzZRCbfDeUZnCQ0AqfJxn3cSogF8cziZPRa2kvHExbSJks0DcNsx2uT7HGfGWkLT8BCRTVT7t7svqYcLLwMzhO28zKsse43Tjs_mp3ZtioGu3HMb2huaTpwMsu6SQmvRti8_0jlRfhTkpbgIE7qeJA827-8LlVt3Vz3rZBv523cIec4wUbNQT-XAZnswliztuBASgiizqc2z6rrd3BJ8VNiHDW3xtgsB2A&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_osumi.jpg"
   },
   {
     "id": "koshiki",
@@ -318,7 +318,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 3,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXS4DFCnuj9OwuT5GS-e8TsBdEfdYv7kx95jC0OhVFkir_MncpF4J5HSsel8RsX1plefD0oK_zF2Q83jmFkr-g3h1rR4seI9ntXi7qi83cuTXlVxy84c3sRG0jVdOp667185sFXOR5AWgnUTIvh6ssA9HNle5ZhUmzazP4tSMEK4QT17PY-fUmim55ZDhBXbS7YA8gv0w0WWx2TFaZeLA_JAGfg2igOX-44rnu10RoCqr7IABVtBG33pDnSAsbCpQ1hVwYlecBBeI83SQHPlwJH1sJZPTOYc_6G7SHJE7cxzuMXoHxp5epvVb3QYbxzuoQqbETfzhFVj4mahNhsemRb0bFrkh8NepPBKUMKflFuc3OQo9wXlyGU1gxHwnoMsP_8qPskd5K6lHjjSWr_Pczv4AyeFhjnlBqAOKX2FNc7OuEot&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_koshiki.jpg"
   },
   {
     "id": "pseudo_nagashima",
@@ -327,7 +327,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQ-nE4vevCGNWd624TFDWJy-C67vC3DbZDCqOkBoWTDAGSBgbLLWTM6U4HA6N_7Ff4dhs3Jkglq2Whm7IrbqYeCTP-akUPHjtZqKzYTdwxncy_9zz-fwG5mcYcqO3yCqVeBHma6db3qnP0AZ4WZJjlsY62DtrhB7PJdCyWrU_NbNckf8nDW3cPefyFekE78y-zG8IFUG-126zCTHcZWsAL6gCesu3K_xvnysaYdJoAgf0KE0C_h9sSTY-0cbPdRHv8KOUb67PSuzoYc3NqdEurfHLTgMIJhRzwB5MDsdbFYcPjdBvimIHQ4yjGyGEOd80I_RYlqWg0boHi8T4l4Kc6x2XsKVozof5gkrOC43CIBkei8TO9epoRwYkQS4Wr_-AyQKYbADFPHu9dKFsdrwZvVYxKp61rppELXhbwxzIAYr6Tl&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_nagashima.jpg"
   },
   {
     "id": "pseudo_saikai",
@@ -336,7 +336,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXR303l6onryY-sUuFuDYK6c3t-Jbzqy8d3T_bgop4bCXupbRcFuoYuvTOFG94S_IDkunUgwuno0rCu2z2N6R_Njaf82Z5Vb9ZMDZwcRHxf3u3Y-oNKarjGDrzt-nwOCkcwgCx1HD4cPd5NTaFan6jXNPRiTlKrqPqXpHI6Kx-gkRfHRyhti8TYiy6fqTk3O-eSIN1R5orXP5KxwkX2z_7bboeenoON_ARLrz0rXBm4MF7R-Z_5E2-zxbejpjF40aIbN2uPkKmXaVeE-cz_ofzbq8lDem_hkzyE_8XAVK16ie7jxHMM5z3VbCGzSE2o2xvRnmwkIlgRuCzVnHpWOQ0bx0QaknxH8J3V1LAbxK_2MBx9I3jYiuJ7SYf800hE68hfKtlBX0Y1mNkVcw81-NcNfgJQRUzmDY1cFpJH9yJFQjKCd&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_saikai.jpg"
   },
   {
     "id": "pseudo_satsuma",
@@ -345,7 +345,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 2,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXRiTe4usNqrBuktC1mvYgj_mp5SwoE5jQSLvXBhpetcfW4foJplUsLSgKa0bUEwwZdp8gGeBCG3pJbToTu8Xe-ZzMqlI78kum87xXJsqjEGyARErtOdhiW4f30DzK5UExtu4k3_DQMhSXqidA5VteLHrwVNPtJnvcaXTQJEMGnS5aByXOzlmsKAMPa0J4Y5WxPz4KoZqG4IpDw7WxLhrJHMJImOW5P4D099FXUX9EXpju0L0BBrj-tHrzxH8PqO4DAsQD0ZTEmBdb-7a3MxX8_K89C7JLpmj-X47P-v09LdetO5WhjLjirWfR3cvcM9K262mS0p-KU-JT8P53LccWS_bK3l5AMDqcoktbzCmOKGYczuusRDsg2Uy_BrEpwypirXfsrbwFipn-XetqG2XYqC89p4KmiqLBybOaQj0goQLX2u&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_pseudo_satsuma.jpg"
   },
   {
     "id": "daito",
@@ -362,7 +362,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXSpWVu11h9kxmDWQ6TH_5qucIzXFRhtd6FlSPUsKc89gCz_rQgizd1UqYI9-wMoAWC2ss2vrWRZFvfNzPz_RmVOmV_24cBR6n3vet33iAnG8SV4qvI1saJgHHAUuxsBDUJY6_eN-m4O5ScSu9tWnXsmOEnwbGty-tp2yePDJIDkuVVhUjnrJyu5h7pBsZgkBHUIzDGGg7e13lpoeB7D-KD9Dks_LmDwb-jYnvF-ZUsReAXL4I593SjCDUaDA7ibHkKAHmg6-rq3RdbgK0e0pdNEpk_b3b8BBdZSZJn7UHSVCBcxsKBWvXZHm2QO30XUFDq4c20waKS0UbgH0WXWd2Bk0Vc8X0z_lJBhDkaDkgJ-okyBrf6zUhbnVTIeAYhXtrOUNyK9eGK2kOz3-g-OAJLI-WpHTlYL3mjJi090NsRP4A&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_kerama.jpg"
   },
   {
     "id": "miyako",
@@ -371,7 +371,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQU7S2yl2kgaUl6phjK_nM3cK2Gzy53wlO-SghwHiV8kv-cVF12yPVlzlZzK5Ee4H27CePcipV7g8pIsVxxD1DOT_vhwyPG8HjDOgBsfiJvwjzF7g6zXTRKxelw7Kf_4nLRqDS4-mNw2FydUdsIwZOMDSXXH79PujWiB6XkIP3NP1LqaUE5ZcEqgELvfEZC29P7wGIOZTGVlU43lvvaDwKNpXmAxnKa_ibmPuxTVtZS3rXsu8a5Soo7z-SEJplBppVOA82KYpVW0wr9N7AEYtDRUTNvznMKVAgbyQbAm7YuyaMQtPQkYqbSJRhwc0Me_JmUlS7t9hWulibrcQAkcMvuxOw4teWHrWJoL72NeBARC05NgWc-UJFHrndcpcxrGu2ISBVe4b4fIlxOzvJ9eOsrC6N8pY79aUOAhG-fD9jpwg&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_miyako.jpg"
   },
   {
     "id": "okinawa_main",
@@ -380,7 +380,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 16,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXROn73eucdVufCYsU5Quu-paB1yr_9r3SvfiyOZTjMLASlc6GpKTHKHLSp7uH7L4uQYEAvYCllPMZz32I8RjSwu8V_6UWEfM4Vu--ccsnOUgcY0BBugEbPBgbJDvLkA3aTFU0b-LZ7X7cbV3WCVwkPLm9kB3MdvnNxZIoJAbQ-pNdlNukFG_mXeepO__YUUYLHN6H-Fdplh8QIb8tTpLWy7-h4r4C9HfG6f6gWsiQyLpTkyZKARR9wnbZj9RCL0PoD-8T71Zab__AfvURFxrfWE9gKQDJEr6UASeSq-XQPuxzZlE0KP7X8ijPbv7vdKON_oykiJ3gB4Ttp0OflEOn0EA4w0_r8hs5RhlYxQcwdcAZcrvGwFC-hOhcOAHni410093-cvfkBJ5qxj0aicfc6x_mzNQDtiiJZsGbKAXfQ&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_okinawa_main.jpg"
   },
   {
     "id": "yaeyama",
@@ -389,7 +389,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXQgeERRMwne4ZHLGPjn8mWcrMTRtSYzUn_A7jVgZkH_KZ9JujqL1mqTjsbqHrjFsfWZKMCcg032WqhUXtDZq3xGSnTNIKK0LI7F5qKviPesA6NNQyU5eum192nhlVhT4g2LxZe1wOs8IVNWyKhafNqwvLqHu_JqSgnU7-1L0kI-TgruEATGLBgoH6tLeeUD95jXZatF4Nwc3_xuAqlRc5qlemqG7nlQOYKY51397YYIzFAOso7BNwMSkaLPWTgu1U5p8r66a5GhuphU3d72caJBHU4r6-vmLxh3u0-qV0rGnazjqjNh5MQbiD2c06ykaXpNRnS7MfUJugB0MZxmge9kDEa8d8mgpT6b0wQ7Izq7oYYwBc-Xs5-yjfy2Zru68dQ-cqk6SUC8mlJSEmy2983wAhgtyfvTijvRKZJy8iUq8awF&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_yaeyama.jpg"
   },
   {
     "id": "kume",
@@ -398,6 +398,6 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "https://maps.googleapis.com/maps/api/place/photo?maxwidth=800&photo_reference=AVoNoXS1q6H-_rcCHWVYBl3gHqP0hEPHo_3ayRhPY-fbiXPycahGE0C7CIj5T6jrw5weMesJ4lDTHL61TNpORcZD1xXmGV_XdxG3uyREZUn4WaduuEGyUC-Hrt4fQH35inkMun0VAMZl4XVAnl7luUqn0nCeU8wwK9bnRBYzdAdOA3XNzPG4TY39SNa99Je6k4vkZCs8N56-ubfvLUMLxYglqhVz3-89NRoSY8VhRs32dZFLxJWBELSCA4wOwEHOuLCJwzpnMFtP4Lz0gp73ZEnKX8K0yrJg9PxLpHwR8DOg_epssF_rcB1quTSRA8CQvOL7y5QfS4gcAcK2fzBJZzMCt2xJNmidjRwhVLxIeyRsdX3sZKhEPARXzSmsgREUDWbEqClIkNB1JdpdSqDMxPku8EiiNJxF6-8ddTKlUAQ4BvOcN0N9&key=AIzaSyB1OtZMqW8DmuKSUjxPkZfmxo4wvFNX9aM"
+    "hero_image_url": "/regions/hero_kume.jpg"
   }
 ]

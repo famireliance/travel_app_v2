@@ -174,7 +174,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
                   <p className="font-bold mb-3 flex items-center gap-2"><Sparkles className="w-4 h-4 text-amber-500"/> 無料登録でできること</p>
                   <ul className="list-none space-y-2 text-xs font-medium">
                     <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">•</span> 端末を変えても<span className="font-bold">踏破データ・図鑑をクラウド保存</span></li>
-                    <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">•</span> デジタル島ノート（タイムライン）での<span className="font-bold">交流・投稿</span></li>
+                    <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">•</span> みんなの島ノート（タイムライン）での<span className="font-bold">交流・投稿</span></li>
                     <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">•</span> 全国の旅人と競える<span className="font-bold">旅人ランキング参加</span></li>
                     <li className="flex items-start gap-2"><span className="text-blue-500 mt-0.5">•</span> 実績を証明する<span className="font-bold">公式到達認定書（PDF）発行</span></li>
                   </ul>

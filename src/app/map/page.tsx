@@ -16,6 +16,22 @@ import { X, Layers, Map as MapIcon, Image as ImageIcon, CheckCircle, Navigation 
 import Image from 'next/image';
 import type { Metadata } from 'next';
 
+export const metadata: Metadata = {
+  title: '全国離島マップ | キラ旅',
+  description: '日本全国432島の位置や難易度を確認できるインタラクティブマップ。',
+  openGraph: {
+    title: '全国離島マップ | キラ旅',
+    description: '日本全国432島の位置や難易度を確認できるインタラクティブマップ。',
+    images: ['/og-image.png'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '全国離島マップ | キラ旅',
+    description: '日本全国432島の位置や難易度を確認できるインタラクティブマップ。',
+    images: ['/og-image.png'],
+  },
+};
+
 const ARCHIPELAGOS = [
   { name: '八重山', bounds: [[24.0, 123.5], [24.6, 124.5]] as [[number, number], [number, number]] },
   { name: '宮古', bounds: [[24.6, 125.0], [25.0, 125.5]] as [[number, number], [number, number]] },
