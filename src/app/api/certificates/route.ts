@@ -7,7 +7,7 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 export async function POST(request: Request) {
   try {
-    const { islandId, userId, type = 'high_quality' } = await request.json();
+    const { islandId, userId, type = 'high_quality', imageUrl } = await request.json();
 
     if (!islandId || !userId) {
       return NextResponse.json({ error: 'Missing islandId or userId' }, { status: 400 });
@@ -103,7 +103,8 @@ export async function POST(request: Request) {
         island_id: islandId,
         serial_number: nextSerial,
         payment_status: 'pending',
-        type: type
+        type: type,
+        image_url: imageUrl || null
       })
       .select()
       .single();

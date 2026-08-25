@@ -4,9 +4,10 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
-import { MessageCircle, Camera, MapPin, Sparkles, Navigation2, Heart } from 'lucide-react';
+import { MessageCircle, Camera, MapPin, Sparkles, Navigation2, Heart, Flag } from 'lucide-react';
 import Link from 'next/link';
 import { useTravel } from '@/context/TravelContext';
+import { toast } from 'react-hot-toast';
 
 interface TimelineDiary {
   id: string;
@@ -113,7 +114,7 @@ export default function TimelineClient() {
             transition={{ delay: 0.2 }}
             className="text-slate-500 max-w-lg mx-auto text-sm leading-relaxed"
           >
-            全国の旅人たちが残した島の記録。リアルタイムで届く各地の島の息吹と絶景をお楽しみください。
+            全国の旅人たちが残した最新の記録や絶景写真が集まる場所。石垣島、宮古島、奄美大島、小笠原諸島など、各地の息吹をリアルタイムでチェックしよう！
           </motion.p>
         </div>
 
@@ -142,10 +143,6 @@ export default function TimelineClient() {
         {loading ? (
           <div className="flex justify-center items-center py-20">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            <div className="sr-only">
-              <h2>みんなの島ノート一覧</h2>
-              <p>全国の島々の最新の記録や絶景写真が投稿されています。石垣島、宮古島、奄美大島、小笠原諸島などの記録をチェック！</p>
-            </div>
           </div>
         ) : filteredDiaries.length === 0 ? (
           <div className="text-center py-20 text-slate-400">
@@ -219,12 +216,36 @@ export default function TimelineClient() {
                         </div>
                         <div className="flex items-center gap-2">
                           <button 
+                            onClick={async (e) => { 
+                              e.preventDefault(); 
+                              e.stopPropagation(); 
+                              if (confirm('この投稿を不適切として通報しますか？')) {
+                                try {
+                                  const { data: { session } } = await supabase.auth.getSession();
+                                  await fetch('/api/report', {
+                                    method: 'POST',
+                                    headers: {
+                                      'Content-Type': 'application/json',
+                                      'Authorization': `Bearer ${session?.access_token || ''}`
+                                    },
+                                    body: JSON.stringify({ diary_id: diary.id, reason: 'user_reported' })
+                                  });
+                                  toast.success('通報を受理しました。運営チームで確認を行います。');
+                                } catch (err) {}
+                              }
+                            }}
+                            className="bg-slate-50 text-slate-400 hover:bg-slate-100 px-2 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-colors pointer-events-auto"
+                            title="通報する"
+                          >
+                            <Flag className="w-3 h-3" />
+                          </button>
+                          <button 
                             onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateStatus(diary.island_id, 'planning'); }}
-                            className="bg-rose-50 text-rose-500 hover:bg-rose-100 px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-colors"
+                            className="bg-rose-50 text-rose-500 hover:bg-rose-100 px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-colors pointer-events-auto"
                           >
                             <Heart className="w-3 h-3" /> 行きたい
                           </button>
-                          <span className="text-[10px] text-slate-400 font-mono">
+                          <span className="text-[10px] text-slate-400 font-mono pointer-events-auto">
                             {new Date(diary.created_at).toLocaleDateString('ja-JP')}
                           </span>
                         </div>

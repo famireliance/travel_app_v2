@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, MapPin, Users, Navigation, Compass, CheckSquare, Star, Plus, Award, BookOpen, Bot, ExternalLink, Sparkles, AlertTriangle, BedDouble, Coffee, Wifi } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTravel } from '@/context/TravelContext';
+import { toast } from 'react-hot-toast';
 import CertificateModal from '@/components/CertificateModal';
 import MiniMapClient from '@/components/Map/MiniMapClient';
 import CheckInModal from '@/components/CheckInModal';
@@ -58,7 +59,7 @@ export default function IslandDetail({ initialDiaries = [] }: Props) {
     if (newStatus === 'visited') {
       const result = addIslandVisit(islandId as string, island, 0, false);
       if (result.error === 'already_visited_today') {
-        alert('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+        toast.error('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
         return;
       }
       setIsCertModalOpen(true);

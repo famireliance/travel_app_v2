@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     // Fetch profile bypassing RLS
     const { data, error } = await adminClient
       .from('user_profiles')
-      .select('nickname, subscription_tier, premium_until')
+      .select('nickname, subscription_tier, premium_until, ultimate_started_at, anniversary_cert_used')
       .eq('id', user.id)
       .single();
 

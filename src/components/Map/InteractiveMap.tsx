@@ -89,25 +89,29 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
         const shadowColor = isRestricted ? 'shadow-slate-400' : isVisited ? 'shadow-amber-500' : isPlanning ? 'shadow-blue-500' : 'shadow-slate-700';
         const pulseEffect = isVisited ? `<div class="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-30"></div>` : '';
         const innerIcon = isVisited ? '👑' : isPlanning ? '⭐️' : '';
-        const sizeClass = isVisited ? 'w-5 h-5' : isPlanning ? 'w-4 h-4' : 'w-3 h-3';
+        const sizeClass = isVisited ? 'w-6 h-6' : isPlanning ? 'w-5 h-5' : 'w-4 h-4';
 
         const customIcon = L.divIcon({
           className: 'custom-island-marker',
           html: `<div class="relative flex items-center justify-center">
                    ${pulseEffect}
-                   <div class="${sizeClass} ${markerColor} rounded-full border-2 border-white shadow-md ${shadowColor} flex items-center justify-center text-[8px] z-10 transition-transform duration-300 hover:scale-150">
+                   <div class="${sizeClass} ${markerColor} rounded-full border-[1.5px] border-white shadow-md ${shadowColor} flex items-center justify-center text-[10px] z-10 transition-transform duration-300 hover:scale-150">
                      ${innerIcon}
                    </div>
                  </div>`,
-          iconSize: isVisited ? [20, 20] : isPlanning ? [16, 16] : [12, 12],
-          iconAnchor: isVisited ? [10, 10] : isPlanning ? [8, 8] : [6, 6],
+          iconSize: isVisited ? [24, 24] : isPlanning ? [20, 20] : [16, 16],
+          iconAnchor: isVisited ? [12, 12] : isPlanning ? [10, 10] : [8, 8],
         });
+
+        // Set z-index so that visited/planning islands stay on top
+        const zIndexOffset = isVisited ? 1000 : isPlanning ? 500 : 0;
 
         return (
           <Marker
             key={island.id}
             position={[lat, lng]}
             icon={customIcon}
+            zIndexOffset={zIndexOffset}
             eventHandlers={{
               click: () => {
                 if (onIslandSelect) {

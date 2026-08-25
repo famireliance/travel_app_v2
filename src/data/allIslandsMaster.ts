@@ -2665,11 +2665,30 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   },
   "149": {
     "id": "149",
-    "name": "江田島・能美島",
+    "name": "江田島",
     "region_id": "kasaoka",
     "prefecture": "広島県",
     "coordinates": "34.2500, 132.4833",
-    "description": "旧海軍兵学校の威風堂々たる赤レンガ建築と極上のカキ小屋やオリーブ園が広がる瀬戸内海有数の巨大島。",
+    "description": "旧海軍兵学校の威風堂々たる赤レンガ建築が残る歴史の島。現在は能美島と陸続き。",
+    "access": "定期フェリー・連絡船・橋または航空便アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 91.33,
+    "radius_m": 5392.0,
+    "checkin_radius_m": 6392.0,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true
+  },
+  "noumi": {
+    "id": "noumi",
+    "name": "能美島",
+    "region_id": "kasaoka",
+    "prefecture": "広島県",
+    "coordinates": "34.2000, 132.4500",
+    "description": "極上のカキ小屋やオリーブ園、みかん畑が広がる瀬戸内海有数の島。江田島と陸続き。",
     "access": "定期フェリー・連絡船・橋または航空便アクセス",
     "flags": {
       "宿泊・観光": "yes",
@@ -7112,12 +7131,29 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   },
   "387": {
     "id": "387",
-    "name": "伊良部島・下地島",
+    "name": "伊良部島",
     "region_id": "miyako",
     "prefecture": "沖縄県",
     "coordinates": "24.8367, 125.1883",
-    "description": "全長3,540mの伊良部大橋で宮古島と直結！通り池、17ENDのクリスタルブルービーチ、下地島空港。",
+    "description": "全長3,540mの伊良部大橋で宮古島と直結！ダイナミックな自然景観と青の洞窟で知られる島。",
     "access": "定期フェリー・連絡船・橋または航空便アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000
+  },
+  "shimoji": {
+    "id": "shimoji",
+    "name": "下地島",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.8217, 125.1433",
+    "description": "下地島空港と、絶景の17ENDのクリスタルブルービーチ、そして神秘の通り池を抱く島。",
+    "access": "伊良部島から橋でアクセス",
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"

@@ -69,6 +69,7 @@ export default function Footer() {
             <li><Link href="/contact" className="hover:text-white transition-colors flex items-center gap-1.5"><Mail size={14}/> お問い合わせ</Link></li>
             <li><Link href="/terms" className="hover:text-white transition-colors flex items-center gap-1.5"><ShieldAlert size={14}/> 利用規約・免責事項</Link></li>
             <li><Link href="/privacy" className="hover:text-white transition-colors flex items-center gap-1.5"><ShieldAlert size={14}/> プライバシーポリシー</Link></li>
+            <li><Link href="/tokushoho" className="hover:text-white transition-colors flex items-center gap-1.5"><ShieldAlert size={14}/> 特定商取引法に基づく表記</Link></li>
           </ul>
         </div>
 

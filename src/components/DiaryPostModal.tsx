@@ -84,11 +84,33 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
         return;
       }
 
+      let finalPhotoUrl = photoUrl;
+      
+      if (photoUrl && photoUrl.startsWith('data:image/')) {
+        const res = await fetch('/api/upload', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token || ''}`
+          },
+          body: JSON.stringify({ imageBase64: photoUrl })
+        });
+        
+        if (res.ok) {
+          const data = await res.json();
+          if (data.url) finalPhotoUrl = data.url;
+        } else {
+          toast.error('画像のアップロードに失敗しました。');
+          setIsSubmitting(false);
+          return;
+        }
+      }
+
       const postData = {
         island_id: islandId,
         user_id: userData.user.id,
         content: content,
-        photo_url: photoUrl || null,
+        photo_url: finalPhotoUrl || null,
         tags: selectedTags.length > 0 ? selectedTags : null,
         visit_month: visitMonth,
         water_clarity: waterClarity > 0 ? waterClarity : null,
@@ -324,27 +346,40 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
             </div>
 
             {/* Footer */}
-            <div className="bg-slate-50 p-4 border-t border-slate-100 shrink-0 flex justify-end gap-3">
-              <button 
-                type="button"
-                onClick={onClose}
-                className="px-6 py-2.5 rounded-full font-bold text-slate-600 hover:bg-slate-200 transition-colors text-sm"
-              >
-                キャンセル
-              </button>
-              <button 
-                type="submit"
-                form="diary-form"
-                disabled={isSubmitting || overallRating === 0 || !content.trim()}
-                className="px-8 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all shadow-md shadow-blue-500/30 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {isSubmitting ? (
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                ) : (
-                  <Send className="w-4 h-4" />
-                )}
-                投稿する
-              </button>
+            <div className="bg-slate-50 p-4 border-t border-slate-100 flex flex-col gap-3 shrink-0">
+              <label className="flex items-center gap-2 cursor-pointer mb-2 max-w-max mx-auto">
+                <input
+                  type="checkbox"
+                  required
+                  className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
+                />
+                <span className="text-xs text-slate-600 font-bold">
+                  <a href="/terms" target="_blank" className="text-blue-500 hover:underline">利用規約</a>に同意して投稿する
+                </span>
+              </label>
+              
+              <div className="flex justify-end gap-3 w-full">
+                <button 
+                  type="button"
+                  onClick={onClose}
+                  className="px-6 py-2.5 rounded-full font-bold text-slate-600 hover:bg-slate-200 transition-colors text-sm"
+                >
+                  キャンセル
+                </button>
+                <button 
+                  type="submit"
+                  form="diary-form"
+                  disabled={isSubmitting || overallRating === 0 || !content.trim()}
+                  className="px-8 py-2.5 rounded-full bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all shadow-md shadow-blue-500/30 flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isSubmitting ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Send className="w-4 h-4" />
+                  )}
+                  投稿する
+                </button>
+              </div>
             </div>
 
           </motion.div>

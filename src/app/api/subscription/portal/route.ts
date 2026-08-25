@@ -44,7 +44,7 @@ export async function POST(req: NextRequest) {
     const portalSession = await stripe.billingPortal.sessions.create({
       customer: profile.stripe_customer_id,
       return_url: `${origin}/mypage`,
-      configuration: 'bpc_1U6ERZCiKlAgM2zmPsbN7CCh', // Allow plan updates
+      // configuration は省略することで、Stripeダッシュボードの「デフォルト設定」が自動適用されます（本番/テスト切り替え時に安全）
     });
 
     return NextResponse.json({ url: portalSession.url });

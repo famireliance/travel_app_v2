@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
-import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map } from 'lucide-react';
+import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard } from 'lucide-react';
 import { PlanChangeModal } from '@/components/PlanChangeModal';
 import OrderHistory from '@/components/OrderHistory';
 import { supabase, fetchAllIslands } from '@/lib/supabase';
@@ -45,7 +45,7 @@ export default function MyPage() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   
   // Tab State
-  const [activeTab, setActiveTab] = useState<'history' | 'diaries' | 'quests' | 'fairies' | 'planning' | 'orders' | 'settings'>('history');
+  const [activeTab, setActiveTab] = useState<'history' | 'diaries' | 'quests' | 'fairies' | 'planning' | 'orders' | 'settings' | 'certificates'>('history');
   const [filterAttribute, setFilterAttribute] = useState<string | null>(null);
 
   // 1周年記念特典
@@ -148,6 +148,8 @@ export default function MyPage() {
     setNameInput(travelerName || '');
   }, [travelerName]);
 
+  const [myCertificates, setMyCertificates] = useState<any[]>([]);
+
   useEffect(() => {
     Promise.all([
       fetchAllIslands()
@@ -157,13 +159,18 @@ export default function MyPage() {
       (async () => {
         if (user?.id) {
           try {
-            const { data } = await supabase.from('island_diaries').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
-            setMyDiaries(data || []);
+            const { data: diariesData } = await supabase.from('island_diaries').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
+            setMyDiaries(diariesData || []);
+            
+            if (subscriptionTier === 'premium' || subscriptionTier === 'ultimate') {
+              const { data: certsData } = await supabase.from('certificates').select('*').eq('user_id', user.id).not('image_url', 'is', null).order('created_at', { ascending: false });
+              setMyCertificates(certsData || []);
+            }
           } catch (e) { console.error(e); }
         }
       })()
     ]).then(() => setIsDataLoaded(true));
-  }, [islandStatuses, user]);
+  }, [islandStatuses, user, subscriptionTier]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -233,6 +240,7 @@ export default function MyPage() {
   const tabs = [
     { id: 'history', label: 'トラベルヒストリー', icon: History, count: visitedList.length },
     { id: 'diaries', label: '島ログ', icon: BookOpen, count: myDiaries.length },
+    ...(subscriptionTier === 'premium' || subscriptionTier === 'ultimate' ? [{ id: 'certificates', label: '証明書', icon: Award, count: myCertificates.length }] : []),
     { id: 'quests', label: 'クエスト・称号', icon: Award, count: specialTitles.filter(t => t.unlocked).length },
     { id: 'fairies', label: '妖精図鑑', icon: Sparkles, count: unlockedFairies.filter(f => f.unlocked).length },
     { id: 'planning', label: 'お気に入り', icon: Heart, count: planningList.length },
@@ -531,6 +539,50 @@ export default function MyPage() {
             </motion.div>
           )}
 
+          {/* Certificates Tab */}
+          {activeTab === 'certificates' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
+              {myCertificates.length === 0 ? (
+                <div className="bg-white p-10 rounded-3xl border border-slate-200 text-center shadow-sm">
+                  <Award className="w-12 h-12 text-slate-300 mx-auto mb-3" />
+                  <p className="text-slate-500 text-sm font-serif mb-2">まだ証明書が発行されていません。</p>
+                  <p className="text-xs text-slate-400">到達した島のページから公式証明書を発行してみましょう。</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {myCertificates.map((cert) => {
+                    const island = allIslandsData.find(i => i.id === cert.island_id);
+                    return (
+                      <div key={cert.id} className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-slate-700 hover:border-amber-500 transition-colors cursor-pointer group" onClick={() => window.open(cert.image_url, '_blank')}>
+                        <div className="aspect-[4/3] bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
+                          {cert.image_url ? (
+                            <img src={cert.image_url} alt="Certificate" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+                          ) : (
+                            <span className="text-slate-500 text-xs">画像データがありません</span>
+                          )}
+                          <div className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur text-white text-[10px] px-2 py-1 rounded font-mono border border-slate-700">
+                            {cert.serial_number ? `No.${String(cert.serial_number).padStart(4, '0')}` : 'NO SERIAL'}
+                          </div>
+                        </div>
+                        <div className="p-4 bg-slate-800">
+                          <h4 className="font-bold text-white text-sm font-serif mb-1 line-clamp-1">{island?.name || '不明な島'} 到達証明書</h4>
+                          <div className="flex justify-between items-center mt-3">
+                            <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-1 rounded">
+                              {new Date(cert.created_at).toLocaleDateString('ja-JP')}
+                            </span>
+                            <span className="text-[10px] font-bold px-2 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                              {cert.type === 'high_quality' ? '公式版' : '簡易版'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </motion.div>
+          )}
+
           {/* Diaries Tab */}
           {activeTab === 'diaries' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
@@ -707,8 +759,8 @@ export default function MyPage() {
 
           {/* Settings Tab */}
           {activeTab === 'settings' && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 mb-6">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2 space-y-6">
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                 <h3 className="text-sm font-bold tracking-widest text-slate-800 border-l-4 border-blue-500 pl-3 mb-4">クーポン・招待コード</h3>
                 <form onSubmit={handleRedeemCode} className="flex flex-col gap-3 max-w-sm">
                   <p className="text-xs text-slate-500 mb-1">お持ちのクーポンコードを入力して特典を受け取りましょう。</p>
@@ -729,6 +781,65 @@ export default function MyPage() {
                     </button>
                   </div>
                 </form>
+              </div>
+
+              {/* サブスクリプション管理 */}
+              <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                <h3 className="text-sm font-bold tracking-widest text-slate-800 border-l-4 border-amber-500 pl-3 mb-4">サブスクリプション管理・解約</h3>
+                <p className="text-xs text-slate-500 mb-4 leading-relaxed">
+                  プレミアムプラン・アルティメットプランの変更、お支払い方法の更新、およびプランの解約（自動更新の停止）は、Stripeの決済ポータルから安全に行うことができます。<br/>
+                  解約した場合でも、現在の有効期限までは引き続き有料機能をご利用いただけます。
+                </p>
+                <button
+                  onClick={async () => {
+                    try {
+                      const { data: { session } } = await supabase.auth.getSession();
+                      const res = await fetch('/api/subscription/portal', {
+                        method: 'POST',
+                        headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+                      });
+                      const data = await res.json();
+                      if (data.url) window.location.href = data.url;
+                    } catch (e) { console.error(e); }
+                  }}
+                  className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-colors inline-flex items-center gap-2"
+                >
+                  <CreditCard className="w-4 h-4" /> お支払い管理・解約へ進む
+                </button>
+              </div>
+
+              {/* 退会機能（Danger Zone） */}
+              <div className="bg-rose-50 p-6 rounded-2xl shadow-sm border border-rose-200">
+                <h3 className="text-sm font-bold tracking-widest text-rose-800 border-l-4 border-rose-500 pl-3 mb-4">アカウント退会（データ削除）</h3>
+                <p className="text-xs text-rose-600 mb-4 leading-relaxed">
+                  退会すると、これまでの訪問記録・獲得ポイント・相棒精霊の育成データがすべて初期化されます。一度退会すると復元はできません。<br/>
+                  ※ 法執行機関からの開示請求等のため、バックエンドに一定期間データが保持されますが、一般公開されることはありません（あなたの過去の投稿は「退会済みユーザー」として匿名化されます）。
+                </p>
+                <button
+                  onClick={async () => {
+                    if (confirm('本当に退会しますか？この操作は取り消せません。')) {
+                      try {
+                        const { data: { session } } = await supabase.auth.getSession();
+                        const res = await fetch('/api/user/delete', {
+                          method: 'POST',
+                          headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
+                        });
+                        if (res.ok) {
+                          toast.success('アカウントを退会しました。ご利用ありがとうございました。');
+                          await supabase.auth.signOut();
+                          window.location.href = '/';
+                        } else {
+                          toast.error('退会処理に失敗しました。');
+                        }
+                      } catch (e) {
+                        toast.error('エラーが発生しました。');
+                      }
+                    }
+                  }}
+                  className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-sm font-bold rounded-xl transition-colors shadow-sm"
+                >
+                  アカウントを退会する
+                </button>
               </div>
             </motion.div>
           )}

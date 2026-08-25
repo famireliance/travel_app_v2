@@ -22,19 +22,6 @@ export default function CompanionPage() {
   return (
     <>
       <CompanionClient />
-      <div className="sr-only">
-        <h2>ご当地妖精キャラクター一覧</h2>
-        <ul>
-          {FAIRIES_MASTER.map((fairy) => (
-            <li key={fairy.id}>
-              <h3>{fairy.name}</h3>
-              <p>テーマ: {fairy.theme}</p>
-              <p>説明: {fairy.description}</p>
-              <p>レアリティ: {fairy.rarity}</p>
-            </li>
-          ))}
-        </ul>
-      </div>
     </>
   );
 }

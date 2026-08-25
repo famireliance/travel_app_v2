@@ -395,6 +395,25 @@ export default function CompanionClient() {
             </div>
           </motion.div>
         )}
+
+        {/* 妖精キャラクターリスト (SEO & Accessibility) */}
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 mt-12 mb-24 relative z-10">
+          <details className="group bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden transition-all">
+            <summary className="text-sm font-bold text-slate-300 p-6 cursor-pointer select-none outline-none flex justify-between items-center hover:bg-white/10 transition-colors list-none">
+              登場するご当地妖精キャラクター一覧（全図鑑リスト）
+              <ChevronRight className="w-5 h-5 transition-transform duration-300 group-open:rotate-90" />
+            </summary>
+            <div className="p-6 pt-0 text-xs text-slate-400 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {allFairies.map(fairy => (
+                <div key={fairy.id} className="p-3 bg-black/20 rounded-xl">
+                  <div className="font-bold text-white mb-1">{fairy.name} <span className="text-[10px] text-amber-400">[{fairy.rarity}]</span></div>
+                  <div className="text-[10px] text-slate-300 mb-1">{fairy.theme}</div>
+                  <p className="text-[10px] text-slate-500 leading-relaxed line-clamp-2" title={fairy.description}>{fairy.description}</p>
+                </div>
+              ))}
+            </div>
+          </details>
+        </div>
       </main>
 
       <CharacterViewerModal

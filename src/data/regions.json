@@ -5,7 +5,8 @@
     "enName": "HOKKAIDO ISLANDS",
     "area": "北海道地方",
     "visited": 0,
-    "total": 16
+    "total": 16,
+    "hero_image_url": "/regions/hero_region_northern.jpg"
   },
   {
     "id": "pseudo_sanriku",
@@ -14,7 +15,7 @@
     "area": "東北地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "/regions/hero_pseudo_sanriku.jpg"
+    "hero_image_url": "/regions/hero_region_northern.jpg"
   },
   {
     "id": "oshika",
@@ -23,7 +24,7 @@
     "area": "東北地方",
     "visited": 0,
     "total": 21,
-    "hero_image_url": "/regions/hero_oshika.jpg"
+    "hero_image_url": "/regions/hero_region_northern.jpg"
   },
   {
     "id": "izu",
@@ -32,7 +33,7 @@
     "area": "関東地方",
     "visited": 0,
     "total": 16,
-    "hero_image_url": "/regions/hero_izu.jpg"
+    "hero_image_url": "/regions/hero_region_volcanic.jpg"
   },
   {
     "id": "ogasawara",
@@ -41,7 +42,7 @@
     "area": "関東地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "/regions/hero_ogasawara.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "pseudo_kanto",
@@ -50,7 +51,7 @@
     "area": "関東地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "/regions/hero_pseudo_kanto.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "pseudo_hokuriku",
@@ -59,7 +60,7 @@
     "area": "北陸地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "/regions/hero_pseudo_hokuriku.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "aichi_santo",
@@ -68,7 +69,7 @@
     "area": "東海地方",
     "visited": 0,
     "total": 20,
-    "hero_image_url": "/regions/hero_aichi_santo.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "ieshima",
@@ -77,7 +78,7 @@
     "area": "近畿地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "/regions/hero_ieshima.jpg"
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "pseudo_awaji",
@@ -85,7 +86,8 @@
     "enName": "AWAJI ISLANDS",
     "area": "近畿地方",
     "visited": 0,
-    "total": 14
+    "total": 14,
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "pseudo_biwako",
@@ -94,7 +96,7 @@
     "area": "近畿地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "/regions/hero_pseudo_biwako.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "kasaoka",
@@ -103,7 +105,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 32,
-    "hero_image_url": "/regions/hero_kasaoka.jpg"
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "hagi",
@@ -112,7 +114,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 8,
-    "hero_image_url": "/regions/hero_hagi.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "oki",
@@ -121,7 +123,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "/regions/hero_oki.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "pseudo_san_in",
@@ -130,7 +132,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 3,
-    "hero_image_url": "/regions/hero_pseudo_san_in.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "suo_oshima",
@@ -139,7 +141,7 @@
     "area": "中国地方",
     "visited": 0,
     "total": 12,
-    "hero_image_url": "/regions/hero_suo_oshima.jpg"
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "kutsuna",
@@ -148,7 +150,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "/regions/hero_kutsuna.jpg"
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "kamijima",
@@ -157,7 +159,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 21,
-    "hero_image_url": "/regions/hero_kamijima.jpg"
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "naoshima",
@@ -166,7 +168,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "/regions/hero_naoshima.jpg"
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "shiwaku",
@@ -174,7 +176,8 @@
     "enName": "SHIWAKU ISLANDS",
     "area": "四国地方",
     "visited": 0,
-    "total": 11
+    "total": 11,
+    "hero_image_url": "/regions/hero_region_setouchi.jpg"
   },
   {
     "id": "uwakai",
@@ -183,7 +186,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 9,
-    "hero_image_url": "/regions/hero_uwakai.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "pseudo_tokushima",
@@ -192,7 +195,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "/regions/hero_pseudo_tokushima.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "pseudo_tosa",
@@ -201,7 +204,7 @@
     "area": "四国地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "/regions/hero_pseudo_tosa.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "amakusa",
@@ -210,7 +213,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "/regions/hero_amakusa.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "amami",
@@ -219,7 +222,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 8,
-    "hero_image_url": "/regions/hero_amami.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "bungo",
@@ -228,7 +231,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "/regions/hero_bungo.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "chikuzen",
@@ -237,7 +240,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 2,
-    "hero_image_url": "/regions/hero_chikuzen.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "genkai",
@@ -246,7 +249,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 16,
-    "hero_image_url": "/regions/hero_genkai.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "goto",
@@ -255,7 +258,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 23,
-    "hero_image_url": "/regions/hero_goto.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "hirado",
@@ -264,7 +267,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 9,
-    "hero_image_url": "/regions/hero_hirado.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "iki",
@@ -273,7 +276,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 7,
-    "hero_image_url": "/regions/hero_iki.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "minami_naka",
@@ -282,7 +285,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "/regions/hero_minami_naka.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "tokara",
@@ -291,7 +294,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 7,
-    "hero_image_url": "/regions/hero_tokara.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "tsushima",
@@ -300,7 +303,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "/regions/hero_tsushima.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "osumi",
@@ -309,7 +312,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "/regions/hero_osumi.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "koshiki",
@@ -318,7 +321,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 3,
-    "hero_image_url": "/regions/hero_koshiki.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "pseudo_nagashima",
@@ -327,7 +330,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "/regions/hero_pseudo_nagashima.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "pseudo_saikai",
@@ -336,7 +339,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 11,
-    "hero_image_url": "/regions/hero_pseudo_saikai.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "pseudo_satsuma",
@@ -345,7 +348,7 @@
     "area": "九州地方",
     "visited": 0,
     "total": 2,
-    "hero_image_url": "/regions/hero_pseudo_satsuma.jpg"
+    "hero_image_url": "/regions/hero_region_green.jpg"
   },
   {
     "id": "daito",
@@ -353,7 +356,8 @@
     "enName": "DAITO",
     "area": "沖縄地方",
     "visited": 0,
-    "total": 2
+    "total": 2,
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "kerama",
@@ -362,7 +366,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 5,
-    "hero_image_url": "/regions/hero_kerama.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "miyako",
@@ -371,7 +375,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 6,
-    "hero_image_url": "/regions/hero_miyako.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "okinawa_main",
@@ -380,7 +384,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 16,
-    "hero_image_url": "/regions/hero_okinawa_main.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "yaeyama",
@@ -389,7 +393,7 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 10,
-    "hero_image_url": "/regions/hero_yaeyama.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   },
   {
     "id": "kume",
@@ -398,6 +402,6 @@
     "area": "沖縄地方",
     "visited": 0,
     "total": 4,
-    "hero_image_url": "/regions/hero_kume.jpg"
+    "hero_image_url": "/regions/hero_region_tropical.jpg"
   }
 ]

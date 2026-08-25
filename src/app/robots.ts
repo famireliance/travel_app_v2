@@ -10,6 +10,7 @@ export default function robots(): MetadataRoute.Robots {
           '/api/',
           '/mypage',
           '/order/',
+          '/kira-system-panel-9f2',
         ],
       },
     ],

@@ -85,7 +85,6 @@ export default function PrivacyPage() {
 
           <div className="mt-16 text-sm text-slate-400">
             <p>制定日：2026年8月1日</p>
-            <p>※本ページの内容は雛形であり、正式な運営に伴い更新される場合があります。</p>
           </div>
         </div>
       </div>

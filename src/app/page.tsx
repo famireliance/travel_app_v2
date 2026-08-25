@@ -13,6 +13,7 @@ import { useTravel } from '@/context/TravelContext';
 import { supabase, fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import BannerCarousel from '@/components/BannerCarousel';
 import { calculateDistanceKm } from '@/lib/geo';
+import { toast } from 'react-hot-toast';
 
 
 const ALL_ISLANDS_COUNT = 432;
@@ -69,6 +70,29 @@ export default function Home() {
   const [authNotification, setAuthNotification] = useState<{text: string, type: 'success'|'error'} | null>(null);
 
 
+
+  useEffect(() => {
+    // スクロール位置の復元
+    const handleRestore = () => {
+      const savedScrollY = sessionStorage.getItem('kiratabi_top_scroll');
+      if (savedScrollY) {
+        window.scrollTo({ top: parseInt(savedScrollY, 10), behavior: 'instant' });
+      }
+    };
+    
+    const timer = setTimeout(handleRestore, 100);
+    
+    const handleScroll = () => {
+      sessionStorage.setItem('kiratabi_top_scroll', window.scrollY.toString());
+    };
+    
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   useEffect(() => {
     // ランダムな初期スライドを設定
     setCurrentSlide(Math.floor(Math.random() * slides.length));
@@ -114,7 +138,7 @@ export default function Home() {
       if (!res.ok) throw new Error(data.error);
       window.location.href = data.url; // Stripeのチェックアウト画面へ遷移
     } catch (err: any) {
-      alert(err.message || 'サブスクリプション手続きの開始に失敗しました');
+      toast.error(err.message || 'サブスクリプション手続きの開始に失敗しました');
     }
   };
 
@@ -519,7 +543,7 @@ export default function Home() {
               <button 
                 onClick={() => {
                   if (!navigator.geolocation) {
-                    alert('お使いのブラウザは位置情報機能（GPS）をサポートしていません。');
+                    toast.error('お使いのブラウザは位置情報機能（GPS）をサポートしていません。');
                     return;
                   }
                   const btn = document.getElementById('top-checkin-btn-text');
@@ -547,12 +571,12 @@ export default function Home() {
                         router.push(`/island/${closestIsland.id}`);
                       } else {
                         if (btn) btn.innerText = '現在地からチェックイン';
-                        alert('島データが見つかりませんでした。');
+                        toast.error('島データが見つかりませんでした。');
                       }
                     },
                     (error) => {
                       if (btn) btn.innerText = '現在地からチェックイン';
-                      alert('現在地の取得に失敗しました。GPSを許可してください。');
+                      toast.error('現在地の取得に失敗しました。GPSを許可してください。');
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                   );
@@ -578,9 +602,25 @@ export default function Home() {
         </motion.div>
       </div>
 
+      {/* Sticky Navigation for Mobile */}
+      <div className="sticky top-[env(safe-area-inset-top)] sm:top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm py-3 px-4 flex gap-4 overflow-x-auto hide-scrollbar snap-x">
+        <button onClick={() => router.push('/map')} className="whitespace-nowrap px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-full snap-start transition-colors flex items-center gap-1.5 shadow-sm border border-slate-200">
+          <Map className="w-3.5 h-3.5" /> マップから探す
+        </button>
+        <button onClick={() => { regionRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="whitespace-nowrap px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-full snap-start transition-colors flex items-center gap-1.5 shadow-sm border border-slate-200">
+          <Compass className="w-3.5 h-3.5" /> 諸島一覧
+        </button>
+        <button onClick={() => { categoryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} className="whitespace-nowrap px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-full snap-start transition-colors flex items-center gap-1.5 shadow-sm border border-slate-200">
+          <Sparkles className="w-3.5 h-3.5" /> テーマ別
+        </button>
+        <button onClick={() => document.getElementById('ranking-section')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} className="whitespace-nowrap px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-full snap-start transition-colors flex items-center gap-1.5 shadow-sm border border-slate-200">
+          <Trophy className="w-3.5 h-3.5" /> ランキング
+        </button>
+      </div>
+
       {/* Top Ranking Widget */}
       {isMounted && topRankers.length > 0 && (
-        <div className="px-8 lg:px-12 pt-16 pb-8 bg-white">
+        <div id="ranking-section" className="px-8 lg:px-12 pt-16 pb-8 bg-white">
           <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 items-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl p-6 lg:p-10 border border-blue-100 shadow-sm">
             <div className="lg:w-1/3 text-center lg:text-left">
               <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">TOP TRAVELERS</p>
