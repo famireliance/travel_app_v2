@@ -8,11 +8,14 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const RESEND_API_KEY = process.env.RESEND_API_KEY!;
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'KIRATABI Admin <onboarding@resend.dev>';
 
+import { getAdminPassword } from '@/lib/adminAuth';
+
 export async function POST(request: Request) {
   try {
     // 1. Verify admin password
     const adminPassword = request.headers.get('x-admin-password');
-    if (adminPassword !== process.env.ADMIN_PASSWORD) {
+    const ADMIN_PASSWORD = await getAdminPassword();
+    if (!adminPassword || adminPassword !== ADMIN_PASSWORD) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD!;
+import { getAdminPassword } from '@/lib/adminAuth';
 
 function getAdminClient() {
   return createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
@@ -11,14 +11,15 @@ function getAdminClient() {
   });
 }
 
-function checkAdmin(req: NextRequest) {
+async function checkAdmin(req: NextRequest) {
   const pw = req.headers.get('x-admin-password');
-  return pw === ADMIN_PASSWORD;
+  const ADMIN_PASSWORD = await getAdminPassword();
+  return pw && pw === ADMIN_PASSWORD;
 }
 
 // GET: 申請一覧の取得
 export async function GET(req: NextRequest) {
-  if (!checkAdmin(req)) {
+  if (!(await checkAdmin(req))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -37,7 +38,7 @@ export async function GET(req: NextRequest) {
 
 // PATCH: ステータス・メモの更新
 export async function PATCH(req: NextRequest) {
-  if (!checkAdmin(req)) {
+  if (!(await checkAdmin(req))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
