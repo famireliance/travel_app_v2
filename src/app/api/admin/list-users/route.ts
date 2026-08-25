@@ -23,23 +23,35 @@ export async function GET(req: NextRequest) {
   const { data: authData, error: authError } = await adminClient.auth.admin.listUsers();
   if (authError) return NextResponse.json({ error: authError.message }, { status: 500 });
 
+  // user_profiles を一括取得
+  const { data: profilesData } = await adminClient
+    .from('user_profiles')
+    .select('id, nickname, subscription_tier, high_quality_tickets, premium_until, total_points');
+
   // 全ての訪問記録を取得
-  const { data: visitsData, error: visitsError } = await adminClient
+  const { data: visitsData } = await adminClient
     .from('island_visits')
     .select('user_id, status');
 
-  if (visitsError) return NextResponse.json({ error: visitsError.message }, { status: 500 });
+  const profileMap = new Map((profilesData || []).map(p => [p.id, p]));
 
-  // ユーザーごとに訪問数を集計
+  // ユーザー情報を突合
   const userMap = authData.users.map(u => {
     const userVisits = visitsData?.filter(v => 
       v.user_id === u.id && 
       (v.status === 'visited' || v.status === 'verified_visited')
     ) || [];
 
+    const prof = profileMap.get(u.id);
+
     return {
       id: u.id,
       email: u.email,
+      nickname: prof?.nickname || '名無し',
+      subscription_tier: prof?.subscription_tier || 'free',
+      high_quality_tickets: prof?.high_quality_tickets || 0,
+      premium_until: prof?.premium_until || null,
+      total_points: prof?.total_points || 0,
       created_at: u.created_at,
       last_sign_in_at: u.last_sign_in_at,
       visitCount: userVisits.length

@@ -28,6 +28,13 @@ export async function POST(req: NextRequest) {
   const user = data.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
   if (!user) return NextResponse.json({ error: 'ユーザーが見つかりません' }, { status: 404 });
 
+  // プロフィール情報取得
+  const { data: profile } = await adminClient
+    .from('user_profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
+
   // その人の島訪問数を取得
   const { data: visits } = await adminClient
     .from('island_visits')
@@ -37,6 +44,10 @@ export async function POST(req: NextRequest) {
   return NextResponse.json({
     id: user.id,
     email: user.email,
+    nickname: profile?.nickname || '名無し',
+    subscription_tier: profile?.subscription_tier || 'free',
+    high_quality_tickets: profile?.high_quality_tickets || 0,
+    premium_until: profile?.premium_until || null,
     created_at: user.created_at,
     last_sign_in_at: user.last_sign_in_at,
     visitCount: visits?.filter(v => v.status === 'visited' || v.status === 'verified_visited').length ?? 0,
