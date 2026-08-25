@@ -1,11 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import {
+  Mail,
+  Search,
+  Filter,
+  CheckCircle,
+  Clock,
+  AlertCircle,
+  Send,
+  Edit3,
+  Save,
+  MessageSquare
+} from 'lucide-react';
+
+interface ContactItem {
+  id: string;
+  name: string;
+  email: string;
+  category?: string;
+  message: string;
+  status: 'unread' | 'in_progress' | 'resolved' | string;
+  admin_note?: string;
+  reply_text?: string;
+  created_at: string;
+}
 
 export default function AdminContacts({ password }: { password: string }) {
-  const [contacts, setContacts] = useState<any[]>([]);
+  const [contacts, setContacts] = useState<ContactItem[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Filters & Search
+  const [statusFilter, setStatusFilter] = useState<string>('unread');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Editing state
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editNote, setEditNote] = useState('');
+  const [editReply, setEditReply] = useState('');
+
   const fetchContacts = async () => {
+    setLoading(true);
     try {
       const res = await fetch('/api/admin/contacts', {
         headers: { 'x-admin-password': password }
@@ -14,7 +48,8 @@ export default function AdminContacts({ password }: { password: string }) {
       if (res.ok) setContacts(data.contacts || []);
     } catch (err) {
       console.error(err);
-    } finally {
+      toast.error('お問い合わせの取得に失敗しました');
+    } fontally: {
       setLoading(false);
     }
   };
@@ -23,7 +58,7 @@ export default function AdminContacts({ password }: { password: string }) {
     fetchContacts();
   }, []);
 
-  const updateStatus = async (id: string, newStatus: string) => {
+  const updateContact = async (id: string, status?: string, adminNote?: string, replyText?: string) => {
     try {
       const res = await fetch('/api/admin/contacts', {
         method: 'PUT',
@@ -31,58 +66,213 @@ export default function AdminContacts({ password }: { password: string }) {
           'Content-Type': 'application/json',
           'x-admin-password': password
         },
-        body: JSON.stringify({ id, status: newStatus })
+        body: JSON.stringify({ id, status, admin_note: adminNote, reply_text: replyText })
       });
       if (res.ok) {
-        toast.success('ステータスを更新しました');
+        toast.success('お問い合わせ情報を更新しました');
+        setEditingId(null);
         fetchContacts();
+      } else {
+        toast.error('更新に失敗しました');
       }
     } catch (err) {
       toast.error('エラーが発生しました');
     }
   };
 
-  if (loading) return <div className="p-4 text-white">読み込み中...</div>;
+  const filteredContacts = contacts.filter(c => {
+    if (statusFilter !== 'all' && c.status !== statusFilter) return false;
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      const name = (c.name || '').toLowerCase();
+      const email = (c.email || '').toLowerCase();
+      const msg = (c.message || '').toLowerCase();
+      const cat = (c.category || '').toLowerCase();
+      if (!name.includes(q) && !email.includes(q) && !msg.includes(q) && !cat.includes(q)) return false;
+    }
+    return true;
+  });
 
   return (
-    <div className="bg-gray-800 p-6 rounded-lg shadow border border-gray-700">
-      <h3 className="text-xl font-semibold mb-4 text-amber-400">✉️ お問い合わせ管理</h3>
-      {contacts.length === 0 ? (
-        <p className="text-gray-400 text-sm">お問い合わせはありません。</p>
+    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-6 shadow-xl space-y-6 animate-in fade-in duration-300">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+        <div>
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <Mail className="w-5 h-5 text-amber-400" />
+            お問い合わせ管理・サポートデスク
+          </h3>
+          <p className="text-xs text-gray-400 mt-1">
+            ユーザーからの質問・不具合報告の確認、ステータス変更、返信メモ作成
+          </p>
+        </div>
+      </div>
+
+      {/* Filter Tabs & Search */}
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="flex flex-wrap gap-1.5 bg-gray-950 p-1.5 rounded-xl border border-gray-800">
+          <button
+            onClick={() => setStatusFilter('unread')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+              statusFilter === 'unread' ? 'bg-red-600 text-white shadow' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            🚨 未対応 ({contacts.filter(c => c.status === 'unread').length})
+          </button>
+          <button
+            onClick={() => setStatusFilter('all')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+              statusFilter === 'all' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            すべて ({contacts.length})
+          </button>
+          <button
+            onClick={() => setStatusFilter('in_progress')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+              statusFilter === 'in_progress' ? 'bg-blue-600 text-white shadow' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            対応中 ({contacts.filter(c => c.status === 'in_progress').length})
+          </button>
+          <button
+            onClick={() => setStatusFilter('resolved')}
+            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
+              statusFilter === 'resolved' ? 'bg-emerald-600 text-white shadow' : 'text-gray-400 hover:text-white'
+            }`}
+          >
+            解決済 ({contacts.filter(c => c.status === 'resolved').length})
+          </button>
+        </div>
+
+        <div className="relative w-full lg:w-72">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="お名前・メール・本文検索..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
+          />
+        </div>
+      </div>
+
+      {/* Main List */}
+      {loading ? (
+        <div className="py-12 text-center text-gray-400 text-xs">お問い合わせデータを読み込み中...</div>
+      ) : filteredContacts.length === 0 ? (
+        <div className="py-12 text-center text-gray-500 bg-gray-950/60 rounded-xl border border-gray-800 text-xs">
+          該当するお問い合わせはありません。
+        </div>
       ) : (
         <div className="space-y-4">
-          {contacts.map(c => (
-            <div key={c.id} className="bg-gray-900 p-4 rounded-lg border border-gray-700">
-              <div className="flex justify-between items-start mb-2">
-                <div>
-                  <span className={`px-2 py-1 rounded text-xs font-bold mr-2 ${
-                    c.status === 'resolved' ? 'bg-green-900 text-green-300' :
-                    c.status === 'in_progress' ? 'bg-blue-900 text-blue-300' :
-                    'bg-red-900 text-red-300'
-                  }`}>
-                    {c.status === 'unread' ? '未対応' : c.status === 'in_progress' ? '対応中' : '解決済'}
-                  </span>
-                  <span className="text-sm font-bold text-white">{c.category}</span>
-                  <span className="text-xs text-gray-400 ml-2">{new Date(c.created_at).toLocaleString('ja-JP')}</span>
+          {filteredContacts.map(c => {
+            const isEditing = editingId === c.id;
+
+            return (
+              <div key={c.id} className="bg-gray-950 border border-gray-800 rounded-2xl p-5 shadow space-y-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-gray-800 pb-3">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${
+                      c.status === 'resolved' ? 'bg-emerald-950 text-emerald-300 border-emerald-800' :
+                      c.status === 'in_progress' ? 'bg-blue-950 text-blue-300 border-blue-800' :
+                      'bg-red-950 text-red-300 border-red-800 animate-pulse'
+                    }`}>
+                      {c.status === 'unread' ? '未対応' : c.status === 'in_progress' ? '対応中' : '解決済'}
+                    </span>
+                    <span className="text-xs font-bold text-white bg-gray-800 px-2 py-0.5 rounded">
+                      {c.category || '一般問い合わせ'}
+                    </span>
+                    <span className="text-xs font-bold text-white">{c.name}</span>
+                    <a href={`mailto:${c.email}`} className="text-xs text-blue-400 hover:underline font-mono">
+                      &lt;{c.email}&gt;
+                    </a>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] text-gray-500 font-mono">
+                      {new Date(c.created_at).toLocaleString('ja-JP')}
+                    </span>
+                    <select
+                      value={c.status}
+                      onChange={(e) => updateContact(c.id, e.target.value)}
+                      className="bg-gray-900 text-xs text-white border border-gray-700 rounded-lg px-2 py-1 focus:outline-none"
+                    >
+                      <option value="unread">未対応</option>
+                      <option value="in_progress">対応中</option>
+                      <option value="resolved">解決済</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="space-x-2">
-                  <select 
-                    value={c.status}
-                    onChange={(e) => updateStatus(c.id, e.target.value)}
-                    className="bg-gray-800 text-xs text-white border border-gray-600 rounded px-2 py-1"
-                  >
-                    <option value="unread">未対応</option>
-                    <option value="in_progress">対応中</option>
-                    <option value="resolved">解決済</option>
-                  </select>
+
+                {/* Inquiry Body */}
+                <div className="bg-gray-900/80 p-3.5 rounded-xl border border-gray-800 text-xs text-gray-200 whitespace-pre-wrap leading-relaxed">
+                  {c.message}
                 </div>
+
+                {/* Admin Note & Draft Reply Section */}
+                {isEditing ? (
+                  <div className="bg-gray-900 border border-amber-500/40 rounded-xl p-3.5 space-y-3">
+                    <div>
+                      <label className="text-[10px] font-bold text-amber-400 block mb-1">運営メモ (社内用)</label>
+                      <textarea
+                        value={editNote}
+                        onChange={e => setEditNote(e.target.value)}
+                        placeholder="対応履歴や注意点などの社内メモ..."
+                        className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white h-16"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] font-bold text-blue-400 block mb-1">返信文章の下書き</label>
+                      <textarea
+                        value={editReply}
+                        onChange={e => setEditReply(e.target.value)}
+                        placeholder="ユーザーへの回答本文..."
+                        className="w-full bg-gray-950 border border-gray-800 rounded-lg p-2 text-xs text-white h-20"
+                      />
+                    </div>
+                    <div className="flex justify-between items-center pt-1">
+                      <a
+                        href={`mailto:${c.email}?subject=${encodeURIComponent(`【KIRATABIサポート】お問い合わせについて`)}&body=${encodeURIComponent(editReply)}`}
+                        className="text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition"
+                      >
+                        <Send className="w-3.5 h-3.5" /> メールソフトで返信を開く
+                      </a>
+                      <div className="flex gap-2">
+                        <button onClick={() => setEditingId(null)} className="text-xs text-gray-400">キャンセル</button>
+                        <button
+                          onClick={() => updateContact(c.id, c.status, editNote, editReply)}
+                          className="text-xs bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-lg"
+                        >
+                          保存
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex items-center justify-between text-xs pt-1">
+                    <div className="space-y-1">
+                      {c.admin_note && (
+                        <p className="text-[11px] text-amber-400/90 font-medium">📝 メモ: {c.admin_note}</p>
+                      )}
+                      {c.reply_text && (
+                        <p className="text-[11px] text-blue-300 font-medium">✉️ 返信下書きあり</p>
+                      )}
+                    </div>
+                    <button
+                      onClick={() => {
+                        setEditingId(c.id);
+                        setEditNote(c.admin_note || '');
+                        setEditReply(c.reply_text || `お問合せいただきありがとうございます。KIRATABIサポートチームです。\n\n`);
+                      }}
+                      className="text-xs text-amber-400 hover:underline flex items-center gap-1 font-bold"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" /> 運営メモ・返信作成
+                    </button>
+                  </div>
+                )}
               </div>
-              <p className="text-sm text-gray-300 font-bold mb-1">{c.name} &lt;{c.email}&gt;</p>
-              <div className="bg-gray-800 p-3 rounded text-sm text-gray-300 whitespace-pre-wrap mt-2">
-                {c.message}
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

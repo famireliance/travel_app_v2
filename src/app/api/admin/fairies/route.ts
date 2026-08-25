@@ -1,22 +1,30 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getAdminPassword } from '@/lib/adminAuth';
 
-export async function GET(request: Request) {
-  const adminPassword = request.headers.get('x-admin-password');
-  if (adminPassword !== process.env.ADMIN_PASSWORD) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+
+async function verifyAuth(req: NextRequest) {
+  const ADMIN_PASSWORD = await getAdminPassword();
+  const auth = req.headers.get('x-admin-password');
+  return auth && auth === ADMIN_PASSWORD;
+}
+
+export async function GET(req: NextRequest) {
+  if (!await verifyAuth(req)) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
 
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const search = searchParams.get('search') || '';
 
-    let query = supabase.from('fairies').select('*', { count: 'exact' }).order('created_at', { ascending: false });
+    let query = adminClient.from('fairies').select('*', { count: 'exact' }).order('created_at', { ascending: false });
 
     if (search) {
       query = query.or(`name.ilike.%${search}%,theme.ilike.%${search}%,fairy_key.ilike.%${search}%`);
@@ -32,20 +40,18 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
-  const adminPassword = request.headers.get('x-admin-password');
-  if (adminPassword !== process.env.ADMIN_PASSWORD) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function POST(req: NextRequest) {
+  if (!await verifyAuth(req)) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
 
   try {
-    const body = await request.json();
-    const { data, error } = await supabase
+    const body = await req.json();
+    const { data, error } = await adminClient
       .from('fairies')
       .insert([body])
       .select()
@@ -59,26 +65,24 @@ export async function POST(request: Request) {
   }
 }
 
-export async function PUT(request: Request) {
-  const adminPassword = request.headers.get('x-admin-password');
-  if (adminPassword !== process.env.ADMIN_PASSWORD) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function PUT(req: NextRequest) {
+  if (!await verifyAuth(req)) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
 
   try {
-    const body = await request.json();
+    const body = await req.json();
     const { id, ...updates } = body;
 
     if (!id) {
       return NextResponse.json({ error: '更新対象のIDが必要です' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await adminClient
       .from('fairies')
       .update(updates)
       .eq('id', id)
@@ -93,26 +97,24 @@ export async function PUT(request: Request) {
   }
 }
 
-export async function DELETE(request: Request) {
-  const adminPassword = request.headers.get('x-admin-password');
-  if (adminPassword !== process.env.ADMIN_PASSWORD) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+export async function DELETE(req: NextRequest) {
+  if (!await verifyAuth(req)) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  );
+  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
 
   try {
-    const { searchParams } = new URL(request.url);
+    const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 
     if (!id) {
       return NextResponse.json({ error: '削除対象のIDが必要です' }, { status: 400 });
     }
 
-    const { error } = await supabase
+    const { error } = await adminClient
       .from('fairies')
       .delete()
       .eq('id', id);

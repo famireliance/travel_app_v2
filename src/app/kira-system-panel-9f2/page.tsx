@@ -19,10 +19,18 @@ import {
   TicketPlus,
   Crown,
   CheckCircle,
-  XCircle,
-  Menu,
   X,
-  FileText
+  Menu,
+  FileText,
+  Trash2,
+  Calendar,
+  BookOpen,
+  Ship,
+  Store,
+  Award,
+  Clock,
+  Save,
+  Upload
 } from 'lucide-react';
 
 import AdminDashboard from '@/components/admin/AdminDashboard';
@@ -33,6 +41,8 @@ import AdminContacts from '@/components/admin/AdminContacts';
 import AdminCoupons from '@/components/admin/AdminCoupons';
 import AdminPromoCodes from '@/components/admin/AdminPromoCodes';
 import AdminNewsletter from '@/components/admin/AdminNewsletter';
+import AdminPartners from '@/components/admin/AdminPartners';
+import AdminDistributors from '@/components/admin/AdminDistributors';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -49,12 +59,31 @@ export default function AdminPage() {
   const [searchError, setSearchError] = useState('');
   const [serviceRoleWarning, setServiceRoleWarning] = useState('');
 
+  // User Details Inspector State
+  const [userDetails, setUserDetails] = useState<any>(null);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+
   // All Users State & Filters
   const [allUsers, setAllUsers] = useState<any[]>([]);
   const [isLoadingUsers, setIsLoadingUsers] = useState(false);
   const [userPlanFilter, setUserPlanFilter] = useState<'all' | 'free' | 'premium' | 'ultimate'>('all');
   const [userSortBy, setUserSortBy] = useState<'last_login' | 'created_at' | 'visits'>('last_login');
   const [userSearchTerm, setUserSearchTerm] = useState('');
+
+  // Official Certificates Readiness State
+  const [officialIslands, setOfficialIslands] = useState<any[]>([]);
+  const [selectedOfficialIsland, setSelectedOfficialIsland] = useState<any>(null);
+  const [officialForm, setOfficialForm] = useState<any>({
+    islandId: '',
+    official_cert_enabled: false,
+    official_org_name: '一般社団法人 八重山ビジターズビューロー',
+    official_seal_url: '',
+    official_cert_price: 500,
+    official_sales_start_at: new Date().toISOString().slice(0, 10),
+    official_sales_end_at: new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
+    official_template_id: 'standard_seal'
+  });
+  const [customExtendDays, setCustomExtendDays] = useState<number>(30);
 
   // Grant Ticket State
   const [ticketModalUser, setTicketModalUser] = useState<any>(null);
@@ -70,7 +99,6 @@ export default function AdminPage() {
   const [visitedAt, setVisitedAt] = useState('');
   const [note, setNote] = useState('');
   const [grantMessage, setGrantMessage] = useState('');
-  const [grantHistory, setGrantHistory] = useState<any[]>([]);
 
   // Premium Grant State
   const [premiumTier, setPremiumTier] = useState('premium');
@@ -82,30 +110,63 @@ export default function AdminPage() {
   const [isLoadingDiaries, setIsLoadingDiaries] = useState(false);
   const [diariesMessage, setDiariesMessage] = useState('');
 
-  // Certificates Requests State
-  const [certRequests, setCertRequests] = useState<any[]>([]);
-  const [isLoadingCerts, setIsLoadingCerts] = useState(false);
-  const [certStatusFilter, setCertStatusFilter] = useState<'all' | 'pending' | 'processing' | 'shipped' | 'cancelled'>('all');
-  const [certMemoEditing, setCertMemoEditing] = useState<string | null>(null);
-  const [certMemoText, setCertMemoText] = useState('');
+  const [loginError, setLoginError] = useState('');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   useEffect(() => {
     const savedPassword = sessionStorage.getItem('admin_password');
     if (savedPassword) {
-      setPassword(savedPassword);
-      setIsAuthenticated(true);
+      fetch('/api/admin/verify-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: savedPassword })
+      })
+      .then(res => {
+        if (res.ok) {
+          setPassword(savedPassword);
+          setIsAuthenticated(true);
+        } else {
+          sessionStorage.removeItem('admin_password');
+        }
+      })
+      .catch(() => {
+        sessionStorage.removeItem('admin_password');
+      });
     }
     const tzoffset = (new Date()).getTimezoneOffset() * 60000;
     const localISOTime = (new Date(Date.now() - tzoffset)).toISOString().slice(0, 16);
     setVisitedAt(localISOTime);
   }, []);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loginInput) {
+    setLoginError('');
+    if (!loginInput) return;
+    setIsLoggingIn(true);
+
+    try {
+      const res = await fetch('/api/admin/verify-login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: loginInput })
+      });
+      const data = await res.json();
+
+      if (!res.ok) {
+        setLoginError(data.error || 'パスワードが正しくありません');
+        toast.error('ログインに失敗しました');
+        return;
+      }
+
       sessionStorage.setItem('admin_password', loginInput);
       setPassword(loginInput);
       setIsAuthenticated(true);
+      toast.success('管理者としてログインしました');
+    } catch {
+      setLoginError('通信エラーが発生しました');
+      toast.error('ログイン処理中にエラーが発生しました');
+    } finally {
+      setIsLoggingIn(false);
     }
   };
 
@@ -114,6 +175,70 @@ export default function AdminPage() {
     setPassword('');
     setIsAuthenticated(false);
     setUser(null);
+    setUserDetails(null);
+  };
+
+  // Fetch Official Certificates Config Islands
+  const fetchOfficialIslands = async () => {
+    try {
+      const res = await fetch('/api/admin/official-certificates', {
+        headers: { 'x-admin-password': password }
+      });
+      const data = await res.json();
+      if (res.ok) setOfficialIslands(data.islands || []);
+    } catch (err) {
+      toast.error('公的証明書データの取得に失敗しました');
+    }
+  };
+
+  useEffect(() => {
+    if (isAuthenticated && activeTab === 'official_certs') {
+      fetchOfficialIslands();
+    }
+  }, [isAuthenticated, activeTab]);
+
+  const handleSaveOfficialConfig = async (extendDays?: number) => {
+    if (!selectedOfficialIsland && !officialForm.islandId) {
+      toast.error('対象の島を選択してください');
+      return;
+    }
+    try {
+      const payload = {
+        islandId: selectedOfficialIsland?.id || officialForm.islandId,
+        ...officialForm,
+        extendDays
+      };
+      const res = await fetch('/api/admin/official-certificates', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      toast.success(data.message || '公的証明書設定を更新しました');
+      fetchOfficialIslands();
+      if (data.island) setSelectedOfficialIsland(data.island);
+    } catch (err: any) {
+      toast.error(`更新エラー: ${err.message}`);
+    }
+  };
+
+  // Select User Inspector
+  const handleSelectUser = async (u: any) => {
+    setUser(u);
+    setIsLoadingDetails(true);
+    setUserDetails(null);
+    try {
+      const res = await fetch(`/api/admin/user-details?userId=${u.id}`, {
+        headers: { 'x-admin-password': password }
+      });
+      const data = await res.json();
+      if (res.ok) setUserDetails(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsLoadingDetails(false);
+    }
   };
 
   // Search User by Email
@@ -122,6 +247,7 @@ export default function AdminPage() {
     setSearchError('');
     setServiceRoleWarning('');
     setUser(null);
+    setUserDetails(null);
     try {
       const res = await fetch('/api/admin/find-user', {
         method: 'POST',
@@ -132,19 +258,11 @@ export default function AdminPage() {
         body: JSON.stringify({ email: searchEmail })
       });
       const data = await res.json();
-      if (res.status === 401) {
-        handleLogout();
-        return;
-      }
-      if (res.status === 503) {
-        setServiceRoleWarning(data.error);
-        return;
-      }
-      if (!res.ok) {
-        setSearchError(data.error || 'エラーが発生しました');
-        return;
-      }
-      setUser(data);
+      if (res.status === 401) { handleLogout(); return; }
+      if (res.status === 503) { setServiceRoleWarning(data.error); return; }
+      if (!res.ok) { setSearchError(data.error || 'エラーが発生しました'); return; }
+
+      handleSelectUser(data);
     } catch (err: any) {
       setSearchError(err.message);
     }
@@ -158,28 +276,36 @@ export default function AdminPage() {
     try {
       const res = await fetch('/api/admin/list-users', {
         method: 'GET',
-        headers: {
-          'x-admin-password': password
-        }
+        headers: { 'x-admin-password': password }
       });
       const data = await res.json();
-      if (res.status === 401) {
-        handleLogout();
-        return;
-      }
-      if (res.status === 503) {
-        setServiceRoleWarning(data.error);
-        return;
-      }
-      if (!res.ok) {
-        setSearchError(data.error || 'エラーが発生しました');
-        return;
-      }
+      if (res.status === 401) { handleLogout(); return; }
+      if (res.status === 503) { setServiceRoleWarning(data.error); return; }
+      if (!res.ok) { setSearchError(data.error || 'エラーが発生しました'); return; }
       setAllUsers(data);
     } catch (err: any) {
       setSearchError(err.message);
     } finally {
       setIsLoadingUsers(false);
+    }
+  };
+
+  // Delete Visit Record
+  const handleDeleteVisit = async (visitId: string) => {
+    if (!window.confirm('この到達記録を削除しますか？')) return;
+    try {
+      const res = await fetch(`/api/admin/user-details?visitId=${visitId}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': password }
+      });
+      if (res.ok) {
+        toast.success('到達記録を削除しました');
+        if (user) handleSelectUser(user);
+      } else {
+        toast.error('削除に失敗しました');
+      }
+    } catch (err: any) {
+      toast.error(err.message);
     }
   };
 
@@ -243,15 +369,7 @@ export default function AdminPage() {
 
       setGrantMessage(data.message);
       toast.success('到達記録を付与しました');
-      setGrantHistory(prev => [{
-        id: Date.now(),
-        email: user.email,
-        islandId,
-        status,
-        visitedAt,
-        note,
-        grantedAt: new Date().toLocaleString()
-      }, ...prev]);
+      handleSelectUser(user);
       setIslandId('');
       setNote('');
     } catch (err: any) {
@@ -326,7 +444,7 @@ export default function AdminPage() {
       setDiaries(data);
     } catch (err: any) {
       setDiariesMessage(`エラー: ${err.message}`);
-    } finally {
+    } fontally: {
       setIsLoadingDiaries(false);
     }
   };
@@ -361,9 +479,7 @@ export default function AdminPage() {
 
   // User List Filter & Sorting Logic
   const filteredUsers = allUsers.filter(u => {
-    // Plan Filter
     if (userPlanFilter !== 'all' && u.subscription_tier !== userPlanFilter) return false;
-    // Search Term Filter
     if (userSearchTerm.trim()) {
       const term = userSearchTerm.toLowerCase();
       const emailMatch = (u.email || '').toLowerCase().includes(term);
@@ -406,9 +522,18 @@ export default function AdminPage() {
               placeholder="パスワードを入力してください"
               required
             />
+            {loginError && (
+              <p className="text-xs text-rose-500 font-bold mt-2 bg-rose-950/50 border border-rose-800/50 p-2.5 rounded-lg text-center">
+                ⚠️ {loginError}
+              </p>
+            )}
           </div>
-          <button type="submit" className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-xl transition shadow-lg active:scale-98">
-            ログイン
+          <button 
+            type="submit" 
+            disabled={isLoggingIn}
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold py-3 rounded-xl transition shadow-lg active:scale-98 disabled:opacity-50"
+          >
+            {isLoggingIn ? '認証確認中...' : 'ログイン'}
           </button>
         </form>
       </div>
@@ -416,17 +541,19 @@ export default function AdminPage() {
   }
 
   const NAV_ITEMS = [
-    { id: 'dashboard', label: 'ダッシュボード', icon: LayoutDashboard, badge: null },
-    { id: 'orders', label: '発送・注文管理', icon: Package, badge: null },
-    { id: 'user', label: 'ユーザー・権限管理', icon: Users, badge: null },
-    { id: 'moderation', label: '投稿モデレーション', icon: ShieldAlert, badge: null },
-    { id: 'islands', label: '島マスター管理', icon: Palmtree, badge: null },
-    { id: 'fairies', label: 'ご当地妖精管理', icon: Sparkles, badge: null },
-    { id: 'contacts', label: 'お問い合わせ管理', icon: Mail, badge: null },
-    { id: 'newsletter', label: '一括メルマガ配信', icon: Mail, badge: null },
-    { id: 'coupons', label: 'プロモコード・クーポン', icon: Ticket, badge: null },
-    { id: 'certificates', label: '証明書申請管理', icon: FileText, badge: null },
-    { id: 'password', label: 'パスワード変更', icon: KeyRound, badge: null },
+    { id: 'dashboard', label: 'ダッシュボード', icon: LayoutDashboard },
+    { id: 'orders', label: '発送・注文管理', icon: Package },
+    { id: 'user', label: 'ユーザー・権限管理', icon: Users },
+    { id: 'official_certs', label: '公的証明書販売準備', icon: Award },
+    { id: 'partners', label: '宿・交通パートナー', icon: Ship },
+    { id: 'distributors', label: '売店・加盟店パートナー', icon: Store },
+    { id: 'moderation', label: '投稿モデレーション', icon: ShieldAlert },
+    { id: 'islands', label: '島マスター管理', icon: Palmtree },
+    { id: 'fairies', label: 'ご当地妖精管理', icon: Sparkles },
+    { id: 'contacts', label: 'お問い合わせ管理', icon: Mail },
+    { id: 'newsletter', label: '一括メルマガ配信', icon: Mail },
+    { id: 'coupons', label: 'プロモコード・クーポン', icon: Ticket },
+    { id: 'password', label: 'パスワード変更', icon: KeyRound },
   ];
 
   return (
@@ -462,7 +589,7 @@ export default function AdminPage() {
           </div>
 
           {/* Navigation Links */}
-          <nav className="space-y-1.5">
+          <nav className="space-y-1">
             {NAV_ITEMS.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -473,7 +600,7 @@ export default function AdminPage() {
                     setActiveTab(item.id);
                     setSidebarOpen(false);
                   }}
-                  className={`w-full text-left px-3.5 py-2.5 rounded-xl transition-all duration-200 flex items-center justify-between text-xs font-bold ${
+                  className={`w-full text-left px-3 py-2 rounded-xl transition-all duration-200 flex items-center justify-between text-xs font-bold ${
                     isActive
                       ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-900/30'
                       : 'text-gray-400 hover:text-gray-200 hover:bg-gray-800/80'
@@ -576,9 +703,7 @@ export default function AdminPage() {
                     登録ユーザー一覧 (該当: <span className="text-blue-400 font-extrabold">{filteredUsers.length}</span> / 全 {allUsers.length}名)
                   </h3>
 
-                  {/* Filter & Sort Controls */}
                   <div className="flex flex-wrap items-center gap-3">
-                    {/* Plan Filter */}
                     <div className="flex items-center gap-1 bg-gray-950 p-1 rounded-xl border border-gray-800">
                       <Filter className="w-3.5 h-3.5 text-gray-400 ml-2" />
                       <button
@@ -607,7 +732,6 @@ export default function AdminPage() {
                       </button>
                     </div>
 
-                    {/* Sorting */}
                     <div className="flex items-center gap-1 bg-gray-950 px-2 py-1.5 rounded-xl border border-gray-800 text-xs">
                       <ArrowUpDown className="w-3.5 h-3.5 text-gray-400" />
                       <select
@@ -621,7 +745,6 @@ export default function AdminPage() {
                       </select>
                     </div>
 
-                    {/* Quick Filter Search */}
                     <input
                       type="text"
                       placeholder="メール/ニックネーム検索..."
@@ -685,16 +808,13 @@ export default function AdminPage() {
                               }}
                               className="text-xs bg-blue-900/60 hover:bg-blue-800 text-blue-200 px-2.5 py-1 rounded-lg border border-blue-700/50"
                             >
-                              🎫 チケット付与
+                              🎫 チケット
                             </button>
                             <button
-                              onClick={() => {
-                                setUser(u);
-                                window.scrollTo({ top: 0, behavior: 'smooth' });
-                              }}
-                              className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-2.5 py-1 rounded-lg border border-gray-700"
+                              onClick={() => handleSelectUser(u)}
+                              className="text-xs bg-gray-800 hover:bg-gray-700 text-gray-200 px-2.5 py-1 rounded-lg border border-gray-700 font-bold"
                             >
-                              選択
+                              詳細インスペクター
                             </button>
                           </td>
                         </tr>
@@ -704,134 +824,184 @@ export default function AdminPage() {
                 </div>
               </div>
             )}
-
-            {/* Selected User Details & Grant Form */}
-            {user && (
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* Profile Card & VIP Grant */}
-                <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-lg space-y-5">
-                  <h3 className="text-base font-bold text-green-400 flex items-center gap-2 border-b border-gray-800 pb-3">
-                    <CheckCircle className="w-5 h-5" />
-                    選択中のユーザー情報
-                  </h3>
-                  <div className="space-y-2 text-xs">
-                    <p><span className="text-gray-400">ID:</span> <span className="font-mono text-white">{user.id}</span></p>
-                    <p><span className="text-gray-400">Email:</span> <span className="font-mono text-white font-bold">{user.email}</span></p>
-                    <p><span className="text-gray-400">現在のプラン:</span> <span className="font-bold text-amber-400 uppercase">{user.subscription_tier || 'free'}</span></p>
-                    <p><span className="text-gray-400">所有証明書チケット:</span> <span className="font-bold text-blue-400">{user.high_quality_tickets || 0} 枚</span></p>
-                    <p><span className="text-gray-400">島訪問数:</span> <span className="text-base font-black text-white">{user.visitCount} 島</span></p>
-                  </div>
-
-                  {/* VIP Plan Assignment */}
-                  <div className="pt-4 border-t border-gray-800 space-y-3">
-                    <h4 className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                      <Crown className="w-4 h-4" /> VIP プレミアム・Ultimateプラン変更
-                    </h4>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <label className="block text-[10px] text-gray-400 mb-1">対象プラン</label>
-                        <select
-                          className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                          value={premiumTier}
-                          onChange={(e) => setPremiumTier(e.target.value)}
-                        >
-                          <option value="premium">Premium (¥480/月)</option>
-                          <option value="ultimate">Ultimate (¥980/月)</option>
-                          <option value="free">Free (一般ユーザーに戻す)</option>
-                        </select>
-                      </div>
-                      {premiumTier !== 'free' && (
-                        <div>
-                          <label className="block text-[10px] text-gray-400 mb-1">有効期間（ヶ月）</label>
-                          <input
-                            type="number"
-                            min={1}
-                            max={120}
-                            className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2 text-xs text-white focus:outline-none focus:border-amber-500"
-                            value={premiumMonths}
-                            onChange={(e) => setPremiumMonths(Number(e.target.value))}
-                          />
-                        </div>
-                      )}
-                    </div>
-                    <button
-                      onClick={handleGrantPremium}
-                      className="w-full bg-amber-600 hover:bg-amber-500 text-black font-extrabold py-2.5 rounded-xl text-xs transition shadow active:scale-95"
-                    >
-                      {premiumTier === 'free' ? '無料プランに変更' : `${premiumTier.toUpperCase()} を付与する`}
-                    </button>
-                    {premiumMessage && (
-                      <p className={`text-xs ${premiumMessage.includes('エラー') ? 'text-red-400' : 'text-green-400'}`}>
-                        {premiumMessage}
-                      </p>
-                    )}
-                  </div>
-                </div>
-
-                {/* Visit Grant Form */}
-                <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-lg space-y-4">
-                  <h3 className="text-base font-bold text-purple-400 flex items-center gap-2 border-b border-gray-800 pb-3">
-                    <Palmtree className="w-5 h-5" />
-                    到達記録の代理付与
-                  </h3>
-                  <form onSubmit={handleGrantVisit} className="space-y-3 text-xs">
-                    <div>
-                      <label className="block text-gray-400 mb-1 font-medium">島ID (例: ishigaki, yakushima)</label>
-                      <input
-                        type="text"
-                        className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-purple-500"
-                        value={islandId}
-                        onChange={(e) => setIslandId(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-400 mb-1 font-medium">ステータス</label>
-                      <select
-                        className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-purple-500"
-                        value={status}
-                        onChange={(e) => setStatus(e.target.value)}
-                      >
-                        <option value="visited">訪問済み (visited)</option>
-                        <option value="verified_visited">公式認定訪問 (verified_visited)</option>
-                        <option value="planning">行きたい (planning)</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-gray-400 mb-1 font-medium">到達日時</label>
-                      <input
-                        type="datetime-local"
-                        className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-purple-500"
-                        value={visitedAt}
-                        onChange={(e) => setVisitedAt(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-gray-400 mb-1 font-medium">メモ (任意)</label>
-                      <textarea
-                        className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-purple-500"
-                        value={note}
-                        onChange={(e) => setNote(e.target.value)}
-                        rows={2}
-                      />
-                    </div>
-                    <button type="submit" className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2.5 rounded-xl transition shadow active:scale-95">
-                      到達記録を付与
-                    </button>
-                    {grantMessage && (
-                      <p className={`text-xs ${grantMessage.includes('エラー') ? 'text-red-400' : 'text-green-400'}`}>
-                        {grantMessage}
-                      </p>
-                    )}
-                  </form>
-                </div>
-              </div>
-            )}
           </div>
         )}
 
-        {/* 4. Moderation Tab */}
+        {/* 4. Official Certificates CMS Readiness Tab */}
+        {activeTab === 'official_certs' && (
+          <div className="space-y-6 animate-in fade-in duration-300">
+            <div className="border-b border-gray-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-black text-white flex items-center gap-2">
+                  <Award className="w-6 h-6 text-amber-400" />
+                  公的証明書（観光協会・行政認定）事前準備＆販売期間設定
+                </h2>
+                <p className="text-xs text-gray-400 mt-1">
+                  自治体・観光協会の提携合意後、即時に公式認定デジタル証明書の販売・ワンクリック期間延長が可能なシステム
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              {/* Island Selection */}
+              <div className="lg:col-span-1 bg-gray-900 border border-gray-800 rounded-2xl p-4 flex flex-col h-[70vh]">
+                <h3 className="text-xs font-bold text-gray-400 uppercase mb-3">対象島を選択</h3>
+                <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
+                  {officialIslands.map(is => (
+                    <button
+                      key={is.id}
+                      onClick={() => {
+                        setSelectedOfficialIsland(is);
+                        setOfficialForm({
+                          islandId: is.id,
+                          official_cert_enabled: is.official_cert_enabled || false,
+                          official_org_name: is.official_org_name || '一般社団法人 八重山ビジターズビューロー',
+                          official_seal_url: is.official_seal_url || '',
+                          official_cert_price: is.official_cert_price || 500,
+                          official_sales_start_at: is.official_sales_start_at ? is.official_sales_start_at.substring(0, 10) : new Date().toISOString().slice(0, 10),
+                          official_sales_end_at: is.official_sales_end_at ? is.official_sales_end_at.substring(0, 10) : new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
+                          official_template_id: is.official_template_id || 'standard_seal'
+                        });
+                      }}
+                      className={`w-full text-left p-3 rounded-xl transition border text-xs font-bold flex items-center justify-between ${
+                        selectedOfficialIsland?.id === is.id
+                          ? 'bg-amber-950/60 border-amber-500/60 text-white'
+                          : 'bg-gray-950/60 border-gray-800/80 text-gray-300 hover:border-gray-700'
+                      }`}
+                    >
+                      <div>
+                        <p className="text-white">{is.name}</p>
+                        <p className="text-[10px] text-gray-500 font-mono">ID: {is.id}</p>
+                      </div>
+                      <span className={`px-2 py-0.5 rounded text-[9px] ${is.official_cert_enabled ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' : 'bg-gray-800 text-gray-400'}`}>
+                        {is.official_cert_enabled ? '販売有効' : '無効'}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Config Form */}
+              <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-2xl p-6 h-[70vh] overflow-y-auto space-y-5 text-xs">
+                <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+                  <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                    <Award className="w-4 h-4 text-amber-400" />
+                    {selectedOfficialIsland ? `「${selectedOfficialIsland.name}」の公的証明書設定` : '島を選択してください'}
+                  </h3>
+                </div>
+
+                <div className="space-y-4">
+                  {/* Enable Switch */}
+                  <div className="bg-gray-950 p-4 rounded-xl border border-gray-800 flex items-center justify-between">
+                    <div>
+                      <h4 className="font-bold text-white text-xs">公的認定証明書の即時販売を有効化</h4>
+                      <p className="text-[10px] text-gray-400 mt-0.5">ONにするとユーザーが公印入り公式デジタル証明書を購入可能になります</p>
+                    </div>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={officialForm.official_cert_enabled}
+                        onChange={e => setOfficialForm({ ...officialForm, official_cert_enabled: e.target.checked })}
+                        className="sr-only peer"
+                      />
+                      <div className="w-11 h-6 bg-gray-800 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-500"></div>
+                    </label>
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 mb-1 font-bold">公認団体・自治体名 (例: 一般社団法人 八重山ビジターズビューロー)</label>
+                    <input
+                      type="text"
+                      className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white"
+                      value={officialForm.official_org_name}
+                      onChange={e => setOfficialForm({ ...officialForm, official_org_name: e.target.value })}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-gray-400 mb-1 font-bold">公式角印・認定印画像URL (透明背景PNG推奨)</label>
+                    <input
+                      type="text"
+                      placeholder="https://..."
+                      className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white font-mono"
+                      value={officialForm.official_seal_url}
+                      onChange={e => setOfficialForm({ ...officialForm, official_seal_url: e.target.value })}
+                    />
+                  </div>
+
+                  {/* Extension Buttons */}
+                  <div className="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-3">
+                    <label className="block text-amber-400 font-bold flex items-center gap-1.5">
+                      <Calendar className="w-4 h-4" /> 販売期間 ＆ ワンクリック即時延長
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="text-[10px] text-gray-400 block mb-1">販売開始日</label>
+                        <input
+                          type="date"
+                          className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-white font-mono"
+                          value={officialForm.official_sales_start_at}
+                          onChange={e => setOfficialForm({ ...officialForm, official_sales_start_at: e.target.value })}
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] text-gray-400 block mb-1">販売終了日</label>
+                        <input
+                          type="date"
+                          className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-white font-mono font-bold text-amber-400"
+                          value={officialForm.official_sales_end_at}
+                          onChange={e => setOfficialForm({ ...officialForm, official_sales_end_at: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-gray-800 space-y-1.5">
+                      <span className="text-[10px] text-gray-400 block font-bold">ワンクリック期間延長:</span>
+                      <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={() => handleSaveOfficialConfig(30)} className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg border border-gray-700 font-bold transition">＋30日延長</button>
+                        <button type="button" onClick={() => handleSaveOfficialConfig(90)} className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg border border-gray-700 font-bold transition">＋90日延長</button>
+                        <button type="button" onClick={() => handleSaveOfficialConfig(180)} className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg border border-gray-700 font-bold transition">＋180日延長</button>
+                        <button type="button" onClick={() => handleSaveOfficialConfig(365)} className="bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-1.5 rounded-lg border border-gray-700 font-bold transition">＋1年延長</button>
+
+                        <div className="flex items-center gap-1 ml-auto">
+                          <input
+                            type="number"
+                            value={customExtendDays}
+                            onChange={e => setCustomExtendDays(Number(e.target.value))}
+                            className="w-16 bg-gray-900 border border-gray-800 rounded-lg p-1 text-center font-mono text-white"
+                          />
+                          <button type="button" onClick={() => handleSaveOfficialConfig(customExtendDays)} className="bg-amber-500 hover:bg-amber-400 text-black px-3 py-1.5 rounded-lg font-extrabold transition">指定日数追加</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="pt-3 border-t border-gray-800 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => handleSaveOfficialConfig()}
+                      className="bg-amber-500 hover:bg-amber-400 text-black font-extrabold px-6 py-2.5 rounded-xl transition shadow active:scale-95 flex items-center gap-1.5"
+                    >
+                      <Save className="w-4 h-4" /> 公的証明書設定を保存する
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* 5. Partners Tab */}
+        {activeTab === 'partners' && (
+          <AdminPartners password={password} />
+        )}
+
+        {/* 6. Distributors / Stores Tab */}
+        {activeTab === 'distributors' && (
+          <AdminDistributors password={password} />
+        )}
+
+        {/* 7. Moderation Tab */}
         {activeTab === 'moderation' && (
           <div className="space-y-6 animate-in fade-in duration-300">
             <div className="border-b border-gray-800 pb-4 flex items-center justify-between">
@@ -925,27 +1095,27 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 5. Islands Tab */}
+        {/* 8. Islands Tab */}
         {activeTab === 'islands' && (
           <IslandManagement password={password} />
         )}
 
-        {/* 6. Fairies Tab */}
+        {/* 9. Fairies Tab */}
         {activeTab === 'fairies' && (
           <FairyManagement password={password} />
         )}
 
-        {/* 7. Contacts Tab */}
+        {/* 10. Contacts Tab */}
         {activeTab === 'contacts' && (
           <AdminContacts password={password} />
         )}
 
-        {/* 8. Newsletter Tab */}
+        {/* 11. Newsletter Tab */}
         {activeTab === 'newsletter' && (
           <AdminNewsletter adminPassword={password} />
         )}
 
-        {/* 9. Promo Codes / Coupons Tab */}
+        {/* 12. Promo Codes / Coupons Tab */}
         {activeTab === 'coupons' && (
           <div className="space-y-8 animate-in fade-in duration-300">
             <AdminPromoCodes />
@@ -953,7 +1123,7 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* 10. Password Change Tab */}
+        {/* 13. Password Change Tab */}
         {activeTab === 'password' && (
           <div className="max-w-xl mx-auto space-y-6 animate-in fade-in duration-300">
             <h2 className="text-2xl font-black text-white flex items-center gap-2 border-b border-gray-800 pb-4">

@@ -34,8 +34,8 @@ export async function PUT(req: NextRequest) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
-  const { id, status } = await req.json();
-  if (!id || !status) {
+  const { id, status, admin_note, reply_text } = await req.json();
+  if (!id) {
     return NextResponse.json({ error: '必須項目が不足しています' }, { status: 400 });
   }
 
@@ -43,14 +43,19 @@ export async function PUT(req: NextRequest) {
     auth: { autoRefreshToken: false, persistSession: false }
   });
 
+  const updateData: any = { updated_at: new Date().toISOString() };
+  if (status) updateData.status = status;
+  if (admin_note !== undefined) updateData.admin_note = admin_note;
+  if (reply_text !== undefined) updateData.reply_text = reply_text;
+
   const { error } = await adminClient
     .from('contacts')
-    .update({ status, updated_at: new Date().toISOString() })
+    .update(updateData)
     .eq('id', id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json({ success: true, message: 'ステータスを更新しました' });
+  return NextResponse.json({ success: true, message: 'お問い合わせ対応状況を更新しました' });
 }

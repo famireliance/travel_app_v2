@@ -1,20 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import {
+  Sparkles,
+  Plus,
+  Trash2,
+  Upload,
+  Search,
+  Save,
+  Wand2,
+  Edit3
+} from 'lucide-react';
+
+interface FairyData {
+  id?: string;
+  fairy_key: string;
+  name: string;
+  theme: string;
+  description: string;
+  region_id: string;
+  island_id: string;
+  rarity: string;
+  attribute: string;
+  collab_sponsor: string;
+  icon: string;
+  image_url: string;
+  custom_photo_url: string;
+  color_from: string;
+  color_to: string;
+  shadow_color: string;
+  sparkle_color: string;
+  is_time_limited: boolean;
+  start_date?: string;
+  end_date?: string;
+  checkin_radius_m: number;
+  is_qr_exclusive: boolean;
+}
 
 export default function FairyManagement({ password }: { password: string }) {
-  const [fairies, setFairies] = useState<any[]>([]);
+  const [fairies, setFairies] = useState<FairyData[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState('');
-  
+
   // Form State
-  const [selectedFairy, setSelectedFairy] = useState<any | null>(null);
-  const [formData, setFormData] = useState({
+  const [selectedFairy, setSelectedFairy] = useState<FairyData | null>(null);
+  const [formData, setFormData] = useState<FairyData>({
     fairy_key: '', name: '', theme: '', description: '', region_id: '', island_id: '',
     rarity: 'NORMAL', attribute: 'WATER', collab_sponsor: '', icon: '✨', image_url: '', custom_photo_url: '',
     color_from: 'from-blue-400', color_to: 'to-indigo-600', shadow_color: 'shadow-blue-500/50', sparkle_color: 'text-blue-200',
     is_time_limited: false, start_date: '', end_date: '',
     checkin_radius_m: 0, is_qr_exclusive: false
   });
+
+  const [generatingAI, setGeneratingAI] = useState(false);
+  const [uploading, setUploading] = useState(false);
 
   const fetchFairies = async () => {
     setIsLoading(true);
@@ -36,15 +74,31 @@ export default function FairyManagement({ password }: { password: string }) {
     fetchFairies();
   }, [search]);
 
-  const handleEdit = (fairy: any) => {
+  const handleEdit = (fairy: FairyData) => {
     setSelectedFairy(fairy);
     setFormData({
-      fairy_key: fairy.fairy_key || '', name: fairy.name || '', theme: fairy.theme || '', description: fairy.description || '',
-      region_id: fairy.region_id || '', island_id: fairy.island_id || '', rarity: fairy.rarity || 'NORMAL', attribute: fairy.attribute || 'WATER',
-      collab_sponsor: fairy.collab_sponsor || '', icon: fairy.icon || '✨', image_url: fairy.image_url || '', custom_photo_url: fairy.custom_photo_url || '',
-      color_from: fairy.color_from || 'from-blue-400', color_to: fairy.color_to || 'to-indigo-600', shadow_color: fairy.shadow_color || 'shadow-blue-500/50', sparkle_color: fairy.sparkle_color || 'text-blue-200',
-      is_time_limited: fairy.is_time_limited || false, start_date: fairy.start_date ? fairy.start_date.substring(0, 16) : '', end_date: fairy.end_date ? fairy.end_date.substring(0, 16) : '',
-      checkin_radius_m: fairy.checkin_radius_m || 0, is_qr_exclusive: fairy.is_qr_exclusive || false
+      id: fairy.id,
+      fairy_key: fairy.fairy_key || '',
+      name: fairy.name || '',
+      theme: fairy.theme || '',
+      description: fairy.description || '',
+      region_id: fairy.region_id || '',
+      island_id: fairy.island_id || '',
+      rarity: fairy.rarity || 'NORMAL',
+      attribute: fairy.attribute || 'WATER',
+      collab_sponsor: fairy.collab_sponsor || '',
+      icon: fairy.icon || '✨',
+      image_url: fairy.image_url || '',
+      custom_photo_url: fairy.custom_photo_url || '',
+      color_from: fairy.color_from || 'from-blue-400',
+      color_to: fairy.color_to || 'to-indigo-600',
+      shadow_color: fairy.shadow_color || 'shadow-blue-500/50',
+      sparkle_color: fairy.sparkle_color || 'text-blue-200',
+      is_time_limited: fairy.is_time_limited || false,
+      start_date: fairy.start_date ? fairy.start_date.substring(0, 16) : '',
+      end_date: fairy.end_date ? fairy.end_date.substring(0, 16) : '',
+      checkin_radius_m: fairy.checkin_radius_m || 0,
+      is_qr_exclusive: fairy.is_qr_exclusive || false
     });
   };
 
@@ -53,8 +107,8 @@ export default function FairyManagement({ password }: { password: string }) {
     const isNew = !selectedFairy;
     try {
       const payload = { ...formData };
-      if (!payload.start_date) delete (payload as any).start_date;
-      if (!payload.end_date) delete (payload as any).end_date;
+      if (!payload.start_date) delete payload.start_date;
+      if (!payload.end_date) delete payload.end_date;
 
       const res = await fetch('/api/admin/fairies', {
         method: isNew ? 'POST' : 'PUT',
@@ -63,7 +117,7 @@ export default function FairyManagement({ password }: { password: string }) {
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
-      toast.success(data.message);
+      toast.success(data.message || '保存しました');
       fetchFairies();
       setSelectedFairy(null);
     } catch (err: any) {
@@ -71,124 +125,291 @@ export default function FairyManagement({ password }: { password: string }) {
     }
   };
 
-  const handleGenerateAssist = () => {
-    // 簡易的な自動提案機能（将来的にはAI連携も可能）
-    toast.success('自動提案を適用しました！');
-    setFormData(prev => ({
-      ...prev,
-      icon: '☕',
-      color_from: 'from-amber-700',
-      color_to: 'to-amber-900',
-      shadow_color: 'shadow-amber-800/50',
-      sparkle_color: 'text-amber-200',
-      theme: 'カフェの癒やし精霊',
-      description: 'コーヒーの豊かな香りと共に現れる、ほっと一息つける妖精です。',
-    }));
+  const handleDelete = async (fairy: FairyData) => {
+    if (!fairy.id) return;
+    if (!window.confirm(`本当に妖精「${fairy.name}」(Key: ${fairy.fairy_key}) を削除しますか？`)) {
+      return;
+    }
+    try {
+      const res = await fetch(`/api/admin/fairies?id=${encodeURIComponent(fairy.id)}`, {
+        method: 'DELETE',
+        headers: { 'x-admin-password': password }
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      toast.success(data.message || '削除しました');
+      if (selectedFairy?.id === fairy.id) setSelectedFairy(null);
+      fetchFairies();
+    } catch (err: any) {
+      toast.error(`削除エラー: ${err.message}`);
+    }
+  };
+
+  // Real Gemini AI assist for fairy creation
+  const handleAIAssist = async () => {
+    const islandName = window.prompt('自動生成する「対象の島名」を入力してください（例: 屋久島、竹富島、宮古島）', '石垣島');
+    if (!islandName) return;
+
+    const keyword = window.prompt('特徴キーワードを入力してください（例: マンタ、ガジュマル、泡盛）', 'ガジュマルの樹木精霊');
+
+    setGeneratingAI(true);
+    const toastId = toast.loading('Gemini AI が妖精データをデザイン中...');
+
+    try {
+      const res = await fetch('/api/admin/generate-fairy', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': password
+        },
+        body: JSON.stringify({ islandName, keyword })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      const f = data.fairy;
+      const keySlug = `${islandName.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now().toString(36)}`;
+
+      setFormData(prev => ({
+        ...prev,
+        fairy_key: prev.fairy_key || keySlug,
+        name: f.name || prev.name,
+        theme: f.theme || prev.theme,
+        description: f.description || prev.description,
+        rarity: f.rarity || prev.rarity,
+        attribute: f.attribute || prev.attribute,
+        icon: f.icon || prev.icon,
+        color_from: f.color_from || prev.color_from,
+        color_to: f.color_to || prev.color_to,
+        shadow_color: f.shadow_color || prev.shadow_color,
+        sparkle_color: f.sparkle_color || prev.sparkle_color,
+      }));
+
+      toast.success('AIデザインが適用されました！', { id: toastId });
+    } catch (err: any) {
+      toast.error(`AI生成エラー: ${err.message}`, { id: toastId });
+    } finally {
+      setGeneratingAI(false);
+    }
+  };
+
+  // Upload image
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    const toastId = toast.loading('妖精画像をアップロード中...');
+    try {
+      const body = new FormData();
+      body.append('file', file);
+      body.append('bucket', 'fairies');
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        headers: { 'x-admin-password': password },
+        body
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+
+      setFormData(prev => ({ ...prev, custom_photo_url: data.url }));
+      toast.success('画像をアップロードしました', { id: toastId });
+    } catch (err: any) {
+      toast.error(`アップロード失敗: ${err.message}`, { id: toastId });
+    } finally {
+      setUploading(false);
+    }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center border-b border-gray-700 pb-4">
-        <h2 className="text-2xl font-bold text-gray-100">妖精データ管理</h2>
-        <div className="flex gap-2">
-          <button 
-            onClick={handleGenerateAssist}
-            className="bg-purple-600 hover:bg-purple-700 px-4 py-2 rounded text-sm font-bold text-white transition-colors"
+    <div className="space-y-6 animate-in fade-in duration-300">
+      {/* Top Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-gray-800 pb-4">
+        <div>
+          <h2 className="text-2xl font-black text-white flex items-center gap-2">
+            <Sparkles className="w-6 h-6 text-amber-400" />
+            ご当地妖精マスター管理
+          </h2>
+          <p className="text-xs text-gray-400 mt-1">
+            各離島・スポットに降臨するご当地妖精（ローカルスピリット）のマスターデータ、世界観、出現条件の登録
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handleAIAssist}
+            disabled={generatingAI}
+            className="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5 active:scale-95 disabled:opacity-50"
           >
-            ✨ AIアシスト提案 (β)
+            <Wand2 className={`w-4 h-4 ${generatingAI ? 'animate-spin' : ''}`} />
+            Gemini AI で自動デザイン
           </button>
-          <button 
+          <button
             onClick={() => {
               setSelectedFairy(null);
-              setFormData({ fairy_key: '', name: '', theme: '', description: '', region_id: '', island_id: '', rarity: 'NORMAL', attribute: 'WATER', collab_sponsor: '', icon: '✨', image_url: '', custom_photo_url: '', color_from: 'from-blue-400', color_to: 'to-indigo-600', shadow_color: 'shadow-blue-500/50', sparkle_color: 'text-blue-200', is_time_limited: false, start_date: '', end_date: '', checkin_radius_m: 0, is_qr_exclusive: false });
+              setFormData({
+                fairy_key: '', name: '', theme: '', description: '', region_id: '', island_id: '',
+                rarity: 'NORMAL', attribute: 'WATER', collab_sponsor: '', icon: '✨', image_url: '', custom_photo_url: '',
+                color_from: 'from-blue-400', color_to: 'to-indigo-600', shadow_color: 'shadow-blue-500/50', sparkle_color: 'text-blue-200',
+                is_time_limited: false, start_date: '', end_date: '', checkin_radius_m: 0, is_qr_exclusive: false
+              });
             }}
-            className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded text-sm font-bold text-white transition-colors"
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5 active:scale-95"
           >
-            ＋ 新規妖精追加
+            <Plus className="w-4 h-4" />
+            新規妖精を追加
           </button>
         </div>
       </div>
 
+      {/* Main Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* List Section */}
-        <div className="lg:col-span-1 bg-gray-800 rounded-lg shadow border border-gray-700 flex flex-col h-[75vh]">
-          <div className="p-4 border-b border-gray-700">
-            <input 
-              type="text" 
-              placeholder="名前やテーマで検索..." 
-              className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-gray-100 focus:outline-none focus:border-blue-500"
+        <div className="lg:col-span-1 bg-gray-900 border border-gray-800 rounded-2xl p-4 flex flex-col h-[75vh]">
+          <div className="relative mb-3">
+            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="text"
+              placeholder="名前やテーマで検索..."
+              className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-3 py-2 text-xs text-white focus:outline-none focus:border-amber-500"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
           </div>
-          <div className="flex-1 overflow-y-auto p-2">
+
+          <div className="flex-1 overflow-y-auto space-y-1.5 pr-1">
             {isLoading ? (
-              <p className="text-center text-gray-500 mt-4">読み込み中...</p>
+              <p className="text-center text-gray-500 text-xs py-8">読み込み中...</p>
+            ) : fairies.length === 0 ? (
+              <p className="text-center text-gray-500 text-xs py-8">該当する妖精が見つかりません</p>
             ) : (
-              <ul className="space-y-1">
-                {fairies.map(fairy => (
-                  <li key={fairy.id}>
-                    <button 
-                      onClick={() => handleEdit(fairy)}
-                      className={`w-full text-left px-3 py-2 rounded text-sm transition-colors flex items-center gap-3 ${selectedFairy?.id === fairy.id ? 'bg-blue-900/50 border border-blue-700/50' : 'hover:bg-gray-700'}`}
-                    >
-                      <div className={`w-10 h-10 rounded-full flex items-center justify-center text-xl bg-gradient-to-br ${fairy.color_from} ${fairy.color_to}`}>
-                        {fairy.icon}
-                      </div>
-                      <div>
-                        <div className="font-bold text-gray-200">{fairy.name}</div>
-                        <div className="text-xs text-gray-500">{fairy.rarity} / {fairy.attribute}</div>
-                      </div>
-                    </button>
-                  </li>
-                ))}
-              </ul>
+              fairies.map(fairy => (
+                <div
+                  key={fairy.id || fairy.fairy_key}
+                  className={`group p-3 rounded-xl transition cursor-pointer border flex items-center justify-between ${
+                    selectedFairy?.id === fairy.id
+                      ? 'bg-amber-950/60 border-amber-500/60 text-white'
+                      : 'bg-gray-950/60 border-gray-800/80 text-gray-300 hover:border-gray-700'
+                  }`}
+                  onClick={() => handleEdit(fairy)}
+                >
+                  <div className="flex items-center gap-3">
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl bg-gradient-to-br ${fairy.color_from} ${fairy.color_to} shrink-0 shadow`}>
+                      {fairy.icon}
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-xs text-white">{fairy.name}</h4>
+                      <p className="text-[10px] text-amber-400 font-mono">{fairy.rarity} / {fairy.attribute}</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDelete(fairy);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-1.5 text-gray-500 hover:text-red-400 rounded hover:bg-gray-800 transition"
+                    title="削除"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              ))
             )}
           </div>
         </div>
 
-        {/* Form Section */}
-        <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow border border-gray-700 p-6 h-[75vh] overflow-y-auto">
-          <form onSubmit={handleSave} className="space-y-6">
-            
-            <div className="flex gap-6 items-start">
-              {/* Live Preview Card */}
-              <div className="w-32 flex-shrink-0 flex flex-col items-center gap-2">
-                <p className="text-xs text-gray-400 font-bold">プレビュー</p>
-                <div className={`w-full aspect-[3/4] rounded-xl flex items-center justify-center text-5xl relative overflow-hidden bg-gradient-to-b ${formData.color_from} ${formData.color_to} ${formData.shadow_color} shadow-lg`}>
+        {/* Editor Form Column */}
+        <div className="lg:col-span-2 bg-gray-900 border border-gray-800 rounded-2xl p-6 h-[75vh] overflow-y-auto space-y-6">
+          <div className="flex items-center justify-between border-b border-gray-800 pb-3">
+            <h3 className="text-base font-bold text-white flex items-center gap-2">
+              <Edit3 className="w-4 h-4 text-amber-400" />
+              {selectedFairy ? `「${selectedFairy.name}」の編集` : '新規妖精データ作成'}
+            </h3>
+            {selectedFairy && (
+              <button
+                type="button"
+                onClick={() => handleDelete(selectedFairy)}
+                className="text-xs text-red-400 hover:text-red-300 flex items-center gap-1 font-bold bg-red-950/40 border border-red-800/50 px-3 py-1.5 rounded-lg transition"
+              >
+                <Trash2 className="w-3.5 h-3.5" /> 妖精を削除
+              </button>
+            )}
+          </div>
+
+          <form onSubmit={handleSave} className="space-y-6 text-xs">
+            {/* Live Preview Card & Basic Info */}
+            <div className="flex flex-col sm:flex-row gap-6 items-start">
+              {/* Preview Card */}
+              <div className="w-36 shrink-0 flex flex-col items-center gap-2">
+                <span className="text-[10px] font-bold uppercase text-gray-400 tracking-wider">カードプレビュー</span>
+                <div className={`w-full aspect-[3/4] rounded-2xl flex flex-col items-center justify-center text-4xl relative overflow-hidden bg-gradient-to-b ${formData.color_from} ${formData.color_to} ${formData.shadow_color} shadow-xl border border-white/20 p-3`}>
                   {formData.custom_photo_url || formData.image_url ? (
-                    <img src={formData.custom_photo_url || formData.image_url} alt="preview" className="w-full h-full object-cover mix-blend-overlay opacity-80" />
+                    <img src={formData.custom_photo_url || formData.image_url} alt="preview" className="absolute inset-0 w-full h-full object-cover mix-blend-overlay opacity-70" />
                   ) : null}
-                  <span className={`absolute z-10 drop-shadow-md ${formData.sparkle_color}`}>{formData.icon}</span>
+                  <span className={`relative z-10 drop-shadow-md ${formData.sparkle_color}`}>{formData.icon}</span>
+                  <p className="relative z-10 text-[10px] font-extrabold text-white text-center mt-2 leading-tight drop-shadow">
+                    {formData.name || '妖精名'}
+                  </p>
                 </div>
               </div>
 
-              {/* Basic Info */}
-              <div className="flex-1 grid grid-cols-2 gap-4">
+              {/* Form Input Columns */}
+              <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">Fairy Key (ID)</label>
-                  <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.fairy_key} onChange={e => setFormData({...formData, fairy_key: e.target.value})} disabled={!!selectedFairy} />
+                  <label className="block text-gray-400 mb-1 font-bold">Fairy Key (識別ID)</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="例: taketomi-shisa"
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white font-mono"
+                    value={formData.fairy_key}
+                    onChange={e => setFormData({ ...formData, fairy_key: e.target.value })}
+                    disabled={!!selectedFairy}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">名前</label>
-                  <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} />
+                  <label className="block text-gray-400 mb-1 font-bold">名前</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="例: シーサーノ・ルー"
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white"
+                    value={formData.name}
+                    onChange={e => setFormData({ ...formData, name: e.target.value })}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">テーマ</label>
-                  <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.theme} onChange={e => setFormData({...formData, theme: e.target.value})} />
+                  <label className="block text-gray-400 mb-1 font-bold">テーマ / 称号</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="例: ガジュマルの樹木精霊"
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white"
+                    value={formData.theme}
+                    onChange={e => setFormData({ ...formData, theme: e.target.value })}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">レアリティ</label>
-                  <select className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.rarity} onChange={e => setFormData({...formData, rarity: e.target.value})}>
+                  <label className="block text-gray-400 mb-1 font-bold">レアリティ</label>
+                  <select
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white"
+                    value={formData.rarity}
+                    onChange={e => setFormData({ ...formData, rarity: e.target.value })}
+                  >
                     <option value="NORMAL">NORMAL</option>
                     <option value="RARE">RARE</option>
                     <option value="EPIC">EPIC</option>
-                    <option value="SPOT_EXCLUSIVE">SPOT_EXCLUSIVE (限定)</option>
+                    <option value="SPOT_EXCLUSIVE">SPOT_EXCLUSIVE (限定スポット)</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">属性</label>
-                  <select className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.attribute} onChange={e => setFormData({...formData, attribute: e.target.value})}>
+                  <label className="block text-gray-400 mb-1 font-bold">属性</label>
+                  <select
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white"
+                    value={formData.attribute}
+                    onChange={e => setFormData({ ...formData, attribute: e.target.value })}
+                  >
                     <option value="WATER">WATER (水)</option>
                     <option value="NATURE">NATURE (自然)</option>
                     <option value="FIRE">FIRE (火)</option>
@@ -198,89 +419,104 @@ export default function FairyManagement({ password }: { password: string }) {
                     <option value="ICE">ICE (氷)</option>
                   </select>
                 </div>
-                <div className="col-span-2">
-                  <label className="block text-xs text-gray-400 mb-1">説明文</label>
-                  <textarea className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm h-16" value={formData.description} onChange={e => setFormData({...formData, description: e.target.value})} />
+                <div>
+                  <label className="block text-gray-400 mb-1 font-bold">紐付け先 島ID</label>
+                  <input
+                    type="text"
+                    placeholder="例: ishigaki"
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white font-mono"
+                    value={formData.island_id}
+                    onChange={e => setFormData({ ...formData, island_id: e.target.value })}
+                  />
                 </div>
               </div>
             </div>
 
-            {/* Visual Motif Enforcer */}
-            <div className="bg-gray-900/50 p-4 rounded border border-gray-700">
-              <h4 className="text-sm font-bold text-pink-400 mb-3">🎨 ビジュアルモチーフ設定（世界観の維持）</h4>
-              <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">アイコン(絵文字)</label>
-                  <input required type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm text-center" value={formData.icon} onChange={e => setFormData({...formData, icon: e.target.value})} />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Color From</label>
-                  <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.color_from} onChange={e => setFormData({...formData, color_from: e.target.value})} placeholder="from-blue-400" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Color To</label>
-                  <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.color_to} onChange={e => setFormData({...formData, color_to: e.target.value})} placeholder="to-indigo-600" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Shadow</label>
-                  <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.shadow_color} onChange={e => setFormData({...formData, shadow_color: e.target.value})} placeholder="shadow-blue-500/50" />
-                </div>
-                <div>
-                  <label className="block text-xs text-gray-400 mb-1">Sparkle</label>
-                  <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.sparkle_color} onChange={e => setFormData({...formData, sparkle_color: e.target.value})} placeholder="text-blue-200" />
-                </div>
-              </div>
-              <div className="mt-3">
-                <label className="block text-xs text-gray-400 mb-1">📸 カスタム写真/背景URL (看板犬や店舗イメージなど)</label>
-                <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.custom_photo_url} onChange={e => setFormData({...formData, custom_photo_url: e.target.value})} placeholder="https://..." />
-              </div>
+            <div>
+              <label className="block text-gray-400 mb-1 font-bold">説明文・背景エピソード</label>
+              <textarea
+                className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500 h-20"
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+              />
             </div>
 
-            {/* Collab & Restrictions */}
-            <div className="bg-yellow-900/10 p-4 rounded border border-yellow-700/30">
-              <h4 className="text-sm font-bold text-yellow-400 mb-3">📍 コラボ・取得範囲・期間限定設定</h4>
-              <div className="grid grid-cols-2 gap-4">
+            {/* Visual Styling Enforcer */}
+            <div className="bg-gray-950/60 p-4 rounded-xl border border-gray-800 space-y-3">
+              <h4 className="text-xs font-bold text-pink-400">🎨 ビジュアルモチーフ設定</h4>
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">協賛企業・店舗名</label>
-                  <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.collab_sponsor} onChange={e => setFormData({...formData, collab_sponsor: e.target.value})} placeholder="〇〇カフェ" />
+                  <label className="block text-[10px] text-gray-400 mb-1">絵文字アイコン</label>
+                  <input
+                    required
+                    type="text"
+                    className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-center text-sm"
+                    value={formData.icon}
+                    onChange={e => setFormData({ ...formData, icon: e.target.value })}
+                  />
                 </div>
                 <div>
-                  <label className="block text-xs text-gray-400 mb-1">紐付け先 島ID (または独自SPOT ID)</label>
-                  <input type="text" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.island_id} onChange={e => setFormData({...formData, island_id: e.target.value})} />
+                  <label className="block text-[10px] text-gray-400 mb-1">Color From</label>
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs"
+                    value={formData.color_from}
+                    onChange={e => setFormData({ ...formData, color_from: e.target.value })}
+                  />
                 </div>
-                
-                <div className="col-span-2 flex items-center gap-4 mt-2">
-                  <label className="flex items-center gap-2 text-sm text-gray-300">
-                    <input type="checkbox" checked={formData.is_time_limited} onChange={e => setFormData({...formData, is_time_limited: e.target.checked})} className="rounded bg-gray-900 border-gray-700" />
-                    期間限定にする
+                <div>
+                  <label className="block text-[10px] text-gray-400 mb-1">Color To</label>
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs"
+                    value={formData.color_to}
+                    onChange={e => setFormData({ ...formData, color_to: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-gray-400 mb-1">Shadow</label>
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs"
+                    value={formData.shadow_color}
+                    onChange={e => setFormData({ ...formData, shadow_color: e.target.value })}
+                  />
+                </div>
+                <div>
+                  <label className="block text-[10px] text-gray-400 mb-1">Sparkle</label>
+                  <input
+                    type="text"
+                    className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs"
+                    value={formData.sparkle_color}
+                    onChange={e => setFormData({ ...formData, sparkle_color: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] text-gray-400 mb-1 font-bold">カスタム背景/イラスト写真URL</label>
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    className="flex-1 bg-gray-900 border border-gray-800 rounded-xl p-2 text-white font-mono text-xs"
+                    value={formData.custom_photo_url || ''}
+                    onChange={e => setFormData({ ...formData, custom_photo_url: e.target.value })}
+                  />
+                  <label className="cursor-pointer bg-gray-800 hover:bg-gray-700 text-gray-200 px-3 py-2 rounded-xl border border-gray-700 text-xs font-bold transition flex items-center gap-1 shrink-0">
+                    <Upload className="w-3.5 h-3.5 text-amber-400" />
+                    画像選択
+                    <input type="file" accept="image/*" onChange={handleFileUpload} disabled={uploading} className="hidden" />
                   </label>
-                  {formData.is_time_limited && (
-                    <div className="flex items-center gap-2 flex-1">
-                      <input type="datetime-local" className="bg-gray-900 border border-gray-700 rounded p-1 text-sm w-full" value={formData.start_date} onChange={e => setFormData({...formData, start_date: e.target.value})} />
-                      <span>〜</span>
-                      <input type="datetime-local" className="bg-gray-900 border border-gray-700 rounded p-1 text-sm w-full" value={formData.end_date} onChange={e => setFormData({...formData, end_date: e.target.value})} />
-                    </div>
-                  )}
-                </div>
-
-                <div className="col-span-2 grid grid-cols-2 gap-4 mt-2 pt-4 border-t border-gray-700/50">
-                  <div>
-                    <label className="block text-xs text-gray-400 mb-1">取得可能半径 (m) ※0でデフォルト</label>
-                    <input type="number" className="w-full bg-gray-900 border border-gray-700 rounded p-2 text-sm" value={formData.checkin_radius_m} onChange={e => setFormData({...formData, checkin_radius_m: Number(e.target.value)})} />
-                  </div>
-                  <div className="flex items-center pt-5">
-                    <label className="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
-                      <input type="checkbox" checked={formData.is_qr_exclusive} onChange={e => setFormData({...formData, is_qr_exclusive: e.target.checked})} className="rounded bg-gray-900 border-gray-700 w-4 h-4" />
-                      <span className="font-bold text-green-400">📱 店内QRコード限定で取得可能にする</span>
-                    </label>
-                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 flex justify-end gap-4">
-              <button type="submit" className="bg-blue-600 hover:bg-blue-700 px-8 py-3 rounded font-bold text-white transition-colors">
-                保存する
+            <div className="pt-3 border-t border-gray-800 flex justify-end">
+              <button
+                type="submit"
+                className="bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs px-8 py-3 rounded-xl transition shadow active:scale-95 flex items-center gap-1.5"
+              >
+                <Save className="w-4 h-4" /> 妖精データを保存する
               </button>
             </div>
           </form>
