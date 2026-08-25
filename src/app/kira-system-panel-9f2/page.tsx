@@ -7,6 +7,7 @@ import AdminOrders from '@/components/admin/AdminOrders';
 import AdminContacts from '@/components/admin/AdminContacts';
 import AdminCoupons from '@/components/admin/AdminCoupons';
 import AdminPromoCodes from '@/components/admin/AdminPromoCodes';
+import AdminNewsletter from '@/components/admin/AdminNewsletter';
 import FairyManagement from '@/components/admin/FairyManagement';
 
 export default function AdminPage() {
@@ -923,8 +924,14 @@ export default function AdminPage() {
         {/* Contacts Tab */}
         {activeTab === 'contacts' && <AdminContacts password={password} />}
 
+        {/* Newsletter Tab */}
+        {activeTab === 'newsletter' && <AdminNewsletter adminPassword={password} />}
+
         {/* Coupons Tab */}
         {activeTab === 'coupons' && <AdminCoupons password={password} />}
+
+        {/* Promo Codes Tab */}
+        {activeTab === 'promo_codes' && <AdminPromoCodes />}
       </div>
     </div>
   );
