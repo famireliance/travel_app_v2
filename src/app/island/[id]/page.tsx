@@ -89,5 +89,5 @@ export default async function Page({ params }: { params: any }) {
     .order('created_at', { ascending: false })
     .limit(5);                // Google向けに上位5件のみ
 
-  return <IslandClient initialDiaries={initialDiaries ?? []} />;
+  return <IslandClient islandId={id} initialDiaries={initialDiaries ?? []} />;
 }

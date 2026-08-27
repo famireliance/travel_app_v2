@@ -34,13 +34,15 @@ interface IslandDiarySSR {
 }
 
 interface Props {
+  islandId?: string;
   initialDiaries?: IslandDiarySSR[];
 }
 
-export default function IslandDetail({ initialDiaries = [] }: Props) {
+export default function IslandDetail({ islandId: propIslandId, initialDiaries = [] }: Props) {
   const params = useParams();
   const router = useRouter();
-  const islandId = params.id as string;
+  const rawId = propIslandId || (Array.isArray(params?.id) ? params.id[0] : params?.id);
+  const islandId = rawId ? String(rawId) : '';
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [island, setIsland] = useState<any>(null);
@@ -80,12 +82,25 @@ export default function IslandDetail({ initialDiaries = [] }: Props) {
   };
 
   useEffect(() => {
+    if (!islandId) return;
+
+    setLoading(true);
+    setNotFound(false);
+
     fetchAllIslands().then(async (islands) => {
-      const decodedId = decodeURIComponent(islandId);
+      let decodedId = islandId;
+      try {
+        decodedId = decodeURIComponent(islandId);
+      } catch {
+        decodedId = islandId;
+      }
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let found: any = (islands || []).find((i: any) => 
         String(i.id) === String(islandId) || 
+        String(i.id) === String(decodedId) ||
         i.slug === islandId || 
+        i.slug === decodedId ||
         i.name === islandId || 
         i.name === decodedId
       );
@@ -97,12 +112,13 @@ export default function IslandDetail({ initialDiaries = [] }: Props) {
 
       if (!found) {
         found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
-          (i: any) => i.name === islandId || i.name === decodedId || i.slug === islandId
+          (i: any) => i.name === islandId || i.name === decodedId || i.slug === islandId || i.slug === decodedId
         );
       }
 
       if (found) {
         setIsland(found);
+        setNotFound(false);
         
         // Phase 6: Fetch Targeted Ads (including prefecture and area)
         fetchAdCampaigns(found.id as string, found.region_id as string | undefined, found.prefecture as string | undefined, found.area as string | undefined).then(ads => setAdCampaigns(ads || []));
@@ -121,7 +137,19 @@ export default function IslandDetail({ initialDiaries = [] }: Props) {
         setNotFound(true);
       }
       setLoading(false);
-    }).catch(() => setLoading(false));
+    }).catch(() => {
+      // If DB error happens, try local master dictionary before declaring notFound
+      let decodedId = islandId;
+      try { decodedId = decodeURIComponent(islandId); } catch {}
+      const masterFound = ALL_ISLANDS_MASTER_DICTIONARY[islandId] || ALL_ISLANDS_MASTER_DICTIONARY[decodedId] || Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find((i: any) => i.name === islandId || i.name === decodedId || i.slug === islandId);
+      if (masterFound) {
+        setIsland(masterFound);
+        setNotFound(false);
+      } else {
+        setNotFound(true);
+      }
+      setLoading(false);
+    });
 
     fetchSiteSettings().then(data => {
       if (data) setSiteSettings(data);
