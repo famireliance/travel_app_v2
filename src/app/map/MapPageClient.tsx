@@ -253,7 +253,7 @@ function GlobalMapContent() {
 
         <button 
           onClick={() => { setDifficultyFilter(null); setManualBounds(null); router.replace('/map'); }} 
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${!difficultyFilter && !regionParam ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${difficultyFilter === null && !regionParam ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
         >
           全島 ({allIslands.length})
         </button>
@@ -266,6 +266,12 @@ function GlobalMapContent() {
             ★{lvl} {lvl === 5 ? 'レジェンド' : lvl === 4 ? '秘境島' : lvl === 3 ? 'アドベンチャー' : lvl === 2 ? 'スタンダード' : 'イージー'}
           </button>
         ))}
+        <button 
+          onClick={() => { setDifficultyFilter(0); setManualBounds(null); }} 
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-rose-600 hover:bg-rose-50'}`}
+        >
+          ⛔ 上陸制限島 (EX)
+        </button>
       </div>
       </div>
 

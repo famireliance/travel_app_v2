@@ -58,7 +58,8 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
     { level: 2, label: '★2 スタンダード', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200' },
     { level: 3, label: '★3 アドベンチャー', color: 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-indigo-200' },
     { level: 4, label: '★4 秘境島', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200' },
-    { level: 5, label: '★5 レジェンド', color: 'bg-rose-100 text-rose-700 hover:bg-rose-200 border-rose-200' }
+    { level: 5, label: '★5 レジェンド', color: 'bg-rose-100 text-rose-700 hover:bg-rose-200 border-rose-200' },
+    { level: 0, label: '⛔ 上陸制限島 (EX)', color: 'bg-slate-800 text-amber-300 hover:bg-slate-900 border-slate-700' }
   ];
 
   return (

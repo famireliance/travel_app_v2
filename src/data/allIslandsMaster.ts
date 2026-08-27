@@ -4631,7 +4631,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "海栗島（対馬北端沖）",
     "region_id": "tsushima",
     "prefecture": "長崎県",
-    "coordinates": "34.6617, 129.4267",
+    "coordinates": "34.6983, 129.4750",
     "description": "対馬最北端・鰐浦のすぐ沖合に位置する、韓国釜山を目の前に望む国境最前線の島。",
     "access": "定期フェリー・連絡船・橋または航空便アクセス",
     "flags": {
