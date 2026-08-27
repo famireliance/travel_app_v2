@@ -9,6 +9,7 @@ import heroSlides from '../data/hero_slides.json';
 import SearchModal from '@/components/SearchModal';
 import AuthModal from '@/components/AuthModal';
 import CompanionModal from '@/components/CompanionModal';
+import NearbyIslandsModal, { NearbyIslandItem } from '@/components/NearbyIslandsModal';
 import { useTravel } from '@/context/TravelContext';
 import { supabase, fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import BannerCarousel from '@/components/BannerCarousel';
@@ -42,6 +43,8 @@ export default function Home() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [isCompanionModalOpen, setIsCompanionModalOpen] = useState(false);
+  const [isNearbyModalOpen, setIsNearbyModalOpen] = useState(false);
+  const [nearbyItems, setNearbyItems] = useState<NearbyIslandItem[]>([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const categoryRef = useRef<HTMLDivElement>(null);
@@ -289,7 +292,7 @@ export default function Home() {
 
       {/* Premium Minimalist Nav */}
       <motion.div 
-        className="fixed top-0 left-0 right-0 z-50 px-6 lg:px-12 pt-7 pb-4 lg:pt-8 lg:pb-6 flex items-center justify-between backdrop-blur-xl transition-all"
+        className="sticky top-0 left-0 right-0 z-50 px-6 lg:px-12 py-3.5 lg:py-4 flex items-center justify-between backdrop-blur-xl transition-all"
         style={{ backgroundColor: navBg, borderBottomWidth: 1, borderBottomColor: navBorder }}
       >
         <div 
@@ -337,10 +340,10 @@ export default function Home() {
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
+            initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="fixed top-[65px] left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200 p-6 shadow-xl flex flex-col gap-4 md:hidden"
+            exit={{ opacity: 0, y: -10 }}
+            className="sticky top-[60px] left-0 right-0 z-40 bg-white/95 backdrop-blur-xl border-b border-slate-200 p-6 shadow-xl flex flex-col gap-4 md:hidden"
           >
             <button
               onClick={() => { setIsMobileMenuOpen(false); setIsSearchOpen(true); }}
@@ -382,7 +385,7 @@ export default function Home() {
       )}
 
       {/* Cinematic Hero Section */}
-      <div className={`relative ${adCampaigns.length > 0 ? 'min-h-[75dvh]' : 'min-h-[85dvh] lg:min-h-[90dvh]'} w-full overflow-hidden flex flex-col justify-end items-center pt-32`}>
+      <div className={`relative ${adCampaigns.length > 0 ? 'min-h-[75dvh]' : 'min-h-[85dvh] lg:min-h-[90dvh]'} w-full overflow-hidden flex flex-col justify-end items-center -mt-[64px] pt-24`}>
         {/* Subtle Ken Burns Effect */}
         <motion.div 
           className="absolute -inset-[10%] z-0 h-[120%] overflow-hidden bg-slate-900"
@@ -538,63 +541,126 @@ export default function Home() {
               </div>
             )}
 
-            {/* 現在地からチェックインボタン */}
-            <div className="mt-4 relative z-10">
+            {/* アクションボタン群 */}
+            <div className="mt-4 space-y-2.5 relative z-10">
+              {/* メインボタン：チェックイン（未ログイン時はログイン誘導） */}
+              {!user ? (
+                <button 
+                  onClick={() => setIsAuthOpen(true)}
+                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.02]"
+                >
+                  <MapPin size={18} />
+                  <span>ログインしてチェックイン</span>
+                </button>
+              ) : (
+                <button 
+                  onClick={() => {
+                    if (!navigator.geolocation) {
+                      toast.error('お使いのブラウザは位置情報機能（GPS）をサポートしていません。');
+                      return;
+                    }
+                    const btn = document.getElementById('top-checkin-btn-text');
+                    if (btn) btn.innerText = 'GPSで検索中...';
+                    
+                    navigator.geolocation.getCurrentPosition(
+                      (position) => {
+                        const { latitude: userLat, longitude: userLng } = position.coords;
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        let closestIsland: any = null;
+                        let minDistance = Infinity;
+
+                        allIslands.forEach(island => {
+                          if (island.coordinates) {
+                            const [islandLatStr, islandLngStr] = island.coordinates.split(',').map((s: string) => s.trim());
+                            const distance = calculateDistanceKm(userLat, userLng, parseFloat(islandLatStr), parseFloat(islandLngStr));
+                            if (distance < minDistance) {
+                              minDistance = distance;
+                              closestIsland = island;
+                            }
+                          }
+                        });
+
+                        if (btn) btn.innerText = '現在地からチェックイン';
+
+                        if (closestIsland) {
+                          const radiusKm = (closestIsland.checkin_radius_m || 5000) / 1000;
+                          const distText = minDistance < 1 ? `${Math.round(minDistance * 1000)}m` : `${minDistance.toFixed(1)}km`;
+                          
+                          if (minDistance <= radiusKm) {
+                            toast.success(`🎯 「${closestIsland.name}」エリア内です！チェックイン画面へ移動します`);
+                          } else {
+                            toast(`🧭 最寄りの島は「${closestIsland.name}」（約${distText}）です。チェックイン可能範囲外のため詳細ページをご案内します。`, { icon: 'ℹ️' });
+                          }
+                          router.push(`/island/${closestIsland.id}`);
+                        } else {
+                          toast.error('島データが見つかりませんでした。');
+                        }
+                      },
+                      () => {
+                        if (btn) btn.innerText = '現在地からチェックイン';
+                        toast.error('現在地の取得に失敗しました。GPS許可を確認してください。');
+                      },
+                      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                    );
+                  }}
+                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.02]"
+                >
+                  <MapPin size={18} />
+                  <span id="top-checkin-btn-text">現在地からチェックイン</span>
+                </button>
+              )}
+
+              {/* サブボタン：現在地から近くの島を探す（誰でも利用可能） */}
               <button 
                 onClick={() => {
                   if (!navigator.geolocation) {
                     toast.error('お使いのブラウザは位置情報機能（GPS）をサポートしていません。');
                     return;
                   }
-                  const btn = document.getElementById('top-checkin-btn-text');
-                  if (btn) btn.innerText = 'GPSで検索中...';
+                  toast('GPSで現在地周辺の島を探索中...', { icon: '🔍' });
                   
                   navigator.geolocation.getCurrentPosition(
                     (position) => {
                       const { latitude: userLat, longitude: userLng } = position.coords;
-                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                      let closestIsland: any = null;
-                      let minDistance = Infinity;
+                      const calculatedItems: NearbyIslandItem[] = [];
 
                       allIslands.forEach(island => {
                         if (island.coordinates) {
                           const [islandLatStr, islandLngStr] = island.coordinates.split(',').map((s: string) => s.trim());
-                          const distance = calculateDistanceKm(userLat, userLng, parseFloat(islandLatStr), parseFloat(islandLngStr));
-                          if (distance < minDistance) {
-                            minDistance = distance;
-                            closestIsland = island;
-                          }
+                          const distanceKm = calculateDistanceKm(userLat, userLng, parseFloat(islandLatStr), parseFloat(islandLngStr));
+                          const checkinRadiusKm = (island.checkin_radius_m || 5000) / 1000;
+                          calculatedItems.push({
+                            island,
+                            distanceKm,
+                            isWithinCheckinRadius: distanceKm <= checkinRadiusKm
+                          });
                         }
                       });
 
-                      if (closestIsland) {
-                        router.push(`/island/${closestIsland.id}`);
-                      } else {
-                        if (btn) btn.innerText = '現在地からチェックイン';
-                        toast.error('島データが見つかりませんでした。');
-                      }
+                      calculatedItems.sort((a, b) => a.distanceKm - b.distanceKm);
+
+                      const top5 = calculatedItems.slice(0, 5);
+                      setNearbyItems(top5);
+                      setIsNearbyModalOpen(true);
                     },
-                    (error) => {
-                      if (btn) btn.innerText = '現在地からチェックイン';
+                    () => {
                       toast.error('現在地の取得に失敗しました。GPSを許可してください。');
                     },
                     { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
                   );
                 }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.02]"
+                className="w-full py-2.5 rounded-2xl bg-white/15 hover:bg-white/25 border border-white/30 text-white font-bold tracking-widest text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
               >
-                <MapPin size={18} />
-                <span id="top-checkin-btn-text">現在地からチェックイン</span>
+                <Compass size={15} className="text-cyan-300" />
+                <span>現在地から近くの島を探す</span>
               </button>
-            </div>
 
-            {/* AIルートプランナーへのリンク */}
-            <div className="mt-3 relative z-10">
+              {/* サブボタン：AIルートプランナーへのリンク */}
               <button 
                 onClick={() => router.push('/route-planner')}
-                className="w-full py-3 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold tracking-widest text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
+                className="w-full py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold tracking-widest text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
               >
-                <Sparkles size={16} className="text-amber-300" />
+                <Sparkles size={15} className="text-amber-300" />
                 <span>AI アイランドホッピング提案</span>
               </button>
             </div>
@@ -1179,20 +1245,6 @@ export default function Home() {
             <h3 className="font-serif text-xl lg:text-2xl text-white tracking-widest mb-2">公式ネイティブアプリ</h3>
             <p className="text-sm text-slate-400">iOS / Androidアプリを現在開発中です。GPSチェックインがよりスムーズに、より楽しくなります。</p>
           </div>
-          <div className="flex flex-wrap items-center gap-3 opacity-70 shrink-0">
-            <div className="flex items-center justify-center gap-2 bg-black/80 text-white px-5 py-2.5 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">Download on the</span>
-                <span className="text-base font-sans font-semibold tracking-wide mt-0.5 text-white/80">App Store</span>
-              </div>
-            </div>
-            <div className="flex items-center justify-center gap-2 bg-black/80 text-white px-5 py-2.5 rounded-xl border border-white/10 shadow-lg cursor-not-allowed">
-              <div className="flex flex-col items-start leading-none">
-                <span className="text-[0.55rem] text-white/50 font-sans tracking-wide">GET IT ON</span>
-                <span className="text-base font-sans font-semibold tracking-wide mt-0.5 text-white/80">Google Play</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -1487,6 +1539,7 @@ export default function Home() {
       <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <CompanionModal isOpen={isCompanionModalOpen} onClose={() => setIsCompanionModalOpen(false)} />
+      <NearbyIslandsModal isOpen={isNearbyModalOpen} onClose={() => setIsNearbyModalOpen(false)} items={nearbyItems} />
     </div>
   );
 }

@@ -21,23 +21,18 @@ export default function LevelUpModal() {
     const currentInfo = getPlayerLevelInfo(totalPoints);
     const currentLevel = currentInfo.level;
 
-    if (prevLevelRef.current === null) {
-      // 初期ロード時: 過去に見たレベルを復元
-      const storedLevelStr = localStorage.getItem('kira_last_seen_level');
-      const storedLevel = storedLevelStr ? parseInt(storedLevelStr, 10) : null;
-      
-      if (storedLevel !== null && currentLevel <= storedLevel) {
-        prevLevelRef.current = storedLevel;
-      } else {
-        // まだ保存されていないか、すでにレベルが上がっていた場合は保存して終了
-        prevLevelRef.current = currentLevel;
-        localStorage.setItem('kira_last_seen_level', currentLevel.toString());
-      }
+    const storedLevelStr = localStorage.getItem('kira_last_seen_level');
+    const storedLevel = storedLevelStr ? parseInt(storedLevelStr, 10) : null;
+
+    // 初回ロード・ログイン時：保存されたレベルがなければ現在のレベルを保存して終了
+    if (storedLevel === null) {
+      localStorage.setItem('kira_last_seen_level', currentLevel.toString());
+      prevLevelRef.current = currentLevel;
       return;
     }
 
-    if (currentLevel > prevLevelRef.current) {
-      // レベルアップを検知！
+    // 実際にレベルが上がった場合のみポップアップを表示
+    if (currentLevel > storedLevel) {
       setLevelInfo(currentInfo);
       setShowModal(true);
       
@@ -67,9 +62,11 @@ export default function LevelUpModal() {
       };
       frame();
 
-      // 今回見たレベルを記録
+      // 今回確認したレベルを保存
       prevLevelRef.current = currentLevel;
       localStorage.setItem('kira_last_seen_level', currentLevel.toString());
+    } else {
+      prevLevelRef.current = storedLevel;
     }
   }, [totalPoints, isDataLoaded]);
 

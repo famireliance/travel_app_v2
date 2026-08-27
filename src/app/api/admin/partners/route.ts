@@ -66,6 +66,12 @@ export async function POST(req: NextRequest) {
     if (!name || !island_id || !type) {
       return NextResponse.json({ error: 'パートナー名、対象島ID、業種種別は必須です' }, { status: 400 });
     }
+    if (!['transport', 'lodging'].includes(type)) {
+      return NextResponse.json({ error: '業種種別は transport または lodging を指定してください' }, { status: 400 });
+    }
+    if (sponsor_tier && !['GOLD', 'SILVER', 'STANDARD'].includes(sponsor_tier)) {
+      return NextResponse.json({ error: 'スポンサーランクが無効です' }, { status: 400 });
+    }
 
     const partnerData = {
       name,
@@ -113,19 +119,45 @@ export async function PUT(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { id, extendDays, ...updates } = body;
+    const { id, extendDays, ...rawUpdates } = body;
 
     if (!id) {
       return NextResponse.json({ error: 'id が必要です' }, { status: 400 });
     }
 
-    // 契約延長処理
-    if (extendDays && typeof extendDays === 'number') {
-      const currentEnd = updates.contract_end ? new Date(updates.contract_end) : new Date();
+    const allowedFields = [
+      'name', 'type', 'category_detail', 'island_id', 'logo_url',
+      'banner_photo_url', 'official_website_url', 'perk_text',
+      'sponsor_tier', 'contract_start', 'contract_end',
+      'notification_email', 'is_active'
+    ];
+    const updates: Record<string, any> = {};
+    for (const key of allowedFields) {
+      if (rawUpdates[key] !== undefined) updates[key] = rawUpdates[key];
+    }
+
+    // Enum validation
+    if (updates.type && !['transport', 'lodging'].includes(updates.type)) {
+      return NextResponse.json({ error: '業種種別が無効です' }, { status: 400 });
+    }
+    if (updates.sponsor_tier && !['GOLD', 'SILVER', 'STANDARD'].includes(updates.sponsor_tier)) {
+      return NextResponse.json({ error: 'スポンサーランクが無効です' }, { status: 400 });
+    }
+
+    // Contract extension: always read current value from DB first
+    if (extendDays && typeof extendDays === 'number' && extendDays > 0) {
+      const { data: current } = await adminClient
+        .from('b2b_partners')
+        .select('contract_end')
+        .eq('id', id)
+        .single();
+      const currentEnd = current?.contract_end ? new Date(current.contract_end) : new Date();
       const baseDate = currentEnd.getTime() < Date.now() ? new Date() : currentEnd;
       baseDate.setDate(baseDate.getDate() + extendDays);
       updates.contract_end = baseDate.toISOString();
     }
+
+    updates.updated_at = new Date().toISOString();
 
     const { data, error } = await adminClient
       .from('b2b_partners')

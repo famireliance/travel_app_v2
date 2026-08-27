@@ -3,15 +3,19 @@ import toast from 'react-hot-toast';
 import {
   Mail,
   Search,
-  Filter,
-  CheckCircle,
-  Clock,
-  AlertCircle,
   Send,
   Edit3,
-  Save,
-  MessageSquare
+  RefreshCw
 } from 'lucide-react';
+
+const CATEGORY_LABELS: Record<string, string> = {
+  general: '一般的なご質問',
+  bug: '不具合・バグ報告',
+  checkin: 'チェックイン・位置情報',
+  subscription: 'サブスク・お支払い',
+  certificate: '証明書・特典',
+  other: 'その他',
+};
 
 interface ContactItem {
   id: string;
@@ -45,18 +49,22 @@ export default function AdminContacts({ password }: { password: string }) {
         headers: { 'x-admin-password': password }
       });
       const data = await res.json();
-      if (res.ok) setContacts(data.contacts || []);
+      if (res.ok) {
+        setContacts(data.contacts || []);
+      } else {
+        toast.error(data.error || 'お問い合わせの取得に失敗しました');
+      }
     } catch (err) {
       console.error(err);
       toast.error('お問い合わせの取得に失敗しました');
-    } fontally: {
+    } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchContacts();
-  }, []);
+  }, [password]);
 
   const updateContact = async (id: string, status?: string, adminNote?: string, replyText?: string) => {
     try {
@@ -68,14 +76,16 @@ export default function AdminContacts({ password }: { password: string }) {
         },
         body: JSON.stringify({ id, status, admin_note: adminNote, reply_text: replyText })
       });
+      const data = await res.json().catch(() => ({}));
       if (res.ok) {
-        toast.success('お問い合わせ情報を更新しました');
+        toast.success(data.message || 'お問い合わせ情報を更新しました');
         setEditingId(null);
         fetchContacts();
       } else {
-        toast.error('更新に失敗しました');
+        toast.error(data.error || '更新に失敗しました');
       }
     } catch (err) {
+      console.error(err);
       toast.error('エラーが発生しました');
     }
   };
@@ -88,7 +98,10 @@ export default function AdminContacts({ password }: { password: string }) {
       const email = (c.email || '').toLowerCase();
       const msg = (c.message || '').toLowerCase();
       const cat = (c.category || '').toLowerCase();
-      if (!name.includes(q) && !email.includes(q) && !msg.includes(q) && !cat.includes(q)) return false;
+      const catLabel = (CATEGORY_LABELS[c.category || ''] || '').toLowerCase();
+      const note = (c.admin_note || '').toLowerCase();
+      const reply = (c.reply_text || '').toLowerCase();
+      if (!name.includes(q) && !email.includes(q) && !msg.includes(q) && !cat.includes(q) && !catLabel.includes(q) && !note.includes(q) && !reply.includes(q)) return false;
     }
     return true;
   });
@@ -106,6 +119,12 @@ export default function AdminContacts({ password }: { password: string }) {
             ユーザーからの質問・不具合報告の確認、ステータス変更、返信メモ作成
           </p>
         </div>
+        <button
+          onClick={fetchContacts}
+          className="text-xs text-gray-400 hover:text-white flex items-center gap-1.5 bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700 transition font-bold"
+        >
+          <RefreshCw className="w-3.5 h-3.5" /> 最新情報に更新
+        </button>
       </div>
 
       {/* Filter Tabs & Search */}
@@ -181,7 +200,7 @@ export default function AdminContacts({ password }: { password: string }) {
                       {c.status === 'unread' ? '未対応' : c.status === 'in_progress' ? '対応中' : '解決済'}
                     </span>
                     <span className="text-xs font-bold text-white bg-gray-800 px-2 py-0.5 rounded">
-                      {c.category || '一般問い合わせ'}
+                      {CATEGORY_LABELS[c.category || ''] || c.category || '一般的なご質問'}
                     </span>
                     <span className="text-xs font-bold text-white">{c.name}</span>
                     <a href={`mailto:${c.email}`} className="text-xs text-blue-400 hover:underline font-mono">
@@ -190,11 +209,17 @@ export default function AdminContacts({ password }: { password: string }) {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] text-gray-500 font-mono">
-                      {new Date(c.created_at).toLocaleString('ja-JP')}
+                      {c.created_at ? new Date(c.created_at).toLocaleString('ja-JP') : '-'}
                     </span>
                     <select
                       value={c.status}
-                      onChange={(e) => updateContact(c.id, e.target.value)}
+                      onChange={(e) => {
+                        if (isEditing) {
+                          updateContact(c.id, e.target.value, editNote, editReply);
+                        } else {
+                          updateContact(c.id, e.target.value);
+                        }
+                      }}
                       className="bg-gray-900 text-xs text-white border border-gray-700 rounded-lg px-2 py-1 focus:outline-none"
                     >
                       <option value="unread">未対応</option>
@@ -232,7 +257,7 @@ export default function AdminContacts({ password }: { password: string }) {
                     </div>
                     <div className="flex justify-between items-center pt-1">
                       <a
-                        href={`mailto:${c.email}?subject=${encodeURIComponent(`【KIRATABIサポート】お問い合わせについて`)}&body=${encodeURIComponent(editReply)}`}
+                        href={`mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent('【KIRATABIサポート】お問い合わせについて')}&body=${encodeURIComponent((editReply || '').replace(/\r?\n/g, '\r\n'))}`}
                         className="text-xs bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 transition"
                       >
                         <Send className="w-3.5 h-3.5" /> メールソフトで返信を開く

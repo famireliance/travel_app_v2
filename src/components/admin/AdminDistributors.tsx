@@ -6,11 +6,7 @@ import {
   Plus,
   Copy,
   Check,
-  TrendingUp,
-  ExternalLink,
-  Download,
-  Percent,
-  Search
+  Download
 } from 'lucide-react';
 
 interface DistributorStore {
@@ -50,7 +46,11 @@ export default function AdminDistributors({ password }: { password: string }) {
         headers: { 'x-admin-password': password }
       });
       const data = await res.json();
-      if (res.ok) setStores(data.stores || []);
+      if (res.ok) {
+        setStores(data.stores || []);
+      } else {
+        toast.error(data.error || '加盟店データの取得に失敗しました');
+      }
     } catch (err) {
       toast.error('店舗データの取得に失敗しました');
     } finally {
@@ -64,6 +64,11 @@ export default function AdminDistributors({ password }: { password: string }) {
 
   const handleCreateStore = async (e: React.FormEvent) => {
     e.preventDefault();
+    const rate = Number(commissionRate);
+    if (isNaN(rate) || rate < 0 || rate > 100) {
+      toast.error('手数料率は0～100%の間で指定してください');
+      return;
+    }
     try {
       const res = await fetch('/api/admin/distributors', {
         method: 'POST',
@@ -74,7 +79,7 @@ export default function AdminDistributors({ password }: { password: string }) {
         body: JSON.stringify({
           shop_name: shopName,
           island_id: islandId,
-          commission_rate: commissionRate,
+          commission_rate: rate,
           contact_person: contactPerson,
           email,
           phone
@@ -84,18 +89,31 @@ export default function AdminDistributors({ password }: { password: string }) {
       if (!res.ok) throw new Error(data.error);
       toast.success(data.message || '加盟店舗を登録しました');
       setShopName('');
+      setIslandId('ishigaki');
+      setCommissionRate(15);
+      setContactPerson('');
+      setEmail('');
+      setPhone('');
       fetchStores();
     } catch (err: any) {
       toast.error(`登録エラー: ${err.message}`);
     }
   };
 
-  const handleCopyLink = (code: string) => {
-    const url = `https://island.kira-tabi.com/order/checkout?ref_store=${code}`;
-    navigator.clipboard.writeText(url);
-    setCopiedCode(code);
-    toast.success('店舗用専用注文URLをコピーしました');
-    setTimeout(() => setCopiedCode(null), 2500);
+  const getStoreUrl = (store: DistributorStore) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://island.kira-tabi.com';
+    return `${origin}/island/${store.island_id}?ref_store=${store.referral_code}`;
+  };
+
+  const handleCopyLink = async (store: DistributorStore) => {
+    try {
+      await navigator.clipboard.writeText(getStoreUrl(store));
+      setCopiedCode(store.referral_code);
+      toast.success('店舗用専用注文URLをコピーしました');
+      setTimeout(() => setCopiedCode(null), 2500);
+    } catch (err) {
+      toast.error('クリップボードへのコピーに失敗しました');
+    }
   };
 
   return (
@@ -231,8 +249,9 @@ export default function AdminDistributors({ password }: { password: string }) {
                     </button>
 
                     <button
-                      onClick={() => handleCopyLink(st.referral_code)}
+                      onClick={() => handleCopyLink(st)}
                       className="bg-gray-800 hover:bg-gray-700 text-gray-200 border border-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1"
+                      title="店舗用URLをコピー"
                     >
                       {copiedCode === st.referral_code ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                     </button>
@@ -265,7 +284,7 @@ export default function AdminDistributors({ password }: { password: string }) {
             {/* Generated QR Placeholder Image */}
             <div className="bg-white p-4 rounded-2xl inline-block shadow-inner mx-auto">
               <img
-                src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(`https://island.kira-tabi.com/order/checkout?ref_store=${qrModalStore.referral_code}`)}`}
+                src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(getStoreUrl(qrModalStore))}`}
                 alt="Store QR Code"
                 className="w-44 h-44 mx-auto"
               />
@@ -274,6 +293,17 @@ export default function AdminDistributors({ password }: { password: string }) {
             <p className="text-[10px] text-gray-400 leading-relaxed">
               このQRコードを店舗のレジ前POPや卓上スタンドに掲示してください。旅行者がスマホでスキャンして注文すると、販売手数料が自動記録されます。
             </p>
+
+            <a
+              href={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${encodeURIComponent(getStoreUrl(qrModalStore))}`}
+              download={`QR_${qrModalStore.referral_code}.png`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-gray-800 hover:bg-gray-700 text-white font-bold py-2.5 rounded-xl text-xs flex items-center justify-center gap-2 border border-gray-700 transition"
+            >
+              <Download className="w-4 h-4 text-amber-400" />
+              高解像QR画像をダウンロード
+            </a>
 
             <button
               onClick={() => setQrModalStore(null)}

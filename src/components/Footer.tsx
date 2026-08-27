@@ -17,27 +17,14 @@ export default function Footer() {
         <div className="md:col-span-1">
           <div className="flex items-center gap-2 mb-4">
             <Compass className="w-6 h-6 text-blue-400" />
-            <span className="font-serif font-bold text-xl text-white tracking-widest">KIRATABI</span>
+            <span className="font-serif font-bold text-lg text-white tracking-widest leading-tight">輝旅 島専科<br/><span className="text-xs text-slate-400 font-sans tracking-normal">KIRATABI SHIMASENKA</span></span>
           </div>
           <p className="text-xs text-slate-500 leading-relaxed mb-4">
             日本全国432の有人離島・無人離島を巡る冒険トラッカー。あなたの人生に、一生モノの探求心を。
           </p>
           <div className="flex flex-col items-start gap-1.5 mt-2">
             <span className="text-[0.6rem] font-bold text-amber-500 tracking-widest uppercase bg-black/20 px-1.5 py-0.5 rounded border border-amber-500/20">近日公開予定</span>
-            <div className="flex gap-2 opacity-60">
-              <div className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg border border-slate-700 shadow-sm cursor-not-allowed">
-                <div className="flex flex-col items-start leading-none">
-                  <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">Download on the</span>
-                  <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">App Store</span>
-                </div>
-              </div>
-              <div className="flex items-center justify-center gap-1.5 bg-black text-white px-2.5 py-1.5 rounded-lg border border-slate-700 shadow-sm cursor-not-allowed">
-                <div className="flex flex-col items-start leading-none">
-                  <span className="text-[0.45rem] text-slate-300 font-sans tracking-wide">GET IT ON</span>
-                  <span className="text-[0.7rem] font-sans font-semibold tracking-wide mt-0.5">Google Play</span>
-                </div>
-              </div>
-            </div>
+            <p className="text-[0.65rem] text-slate-400 leading-relaxed mt-1">iOS / Android 公式ネイティブアプリ<br/>現在開発中</p>
           </div>
         </div>
 
@@ -59,6 +46,7 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
             <li><a href="https://kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Compass size={14}/> KIRATABI</a></li>
             <li><a href="https://guide.kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><FileText size={14}/> KIRATABIガイド</a></li>
+            <li><a href="https://app.kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Ship size={14}/> KIRATABI アプリ版</a></li>
           </ul>
         </div>
 
@@ -76,7 +64,7 @@ export default function Footer() {
       </div>
       
       <div className="max-w-7xl mx-auto mt-12 pt-8 border-t border-slate-800/50 flex flex-col md:flex-row items-center justify-center text-xs text-slate-500 font-medium">
-        <p>&copy; {new Date().getFullYear()} KIRATABI - All rights reserved.</p>
+        <p>&copy; {new Date().getFullYear()} 輝旅 島専科（KIRATABI SHIMASENKA）- All rights reserved.</p>
       </div>
     </footer>
   );

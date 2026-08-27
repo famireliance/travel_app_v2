@@ -72,14 +72,25 @@ export async function PUT(req: NextRequest) {
     if (official_cert_enabled !== undefined) updateData.official_cert_enabled = official_cert_enabled;
     if (official_org_name !== undefined) updateData.official_org_name = official_org_name;
     if (official_seal_url !== undefined) updateData.official_seal_url = official_seal_url;
-    if (official_cert_price !== undefined) updateData.official_cert_price = Number(official_cert_price);
+    if (official_cert_price !== undefined) {
+      const price = Number(official_cert_price);
+      if (isNaN(price) || price < 0) {
+        return NextResponse.json({ error: '無効な価格設定です' }, { status: 400 });
+      }
+      updateData.official_cert_price = price;
+    }
     if (official_sales_start_at !== undefined) updateData.official_sales_start_at = official_sales_start_at;
     if (official_template_id !== undefined) updateData.official_template_id = official_template_id;
 
-    // 期間延長処理 (30日, 90日, 180日, 365日, または任意日数)
-    if (extendDays && typeof extendDays === 'number') {
-      const currentEnd = official_sales_end_at ? new Date(official_sales_end_at) : new Date();
-      const baseDate = currentEnd.getTime() < Date.now() ? new Date() : currentEnd;
+    // 期間延長処理: 必ずDBの現在値を読んで計算する (30日, 90日, 180日, 365日, または任意日数)
+    if (extendDays && typeof extendDays === 'number' && extendDays > 0) {
+      const { data: currentIsland } = await adminClient
+        .from('islands')
+        .select('official_sales_end_at')
+        .eq('id', islandId)
+        .single();
+      const existingEnd = currentIsland?.official_sales_end_at ? new Date(currentIsland.official_sales_end_at) : null;
+      const baseDate = existingEnd && existingEnd.getTime() > Date.now() ? existingEnd : new Date();
       baseDate.setDate(baseDate.getDate() + extendDays);
       updateData.official_sales_end_at = baseDate.toISOString();
     } else if (official_sales_end_at !== undefined) {
@@ -93,7 +104,12 @@ export async function PUT(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return NextResponse.json({ error: '指定された島が見つかりません' }, { status: 404 });
+      }
+      throw error;
+    }
 
     return NextResponse.json({
       success: true,
@@ -101,6 +117,7 @@ export async function PUT(req: NextRequest) {
       island: updatedIsland
     });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || '更新に失敗しました' }, { status: 500 });
+    console.error('[official-certificates PUT]', err);
+    return NextResponse.json({ error: '証明書設定の更新に失敗しました' }, { status: 500 });
   }
 }

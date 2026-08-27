@@ -414,10 +414,6 @@ export default function MyPage() {
               </div>
               <button 
                 onClick={() => {
-                  if (subscriptionTier === 'free') {
-                    router.push('/#pricing');
-                    return;
-                  }
                   setShowPlanModal(true);
                 }}
                 className="shrink-0 px-4 py-2 bg-white hover:bg-slate-50 text-blue-600 border border-blue-200 text-xs font-bold rounded-xl shadow-sm transition-colors"
@@ -937,7 +933,7 @@ export default function MyPage() {
       <PlanChangeModal
         isOpen={showPlanModal}
         onClose={() => setShowPlanModal(false)}
-        currentTier={subscriptionTier as 'premium' | 'ultimate'}
+        currentTier={(subscriptionTier || 'free') as 'free' | 'premium' | 'ultimate'}
         onPlanChanged={(newTier) => {
           toast.success(`KIRATABI ${newTier === 'ultimate' ? 'Ultimate' : 'Premium'} に変更しました！`);
           // リロードしてContextを更新

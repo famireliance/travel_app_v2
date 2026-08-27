@@ -11,13 +11,8 @@ import {
   Crown,
   Calendar,
   AlertTriangle,
-  Mail,
   Edit3,
-  ExternalLink,
-  ShieldCheck,
-  Check,
-  Clock,
-  Sparkles
+  RefreshCw
 } from 'lucide-react';
 
 interface PartnerData {
@@ -66,6 +61,27 @@ export default function AdminPartners({ password }: { password: string }) {
   const [customDays, setCustomDays] = useState<number>(30);
   const [uploading, setUploading] = useState(false);
 
+  const DEFAULT_FORM: PartnerData = {
+    name: '',
+    type: 'transport',
+    category_detail: '高速フェリー',
+    island_id: 'ishigaki',
+    logo_url: '',
+    banner_photo_url: '',
+    official_website_url: '',
+    perk_text: 'KIRATABI提示で特別割引',
+    sponsor_tier: 'GOLD',
+    contract_start: new Date().toISOString().slice(0, 10),
+    contract_end: new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
+    notification_email: '',
+    is_active: true
+  };
+
+  const resetForm = () => {
+    setSelectedPartner(null);
+    setFormData({ ...DEFAULT_FORM });
+  };
+
   const fetchPartners = async () => {
     setLoading(true);
     try {
@@ -73,7 +89,11 @@ export default function AdminPartners({ password }: { password: string }) {
         headers: { 'x-admin-password': password }
       });
       const data = await res.json();
-      if (res.ok) setPartners(data.partners || []);
+      if (res.ok) {
+        setPartners(data.partners || []);
+      } else {
+        toast.error(data.error || 'パートナーデータの取得に失敗しました');
+      }
     } catch (err) {
       toast.error('パートナーデータの取得に失敗しました');
     } finally {
@@ -118,18 +138,23 @@ export default function AdminPartners({ password }: { password: string }) {
       if (!res.ok) throw new Error(data.error);
       toast.success(data.message || '保存しました');
       fetchPartners();
-      setSelectedPartner(null);
+      resetForm();
     } catch (err: any) {
       toast.error(`保存エラー: ${err.message}`);
     }
   };
 
   const handleExtendContract = async (days: number) => {
+    if (!days || isNaN(days) || days <= 0) {
+      toast.error('有効な延長日数を指定してください');
+      return;
+    }
     if (!selectedPartner?.id) {
       // フォーム上の日付を延長
-      const current = new Date(formData.contract_end || Date.now());
-      current.setDate(current.getDate() + days);
-      setFormData(prev => ({ ...prev, contract_end: current.toISOString().slice(0, 10) }));
+      const base = formData.contract_end ? new Date(formData.contract_end) : new Date();
+      const validBase = isNaN(base.getTime()) ? new Date() : base;
+      validBase.setDate(validBase.getDate() + days);
+      setFormData(prev => ({ ...prev, contract_end: validBase.toISOString().slice(0, 10) }));
       toast.success(`契約期間を ＋${days}日 延長設定しました`);
       return;
     }
@@ -138,13 +163,16 @@ export default function AdminPartners({ password }: { password: string }) {
       const res = await fetch('/api/admin/partners', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
-        body: JSON.stringify({ id: selectedPartner.id, extendDays: days, contract_end: formData.contract_end })
+        body: JSON.stringify({ id: selectedPartner.id, extendDays: days })
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       toast.success(data.message || `契約を ＋${days}日 延長しました`);
       fetchPartners();
-      if (data.partner) handleEdit(data.partner);
+      if (data.partner) {
+        // 延長後は契約終了日だけ更新（未保存入力内容は消さない）
+        setFormData(prev => ({ ...prev, contract_end: data.partner.contract_end?.substring(0, 10) || prev.contract_end }));
+      }
     } catch (err: any) {
       toast.error(`延長エラー: ${err.message}`);
     }
@@ -162,7 +190,7 @@ export default function AdminPartners({ password }: { password: string }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       toast.success('削除しました');
-      if (selectedPartner?.id === p.id) setSelectedPartner(null);
+      if (selectedPartner?.id === p.id) resetForm();
       fetchPartners();
     } catch (err: any) {
       toast.error(`削除エラー: ${err.message}`);
@@ -195,14 +223,15 @@ export default function AdminPartners({ password }: { password: string }) {
       toast.error(`アップロード失敗: ${err.message}`, { id: toastId });
     } finally {
       setUploading(false);
+      e.target.value = '';
     }
   };
 
-  // Admin-Only Expiring Contracts calculation
+  // Admin-Only Expiring Contracts calculation (0〜30日以内、既に期限切れは除外)
   const expiringPartners = partners.filter(p => {
-    if (!p.contract_end) return false;
+    if (!p.contract_end || p.is_active === false) return false;
     const diffDays = (new Date(p.contract_end).getTime() - Date.now()) / (1000 * 3600 * 24);
-    return diffDays <= 30; // 30日以内に契約満了
+    return diffDays >= 0 && diffDays <= 30;
   });
 
   const filteredPartners = partners.filter(p => {
@@ -233,24 +262,7 @@ export default function AdminPartners({ password }: { password: string }) {
           </p>
         </div>
         <button
-          onClick={() => {
-            setSelectedPartner(null);
-            setFormData({
-              name: '',
-              type: 'transport',
-              category_detail: '高速フェリー',
-              island_id: 'ishigaki',
-              logo_url: '',
-              banner_photo_url: '',
-              official_website_url: '',
-              perk_text: 'KIRATABI提示で特別割引',
-              sponsor_tier: 'GOLD',
-              contract_start: new Date().toISOString().slice(0, 10),
-              contract_end: new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
-              notification_email: '',
-              is_active: true
-            });
-          }}
+          onClick={() => resetForm()}
           className="bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5 active:scale-95"
         >
           <Plus className="w-4 h-4" />
@@ -602,6 +614,18 @@ export default function AdminPartners({ password }: { password: string }) {
                   value={formData.notification_email || ''}
                   onChange={e => setFormData({ ...formData, notification_email: e.target.value })}
                 />
+              </div>
+              <div className="flex items-center gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="partner_is_active"
+                  checked={formData.is_active}
+                  onChange={e => setFormData({ ...formData, is_active: e.target.checked })}
+                  className="w-4 h-4 rounded bg-gray-950 border-gray-800"
+                />
+                <label htmlFor="partner_is_active" className="text-gray-300 font-bold cursor-pointer text-xs">
+                  掲載ステータス: 有効（チェックなしで一時停止）
+                </label>
               </div>
             </div>
 

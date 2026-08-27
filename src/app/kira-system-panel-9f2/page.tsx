@@ -219,7 +219,7 @@ export default function AdminPage() {
       fetchOfficialIslands();
       if (data.island) setSelectedOfficialIsland(data.island);
     } catch (err: any) {
-      toast.error(`更新エラー: ${err.message}`);
+      toast.error(`更新エラー: ${err.message || '公的証明書設定の保存に失敗しました'}`);
     }
   };
 
@@ -233,9 +233,12 @@ export default function AdminPage() {
         headers: { 'x-admin-password': password }
       });
       const data = await res.json();
-      if (res.ok) setUserDetails(data);
-    } catch (err) {
+      if (res.status === 401) { handleLogout(); return; }
+      if (!res.ok) { toast.error(data.error || 'ユーザー詳細の取得に失敗しました'); return; }
+      setUserDetails(data);
+    } catch (err: any) {
       console.error(err);
+      toast.error(`ユーザー詳細取得エラー: ${err.message}`);
     } finally {
       setIsLoadingDetails(false);
     }
@@ -332,6 +335,9 @@ export default function AdminPage() {
         if (user && user.id === ticketModalUser.id) {
           setUser({ ...user, high_quality_tickets: data.tickets });
         }
+        if (userDetails?.profile?.id === ticketModalUser.id) {
+          setUserDetails((prev: any) => prev ? { ...prev, profile: { ...prev.profile, high_quality_tickets: data.tickets } } : prev);
+        }
         if (allUsers.length > 0) {
           setAllUsers(prev => prev.map(u => u.id === ticketModalUser.id ? { ...u, high_quality_tickets: data.tickets } : u));
         }
@@ -359,7 +365,7 @@ export default function AdminPage() {
           userId: user.id,
           islandId,
           status,
-          visitedAt: new Date(visitedAt).toISOString(),
+          visitedAt: visitedAt ? new Date(visitedAt).toISOString() : new Date().toISOString(),
           note
         })
       });
@@ -444,7 +450,7 @@ export default function AdminPage() {
       setDiaries(data);
     } catch (err: any) {
       setDiariesMessage(`エラー: ${err.message}`);
-    } fontally: {
+    } finally {
       setIsLoadingDiaries(false);
     }
   };
@@ -822,6 +828,209 @@ export default function AdminPage() {
                     </tbody>
                   </table>
                 </div>
+              </div>
+            )}
+
+            {/* User Details Inspector Section */}
+            {isLoadingDetails && (
+              <div className="bg-gray-900 border border-gray-800 p-8 rounded-2xl text-center">
+                <Sparkles className="w-6 h-6 text-blue-400 animate-spin mx-auto mb-2" />
+                <p className="text-xs text-gray-400">ユーザー詳細データを読み込み中...</p>
+              </div>
+            )}
+
+            {user && !isLoadingDetails && (
+              <div className="space-y-6 animate-in fade-in duration-300">
+                {/* User Profile Card */}
+                <div className="bg-gray-900 border border-blue-500/30 rounded-2xl p-5 shadow-lg">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800 pb-4 mb-4">
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <CheckCircle className="w-5 h-5 text-emerald-400" />
+                        <h3 className="text-base font-bold text-white font-mono">{user.email}</h3>
+                        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                          user.subscription_tier === 'ultimate' ? 'bg-amber-950 text-amber-300 border-amber-800' :
+                          user.subscription_tier === 'premium' ? 'bg-purple-950 text-purple-300 border-purple-800' :
+                          'bg-gray-800 text-gray-400 border-gray-700'
+                        }`}>
+                          {user.subscription_tier === 'ultimate' ? '👑 Ultimate' : user.subscription_tier === 'premium' ? '⭐ Premium' : 'Free'}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-gray-500 font-mono mt-1">ID: {user.id}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="bg-blue-950 text-blue-300 border border-blue-800 px-3 py-1 rounded-xl text-xs font-bold">
+                        🎫 高画質チケット: {user.high_quality_tickets || 0}枚
+                      </span>
+                      <button
+                        onClick={() => { setTicketModalUser(user); setTicketInputCount(1); }}
+                        className="bg-blue-600 hover:bg-blue-500 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition"
+                      >
+                        チケット付与
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    {/* Grant Premium Plan Form */}
+                    <div className="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-3">
+                      <h4 className="text-xs font-bold text-purple-400 flex items-center gap-1.5">
+                        <Crown className="w-4 h-4" /> 会員プラン・VIP権限の設定
+                      </h4>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] text-gray-400 block mb-1">プラン種別</label>
+                          <select
+                            value={premiumTier}
+                            onChange={e => setPremiumTier(e.target.value)}
+                            className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white"
+                          >
+                            <option value="free">Free (無料)</option>
+                            <option value="premium">Premium (月額¥300相当)</option>
+                            <option value="ultimate">Ultimate (月額¥980相当)</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-gray-400 block mb-1">有効期間 (ヶ月)</label>
+                          <input
+                            type="number" min={1} max={36}
+                            value={premiumMonths}
+                            onChange={e => setPremiumMonths(Number(e.target.value))}
+                            className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white"
+                          />
+                        </div>
+                      </div>
+                      <button
+                        onClick={handleGrantPremium}
+                        className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 rounded-lg text-xs transition"
+                      >
+                        プランを設定・更新する
+                      </button>
+                      {premiumMessage && <p className="text-[11px] text-emerald-400">{premiumMessage}</p>}
+                    </div>
+
+                    {/* Grant Island Visit Form */}
+                    <form onSubmit={handleGrantVisit} className="bg-gray-950 p-4 rounded-xl border border-gray-800 space-y-3">
+                      <h4 className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                        <CheckCircle className="w-4 h-4" /> 島到達記録の代理付与
+                      </h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[10px] text-gray-400 block mb-1">島ID (例: ishigaki)</label>
+                          <input type="text" value={islandId} onChange={e => setIslandId(e.target.value)} placeholder="ishigaki" required
+                            className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-gray-400 block mb-1">ステータス</label>
+                          <select value={status} onChange={e => setStatus(e.target.value)}
+                            className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white">
+                            <option value="visited">visited (到達)</option>
+                            <option value="verified_visited">verified_visited (GPS検証済)</option>
+                            <option value="planning">planning (計画中)</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-gray-400 block mb-1">到達日時</label>
+                          <input type="datetime-local" value={visitedAt} onChange={e => setVisitedAt(e.target.value)}
+                            className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white" />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-gray-400 block mb-1">備考 (任意)</label>
+                          <input type="text" value={note} onChange={e => setNote(e.target.value)} placeholder="現地イベント参加など"
+                            className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white" />
+                        </div>
+                      </div>
+                      <button type="submit" className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 rounded-lg text-xs transition">
+                        到達記録を付与する
+                      </button>
+                      {grantMessage && <p className="text-[11px] text-emerald-400">{grantMessage}</p>}
+                    </form>
+                  </div>
+                </div>
+
+                {/* Full History Inspector */}
+                {userDetails && (
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                    {/* Island Visits */}
+                    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow">
+                      <h4 className="text-xs font-bold text-white mb-3 flex items-center justify-between">
+                        <span className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-blue-400" /> 島到達記録</span>
+                        <span className="text-xs text-gray-400 font-normal">{userDetails.visits?.length || 0} 件</span>
+                      </h4>
+                      <div className="max-h-52 overflow-y-auto divide-y divide-gray-800 text-xs">
+                        {userDetails.visits?.length > 0 ? userDetails.visits.map((v: any) => (
+                          <div key={v.id} className="py-2 flex items-center justify-between">
+                            <div>
+                              <span className="font-bold text-white">{v.island_id}</span>
+                              <span className="ml-2 text-[10px] bg-gray-800 text-gray-300 px-1.5 py-0.5 rounded">{v.status}</span>
+                              <p className="text-[10px] text-gray-500 font-mono mt-0.5">{v.visited_at ? new Date(v.visited_at).toLocaleString('ja-JP') : '-'}</p>
+                            </div>
+                            <button onClick={() => handleDeleteVisit(v.id)} className="text-red-400 hover:text-red-300 p-1.5 rounded hover:bg-red-950/40" title="到達記録を削除">
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        )) : <p className="text-xs text-gray-500 py-4 text-center">到達記録はありません</p>}
+                      </div>
+                    </div>
+
+                    {/* Physical Orders */}
+                    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow">
+                      <h4 className="text-xs font-bold text-white mb-3 flex items-center justify-between">
+                        <span className="flex items-center gap-2"><FileText className="w-4 h-4 text-amber-400" /> 物理証明書注文</span>
+                        <span className="text-xs text-gray-400 font-normal">{userDetails.orders?.length || 0} 件</span>
+                      </h4>
+                      <div className="max-h-52 overflow-y-auto divide-y divide-gray-800 text-xs">
+                        {userDetails.orders?.length > 0 ? userDetails.orders.map((o: any) => (
+                          <div key={o.id} className="py-2">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-white">{o.type} ({o.island_id})</span>
+                              <span className="text-[10px] bg-amber-950 text-amber-300 border border-amber-800 px-1.5 py-0.5 rounded">{o.status}</span>
+                            </div>
+                            <p className="text-[10px] text-gray-500 font-mono mt-0.5">{o.ordered_at ? new Date(o.ordered_at).toLocaleString('ja-JP') : '-'} | 宛名: {o.shipping_name}</p>
+                          </div>
+                        )) : <p className="text-xs text-gray-500 py-4 text-center">注文履歴はありません</p>}
+                      </div>
+                    </div>
+
+                    {/* Digital Certificates */}
+                    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow">
+                      <h4 className="text-xs font-bold text-white mb-3 flex items-center justify-between">
+                        <span className="flex items-center gap-2"><Award className="w-4 h-4 text-purple-400" /> 発行済デジタル証明書</span>
+                        <span className="text-xs text-gray-400 font-normal">{userDetails.certificates?.length || 0} 件</span>
+                      </h4>
+                      <div className="max-h-52 overflow-y-auto divide-y divide-gray-800 text-xs">
+                        {userDetails.certificates?.length > 0 ? userDetails.certificates.map((c: any) => (
+                          <div key={c.id} className="py-2 flex items-center justify-between">
+                            <div>
+                              <span className="font-bold text-white">{c.island_id}</span>
+                              <span className="ml-2 text-[10px] text-gray-400 font-mono">{c.type}</span>
+                              <p className="text-[10px] text-gray-500 font-mono mt-0.5">{new Date(c.created_at).toLocaleString('ja-JP')}</p>
+                            </div>
+                          </div>
+                        )) : <p className="text-xs text-gray-500 py-4 text-center">証明書履歴はありません</p>}
+                      </div>
+                    </div>
+
+                    {/* Posted Diaries */}
+                    <div className="bg-gray-900 border border-gray-800 rounded-2xl p-5 shadow">
+                      <h4 className="text-xs font-bold text-white mb-3 flex items-center justify-between">
+                        <span className="flex items-center gap-2"><BookOpen className="w-4 h-4 text-pink-400" /> 投稿島日記</span>
+                        <span className="text-xs text-gray-400 font-normal">{userDetails.diaries?.length || 0} 件</span>
+                      </h4>
+                      <div className="max-h-52 overflow-y-auto divide-y divide-gray-800 text-xs">
+                        {userDetails.diaries?.length > 0 ? userDetails.diaries.map((d: any) => (
+                          <div key={d.id} className="py-2">
+                            <div className="flex items-center justify-between">
+                              <span className="font-bold text-amber-400">{d.island_id}</span>
+                              <span className="text-[10px] text-gray-500 font-mono">{d.created_at ? new Date(d.created_at).toLocaleString('ja-JP') : '-'}</span>
+                            </div>
+                            <p className="text-gray-300 mt-1 line-clamp-2">{d.content}</p>
+                          </div>
+                        )) : <p className="text-xs text-gray-500 py-4 text-center">投稿日記はありません</p>}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>

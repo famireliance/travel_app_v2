@@ -20,8 +20,23 @@ export function PlanChangeModal({ isOpen, onClose, currentTier, onPlanChanged }:
     setErrorMsg('');
     try {
       const { supabase } = await import('@/lib/supabase');
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (currentTier === 'free') {
+        const res = await fetch('/api/subscription/checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: user?.id, tier: confirmingPlan }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || '決済ページの開始に失敗しました');
+        if (data.url) {
+          window.location.href = data.url;
+        }
+        return;
+      }
+
       const { data: { session } } = await supabase.auth.getSession();
-      
       const res = await fetch('/api/subscription/change-plan', {
         method: 'POST',
         headers: {
