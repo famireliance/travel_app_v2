@@ -43,18 +43,18 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
   const defaultBounds: [[number, number], [number, number]] = [[30, 128], [43, 144]];
   const mapBounds = bounds || defaultBounds;
 
-  // Map Tile URLs
+  // Map Tile URLs (Watermark-free, High Reliability)
   const tileUrls = {
     pale: 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
-    voyager: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
-    dark: 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+    voyager: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+    dark: 'https://cyberjapandata.gsi.go.jp/xyz/pale/{z}/{x}/{y}.png',
     satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'
   };
 
   const attributions = {
     pale: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>',
-    voyager: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
-    dark: '&copy; <a href="https://carto.com/attributions">CARTO</a>',
+    voyager: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+    dark: '&copy; <a href="https://maps.gsi.go.jp/development/ichiran.html">国土地理院</a>',
     satellite: 'Tiles &copy; Esri'
   };
 
