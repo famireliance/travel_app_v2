@@ -4519,7 +4519,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "柏島（高知県・大月町）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "32.7667, 128.6167",
+    "coordinates": "32.7667, 132.6283",
     "description": "「船が宙に浮いて見える」ほどの圧倒的透明度！熱帯・温帯魚が群れるダイビングの楽園。",
     "access": "定期フェリー・連絡船・橋または航空便アクセス",
     "flags": {
@@ -4538,7 +4538,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖の島（高知県・宿毛市）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "32.7333, 128.5500",
+    "coordinates": "32.7317, 132.5533",
     "description": "四国最南西端、黒潮の荒波が直撃する絶海の島。階段状の「母島集落」や妹背山の原生林。",
     "access": "定期フェリー・連絡船・橋または航空便アクセス",
     "flags": {
@@ -4557,7 +4557,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鵜来島（高知県宿毛市）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "32.8300, 128.6233",
+    "coordinates": "32.8050, 132.5183",
     "description": "沖の島の北東に浮かぶ、急斜面に重なる石垣と段々畑の集落が美しいダイビング楽園。",
     "access": "定期フェリー・連絡船・橋または航空便アクセス",
     "flags": {
@@ -4817,7 +4817,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "若宮島（壱岐沖）",
     "region_id": "iki",
     "prefecture": "長崎県",
-    "coordinates": "33.8617, 129.6883",
+    "coordinates": "33.8767, 129.6967",
     "description": "勝本港北沖、白亜の若宮灯台がそびえる玄界灘の要衝島。",
     "access": "定期フェリー・連絡船・橋または航空便アクセス",
     "flags": {
