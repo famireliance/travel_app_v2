@@ -10,6 +10,7 @@ import CertificateModal from '@/components/CertificateModal';
 import MiniMapClient from '@/components/Map/MiniMapClient';
 import CheckInModal from '@/components/CheckInModal';
 import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { getGuideUrl, getAiCompanionUrl, ECOSYSTEM_CONFIG } from '@/lib/ecosystem';
 import { getIslandDifficulty } from '@/lib/difficulty';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -80,8 +81,26 @@ export default function IslandDetail({ initialDiaries = [] }: Props) {
 
   useEffect(() => {
     fetchAllIslands().then(async (islands) => {
+      const decodedId = decodeURIComponent(islandId);
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const found = (islands || []).find((i: any) => i.id === islandId);
+      let found: any = (islands || []).find((i: any) => 
+        String(i.id) === String(islandId) || 
+        i.slug === islandId || 
+        i.name === islandId || 
+        i.name === decodedId
+      );
+
+      // Fallback to master dictionary by ID/slug/name
+      if (!found) {
+        found = ALL_ISLANDS_MASTER_DICTIONARY[islandId] || ALL_ISLANDS_MASTER_DICTIONARY[decodedId];
+      }
+
+      if (!found) {
+        found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+          (i: any) => i.name === islandId || i.name === decodedId || i.slug === islandId
+        );
+      }
+
       if (found) {
         setIsland(found);
         
