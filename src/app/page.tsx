@@ -422,8 +422,8 @@ export default function Home() {
           </AnimatePresence>
         </motion.div>
         
-        {/* Elegant Dark Gradients */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/80" />
+        {/* Elegant Dark Gradients (Maximum Photo Vibrancy & Contrast) */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
         
         <motion.div 
           className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-12 lg:pb-32 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-12"

@@ -203,27 +203,27 @@ export default function IslandDetail({ initialDiaries = [] }: Props) {
           alt={island.name}
           className="w-full h-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-[#F8FAFC]"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-black/20 to-black/40"></div>
         
         <header className="absolute top-0 left-0 right-0 z-50 px-6 lg:px-12 pt-12 pb-6 flex items-center justify-between">
           <button 
             onClick={() => router.back()} 
-            className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-white/40 transition-colors"
+            className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-black/50 transition-colors shadow-lg"
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
         </header>
 
-        <div className="absolute bottom-8 left-6 lg:left-12 z-10 text-slate-800 drop-shadow-md">
+        <div className="absolute bottom-8 left-6 lg:left-12 z-10 text-white drop-shadow-lg">
           <motion.p 
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-[0.7rem] font-bold tracking-[0.3em] uppercase mb-2 text-blue-900"
+            className="text-[0.7rem] font-bold tracking-[0.3em] uppercase mb-2 text-cyan-300 drop-shadow-md"
           >
             {island.prefecture || island.region_id}
           </motion.p>
           <motion.h1 
             initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className="font-serif font-bold text-4xl lg:text-6xl tracking-widest text-slate-900"
+            className="font-serif font-bold text-4xl lg:text-6xl tracking-widest text-white drop-shadow-lg"
           >
             {island.name}
           </motion.h1>
@@ -236,7 +236,7 @@ export default function IslandDetail({ initialDiaries = [] }: Props) {
             )}
             
             {currentWeather && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-md bg-white/90 backdrop-blur-sm text-slate-800 border border-white/50">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-md bg-black/50 backdrop-blur-md text-white border border-white/30">
                 <img src={`https://openweathermap.org/img/wn/${currentWeather.icon}.png`} alt={currentWeather.description} className="w-5 h-5 -my-1" />
                 <span>{currentWeather.temp}°C {currentWeather.description}</span>
               </div>
