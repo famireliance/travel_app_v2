@@ -1350,9 +1350,13 @@ export default function Home() {
               return false;
             });
 
+            const representativeIsland = allIslands.find(i => (i.region_id === region.id || i.region_id === region.name || i.prefecture?.includes(region.name)) && (i.hero_image_url || i.image_url));
+
             let regionImg = '';
             if (regionSpecificSlides.length > 0) {
               regionImg = regionSpecificSlides[hash % regionSpecificSlides.length].src;
+            } else if (representativeIsland && (representativeIsland.hero_image_url || representativeIsland.image_url)) {
+              regionImg = representativeIsland.hero_image_url || representativeIsland.image_url;
             } else if (region.hero_image_url) {
               regionImg = region.hero_image_url;
             } else {

@@ -87,12 +87,13 @@ export default function CompanionClient() {
                 <div className="flex-1 space-y-8">
                   <div>
                     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
+                      <h1 className="sr-only">守護精霊・ご当地キャラ大図鑑</h1>
                       <span className="inline-block px-4 py-1.5 rounded-full bg-blue-500/20 text-blue-300 font-bold text-xs tracking-widest border border-blue-500/30 mb-6">
                         現在同行中の守護精霊
                       </span>
-                      <h1 className="text-4xl lg:text-6xl font-serif font-bold leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">
+                      <h2 className="text-4xl lg:text-6xl font-serif font-bold leading-tight mb-4 text-transparent bg-clip-text bg-gradient-to-r from-white via-blue-100 to-indigo-200">
                         {companionStage.name}
-                      </h1>
+                      </h2>
                       <p className="text-slate-400 text-sm lg:text-base max-w-xl leading-relaxed">
                         あなたが島を訪れ経験を積むことで、パートナーである守護精霊も共に成長し、新たな能力（スキル）を開花させます。現在のレベルに応じて特別な姿へと進化を遂げます。
                       </p>

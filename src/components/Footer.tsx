@@ -34,6 +34,8 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
             <li><Link href="/" className="hover:text-white transition-colors">探す（ホーム）</Link></li>
             <li><Link href="/map" className="hover:text-white transition-colors">全国離島マップ</Link></li>
+            <li><Link href="/globe" className="hover:text-white transition-colors">3D航空衛星地球儀</Link></li>
+            <li><Link href="/route-planner" className="hover:text-white transition-colors">AIアイランドホッピング提案</Link></li>
             <li><Link href="/timeline" className="hover:text-white transition-colors">みんなの島ノート</Link></li>
             <li><Link href="/companion" className="hover:text-white transition-colors">精霊キャラクター図鑑</Link></li>
             <li><Link href="/mypage" className="hover:text-white transition-colors">マイページ・ログイン</Link></li>

@@ -3,7 +3,12 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: '特定商取引法に基づく表記',
-  description: 'KIRATABIの特定商取引法に基づく表記について',
+  description: '輝旅 島専科（KIRATABI SHIMASENKA）の特定商取引法に基づく表記についてのご案内です。',
+  openGraph: {
+    title: '特定商取引法に基づく表記 | 輝旅 島専科',
+    description: '輝旅 島専科（KIRATABI SHIMASENKA）の特定商取引法に基づく表記についてのご案内です。',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function TokushohoPage() {

@@ -4,8 +4,13 @@ import { ArrowLeft, Shield } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'プライバシーポリシー | キラ旅',
-  description: 'キラ旅における個人情報の取り扱い方針です。',
+  title: 'プライバシーポリシー',
+  description: '輝旅 島専科（KIRATABI SHIMASENKA）における個人情報の取り扱い方針（プライバシーポリシー）です。',
+  openGraph: {
+    title: 'プライバシーポリシー | 輝旅 島専科',
+    description: '輝旅 島専科（KIRATABI SHIMASENKA）における個人情報の取り扱い方針です。',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function PrivacyPage() {

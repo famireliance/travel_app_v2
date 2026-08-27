@@ -4,8 +4,13 @@ import { ArrowLeft, Shield } from 'lucide-react';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: '利用規約 | キラ旅',
-  description: 'キラ旅の利用規約についてのご案内です。',
+  title: '利用規約',
+  description: '輝旅 島専科（KIRATABI SHIMASENKA）の利用規約についてのご案内です。',
+  openGraph: {
+    title: '利用規約 | 輝旅 島専科',
+    description: '輝旅 島専科（KIRATABI SHIMASENKA）の利用規約についてのご案内です。',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function TermsPage() {
