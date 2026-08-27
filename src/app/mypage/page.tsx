@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
+import Breadcrumb from '@/components/Breadcrumb';
 import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard } from 'lucide-react';
 import { PlanChangeModal } from '@/components/PlanChangeModal';
 import OrderHistory from '@/components/OrderHistory';
@@ -253,7 +254,17 @@ export default function MyPage() {
       
 
       <header className="px-6 lg:px-12 py-4 border-b border-slate-200/60 flex items-center justify-between sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm">
-        <button onClick={() => router.push('/')} className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors">
+        <button 
+          onClick={() => {
+            if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+              router.back();
+            } else {
+              router.push('/');
+            }
+          }} 
+          className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
+          title="前のページに戻る"
+        >
           <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
         </button>
         <h1 className="font-serif font-bold tracking-[0.2em] text-slate-900 flex items-center gap-2">
@@ -279,6 +290,7 @@ export default function MyPage() {
       )}
 
       <div className="max-w-4xl mx-auto px-4 md:px-6 mt-8 space-y-8 relative z-10">
+        <Breadcrumb items={[{ label: 'マイページ / パスポート' }]} className="mb-0" />
         
         {/* Profile Card Redesign (Clean & Premium) */}
         <div className="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 flex flex-col md:flex-row items-center md:items-start gap-8 relative overflow-hidden">

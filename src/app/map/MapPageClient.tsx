@@ -157,8 +157,15 @@ function GlobalMapContent() {
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-[1000] px-6 lg:px-12 pt-12 lg:pt-8 pb-6 flex items-center justify-between pointer-events-none">
         <button 
-          onClick={() => router.push('/')} 
+          onClick={() => {
+            if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+              router.back();
+            } else {
+              router.push('/');
+            }
+          }} 
           className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
+          title="前のページに戻る"
         >
           <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={1.5} />
         </button>

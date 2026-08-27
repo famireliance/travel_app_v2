@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { useTravel } from '@/context/TravelContext';
 import { toast } from 'react-hot-toast';
 
+import Breadcrumb from '@/components/Breadcrumb';
+
 interface TimelineDiary {
   id: string;
   user_id: string;
@@ -92,6 +94,7 @@ export default function TimelineClient() {
   return (
     <div className="min-h-screen bg-slate-50 pt-24 pb-32">
       <div className="max-w-6xl mx-auto px-4">
+        <Breadcrumb items={[{ label: 'みんなの島ノート' }]} className="mb-6" />
         <div className="flex flex-col items-center text-center mb-10">
           <motion.div
             initial={{ opacity: 0, y: -20 }}

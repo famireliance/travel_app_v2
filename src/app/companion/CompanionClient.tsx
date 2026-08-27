@@ -10,6 +10,7 @@ import { COMPANION_CHARACTERS, CompanionId } from '@/lib/companion';
 import { getPlayerLevelInfo } from '@/lib/gamification';
 import { FAIRIES_MASTER } from '@/lib/fairies';
 import CharacterViewerModal from '@/components/CharacterViewerModal';
+import Breadcrumb from '@/components/Breadcrumb';
 
 type ViewMode = 'COMPANION' | 'FAIRIES';
 
@@ -25,12 +26,17 @@ export default function CompanionClient() {
   const [viewingCharacter, setViewingCharacter] = useState<{image?: string, icon?: string, name: string, theme?: string, description?: string, badgeGradient?: string} | null>(null);
   const activeViewChar = COMPANION_CHARACTERS[activeTab];
 
+  const [selectedFairyId, setSelectedFairyId] = useState<string | null>(null);
+  const [selectedCompanionModalId, setSelectedCompanionModalId] = useState<CompanionId | null>(null);
+
+  const activeModalFairy = allFairies.find(f => f.id === selectedFairyId);
+
   return (
-    <div className="min-h-screen bg-slate-950 font-sans text-white">
-      {/* Background Ambience */}
+    <div className="min-h-screen bg-[#0a0a1a] text-white font-sans relative overflow-hidden">
+      {/* Dynamic Background Effects */}
       <div className="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div className="absolute -top-1/4 -right-1/4 w-[1000px] h-[1000px] rounded-full bg-blue-900/20 blur-[120px] mix-blend-screen animate-pulse" style={{ animationDuration: '8s' }} />
-        <div className="absolute top-1/3 -left-1/4 w-[800px] h-[800px] rounded-full bg-indigo-900/20 blur-[100px] mix-blend-screen animate-pulse" style={{ animationDuration: '12s' }} />
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-blue-600/10 rounded-full blur-[120px]" />
+        <div className="absolute bottom-1/4 right-10 w-[600px] h-[600px] bg-indigo-600/10 rounded-full blur-[100px]" />
         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-[0.03] mix-blend-overlay"></div>
       </div>
 
@@ -38,8 +44,15 @@ export default function CompanionClient() {
       <header className="relative z-10 p-6 lg:px-12 flex flex-col md:flex-row items-center justify-between border-b border-white/10 bg-slate-950/50 backdrop-blur-md gap-4">
         <div className="flex items-center w-full md:w-auto justify-between md:justify-start gap-4">
           <button 
-            onClick={() => router.back()} 
+            onClick={() => {
+              if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+                router.back();
+              } else {
+                router.push('/');
+              }
+            }} 
             className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all group"
+            title="前のページに戻る"
           >
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           </button>
@@ -67,6 +80,9 @@ export default function CompanionClient() {
       </header>
 
       <main className="relative z-10 pb-32">
+        <div className="max-w-7xl mx-auto px-6 lg:px-12 pt-6">
+          <Breadcrumb items={[{ label: '守護精霊・ご当地キャラ大図鑑' }]} isDark={true} className="mb-0" />
+        </div>
         {!user && (
           <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-6 rounded-3xl mx-6 lg:mx-12 mt-8 flex flex-col md:flex-row items-center justify-between shadow-lg">
             <div className="mb-4 md:mb-0">

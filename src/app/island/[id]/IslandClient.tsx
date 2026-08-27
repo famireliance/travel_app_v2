@@ -11,6 +11,7 @@ import MiniMapClient from '@/components/Map/MiniMapClient';
 import CheckInModal from '@/components/CheckInModal';
 import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import regionsData from '@/data/regions.json';
 import { getGuideUrl, getAiCompanionUrl, ECOSYSTEM_CONFIG } from '@/lib/ecosystem';
 import { getIslandDifficulty } from '@/lib/difficulty';
 import Breadcrumb from '@/components/Breadcrumb';
@@ -254,8 +255,15 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
         
         <header className="absolute top-0 left-0 right-0 z-50 px-6 lg:px-12 pt-12 pb-6 flex items-center justify-between">
           <button 
-            onClick={() => router.back()} 
+            onClick={() => {
+              if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+                router.back();
+              } else {
+                router.push('/map');
+              }
+            }} 
             className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-black/50 transition-colors shadow-lg"
+            title="前のページに戻る"
           >
             <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
           </button>
@@ -340,13 +348,26 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
 
       {/* Content Section */}
       <div className={`max-w-4xl mx-auto px-6 lg:px-12 ${(adCampaigns.length > 0) || (island.alert_status && island.alert_status !== 'normal') || weatherAlerts.length > 0 ? 'mt-8' : '-mt-4'} relative z-20`}>
-        <Breadcrumb 
-          items={[
-            { label: '日本全国離島マップ', href: '/map' },
-            ...(island.region_id && island.region_id !== 'null' ? [{ label: `${island.prefecture || island.region_id}`, href: `/region/${encodeURIComponent(island.region_id)}` }] : []),
-            { label: island.name }
-          ]} 
-        />
+        {(() => {
+          const matchingRegion = regionsData.find((r: any) => 
+            r.id === island.region_id || 
+            r.name === island.region_id || 
+            r.name === island.prefecture
+          );
+          return (
+            <Breadcrumb 
+              items={[
+                { label: '全国離島マップ', href: '/map' },
+                ...(matchingRegion 
+                  ? [{ label: matchingRegion.name, href: `/region/${matchingRegion.id}` }] 
+                  : island.prefecture 
+                    ? [{ label: island.prefecture, href: '/map' }] 
+                    : []),
+                { label: island.name }
+              ]} 
+            />
+          );
+        })()}
 
         {island.is_conquest_target === false && (
           <div className="mb-6 bg-rose-50 border border-rose-200 rounded-2xl p-4 flex items-start gap-3 shadow-sm">

@@ -265,9 +265,15 @@ export default function GlobeTrackerPage() {
       <header className="max-w-7xl mx-auto px-6 lg:px-12 pt-8 pb-6 flex flex-wrap items-center justify-between gap-4 border-b border-white/10">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.back()}
+            onClick={() => {
+              if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+                router.back();
+              } else {
+                router.push('/');
+              }
+            }}
             className="w-11 h-11 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 flex items-center justify-center text-white transition-all"
-            title="戻る"
+            title="前のページに戻る"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>

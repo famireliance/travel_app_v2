@@ -20,8 +20,18 @@ interface IslandData {
 export default function RegionMap() {
   const params = useParams();
   const router = useRouter();
-  const regionId = params.id as string;
-  const region = regionsData.find(r => r.id === regionId);
+  const rawRegionId = (params?.id as string) || '';
+  let decodedRegionId = rawRegionId;
+  try { decodedRegionId = decodeURIComponent(rawRegionId); } catch {}
+
+  const region = regionsData.find(r => 
+    r.id === rawRegionId || 
+    r.id === decodedRegionId || 
+    r.name === rawRegionId || 
+    r.name === decodedRegionId ||
+    r.area === rawRegionId ||
+    r.area === decodedRegionId
+  );
 
   const [regionIslands, setRegionIslands] = useState<IslandData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +44,11 @@ export default function RegionMap() {
     }
     fetchAllIslands()
       .then(islands => {
-        const filtered = (islands || []).filter((i: any) => i.region_id === regionId);
+        const filtered = (islands || []).filter((i: any) => 
+          i.region_id === region.id || 
+          i.region_id === region.name || 
+          i.prefecture?.includes(region.name)
+        );
         setRegionIslands(filtered as unknown as IslandData[]);
         setLoading(false);
       })
@@ -42,7 +56,7 @@ export default function RegionMap() {
         console.error("Failed to load map data", err);
         setLoading(false);
       });
-  }, [regionId, region]);
+  }, [rawRegionId, region]);
 
   // Compute bounding box based on islands
   let bounds: [[number, number], [number, number]] | undefined;
@@ -86,8 +100,15 @@ export default function RegionMap() {
       {/* Header */}
       <header className="absolute top-0 left-0 right-0 z-[1000] px-6 lg:px-12 pt-12 lg:pt-8 pb-6 flex items-center justify-between pointer-events-none">
         <button 
-          onClick={() => router.back()} 
+          onClick={() => {
+            if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+              router.back();
+            } else {
+              router.push('/map');
+            }
+          }} 
           className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
+          title="前のページに戻る"
         >
           <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={1.5} />
         </button>

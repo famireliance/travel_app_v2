@@ -61,8 +61,15 @@ export default function RankingPage() {
       <header className="bg-slate-900 text-white px-6 pt-12 pb-6 sticky top-0 z-50 shadow-md">
         <div className="flex items-center gap-4 max-w-3xl mx-auto">
           <button 
-            onClick={() => router.push('/')}
+            onClick={() => {
+              if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+                router.back();
+              } else {
+                router.push('/');
+              }
+            }}
             className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+            title="前のページに戻る"
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
