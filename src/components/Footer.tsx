@@ -20,7 +20,7 @@ export default function Footer() {
             <span className="font-serif font-bold text-lg text-white tracking-widest leading-tight">輝旅 島専科<br/><span className="text-xs text-slate-400 font-sans tracking-normal">KIRATABI SHIMASENKA</span></span>
           </div>
           <p className="text-xs text-slate-500 leading-relaxed mb-4">
-            日本全国432の有人離島・無人離島を巡る冒険トラッカー。あなたの人生に、一生モノの探求心を。
+            日本全国の有人離島・無人離島を巡る冒険トラッカー。あなたの人生に、一生モノの探求心を。
           </p>
           <div className="flex flex-col items-start gap-1.5 mt-2">
             <span className="text-[0.6rem] font-bold text-amber-500 tracking-widest uppercase bg-black/20 px-1.5 py-0.5 rounded border border-amber-500/20">近日公開予定</span>

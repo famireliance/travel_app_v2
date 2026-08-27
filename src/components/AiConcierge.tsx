@@ -167,7 +167,7 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
                   <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
                   <Bot className="absolute inset-0 m-auto w-8 h-8 text-indigo-600 animate-pulse" />
                 </div>
-                <p className="text-sm font-bold tracking-widest text-indigo-600 animate-pulse">432の島データから検索中...</p>
+                <p className="text-sm font-bold tracking-widest text-indigo-600 animate-pulse">全国の島データから検索中...</p>
                 <p className="text-xs text-slate-400 mt-2">（※到達済みの {visitedIds.length} 島を除外しています）</p>
               </div>
             )}

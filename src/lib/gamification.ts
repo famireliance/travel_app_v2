@@ -377,7 +377,7 @@ export function getSpecialTitles(islands: any[], visitCounts: Record<string, num
   titles.push({
     id: 'supreme_50',
     name: '日本全国 離島王（グランド・アイランド・マスター）',
-    description: '日本全国432島のうち、合計50島以上の島々に到達した栄誉あるトラベラーに贈られる最高峰称号',
+    description: '日本全国の離島のうち、合計50島以上の島々に到達した栄誉あるトラベラーに贈られる最高峰称号',
     icon: '👑',
     unlocked: totalVisitedIslandsCount >= 50,
     progress: Math.min(100, Math.round((totalVisitedIslandsCount / 50) * 100)),

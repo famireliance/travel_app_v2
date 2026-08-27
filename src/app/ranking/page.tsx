@@ -169,7 +169,7 @@ export default function RankingPage() {
                         <span className={rankingType === 'visited' ? 'text-blue-600 text-sm' : ''}>{p.visited} 島</span>
                       </div>
                       <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
-                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.visited / 432) * 100)}%` }} />
+                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.visited / (fullRanking.length > 0 ? 432 : 432)) * 100)}%` }} />
                       </div>
                     </div>
                     

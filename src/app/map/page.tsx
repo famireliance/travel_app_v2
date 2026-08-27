@@ -3,16 +3,16 @@ import GlobalMap from './MapPageClient';
 
 export const metadata: Metadata = {
   title: '全国離島マップ | キラ旅',
-  description: '日本全国432島の位置や難易度を確認できるインタラクティブマップ。',
+  description: '日本全国の離島の位置や難易度を確認できるインタラクティブマップ。',
   openGraph: {
     title: '全国離島マップ | キラ旅',
-    description: '日本全国432島の位置や難易度を確認できるインタラクティブマップ。',
+    description: '日本全国の離島の位置や難易度を確認できるインタラクティブマップ。',
     images: ['/og-image.png'],
   },
   twitter: {
     card: 'summary_large_image',
     title: '全国離島マップ | キラ旅',
-    description: '日本全国432島の位置や難易度を確認できるインタラクティブマップ。',
+    description: '日本全国の離島の位置や難易度を確認できるインタラクティブマップ。',
     images: ['/og-image.png'],
   },
 };

@@ -405,7 +405,7 @@ export default function GlobalMap() {
       <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6">
         <h1 className="text-3xl font-serif font-bold text-slate-900 mb-4">日本全国離島マップ</h1>
         <p className="text-slate-600 mb-8 max-w-xl text-center leading-relaxed">
-          日本全国432島の位置や難易度、ご当地妖精の情報を確認できるインタラクティブマップを読み込んでいます。
+          日本全国の離島の位置や難易度、ご当地妖精の情報を確認できるインタラクティブマップを読み込んでいます。
           GPSチェックインによる島制覇記録の確認や、次に行く島のルート検索が可能です。
         </p>
         <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>

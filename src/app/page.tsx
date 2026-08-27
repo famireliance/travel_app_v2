@@ -1262,7 +1262,7 @@ export default function Home() {
               <p className="text-slate-400 text-sm mb-6 h-10">日本全国の離島巡りを楽しむための基本機能</p>
               <div className="text-3xl font-serif mb-8">¥0<span className="text-sm text-slate-500 font-sans"> / 永遠に無料</span></div>
               <ul className="space-y-4 text-sm text-slate-300">
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 432島すべてへのGPSチェックイン</li>
+                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> {totalIslandsCount}島すべてへのGPSチェックイン</li>
                 <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> ご当地妖精の収集・育成機能</li>
                 <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> デジタル島ノート（タイムライン投稿）</li>
                 <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 全国旅人ランキング参加</li>

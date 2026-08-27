@@ -67,7 +67,7 @@ export function getIslandCoords(island: any): { lat: number; lng: number } {
 
 // エリア別フライトレーダー定義
 const REGION_RADARS = [
-  { id: 'all', label: '🌐 日本近海全域', center: [35.65, 137.5] as [number, number], zoom: 5, desc: '日本列島と全432島を見渡す広域ビュー' },
+  { id: 'all', label: '🌐 日本近海全域', center: [35.65, 137.5] as [number, number], zoom: 5, desc: '日本列島と全離島を見渡す広域ビュー' },
   { id: 'izu_ogasawara', label: '🏝️ 伊豆・小笠原諸島', center: [29.8, 141.2] as [number, number], zoom: 6, desc: '竹芝から1,000km南へ続く海洋島エリア' },
   { id: 'okinawa_amami', label: '🌺 奄美・沖縄諸島', center: [26.8, 128.5] as [number, number], zoom: 7, desc: 'エメラルドグリーンの珊瑚礁群島' },
   { id: 'yaeyama_miyako', label: '🏝️ 八重山・宮古', center: [24.5, 124.6] as [number, number], zoom: 8, desc: '日本最南端・最西端の熱帯アイランド' },
@@ -407,7 +407,7 @@ export default function GlobeTrackerPage() {
             <div className="flex items-center gap-2 text-xs font-mono bg-slate-950/70 px-3.5 py-1.5 rounded-2xl border border-white/10">
               <span className="text-indigo-300">到達済:</span>
               <strong className="text-amber-400 text-sm">{visitedList.length}</strong>
-              <span className="text-slate-500">/ {allIslandsList.length || 432}島</span>
+              <span className="text-slate-500">/ {allIslandsList.length}島</span>
             </div>
           </div>
 
