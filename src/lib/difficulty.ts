@@ -14,13 +14,13 @@ export interface DifficultyInfo {
 
 // 既知の代表島難易度マッピング (名前またはIDからの部分一致)
 // 一般立入禁止・無人火山の特殊対象外島 (コンプリート対象から除外 または EX枠)
-const RESTRICTED_ISLANDS = ['硫黄島', '南鳥島', '沖大東島', '尖閣', '鳥島', '昭和硫黄島', 'ベヨネース', '須美寿島', '孀婦岩', '北硫黄島', '西之島', '沖ノ鳥島'];
+const RESTRICTED_ISLANDS = ['硫黄島（小笠原', '北硫黄島', '南硫黄島', '南鳥島', '沖大東島', '尖閣', '鳥島', '昭和硫黄島', 'ベヨネース', '須美寿島', '孀婦岩', '西之島', '沖ノ鳥島'];
 
 // 一般人が実際に渡航可能な究極の到達困難島 (★5 レジェンド)
 const LEGENDARY_ISLANDS = ['青ヶ島', '母島', '南大東島', '北大東島', '宝島', '中之島', '悪石島', '平島', '小宝島', '諏訪之瀬島', '口之島'];
 
 // 一般人が渡航可能な本格秘境・遠隔島 (★4 エクストリーム)
-const EXTREME_ISLANDS = ['与那国島', '波照間島', '父島', '喜界島', '粟国島', '多良間島', '舳倉島', '飛島', '神島'];
+const EXTREME_ISLANDS = ['与那国島', '波照間島', '父島', '喜界島', '粟国島', '多良間島', '舳倉島', '飛島', '神島', '薩摩硫黄島', '硫黄島（鹿児島'];
 
 // 本格冒険島・定期便に注意が必要な島 (★3 アドベンチャー)
 const ADVENTURE_ISLANDS = ['利尻島', '礼文島', '御蔵島', '三宅島', '神津島', '奥尻島', '与論島', '沖永良部島', '徳之島', '座間味島', '阿嘉島', '久米島', '渡嘉敷島', '隠岐の島'];
@@ -39,8 +39,11 @@ export function getIslandDifficulty(island: any): DifficultyInfo {
 
   const name = island.name || '';
 
-  // 一般立ち入り禁止・非公開島は対象外(0)を返す
-  if (RESTRICTED_ISLANDS.some(k => name.includes(k))) {
+  // 鹿児島県・薩摩硫黄島は定期便フェリー「みしま」で一般上陸可能
+  const isSatsumaIwo = name.includes('薩摩硫黄島') || name.includes('鹿児島') && name.includes('硫黄島') || String(island.id) === '343';
+
+  // 一般立ち入り禁止・非公開島は対象外(0)を返す（小笠原の硫黄島等）
+  if (!isSatsumaIwo && (RESTRICTED_ISLANDS.some(k => name.includes(k)) || island.is_conquest_target === false)) {
     return {
       level: 0,
       stars: '⛔ 対象外',
@@ -50,7 +53,7 @@ export function getIslandDifficulty(island: any): DifficultyInfo {
       bgColor: 'bg-slate-500/15',
       borderColor: 'border-slate-500/50',
       badgeColor: 'bg-slate-700 text-slate-300 border border-slate-500',
-      description: '自衛隊気象観測施設や自然保護区、領土保全区域などのため一般人の渡航・上陸が不可能な島。コンプリート達成の対象外です。'
+      description: '自衛隊基地や自然保護区などのため一般人の渡航・上陸が不可能な島。コンプリート達成の対象外です。'
     };
   }
 
