@@ -59,6 +59,7 @@ export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [selectedAreaTab, setSelectedAreaTab] = useState<string>('全て');
   const { user, totalVisited, companionChar, companionStage, islandStatuses, totalPoints } = useTravel();
+  const totalIslandsCount = useMemo(() => allIslands.length || 432, [allIslands]);
   const { scrollY } = useScroll();
   const headerY = useTransform(scrollY, [0, 500], [0, 150]);
   const headerOpacity = useTransform(scrollY, [0, 300], [1, 0]);
@@ -437,7 +438,7 @@ export default function Home() {
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
               >
-                <h1 className="sr-only">日本の離島432島を制覇しよう</h1>
+                <h1 className="sr-only">日本の離島{totalIslandsCount}島を制覇しよう</h1>
                 <h2 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-snug md:leading-[1.3] tracking-widest drop-shadow-lg mb-6 max-w-2xl break-words">
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[0] : slides[0].title[0]}<br />
                   {isMounted && slides[currentSlide] ? slides[currentSlide].title[1] : slides[0].title[1]}
@@ -456,7 +457,7 @@ export default function Home() {
                 </div>
               </motion.div>
             </AnimatePresence>
-            <p className="text-white/80 text-xs md:text-sm font-medium tracking-[0.4em] uppercase drop-shadow-sm mb-6">Japan Islands - {ALL_ISLANDS_COUNT} Destinations</p>
+            <p className="text-white/80 text-xs md:text-sm font-medium tracking-[0.4em] uppercase drop-shadow-sm mb-6">Japan Islands - {totalIslandsCount} Destinations</p>
 
             {/* Manual Navigation Controls */}
             {isMounted && slides.length > 1 && (
@@ -1064,7 +1065,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="mt-20 mb-12 text-center">
+        <div ref={categoryRef} className="mt-20 mb-12 text-center">
           <p className="text-[0.65rem] font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">CURATED THEMES</p>
           <h2 className="font-serif text-2xl lg:text-3xl text-slate-900 tracking-widest">目的から探す</h2>
           <div className="w-12 h-[1.5px] bg-blue-600 mx-auto mt-6" />
@@ -1290,7 +1291,7 @@ export default function Home() {
       </div>
 
       {/* Magazine-style Region Cards */}
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-24">
+      <div ref={regionRef} className="max-w-7xl mx-auto px-6 lg:px-12 py-20 lg:py-24">
         <div className="mb-16 text-center">
           <h2 className="font-serif text-xl lg:text-2xl text-slate-800 tracking-widest">すべての諸島</h2>
           <p className="text-[0.7rem] lg:text-xs text-slate-400 tracking-[0.3em] uppercase mt-3">{allRegions.length} Regions</p>
