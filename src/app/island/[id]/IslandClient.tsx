@@ -775,6 +775,44 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                 );
               })}
             </div>
+
+            {/* Subtle Carrier Signal Checker */}
+            <div className="mt-4 p-3 bg-slate-50/90 border border-slate-200/80 rounded-2xl text-xs text-slate-600">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2">
+                  <Radio className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                  <span className="font-bold text-slate-700">各社エリア確認参考リンク</span>
+                  <span className="text-[10px] text-slate-400">（※地図表示は目安です。実際の島内環境では電波が弱い場合があります）</span>
+                </div>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(island.name || '');
+                    toast.success(`「${island.name}」をコピーしました！`);
+                  }}
+                  className="px-2.5 py-1 bg-white hover:bg-slate-100 border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700 transition-colors flex items-center gap-1 shadow-2xs"
+                >
+                  📋 「{island.name}」をコピー
+                </button>
+              </div>
+              <div className="mt-2.5 pt-2 border-t border-slate-200/60 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px]">
+                <span className="text-slate-400 text-[10px]">公式マップ:</span>
+                <a href="https://www.docomo.ne.jp/area/" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:underline font-bold flex items-center gap-0.5">
+                  🔴 docomo
+                </a>
+                <span className="text-slate-300">|</span>
+                <a href="https://www.au.com/mobile/area/" target="_blank" rel="noopener noreferrer" className="text-amber-600 hover:underline font-bold flex items-center gap-0.5">
+                  🟠 au
+                </a>
+                <span className="text-slate-300">|</span>
+                <a href="https://www.softbank.jp/mobile/network/area/" target="_blank" rel="noopener noreferrer" className="text-slate-800 hover:underline font-bold flex items-center gap-0.5">
+                  ⚪️ SoftBank
+                </a>
+                <span className="text-slate-300">|</span>
+                <a href="https://network.rakuten.co.jp/area/" target="_blank" rel="noopener noreferrer" className="text-pink-600 hover:underline font-bold flex items-center gap-0.5">
+                  🔴 楽天モバイル
+                </a>
+              </div>
+            </div>
           </div>
         )}
 
