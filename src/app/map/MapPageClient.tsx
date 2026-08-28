@@ -43,7 +43,7 @@ function GlobalMapContent() {
   const [allIslands, setAllIslands] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [difficultyFilter, setDifficultyFilter] = useState<number | null>(null);
+  const [difficultyFilter, setDifficultyFilter] = useState<number | 'conquest_only' | null>('conquest_only');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAiOpen, setIsAiOpen] = useState(false);
   const [isCompareOpen, setIsCompareOpen] = useState(false);
@@ -76,7 +76,9 @@ function GlobalMapContent() {
   const planningCount = Object.values(islandStatuses).filter(s => s === 'planning').length;
   
   const filteredIslands = allIslands.filter(isl => {
-    if (difficultyFilter !== null && getIslandDifficulty(isl).level !== difficultyFilter) return false;
+    const level = getIslandDifficulty(isl).level;
+    if (difficultyFilter === 'conquest_only' && level === 0) return false;
+    if (typeof difficultyFilter === 'number' && level !== difficultyFilter) return false;
     if (regionParam && isl.region_id !== regionParam) return false;
     if (filterParam) {
       const lowerFilter = filterParam.toLowerCase();
@@ -263,8 +265,14 @@ function GlobalMapContent() {
         <div className="bg-white/80 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] hide-scrollbar">
 
         <button 
+          onClick={() => { setDifficultyFilter('conquest_only'); setManualBounds(null); }} 
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 'conquest_only' ? 'bg-emerald-600 text-white shadow-sm' : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'}`}
+        >
+          🏝️ 渡航可能島 ({allIslands.filter(i => getIslandDifficulty(i).level >= 1).length})
+        </button>
+        <button 
           onClick={() => { setDifficultyFilter(null); setManualBounds(null); router.replace('/map'); }} 
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-all ${difficultyFilter === null && !regionParam ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === null && !regionParam ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
         >
           全島 ({allIslands.length})
         </button>
@@ -279,7 +287,7 @@ function GlobalMapContent() {
         ))}
         <button 
           onClick={() => { setDifficultyFilter(0); setManualBounds(null); }} 
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-slate-600 hover:bg-slate-100'}`}
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-slate-500 hover:bg-slate-100'}`}
         >
           🔒 渡航制限島（対象外）
         </button>

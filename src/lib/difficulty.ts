@@ -16,17 +16,45 @@ export interface DifficultyInfo {
 // 一般立入禁止・無人火山の特殊対象外島 (コンプリート対象から除外 または EX枠)
 const RESTRICTED_ISLANDS = ['硫黄島（小笠原', '北硫黄島', '南硫黄島', '南鳥島', '沖大東島', '尖閣', '鳥島', '昭和硫黄島', 'ベヨネース', '須美寿島', '孀婦岩', '西之島', '沖ノ鳥島'];
 
-// 一般人が実際に渡航可能な究極の到達困難島 (★5 レジェンド)
-const LEGENDARY_ISLANDS = ['青ヶ島', '母島', '南大東島', '北大東島', '宝島', '中之島', '悪石島', '平島', '小宝島', '諏訪之瀬島', '口之島'];
+// 日本最難関の絶海孤島・トカラ列島・南北大東・小笠原諸島 (★5 レジェンド)
+const LEGENDARY_ISLANDS = [
+  '父島', '母島', '兄島', '弟島', 
+  '口之島', '中之島', '諏訪之瀬島', '平島', '悪石島', '小宝島', '宝島', 
+  '南大東島', '北大東島', '礼文島', '利尻島'
+];
 
-// 一般人が渡航可能な本格秘境・遠隔島 (★4 エクストリーム)
-const EXTREME_ISLANDS = ['与那国島', '波照間島', '父島', '喜界島', '粟国島', '多良間島', '舳倉島', '飛島', '神島', '薩摩硫黄島', '硫黄島（鹿児島'];
+// 外洋航路4時間以上・高い欠航リスク・遠隔秘境離島 (★4 エクストリーム)
+const EXTREME_ISLANDS = [
+  '青ヶ島', '御蔵島', '薩摩硫黄島', '硫黄島（鹿児島', '黒島（鹿児島', '竹島（鹿児島', '口永良部島', 
+  '与那国島', '波照間島', '多良間島', '粟国島', '渡名喜島', 
+  '喜界島', '徳之島', '沖永良部島', '与論島', '奄美大島', 
+  '舳倉島', '飛島', '青島（愛媛', '神島（三重'
+];
 
-// 本格冒険島・定期便に注意が必要な島 (★3 アドベンチャー)
-const ADVENTURE_ISLANDS = ['利尻島', '礼文島', '御蔵島', '三宅島', '神津島', '奥尻島', '与論島', '沖永良部島', '徳之島', '座間味島', '阿嘉島', '久米島', '渡嘉敷島', '隠岐の島'];
+// 本格離島・中長距離定期船・航路1.5〜3時間 (★3 アドベンチャー)
+const ADVENTURE_ISLANDS = [
+  '八丈島', '伊豆大島', '神津島', '新島', '式根島', '三宅島', 
+  '佐渡島', '粟島（新潟', 
+  '隠岐の島', '西ノ島', '中ノ島（隠岐', '知夫里島', 
+  '屋久島', '種子島', '壱岐', '対馬', '福江島', '中通島', '奈留島', '若松島', '小値賀島', 
+  '久米島', '座間味島', '阿嘉島', '渡嘉敷島', '伊江島', '伊平屋島', '伊是名島', '水納島（沖縄', 
+  '奥尻島', '天売島', '焼尻島'
+];
 
-// 定期フェリー・インフラが整った島 (★2 スタンダード)
-const STANDARD_ISLANDS = ['八丈島', '伊豆大島', '佐渡島', '屋久島', '宮古島', '西表島', '種子島', '壱岐', '対馬', '五島', '福江島', '中通島', '奄美大島', '新島', '式根島', '答志島', '日間賀島'];
+// 高頻度近海フェリー・短時間アクセス・手軽な観光島 (★2 スタンダード)
+const STANDARD_ISLANDS = [
+  '初島', '答志島', '菅島', '坂手島', '日間賀島', '篠島', '佐久島', 
+  '直島', '小豆島', '男木島', '女木島', '本島（香川', '犬島', '豊島（香川', 
+  '友ヶ島', '家島', '男鹿島', '坊勢島', '仙酔島', '能美島', '似島', '厳島', '宮島', '興居島', '中島（愛媛', 
+  '志賀島', '能古島', '姫島（大分', '桜島', '大島（山口'
+];
+
+// 本土・主島から「橋」で陸続きで渡れるイージーアクセス島 (★1 イージー)
+const EASY_BRIDGED_ISLANDS = [
+  '江の島', '城ヶ島', '古宇利島', '瀬底島', '屋ヶ地島', '浜比嘉島', '平安座島', '宮城島', '伊計島', '奥武島', 
+  '能登島', '向島', '因島', '生口島', '大三島', '伯方島', '大島（愛媛', '周防大島', '屋代島', '角島', '彦島', 
+  '渡鹿野島', '賢島', '竹島（愛知', '沖島（愛知', '新月島'
+];
 
 /**
  * 島の名前や属性からアクセス難易度（★1〜★5 または 0:制限島）を判定・取得する
@@ -38,9 +66,11 @@ export function getIslandDifficulty(island: any): DifficultyInfo {
   }
 
   const name = island.name || '';
+  const access = island.access || '';
+  const desc = island.description || '';
 
   // 鹿児島県・薩摩硫黄島は定期便フェリー「みしま」で一般上陸可能
-  const isSatsumaIwo = name.includes('薩摩硫黄島') || name.includes('鹿児島') && name.includes('硫黄島') || String(island.id) === '343';
+  const isSatsumaIwo = name.includes('薩摩硫黄島') || (name.includes('鹿児島') && name.includes('硫黄島')) || String(island.id) === '343';
 
   // 一般立ち入り禁止・非公開島は対象外(0)を返す（小笠原の硫黄島等）
   if (!isSatsumaIwo && (RESTRICTED_ISLANDS.some(k => name.includes(k)) || island.is_conquest_target === false)) {
@@ -57,33 +87,29 @@ export function getIslandDifficulty(island: any): DifficultyInfo {
     };
   }
 
-  // もしDBに difficulty フィールドがあれば優先
-  if (island.difficulty && typeof island.difficulty === 'number' && island.difficulty >= 1 && island.difficulty <= 5) {
-    return getDifficultyInfoByLevel(island.difficulty);
-  }
-  
-  if (LEGENDARY_ISLANDS.some(k => name.includes(k))) {
+  // 明示的なマッピング判定
+  if (LEGENDARY_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(5);
+  if (EXTREME_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(4);
+  if (ADVENTURE_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(3);
+  if (EASY_BRIDGED_ISLANDS.some(k => name.includes(k)) || access.includes('橋') || desc.includes('橋')) return getDifficultyInfoByLevel(1);
+  if (STANDARD_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(2);
+
+  // 地域・属性に応じた合理的なフォールバック推定
+  const reg = island.region_id || '';
+  if (['ogasawara', 'tokara'].includes(reg) || name.includes('小笠原') || name.includes('大東')) {
     return getDifficultyInfoByLevel(5);
   }
-  if (EXTREME_ISLANDS.some(k => name.includes(k))) {
+  if (['amami', 'yaeyama', 'remote'].includes(reg) || name.includes('トカラ') || name.includes('五島')) {
     return getDifficultyInfoByLevel(4);
   }
-  if (ADVENTURE_ISLANDS.some(k => name.includes(k))) {
+  if (['izu', 'okinawa', 'kagoshima', 'hokkaido', 'tsushima', 'iki', 'oki'].includes(reg)) {
     return getDifficultyInfoByLevel(3);
   }
-  if (STANDARD_ISLANDS.some(k => name.includes(k))) {
+  if (['sanriku', 'setouchi', 'biwako', 'kanto', 'chugoku', 'kyushu'].includes(reg)) {
     return getDifficultyInfoByLevel(2);
   }
 
-  // デフォルト分類: 座標や地域から推定 (東京小笠原や沖縄離島等は★3以上、瀬戸内等は★1〜★2)
-  if (island.region_id === 'tokyo' && (name.includes('島') || name.includes('列島'))) {
-    return getDifficultyInfoByLevel(3);
-  }
-  if (island.region_id && ['okinawa', 'kagoshima', 'hokkaido'].includes(island.region_id)) {
-    return getDifficultyInfoByLevel(2);
-  }
-
-  return getDifficultyInfoByLevel(1);
+  return getDifficultyInfoByLevel(2);
 }
 
 /**
