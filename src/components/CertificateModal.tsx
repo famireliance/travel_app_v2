@@ -500,24 +500,45 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
         ctx.font = `${isVert ? 16 : 22}px monospace`;
         ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 75);
 
-        // Hero Image
+        // Hero Image (Smart 縦写真 & 横写真 自動適応対応)
         if (heroImg) {
           ctx.save();
-          const heroW = isVert ? 320 : 440;
-          const heroH = isVert ? 180 : 190;
+          const isPortraitPhoto = heroImg.height > heroImg.width;
+          
+          let heroW: number;
+          let heroH: number;
+
+          if (isVert) {
+            // 縦型レイアウト（Portrait Certificate）
+            heroW = isPortraitPhoto ? 340 : 400;
+            heroH = isPortraitPhoto ? 380 : 240;
+          } else {
+            // 横型レイアウト（Landscape Certificate）
+            heroW = isPortraitPhoto ? 260 : 460;
+            heroH = isPortraitPhoto ? 250 : 240;
+          }
+
           const heroX = cx - heroW / 2;
-          const heroY = isVert ? 450 : 585;
+          const heroY = isVert ? (isPortraitPhoto ? 430 : 460) : (isPortraitPhoto ? 550 : 565);
+
           ctx.beginPath();
           ctx.rect(heroX, heroY, heroW, heroH);
           ctx.clip();
+
           const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
           const dw = heroImg.width * scale;
           const dh = heroImg.height * scale;
           ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
           ctx.restore();
+
+          // Double Gold Frame Border & Outer Accent Line
           ctx.strokeStyle = accentColor;
-          ctx.lineWidth = 3;
+          ctx.lineWidth = 4;
           ctx.strokeRect(heroX, heroY, heroW, heroH);
+
+          ctx.strokeStyle = '#F59E0B';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(heroX - 4, heroY - 4, heroW + 8, heroH + 8);
         }
 
         // Seal
