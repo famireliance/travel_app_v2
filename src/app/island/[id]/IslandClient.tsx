@@ -18,7 +18,8 @@ import { getIslandDifficulty } from '@/lib/difficulty';
 import Breadcrumb from '@/components/Breadcrumb';
 import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
-import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert } from 'lucide-react';
+import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
+import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike } from 'lucide-react';
 
 interface IslandDiarySSR {
   id: string;
@@ -525,6 +526,176 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </motion.div>
+          );
+        })()}
+
+        {/* Accommodations & Local Transport Infrastructure Section (宿泊 ＆ 島内交通) */}
+        {(() => {
+          const facilityData = getIslandFacilityDataOrDefault(island.id, island.name);
+
+          return (
+            <div className="space-y-10 mb-10">
+              
+              {/* 🏨 1. 宿泊施設・民宿ガイド */}
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-amber-500/10 via-yellow-500/5 to-slate-900/5 border-b border-amber-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[0.65rem] font-bold text-amber-700 uppercase tracking-widest block mb-1">ACCOMMODATION GUIDE</span>
+                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                      <Hotel className="w-5 h-5 text-amber-500" /> {island.name}の宿泊施設・民宿ガイド
+                    </h3>
+                  </div>
+
+                  {/* Affiliate Action Buttons */}
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
+                    <a
+                      href={getRakutenTravelSearchUrl(island.name)}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="px-4 py-2 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
+                    >
+                      <ExternalLink size={12} />
+                      楽天トラベルで宿を探す
+                    </a>
+                    <a
+                      href={getJalanSearchUrl(island.name)}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="px-4 py-2 bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
+                    >
+                      <ExternalLink size={12} />
+                      じゃらんで探す
+                    </a>
+                  </div>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">島内の代表的な宿・民宿リスト</span>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {facilityData.accommodations.map((acc) => (
+                      <div 
+                        key={acc.id} 
+                        className={`p-5 rounded-2xl border transition-all ${
+                          acc.isSponsored 
+                            ? 'bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-900/5 border-amber-400 shadow-md' 
+                            : 'bg-slate-50 border-slate-200'
+                        }`}
+                      >
+                        <div className="space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <div>
+                              {acc.isSponsored && (
+                                <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
+                                  🌟 KIRATABI 公式掲載宿
+                                </span>
+                              )}
+                              <h4 className="font-serif font-bold text-slate-900 text-base">{acc.name}</h4>
+                            </div>
+                            {acc.priceRange && (
+                              <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-lg shrink-0">
+                                {acc.priceRange}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            {acc.features}
+                          </p>
+
+                          <div className="pt-2 flex items-center justify-between gap-2">
+                            {acc.phone ? (
+                              <a
+                                href={`tel:${acc.phone}`}
+                                className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
+                              >
+                                <Phone size={12} /> {acc.phone}
+                              </a>
+                            ) : (
+                              <span className="text-xs text-slate-400">電話要確認</span>
+                            )}
+
+                            {acc.isSponsored && acc.sponsoredId && (
+                              <Link
+                                href={`/stay/${acc.sponsoredId}`}
+                                className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"
+                              >
+                                公式特設ページを見る <ArrowRight size={12} />
+                              </Link>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* 🚗 2. 島内交通インフラ・レンタカー・移動ガイド */}
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-slate-900/5 border-b border-blue-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[0.65rem] font-bold text-blue-700 uppercase tracking-widest block mb-1">LOCAL TRANSPORT & RENTALS</span>
+                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                      <Car className="w-5 h-5 text-blue-500" /> {island.name}の島内交通・レンタカー・自転車ガイド
+                    </h3>
+                  </div>
+
+                  {/* Rent-a-car Affiliate Button */}
+                  <a
+                    href={getRakutenRentacarSearchUrl(island.name)}
+                    target="_blank"
+                    rel="noopener noreferrer sponsored"
+                    className="px-4 py-2 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102 shrink-0 self-start md:self-auto"
+                  >
+                    <ExternalLink size={12} />
+                    楽天レンタカーで検索
+                  </a>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  {facilityData.transportNotes && (
+                    <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs text-blue-800 font-serif leading-relaxed flex items-start gap-2.5">
+                      <Compass className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
+                      <span><strong>島内移動のコツ: </strong>{facilityData.transportNotes}</span>
+                    </div>
+                  )}
+
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">島内のレンタカー・レンタルバイク・自転車・交通機関</span>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {facilityData.transports.map((trans) => (
+                      <div key={trans.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                            {trans.type === 'car' ? <Car size={16} className="text-blue-500" /> : <Bike size={16} className="text-emerald-500" />}
+                            {trans.name}
+                          </h4>
+                          {trans.priceRange && (
+                            <span className="font-mono text-[0.7rem] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
+                              {trans.priceRange}
+                            </span>
+                          )}
+                        </div>
+
+                        <p className="text-xs text-slate-600 leading-relaxed">
+                          {trans.features}
+                        </p>
+
+                        {trans.phone && (
+                          <div className="pt-1">
+                            <a href={`tel:${trans.phone}`} className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:underline font-mono">
+                              <Phone size={12} /> {trans.phone}
+                            </a>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+            </div>
           );
         })()}
 
