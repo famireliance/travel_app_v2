@@ -3,13 +3,23 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
-import { AFFILIATE_PRODUCTS, PACKING_CATEGORIES, AffiliateProduct } from '@/data/affiliateProducts';
+import { 
+  AFFILIATE_PRODUCTS, PACKING_CATEGORIES, DEFAULT_AMAZON_TAG, 
+  createAmazonSearchUrl, createRakutenSearchUrl, PackingCategoryType 
+} from '@/data/affiliateProducts';
 import { 
   ArrowLeft, CheckSquare, Square, ShoppingCart, Sparkles, 
-  ShieldCheck, ExternalLink, RotateCcw, Award, Compass, Heart, AlertCircle
+  ShieldCheck, ExternalLink, RotateCcw, Compass, Plus, Trash2, Tag, AlertCircle, Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
+
+export interface CustomPackingItem {
+  id: string;
+  name: string;
+  isChecked: boolean;
+  createdAt: number;
+}
 
 export default function PackingListPage() {
   const router = useRouter();
@@ -17,15 +27,23 @@ export default function PackingListPage() {
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
-  // Load checked items from localStorage
+  // Custom User Items
+  const [customItems, setCustomItems] = useState<CustomPackingItem[]>([]);
+  const [newItemName, setNewItemName] = useState<string>('');
+
+  // Load state from localStorage
   useEffect(() => {
     try {
-      const stored = localStorage.getItem('kiratabi_packing_checked');
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed)) {
-          setCheckedIds(parsed);
-        }
+      const storedChecked = localStorage.getItem('kiratabi_packing_checked');
+      if (storedChecked) {
+        const parsed = JSON.parse(storedChecked);
+        if (Array.isArray(parsed)) setCheckedIds(parsed);
+      }
+
+      const storedCustom = localStorage.getItem('kiratabi_packing_custom');
+      if (storedCustom) {
+        const parsedCustom = JSON.parse(storedCustom);
+        if (Array.isArray(parsedCustom)) setCustomItems(parsedCustom);
       }
     } catch (e) {
       console.error('Failed to load packing list state', e);
@@ -33,7 +51,7 @@ export default function PackingListPage() {
     setIsLoaded(true);
   }, []);
 
-  // Save checked items to localStorage
+  // Save checked items
   const toggleCheck = (id: string) => {
     setCheckedIds(prev => {
       let next: string[];
@@ -41,34 +59,82 @@ export default function PackingListPage() {
         next = prev.filter(item => item !== id);
       } else {
         next = [...prev, id];
-        toast.success('チェックリストに追加しました！', { id: `check-${id}` });
+        toast.success('チェックリストを完了にしました！', { id: `check-${id}` });
       }
       localStorage.setItem('kiratabi_packing_checked', JSON.stringify(next));
       return next;
     });
   };
 
+  // Add Custom Item
+  const handleAddCustomItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newItemName.trim()) return;
+
+    const newItem: CustomPackingItem = {
+      id: `custom_${Date.now()}`,
+      name: newItemName.trim(),
+      isChecked: false,
+      createdAt: Date.now(),
+    };
+
+    const nextCustom = [newItem, ...customItems];
+    setCustomItems(nextCustom);
+    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(nextCustom));
+    setNewItemName('');
+    toast.success(`「${newItem.name}」を持ち物に追加しました！`);
+  };
+
+  // Toggle Custom Item Check
+  const toggleCustomCheck = (id: string) => {
+    const nextCustom = customItems.map(item => {
+      if (item.id === id) return { ...item, isChecked: !item.isChecked };
+      return item;
+    });
+    setCustomItems(nextCustom);
+    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(nextCustom));
+  };
+
+  // Delete Custom Item
+  const handleDeleteCustomItem = (id: string) => {
+    const nextCustom = customItems.filter(item => item.id !== id);
+    setCustomItems(nextCustom);
+    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(nextCustom));
+    toast('アイテムを削除しました', { icon: '🗑️' });
+  };
+
   const handleSelectAll = () => {
-    const allIds = AFFILIATE_PRODUCTS.map(p => p.id);
-    setCheckedIds(allIds);
-    localStorage.setItem('kiratabi_packing_checked', JSON.stringify(allIds));
+    const allPresetIds = AFFILIATE_PRODUCTS.map(p => p.id);
+    setCheckedIds(allPresetIds);
+    localStorage.setItem('kiratabi_packing_checked', JSON.stringify(allPresetIds));
+
+    // Also check custom items
+    const allCustomChecked = customItems.map(item => ({ ...item, isChecked: true }));
+    setCustomItems(allCustomChecked);
+    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(allCustomChecked));
+
     toast.success('すべてのアイテムを完了にしました！');
   };
 
   const handleClearAll = () => {
     setCheckedIds([]);
     localStorage.setItem('kiratabi_packing_checked', JSON.stringify([]));
+
+    const allCustomUnchecked = customItems.map(item => ({ ...item, isChecked: false }));
+    setCustomItems(allCustomUnchecked);
+    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(allCustomUnchecked));
+
     toast('チェックをリセットしました', { icon: '🔄' });
   };
 
-  // Filter products by category
+  // Multi-category filtering
   const filteredProducts = AFFILIATE_PRODUCTS.filter(p => {
     if (activeCategory === 'all') return true;
-    return p.category === activeCategory;
+    return p.categories.includes(activeCategory as PackingCategoryType);
   });
 
-  const totalCount = AFFILIATE_PRODUCTS.length;
-  const completedCount = checkedIds.length;
+  const totalCount = AFFILIATE_PRODUCTS.length + customItems.length;
+  const completedCount = checkedIds.length + customItems.filter(c => c.isChecked).length;
   const progressPercent = Math.round((completedCount / Math.max(totalCount, 1)) * 100);
 
   if (!isLoaded) {
@@ -80,7 +146,7 @@ export default function PackingListPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] pb-32 font-sans text-slate-800 relative">
+    <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans text-slate-800 relative">
       
       {/* Header */}
       <header className="px-6 lg:px-12 py-4 border-b border-slate-200/60 flex items-center justify-between sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm">
@@ -106,10 +172,16 @@ export default function PackingListPage() {
       <div className="max-w-5xl mx-auto px-4 md:px-6 mt-6 space-y-6">
         <Breadcrumb items={[{ label: '島旅の持ち物 ＆ パッキングリスト' }]} className="mb-2" />
 
-        {/* PR Affiliate Disclosure Notice (景品表示法・ステマ規制対応) */}
-        <div className="bg-slate-100 border border-slate-200 p-3 rounded-xl text-[0.7rem] text-slate-500 flex items-center gap-2">
-          <AlertCircle size={14} className="text-slate-400 shrink-0" />
-          <span>※当ページはアフィリエイト広告（Amazonアソシエイト・楽天アフィリエイト等）を利用しておすすめ商品をご紹介しています。</span>
+        {/* PR Affiliate & Tag Verification Badge (景品表示法 ＆ Amazon ID可視化) */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-slate-100 border border-slate-200 p-3 rounded-xl text-[0.7rem] text-slate-600">
+          <div className="flex items-center gap-2">
+            <AlertCircle size={14} className="text-slate-400 shrink-0" />
+            <span>※当ページはアフィリエイト広告（Amazonアソシエイト・楽天アフィリエイト等）を利用しておすすめ商品をご紹介しています。</span>
+          </div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-mono font-bold text-[0.65rem] border border-emerald-300 self-start sm:self-auto shrink-0">
+            <Check size={12} className="text-emerald-600" />
+            <span>Amazon ID: {DEFAULT_AMAZON_TAG} 紐付け済み</span>
+          </div>
         </div>
 
         {/* Hero Section */}
@@ -118,14 +190,14 @@ export default function PackingListPage() {
           
           <div className="relative z-10 space-y-4 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold tracking-widest border border-amber-400/30">
-              <Sparkles size={14} /> 島旅専門家監修
+              <Sparkles size={14} /> 島旅専門家監修 ＆ 完全カスタム対応
             </div>
             <h2 className="text-2xl md:text-4xl font-serif font-bold leading-tight">
               後悔しない島旅へ！<br />
               <span className="text-amber-400">絶対必要な持ち物 ＆ パッキングリスト</span>
             </h2>
             <p className="text-xs md:text-sm text-slate-300 leading-relaxed font-serif">
-              「島の中に薬局がない」「カードが使えず現金不足」「強い日差しや船酔い」など、離島特有のトラブルを未然に防ぐ必須アイテムを厳選。パッキングチェックリストとしてもお使いいただけます！
+              「島の中に薬局がない」「カードが使えず現金不足」「民宿のコンセント不足やタオル無し」など、離島特有のトラブルを未然に防ぐ必須アイテムを網羅。自由にご自身の持ち物を追加してチェックリストとしてご利用いただけます！
             </p>
           </div>
         </div>
@@ -170,6 +242,80 @@ export default function PackingListPage() {
             />
           </div>
           <p className="text-[0.7rem] text-slate-400 text-right font-mono">進捗率: {progressPercent}%</p>
+        </div>
+
+        {/* Custom User Packing Input Form (自由追加機能) */}
+        <div className="bg-gradient-to-r from-amber-500/10 via-yellow-500/5 to-slate-900/5 p-6 rounded-3xl border border-amber-500/30 space-y-4">
+          <div className="flex items-center gap-2">
+            <Plus className="w-5 h-5 text-amber-600" />
+            <h3 className="font-serif font-bold text-slate-900 text-base">＋ 自分だけの持ち物をリストに追加する</h3>
+          </div>
+          
+          <form onSubmit={handleAddCustomItem} className="flex flex-col sm:flex-row gap-2">
+            <input
+              type="text"
+              value={newItemName}
+              onChange={(e) => setNewItemName(e.target.value)}
+              placeholder="例：コンタクトレンズ洗浄液、自分のお気に入りのお菓子、持病の薬など..."
+              className="flex-1 px-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+            />
+            <button
+              type="submit"
+              className="px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-2xl shadow-md flex items-center justify-center gap-2 shrink-0 transition-colors"
+            >
+              <Plus size={16} /> 追加する
+            </button>
+          </form>
+
+          {/* Render User Custom Items */}
+          {customItems.length > 0 && (
+            <div className="pt-2 space-y-2">
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">マイ追加リスト ({customItems.length}個)</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {customItems.map((cItem) => (
+                  <div 
+                    key={cItem.id}
+                    className={`p-3 rounded-2xl border flex items-center justify-between gap-3 transition-all ${
+                      cItem.isChecked ? 'bg-emerald-50/60 border-emerald-200' : 'bg-white border-slate-200'
+                    }`}
+                  >
+                    <button
+                      onClick={() => toggleCustomCheck(cItem.id)}
+                      className="flex items-center gap-2.5 flex-1 text-left min-w-0"
+                    >
+                      {cItem.isChecked ? (
+                        <CheckSquare className="w-5 h-5 text-emerald-600 shrink-0" />
+                      ) : (
+                        <Square className="w-5 h-5 text-slate-300 shrink-0" />
+                      )}
+                      <span className={`text-sm font-bold truncate ${cItem.isChecked ? 'text-slate-400 line-through' : 'text-slate-800'}`}>
+                        {cItem.name}
+                      </span>
+                    </button>
+
+                    <div className="flex items-center gap-1 shrink-0">
+                      <a
+                        href={createAmazonSearchUrl(cItem.name)}
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        className="px-2 py-1 bg-[#FF9900] text-slate-950 text-[0.65rem] font-bold rounded-lg flex items-center gap-1 hover:opacity-90"
+                        title="Amazonで探す"
+                      >
+                        Amazon <ExternalLink size={10} />
+                      </a>
+                      <button
+                        onClick={() => handleDeleteCustomItem(cItem.id)}
+                        className="p-1.5 text-slate-400 hover:text-rose-500 rounded-lg transition-colors"
+                        title="削除"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Category Tabs */}
@@ -253,30 +399,38 @@ export default function PackingListPage() {
                       </div>
                     </div>
 
-                    {/* Right: Affiliate Action Buttons */}
-                    <div className="shrink-0 flex flex-col sm:flex-row md:flex-col gap-2.5 md:w-48 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
-                      <a
-                        href={product.amazonUrl}
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        className="w-full py-2.5 px-4 rounded-xl bg-[#FF9900] hover:bg-[#e68a00] text-slate-950 font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md transition-all hover:scale-102"
-                      >
-                        <ShoppingCart size={14} />
-                        Amazonで探す
-                        <ExternalLink size={12} className="opacity-70" />
-                      </a>
+                    {/* Right: Affiliate Action Buttons (or Non-Affiliate Notice for Cash) */}
+                    {product.hasAffiliateLink ? (
+                      <div className="shrink-0 flex flex-col sm:flex-row md:flex-col gap-2.5 md:w-48 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100">
+                        <a
+                          href={product.amazonUrl}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="w-full py-2.5 px-4 rounded-xl bg-[#FF9900] hover:bg-[#e68a00] text-slate-950 font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md transition-all hover:scale-102"
+                        >
+                          <ShoppingCart size={14} />
+                          Amazonで探す
+                          <ExternalLink size={12} className="opacity-70" />
+                        </a>
 
-                      <a
-                        href={product.rakutenUrl}
-                        target="_blank"
-                        rel="noopener noreferrer sponsored"
-                        className="w-full py-2.5 px-4 rounded-xl bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md transition-all hover:scale-102"
-                      >
-                        <ShoppingCart size={14} />
-                        楽天市場で探す
-                        <ExternalLink size={12} className="opacity-70" />
-                      </a>
-                    </div>
+                        <a
+                          href={product.rakutenUrl}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="w-full py-2.5 px-4 rounded-xl bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs tracking-wider flex items-center justify-center gap-2 shadow-md transition-all hover:scale-102"
+                        >
+                          <ShoppingCart size={14} />
+                          楽天市場で探す
+                          <ExternalLink size={12} className="opacity-70" />
+                        </a>
+                      </div>
+                    ) : (
+                      <div className="shrink-0 md:w-48 pt-4 md:pt-0 border-t md:border-t-0 border-slate-100 flex items-center justify-center">
+                        <span className="px-3 py-2 bg-slate-100 text-slate-500 rounded-xl text-xs font-bold border border-slate-200">
+                          ※事前に現金を準備
+                        </span>
+                      </div>
+                    )}
 
                   </div>
                 </motion.div>
@@ -293,7 +447,7 @@ export default function PackingListPage() {
           </div>
           <h4 className="font-serif font-bold text-slate-900 text-lg">「迷ったら持っていく」のが離島旅の鉄則！</h4>
           <p className="text-xs text-slate-600 leading-relaxed max-w-3xl">
-            離島では「現地で調達すればいい」が通用しない場面が多々あります。特に「薬」「現金」「充電器」「日焼け対策」の4点は事前準備が旅の成否を分けます。事前の準備を万全にして、最高の島旅をお楽しみください！
+            離島では「現地で調達すればいい」が通用しない場面が多々あります。特に「薬」「現金」「充電器」「日焼け対策」「タオル類」の5点は事前準備が旅の成否を分けます。事前の準備を万全にして、最高の島旅をお楽しみください！
           </p>
         </div>
 
