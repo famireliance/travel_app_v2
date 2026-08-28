@@ -485,20 +485,38 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           ctx.font = 'bold 28px serif';
           ctx.fillText(hasHologram ? 'VERIFIED PHOTO DIARY RECORD' : 'VERIFIED RECORD OF ARRIVAL', cx, 160);
           
+          // Glowing Gold Title
           ctx.fillStyle = accentColor;
           ctx.font = 'bold 64px serif';
           ctx.fillText(certificateType === 'card' ? '到 達 証' : '島 旅 到 達 公 認 証', cx, 250);
 
-          // Name Ribbon Plate
-          const nameY = 410;
-          ctx.fillStyle = 'rgba(128, 128, 128, 0.12)';
-          ctx.fillRect(cx - 360, nameY - 45, 720, 75);
+          // Subtitle Rule Line
           ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-          ctx.lineWidth = 1.5;
-          ctx.strokeRect(cx - 360, nameY - 45, 720, 75);
+          ctx.lineWidth = 2;
+          ctx.beginPath();
+          ctx.moveTo(cx - 240, 280);
+          ctx.lineTo(cx + 240, 280);
+          ctx.stroke();
+
+          // Name Ribbon Plate (Rich Metallic Banner)
+          const nameY = 410;
+          const bannerGrad = ctx.createLinearGradient(cx - 360, 0, cx + 360, 0);
+          bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
+          bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
+          bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
+          ctx.fillStyle = bannerGrad;
+          ctx.fillRect(cx - 360, nameY - 48, 720, 80);
+
+          ctx.strokeStyle = '#D4AF37';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(cx - 360, nameY - 48, 720, 80);
+          ctx.strokeStyle = '#F59E0B';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(cx - 354, nameY - 42, 708, 68);
+
           ctx.fillStyle = primaryColor;
-          ctx.font = 'bold 50px serif';
-          ctx.fillText(travelerName || 'Voyager', cx, nameY + 10);
+          ctx.font = 'bold 52px serif';
+          ctx.fillText((travelerName || 'Voyager') + ' 殿', cx, nameY + 12);
 
           // Island Info
           const infoY = 570;
@@ -509,20 +527,20 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           
           ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : '#F59E0B';
           ctx.font = 'bold 28px sans-serif';
-          ctx.fillText(`【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})`, cx, infoY + 55);
+          ctx.fillText(`【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})`, cx, infoY + 58);
 
           ctx.fillStyle = secondaryColor;
           ctx.font = '26px monospace';
-          ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 110);
+          ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 115);
 
           // Hero Image (Smart 縦写真 & 横写真 自動対応)
           if (heroImg) {
             ctx.save();
             const isPortraitPhoto = heroImg.height > heroImg.width;
-            const heroW = isPortraitPhoto ? 680 : 860;
-            const heroH = isPortraitPhoto ? 840 : 540;
+            const heroW = isPortraitPhoto ? 760 : 860;
+            const heroH = isPortraitPhoto ? 1020 : 560;
             const heroX = cx - heroW / 2;
-            const heroY = isPortraitPhoto ? 780 : 860;
+            const heroY = isPortraitPhoto ? 710 : 860;
 
             ctx.beginPath();
             ctx.rect(heroX, heroY, heroW, heroH);
@@ -534,27 +552,64 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
             ctx.restore();
 
-            // Gold Frame
+            // Luxury Double Gold Frame
             ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 6;
+            ctx.lineWidth = 7;
             ctx.strokeRect(heroX, heroY, heroW, heroH);
             ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(heroX - 6, heroY - 6, heroW + 12, heroH + 12);
+            ctx.lineWidth = 2.5;
+            ctx.strokeRect(heroX - 7, heroY - 7, heroW + 14, heroH + 14);
+
+            // Ornate Corner Accents around Photo Frame
+            const drawCornerBracket = (bx: number, by: number, rot: number) => {
+              ctx.save();
+              ctx.translate(bx, by);
+              ctx.rotate(rot);
+              ctx.strokeStyle = '#F3E5AB';
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(-15, 0);
+              ctx.lineTo(0, 0);
+              ctx.lineTo(0, -15);
+              ctx.stroke();
+              ctx.restore();
+            };
+            drawCornerBracket(heroX - 7, heroY - 7, 0);
+            drawCornerBracket(heroX + heroW + 7, heroY - 7, Math.PI / 2);
+            drawCornerBracket(heroX + heroW + 7, heroY + heroH + 7, Math.PI);
+            drawCornerBracket(heroX - 7, heroY + heroH + 7, (Math.PI * 3) / 2);
           }
 
-          // Seal Stamp (Bottom-Right)
+          // Seal Stamp (Bottom-Right Wax Seal)
           const sealX = width - 180;
-          const sealY = height - 200;
+          const sealY = height - 190;
           const sealRadius = 75;
+
+          // Seal 3D Drop Shadow
+          ctx.beginPath();
+          ctx.arc(sealX + 4, sealY + 4, sealRadius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+          ctx.fill();
+
+          // Outer Ring
           ctx.beginPath();
           ctx.arc(sealX, sealY, sealRadius, 0, Math.PI * 2);
+          ctx.fillStyle = '#991B1B';
+          ctx.fill();
           ctx.strokeStyle = '#E11D48';
           ctx.lineWidth = 5;
           ctx.stroke();
-          ctx.fillStyle = '#E11D48';
+
+          // Inner Ring
+          ctx.beginPath();
+          ctx.arc(sealX, sealY, sealRadius - 10, 0, Math.PI * 2);
+          ctx.strokeStyle = '#FCA5A5';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.fillStyle = '#FFFFFF';
           ctx.font = 'bold 22px serif';
-          ctx.fillText('KIRATABI', sealX, sealY - 14);
+          ctx.fillText('KIRATABI', sealX, sealY - 12);
           ctx.font = 'bold 26px serif';
           ctx.fillText('公認証明', sealX, sealY + 18);
 
@@ -562,7 +617,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           const displaySerial = assignedSerial || `No.0001`;
           ctx.textAlign = 'left';
           ctx.fillStyle = secondaryColor;
-          ctx.font = '22px monospace';
+          ctx.font = '24px monospace';
           ctx.fillText(`SERIAL: ${displaySerial}`, 90, height - 90);
 
         } else {
@@ -580,14 +635,23 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
 
           // Name Ribbon Plate
           const nameY = 300;
-          ctx.fillStyle = 'rgba(128, 128, 128, 0.12)';
-          ctx.fillRect(cx - 300, nameY - 38, 600, 65);
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-          ctx.lineWidth = 1.5;
-          ctx.strokeRect(cx - 300, nameY - 38, 600, 65);
+          const bannerGrad = ctx.createLinearGradient(cx - 300, 0, cx + 300, 0);
+          bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
+          bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
+          bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
+          ctx.fillStyle = bannerGrad;
+          ctx.fillRect(cx - 300, nameY - 40, 600, 68);
+
+          ctx.strokeStyle = '#D4AF37';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(cx - 300, nameY - 40, 600, 68);
+          ctx.strokeStyle = '#F59E0B';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(cx - 294, nameY - 34, 588, 56);
+
           ctx.fillStyle = primaryColor;
-          ctx.font = 'bold 42px serif';
-          ctx.fillText(travelerName || 'Voyager', cx, nameY + 8);
+          ctx.font = 'bold 44px serif';
+          ctx.fillText((travelerName || 'Voyager') + ' 殿', cx, nameY + 10);
 
           // Island Info
           const infoY = 410;
@@ -608,8 +672,8 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           if (heroImg) {
             ctx.save();
             const isPortraitPhoto = heroImg.height > heroImg.width;
-            const heroW = isPortraitPhoto ? 340 : 620;
-            const heroH = isPortraitPhoto ? 380 : 320;
+            const heroW = isPortraitPhoto ? 340 : 640;
+            const heroH = isPortraitPhoto ? 380 : 330;
             const heroX = cx - heroW / 2;
             const heroY = 560;
 
@@ -625,23 +689,38 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
 
             // Gold Frame
             ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 5;
+            ctx.lineWidth = 6;
             ctx.strokeRect(heroX, heroY, heroW, heroH);
             ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 1.5;
-            ctx.strokeRect(heroX - 5, heroY - 5, heroW + 10, heroH + 10);
+            ctx.lineWidth = 2;
+            ctx.strokeRect(heroX - 6, heroY - 6, heroW + 12, heroH + 12);
           }
 
-          // Seal Stamp (Bottom-Right)
+          // Seal Stamp (Bottom-Right Wax Seal)
           const sealX = width - 180;
           const sealY = height - 160;
           const sealRadius = 65;
+
+          ctx.beginPath();
+          ctx.arc(sealX + 3, sealY + 3, sealRadius, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+          ctx.fill();
+
           ctx.beginPath();
           ctx.arc(sealX, sealY, sealRadius, 0, Math.PI * 2);
+          ctx.fillStyle = '#991B1B';
+          ctx.fill();
           ctx.strokeStyle = '#E11D48';
           ctx.lineWidth = 5;
           ctx.stroke();
-          ctx.fillStyle = '#E11D48';
+
+          ctx.beginPath();
+          ctx.arc(sealX, sealY, sealRadius - 8, 0, Math.PI * 2);
+          ctx.strokeStyle = '#FCA5A5';
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.fillStyle = '#FFFFFF';
           ctx.font = 'bold 18px serif';
           ctx.fillText('KIRATABI', sealX, sealY - 12);
           ctx.font = 'bold 22px serif';
