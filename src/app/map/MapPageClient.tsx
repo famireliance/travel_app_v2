@@ -323,19 +323,31 @@ function GlobalMapContent() {
       </div>
 
       {/* Floating Legend & Filter Bar */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-xl border border-slate-700 px-4 sm:px-6 py-3 rounded-full shadow-2xl flex flex-nowrap items-center gap-3 sm:gap-6 pointer-events-auto w-max max-w-[95vw] overflow-x-auto hide-scrollbar">
-        <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-amber-400 whitespace-nowrap">
-          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-amber-500 inline-block border border-amber-300 shadow-sm" />
-          👑 行った島: <strong className="text-white text-xs sm:text-sm font-serif">{visitedCount}</strong>
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-[1000] bg-slate-900/90 backdrop-blur-xl border border-slate-700 px-4 sm:px-6 py-2.5 rounded-full shadow-2xl flex flex-nowrap items-center gap-2.5 sm:gap-5 pointer-events-auto w-max max-w-[95vw] overflow-x-auto hide-scrollbar text-[10px] sm:text-xs">
+        <div className="flex items-center gap-1.5 font-bold text-amber-400 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-sm" />
+          👑 到達: <strong className="text-white text-xs sm:text-sm font-serif">{visitedCount}</strong>
         </div>
         <div className="h-4 w-px bg-slate-700 shrink-0" />
-        <div className="flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-blue-400 whitespace-nowrap">
-          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-blue-500 inline-block border border-blue-300 shadow-sm" />
-          ⭐️ 行きたい島: <strong className="text-white text-xs sm:text-sm font-serif">{planningCount}</strong>
+        <div className="flex items-center gap-1.5 font-bold text-cyan-400 whitespace-nowrap">
+          <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-sm" />
+          ⭐️ 行きたい: <strong className="text-white text-xs sm:text-sm font-serif">{planningCount}</strong>
         </div>
-        <div className="h-4 w-px bg-slate-700 hidden sm:block shrink-0" />
-        <div className="hidden sm:flex items-center gap-1.5 sm:gap-2 text-[10px] sm:text-xs font-bold text-slate-300 whitespace-nowrap">
-          <span className="w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full bg-white inline-block border border-slate-500 shadow-sm" />
+        <div className="h-4 w-px bg-slate-700 shrink-0" />
+        <div className="flex items-center gap-1 font-bold text-slate-300 whitespace-nowrap">
+          <span className="text-[9px]">難易度:</span>
+          <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" title="★1" />
+          <span className="w-2 h-2 rounded-full bg-blue-500 inline-block" title="★2" />
+          <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" title="★3" />
+          <span className="w-2 h-2 rounded-full bg-purple-600 inline-block" title="★4" />
+          <span className="w-2 h-2 rounded-full bg-rose-600 inline-block" title="★5" />
+        </div>
+        <div className="h-4 w-px bg-slate-700 shrink-0" />
+        <div className="flex items-center gap-1 font-bold text-rose-400 whitespace-nowrap">
+          <span className="text-[10px]">⛔ 渡航不可</span>
+        </div>
+        <div className="h-4 w-px bg-slate-700 shrink-0" />
+        <div className="flex items-center gap-1 font-bold text-slate-300 whitespace-nowrap">
           📍 表示中 <strong className="text-white text-xs sm:text-sm font-serif">{filteredIslands.length}</strong> 島
         </div>
       </div>

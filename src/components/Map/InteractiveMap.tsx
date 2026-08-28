@@ -83,24 +83,68 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
         const status = islandStatuses[island.id] || 'none';
         const isVisited = status === 'visited' || status === 'verified_visited';
         const isPlanning = status === 'planning';
-        const isRestricted = getIslandDifficulty(island).level === 0;
+        const diffInfo = getIslandDifficulty(island);
+        const level = diffInfo.level;
+        const isRestricted = level === 0;
 
-        const markerColor = isRestricted 
-          ? 'bg-slate-900 text-amber-400 border-2 border-amber-400/90 shadow-slate-950/80 ring-2 ring-slate-900/50' 
-          : isVisited 
-          ? 'bg-amber-400 text-slate-950 border-2 border-white shadow-amber-500/50' 
-          : isPlanning 
-          ? 'bg-blue-500 text-white border-2 border-white shadow-blue-500/50' 
-          : 'bg-slate-600 text-white border-2 border-white shadow-slate-700/50';
+        let markerColor = '';
+        let pulseEffect = '';
+        let innerIcon = '';
+        let sizeClass = 'w-4.5 h-4.5 text-[9px]';
 
-        const pulseEffect = isVisited 
-          ? `<div class="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-30"></div>` 
-          : isRestricted 
-          ? `<div class="absolute -inset-1 rounded-full bg-amber-500/20 animate-pulse"></div>`
-          : '';
-
-        const innerIcon = isRestricted ? '🔒' : isVisited ? '👑' : isPlanning ? '⭐️' : '';
-        const sizeClass = isRestricted ? 'w-6 h-6 text-[11px]' : isVisited ? 'w-6 h-6 text-[10px]' : isPlanning ? 'w-5 h-5 text-[9px]' : 'w-4 h-4 text-[8px]';
+        if (isRestricted) {
+          // ⛔ 一般渡航制限島 (コンプリート対象外)
+          markerColor = 'bg-slate-950 text-rose-500 border-2 border-rose-500 shadow-slate-950/90 ring-1 ring-rose-500/50';
+          pulseEffect = `<div class="absolute -inset-1 rounded-full bg-rose-500/30 animate-pulse"></div>`;
+          innerIcon = '⛔';
+          sizeClass = 'w-6 h-6 text-[11px]';
+        } else if (isVisited) {
+          // 👑 到達達成
+          markerColor = 'bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 border-2 border-white shadow-amber-500/50';
+          pulseEffect = `<div class="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-30"></div>`;
+          innerIcon = '👑';
+          sizeClass = 'w-6 h-6 text-[10px]';
+        } else if (isPlanning) {
+          // ⭐️ 行きたい
+          markerColor = 'bg-cyan-500 text-white border-2 border-white shadow-cyan-500/50';
+          innerIcon = '⭐️';
+          sizeClass = 'w-5 h-5 text-[9px]';
+        } else {
+          // ★1〜★5 難易度ごとの鮮やかな色分け
+          switch (level) {
+            case 5:
+              // ★5 レジェンド (ルビーローズ)
+              markerColor = 'bg-rose-600 text-white border-2 border-rose-200 shadow-rose-600/50';
+              innerIcon = '★5';
+              sizeClass = 'w-5 h-5 text-[8px]';
+              break;
+            case 4:
+              // ★4 秘境島 (パープル)
+              markerColor = 'bg-purple-600 text-white border-2 border-purple-200 shadow-purple-600/50';
+              innerIcon = '★4';
+              sizeClass = 'w-5 h-5 text-[8px]';
+              break;
+            case 3:
+              // ★3 アドベンチャー (アンバー)
+              markerColor = 'bg-amber-500 text-slate-950 border-2 border-amber-200 shadow-amber-500/50';
+              innerIcon = '★3';
+              sizeClass = 'w-4.5 h-4.5 text-[8px]';
+              break;
+            case 2:
+              // ★2 スタンダード (サファイアブルー)
+              markerColor = 'bg-blue-500 text-white border-2 border-blue-200 shadow-blue-500/50';
+              innerIcon = '★2';
+              sizeClass = 'w-4.5 h-4.5 text-[8px]';
+              break;
+            case 1:
+            default:
+              // ★1 イージー (エメラルドグリーン)
+              markerColor = 'bg-emerald-500 text-white border-2 border-emerald-200 shadow-emerald-500/50';
+              innerIcon = '★1';
+              sizeClass = 'w-4 h-4 text-[7.5px]';
+              break;
+          }
+        }
 
         const customIcon = L.divIcon({
           className: 'custom-island-marker',
@@ -110,12 +154,12 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
                      ${innerIcon}
                    </div>
                  </div>`,
-          iconSize: isRestricted || isVisited ? [24, 24] : isPlanning ? [20, 20] : [16, 16],
-          iconAnchor: isRestricted || isVisited ? [12, 12] : isPlanning ? [10, 10] : [8, 8],
+          iconSize: isRestricted || isVisited ? [24, 24] : isPlanning || level >= 4 ? [20, 20] : [16, 16],
+          iconAnchor: isRestricted || isVisited ? [12, 12] : isPlanning || level >= 4 ? [10, 10] : [8, 8],
         });
 
         // Set z-index so that visited/planning/restricted islands stay on top
-        const zIndexOffset = isRestricted ? 800 : isVisited ? 1000 : isPlanning ? 500 : 0;
+        const zIndexOffset = isVisited ? 1000 : isRestricted ? 800 : isPlanning ? 500 : level * 50;
 
         return (
           <Marker
@@ -132,15 +176,18 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
             }}
           >
             <Tooltip direction="top" offset={[0, -10]} opacity={1} permanent={false}>
-              <div className="font-sans">
+              <div className="font-sans text-xs">
                 {isRestricted ? (
-                  <span className="text-amber-500 font-bold flex items-center gap-1">🔒 【渡航制限島・対象外】{island.name}</span>
+                  <span className="text-rose-600 font-bold flex items-center gap-1">⛔ 【一般渡航不可・対象外】{island.name}</span>
                 ) : isVisited ? (
                   <span className="text-amber-600 font-bold flex items-center gap-1">👑 【到達済】{island.name}</span>
                 ) : isPlanning ? (
                   <span className="text-blue-600 font-bold flex items-center gap-1">⭐️ 【行きたい】{island.name}</span>
                 ) : (
-                  <span className="text-slate-800 font-bold">{island.name}</span>
+                  <span className="text-slate-800 font-bold flex items-center gap-1">
+                    <span className={`px-1.5 py-0.5 rounded text-[10px] text-white ${diffInfo.badgeColor}`}>★{level}</span>
+                    {island.name}
+                  </span>
                 )}
               </div>
             </Tooltip>
