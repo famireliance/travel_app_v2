@@ -54,7 +54,7 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
   }, [query, selectedDifficulty, allIslands]);
 
   const difficulties = [
-    { level: 1, label: '🌱 ★1 架け橋の島', color: 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200' },
+    { level: 1, label: '🌱 ★1 風の回廊島', color: 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200' },
     { level: 2, label: '⛵ ★2 沿岸の旅島', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200' },
     { level: 3, label: '🧭 ★3 本格冒険島', color: 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-200' },
     { level: 4, label: '🌋 ★4 秘境フロンティア', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200' },

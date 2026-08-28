@@ -170,13 +170,13 @@ export function getDifficultyInfoByLevel(level: number): DifficultyInfo {
       return {
         level: 1,
         stars: '★☆☆☆☆',
-        label: '🌱 はじまりの架け橋島',
-        shortLabel: '🌱 架け橋の島',
+        label: '🌱 青の懸け橋・風の回廊島',
+        shortLabel: '🌱 風の回廊島',
         color: 'text-emerald-400',
         bgColor: 'bg-emerald-500/15',
         borderColor: 'border-emerald-500/50',
         badgeColor: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-emerald-500/30',
-        description: '本土・主島から海を渡る大橋で陸続きの島。天候運休を気にせずいつでも冒険の第一歩を踏み出せる入門島。'
+        description: '本土・主島から海を渡る大橋で一直線。爽快な潮風を吹き抜ける風の回廊を渡る陸続きの島。'
       };
   }
 }
