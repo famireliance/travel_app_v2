@@ -67,7 +67,7 @@ function GlobalMapContent() {
   const planningCount = Object.values(islandStatuses).filter(s => s === 'planning').length;
   
   const filteredIslands = allIslands.filter(isl => {
-    if (difficultyFilter && getIslandDifficulty(isl).level !== difficultyFilter) return false;
+    if (difficultyFilter !== null && getIslandDifficulty(isl).level !== difficultyFilter) return false;
     if (regionParam && isl.region_id !== regionParam) return false;
     if (filterParam) {
       const lowerFilter = filterParam.toLowerCase();
@@ -191,24 +191,24 @@ function GlobalMapContent() {
           ]} 
           className="mb-0"
         />
-        <details className="group bg-white/90 backdrop-blur-md rounded-xl shadow-lg border border-white/50 w-64 overflow-hidden mt-1 transition-all">
-          <summary className="text-xs font-bold text-slate-700 px-4 py-2.5 cursor-pointer select-none outline-none list-none flex justify-between items-center hover:bg-slate-50 transition-colors">
-            主な対応諸島 <span className="text-[10px] transition-transform duration-200 group-open:rotate-180">▼</span>
-          </summary>
-          <div className="p-4 pt-1 text-[10px] text-slate-600 bg-white/50 border-t border-slate-100/50">
-            <ul className="space-y-2 list-disc list-inside marker:text-blue-400">
-              <li>八重山諸島（石垣島、西表島など）</li>
-              <li>宮古諸島（宮古島、伊良部島など）</li>
-              <li>奄美群島（奄美大島、与論島など）</li>
-              <li>小笠原諸島（父島、母島など）</li>
-              <li>伊豆諸島（大島、八丈島など）</li>
-              <li>五島列島（福江島など）</li>
-              <li>瀬戸内海の島々（小豆島、直島など）</li>
-            </ul>
+
+        {difficultyFilter !== null && (
+          <div className="bg-slate-900/90 backdrop-blur-md text-amber-300 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max border border-amber-500/30">
+            <span>
+              {difficultyFilter === 0 ? '⛔ 上陸制限島（EX）を抽出中' : `★${difficultyFilter} 難易度フィルター中`} ({filteredIslands.length}島)
+            </span>
+            <button 
+              onClick={() => setDifficultyFilter(null)}
+              className="ml-2 bg-white/20 hover:bg-white/30 text-white rounded-full w-5 h-5 flex items-center justify-center transition-colors text-xs"
+              title="フィルター解除"
+            >
+              ×
+            </button>
           </div>
-        </details>
+        )}
+
         {filterParam && (
-          <div className="bg-blue-600/90 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-lg flex items-center gap-2 shadow-lg w-max">
+          <div className="bg-blue-600/90 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max">
             <span>🔍 「{filterParam}」でフィルター中</span>
             <button 
               onClick={() => {
