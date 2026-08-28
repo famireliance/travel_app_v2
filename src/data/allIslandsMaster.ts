@@ -406,23 +406,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "未設定",
     "checkin_radius_m": 3000
   },
-  "24": {
-    "id": "24",
-    "name": "三ツ石（岩手県）",
-    "region_id": "pseudo_sanriku",
-    "prefecture": "岩手県",
-    "coordinates": "39.7167, 141.1333",
-    "description": "「岩手」の県名発祥の地とされる鬼の手形伝説が残る奇岩島・岩礁。",
-    "access": "定期フェリー・連絡船・橋または航空便アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
   "25": {
     "id": "25",
     "name": "気仙沼大島",
