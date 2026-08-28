@@ -549,7 +549,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                   {/* Affiliate Action Buttons */}
                   <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <a
-                      href={getRakutenTravelSearchUrl(island.name)}
+                      href={getRakutenTravelSearchUrl(island.name, island.prefecture)}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
                       className="px-4 py-2 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
@@ -558,7 +558,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                       楽天トラベルで宿を探す
                     </a>
                     <a
-                      href={getJalanSearchUrl(island.name)}
+                      href={getJalanSearchUrl(island.name, island.prefecture)}
                       target="_blank"
                       rel="noopener noreferrer sponsored"
                       className="px-4 py-2 bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
@@ -643,7 +643,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
 
                   {/* Rent-a-car Affiliate Button */}
                   <a
-                    href={getRakutenRentacarSearchUrl(island.name)}
+                    href={getRakutenRentacarSearchUrl(island.name, island.prefecture)}
                     target="_blank"
                     rel="noopener noreferrer sponsored"
                     className="px-4 py-2 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102 shrink-0 self-start md:self-auto"

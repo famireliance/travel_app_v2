@@ -31,26 +31,28 @@ import { encodeShiftJisUrl } from '@/lib/shiftJisUrl';
 
 export const RAKUTEN_AFFILIATE_ID = '56ebd0d5.3e11f68e.56ebd0d6.3ff60376';
 
-// 楽天トラベル・公式宿検索URL (Shift-JIS URLエンコードで文字化け100%防止 ＋ Rakuten Travel公式ドメイン直行 ＋ アフィリエイトID 56ebd0d5.3e11f68e.56ebd0d6.3ff60376)
-export function getRakutenTravelSearchUrl(islandName: string): string {
+// 楽天トラベル・公式宿検索URL (都道府県＋島名で地域絞り込み ＋ Shift-JIS URLエンコード ＋ アフィリエイトID 56ebd0d5.3e11f68e.56ebd0d6.3ff60376)
+export function getRakutenTravelSearchUrl(islandName: string, prefecture?: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const sjisKeyword = encodeShiftJisUrl(cleanName);
+  const fullQuery = prefecture ? `${prefecture} ${cleanName}` : cleanName;
+  const sjisKeyword = encodeShiftJisUrl(fullQuery);
   const targetUrl = `https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=${sjisKeyword}`;
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
 }
 
-// 楽天レンタカー検索URL
-export function getRakutenRentacarSearchUrl(islandName: string): string {
+// 楽天レンタカー検索URL (都道府県＋島名で地域絞り込み)
+export function getRakutenRentacarSearchUrl(islandName: string, prefecture?: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const sjisKeyword = encodeShiftJisUrl(cleanName + ' レンタカー');
-  const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(cleanName + ' レンタカー')}/`;
+  const fullQuery = prefecture ? `${prefecture} ${cleanName} レンタカー` : `${cleanName} レンタカー`;
+  const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(fullQuery)}/`;
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
 }
 
-// じゃらん・公式宿検索URL (Jalan.net 宿検索専用 ＋ Shift-JIS URLエンコードで文字化け100%防止)
-export function getJalanSearchUrl(islandName: string): string {
+// じゃらん・公式宿検索URL (都道府県＋島名で地域絞り込み ＋ Shift-JIS URLエンコード)
+export function getJalanSearchUrl(islandName: string, prefecture?: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const sjisKeyword = encodeShiftJisUrl(cleanName);
+  const fullQuery = prefecture ? `${prefecture} ${cleanName}` : cleanName;
+  const sjisKeyword = encodeShiftJisUrl(fullQuery);
   return `https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword=${sjisKeyword}`;
 }
 
