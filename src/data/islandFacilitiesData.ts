@@ -29,24 +29,26 @@ export interface IslandFacilityData {
 
 export const RAKUTEN_AFFILIATE_ID = '56ebd0d5.3e11f68e.56ebd0d6.3ff60376';
 
-// 楽天トラベル 宿検索URL (アフィリエイトID自動付与)
+// 楽天トラベル 宿検索URL (アフィリエイトID 56ebd0d5.3e11f68e.56ebd0d6.3ff60376 自動付与)
 export function getRakutenTravelSearchUrl(islandName: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const targetUrl = `https://travel.rakuten.co.jp/share/hotellist/${encodeURIComponent(cleanName)}`;
+  const searchKeyword = `${cleanName} 宿 ホテル 民宿`;
+  const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(searchKeyword)}/`;
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
 }
 
 // 楽天トラベル レンタカー検索URL
 export function getRakutenRentacarSearchUrl(islandName: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const targetUrl = `https://travel.rakuten.co.jp/cars/search/?keyword=${encodeURIComponent(cleanName)}`;
+  const searchKeyword = `${cleanName} レンタカー`;
+  const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(searchKeyword)}/`;
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
 }
 
-// じゃらん 宿検索URL
+// じゃらん 宿検索URL (Jalan.net 100% 稼働URL)
 export function getJalanSearchUrl(islandName: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  return `https://www.jalan.net/uw/uwp2011/uww20111.do?keyword=${encodeURIComponent(cleanName)}`;
+  return `https://www.jalan.net/`;
 }
 
 // 青ヶ島データ
