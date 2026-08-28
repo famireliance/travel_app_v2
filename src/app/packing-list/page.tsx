@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
 import { 
-  AFFILIATE_PRODUCTS, PACKING_CATEGORIES, DEFAULT_AMAZON_TAG, 
+  AFFILIATE_PRODUCTS, PACKING_CATEGORIES, DEFAULT_AMAZON_TAG, DEFAULT_RAKUTEN_ID,
   createAmazonSearchUrl, createRakutenSearchUrl, PackingCategoryType 
 } from '@/data/affiliateProducts';
 import { 
@@ -178,9 +178,19 @@ export default function PackingListPage() {
             <AlertCircle size={14} className="text-slate-400 shrink-0" />
             <span>※当ページはアフィリエイト広告（Amazonアソシエイト・楽天アフィリエイト等）を利用しておすすめ商品をご紹介しています。</span>
           </div>
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-mono font-bold text-[0.65rem] border border-emerald-300 self-start sm:self-auto shrink-0">
-            <Check size={12} className="text-emerald-600" />
-            <span>Amazon ID: {DEFAULT_AMAZON_TAG} 紐付け済み</span>
+          <div className="flex flex-wrap items-center gap-1.5 self-start sm:self-auto shrink-0">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800 font-mono font-bold text-[0.65rem] border border-emerald-300">
+              <Check size={12} className="text-emerald-600" />
+              <span>Amazon ID: {DEFAULT_AMAZON_TAG} 紐付け済み</span>
+            </div>
+            <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg font-mono font-bold text-[0.65rem] border ${
+              DEFAULT_RAKUTEN_ID 
+                ? 'bg-rose-100 text-rose-800 border-rose-300' 
+                : 'bg-slate-200 text-slate-600 border-slate-300'
+            }`}>
+              <Check size={12} className={DEFAULT_RAKUTEN_ID ? 'text-rose-600' : 'text-slate-400'} />
+              <span>楽天 ID: {DEFAULT_RAKUTEN_ID ? DEFAULT_RAKUTEN_ID : '設定ファイルで設定可能'}</span>
+            </div>
           </div>
         </div>
 

@@ -14,14 +14,19 @@ export interface AffiliateProduct {
   recommendReason: string;
 }
 
-export const DEFAULT_AMAZON_TAG = 'kiratabi-22';
+export const DEFAULT_AMAZON_TAG: string = 'kiratabi-22';
+export const DEFAULT_RAKUTEN_ID: string = ''; // 楽天アフィリエイトID（例: '12345678.abcdefgh.12345678.abcdefgh'）
 
 export function createAmazonSearchUrl(query: string): string {
   return `https://www.amazon.co.jp/s?k=${encodeURIComponent(query)}&tag=${DEFAULT_AMAZON_TAG}`;
 }
 
 export function createRakutenSearchUrl(query: string): string {
-  return `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(query)}/`;
+  const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(query)}/`;
+  if (DEFAULT_RAKUTEN_ID && DEFAULT_RAKUTEN_ID.trim() !== '') {
+    return `https://hb.afl.rakuten.co.jp/hgc/${DEFAULT_RAKUTEN_ID.trim()}/?pc=${encodeURIComponent(targetUrl)}`;
+  }
+  return targetUrl;
 }
 
 export const PACKING_CATEGORIES = [
