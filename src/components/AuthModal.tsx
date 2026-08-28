@@ -150,7 +150,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
               {activeTab === 'login' ? 'おかえりなさい' : activeTab === 'signup' ? 'アカウントを作成' : 'マジックリンク'}
             </h2>
             <p className="text-sm text-slate-500 tracking-widest mb-6 text-center">
-              {activeTab === 'login' ? 'ログインして踏破記録を保存しましょう' : activeTab === 'signup' ? '登録してあなただけの旅行記録を始めましょう' : 'メールのリンクから安全にログイン'}
+              {activeTab === 'login' ? 'KIRATABI共通アカウントでログインして離島記録と精霊図鑑を保存' : activeTab === 'signup' ? 'KIRATABI共通アカウントを作成して離島の旅を始めましょう' : 'メールのリンクから安全にログイン'}
             </p>
 
             {/* Tabs */}
