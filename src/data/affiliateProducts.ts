@@ -15,7 +15,7 @@ export interface AffiliateProduct {
 }
 
 export const DEFAULT_AMAZON_TAG: string = 'kiratabi-22';
-export const DEFAULT_RAKUTEN_ID: string = ''; // 楽天アフィリエイトID（例: '12345678.abcdefgh.12345678.abcdefgh'）
+export const DEFAULT_RAKUTEN_ID: string = '56ebd0d5.3e11f68e.56ebd0d6.3ff60376';
 
 export function createAmazonSearchUrl(query: string): string {
   return `https://www.amazon.co.jp/s?k=${encodeURIComponent(query)}&tag=${DEFAULT_AMAZON_TAG}`;
