@@ -7,6 +7,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard } from 'lucide-react';
 import { PlanChangeModal } from '@/components/PlanChangeModal';
 import OrderHistory from '@/components/OrderHistory';
+import ArchipelagoProgressModal from '@/components/ArchipelagoProgressModal';
 import { supabase, fetchAllIslands } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateDifficultyStats, getIslandDifficulty } from '@/lib/difficulty';
@@ -21,6 +22,7 @@ export default function MyPage() {
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [showPlanModal, setShowPlanModal] = useState(false);
+  const [showArchipelagoModal, setShowArchipelagoModal] = useState(false);
 
   useEffect(() => {
     if (user === null) {
@@ -457,10 +459,24 @@ export default function MyPage() {
           </div>
         </div>
 
-        {/* 3D Globe & Companion Banners */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Archipelago Progress Banner & 3D Globe & Companion Banners */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <motion.div
             initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-900/5 rounded-3xl p-6 border border-amber-500/30 shadow-sm flex flex-col justify-between relative overflow-hidden"
+          >
+            <div>
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-600 text-[0.6rem] font-bold tracking-widest uppercase inline-block mb-3">ARCHIPELAGO BADGES</span>
+              <h3 className="text-lg font-serif font-bold text-slate-800 mb-1 flex items-center gap-1.5"><Award className="w-5 h-5 text-amber-500"/> 諸島別GOLDバッジ図鑑</h3>
+              <p className="text-xs text-slate-600 mb-4 leading-relaxed">八重山・慶良間・伊豆諸島などエリア別達成度とゴールドバッジをチェック！</p>
+            </div>
+            <button onClick={() => setShowArchipelagoModal(true)} className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-sm tracking-widest shadow-md flex items-center justify-center gap-2 transition-colors">
+              <Award className="w-4 h-4" /> 諸島別進捗・バッジを見る
+            </button>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
             className="bg-gradient-to-br from-indigo-50 to-blue-50 rounded-3xl p-6 border border-indigo-100 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div>
@@ -474,12 +490,12 @@ export default function MyPage() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+            initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
             className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-3xl p-6 border border-amber-100 shadow-sm flex flex-col justify-between relative overflow-hidden"
           >
             <div>
               <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-[0.6rem] font-bold tracking-widest uppercase inline-block mb-3">COMPANION</span>
-              <h3 className="text-lg font-serif font-bold text-slate-800 mb-1">旅の相棒精霊: {companionStage.name}</h3>
+              <h3 className="text-lg font-serif font-bold text-slate-800 mb-1">相棒精霊: {companionStage.name}</h3>
               <p className="text-xs text-slate-600 mb-4 leading-relaxed line-clamp-2">{companionChar?.description || companionStage.skillDesc}</p>
             </div>
             <button onClick={() => router.push('/companion')} className="w-full py-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm tracking-widest shadow-md flex items-center justify-center gap-2 transition-colors">
@@ -951,6 +967,10 @@ export default function MyPage() {
           // リロードしてContextを更新
           setTimeout(() => window.location.reload(), 1500);
         }}
+      />
+      <ArchipelagoProgressModal
+        isOpen={showArchipelagoModal}
+        onClose={() => setShowArchipelagoModal(false)}
       />
     </main>
   );

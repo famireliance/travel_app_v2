@@ -797,24 +797,25 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
     }
   };
 
-  // Handle Web Share API (Native Share Menu)
+  // Handle Web Share API & Twitter/X Direct Share
   const handleNativeShare = async () => {
-    const text = `日本の離島「${island?.name}」に到達しました🏝️✨\n#KIRATABI #島専科 #${island?.name} #離島旅`;
-    const url = `https://island.kira-tabi.com/island/${island?.id}`;
+    const text = `【キラ旅 到達証明】\n日本の離島「${island?.name}」への到達を正式証明！到達証明書を獲得しました 🏝️✨\n\n#キラ旅 #${island?.name || '離島'}到達証明書 #離島旅 #キラ旅島専科`;
+    const shareUrl = window.location.origin ? `${window.location.origin}/island/${island?.id}` : `https://app.kira-tabi.com/island/${island?.id}`;
     
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'KIRATABI 到達証明',
+          title: `【キラ旅】${island?.name} 到達証明書`,
           text: text,
-          url: url
+          url: shareUrl
         });
       } catch (err) {
-        console.error('Share failed:', err);
+        // Fallback to X if user cancels or share API fails
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+        window.open(twitterUrl, '_blank');
       }
     } else {
-      // Fallback to X share if Web Share API is not supported
-      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
       window.open(twitterUrl, '_blank');
     }
   };
