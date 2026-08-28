@@ -475,107 +475,185 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
         const isVert = orientation === 'vertical';
         const cx = width / 2;
 
-        ctx.textAlign = 'center';
-        
-        // Scale factor for font & element sizes
-        const scaleFactor = height / (isVert ? 1920 : 1000);
+        // 🎨 縦型 (スマホ壁紙 9:16) vs 横型 (A4印刷 1.414:1) 専属レイアウトエンジン
+        if (isVert) {
+          // 📱 【縦型テンプレート】 Smartphone Wallpaper 9:16 (1080 x 1920 px)
+          ctx.textAlign = 'center';
 
-        // Headers
-        ctx.fillStyle = secondaryColor;
-        ctx.font = `bold ${Math.round((isVert ? 28 : 22) * scaleFactor)}px serif`;
-        ctx.fillText(hasHologram ? 'VERIFIED PHOTO DIARY RECORD' : 'VERIFIED RECORD OF ARRIVAL', cx, Math.round(height * (isVert ? 0.09 : 0.12)));
-        
-        ctx.fillStyle = accentColor;
-        ctx.font = `bold ${Math.round((isVert ? 64 : 52) * scaleFactor)}px serif`;
-        ctx.fillText(certificateType === 'card' ? '到 達 証' : '島 旅 到 達 公 認 証', cx, Math.round(height * (isVert ? 0.14 : 0.20)));
-
-        // Name
-        const nameY = Math.round(height * (isVert ? 0.23 : 0.38));
-        ctx.fillStyle = 'rgba(128, 128, 128, 0.12)';
-        ctx.fillRect(cx - Math.round(width * 0.35), nameY - Math.round(45 * scaleFactor), Math.round(width * 0.70), Math.round(70 * scaleFactor));
-        ctx.fillStyle = primaryColor;
-        ctx.font = `bold ${Math.round((isVert ? 52 : 44) * scaleFactor)}px serif`;
-        ctx.fillText(travelerName || 'Voyager', cx, nameY);
-
-        // Island Info
-        const infoY = Math.round(height * (isVert ? 0.32 : 0.48));
-        const diff = getIslandDifficulty(island);
-        ctx.fillStyle = accentColor;
-        ctx.font = `bold ${Math.round((isVert ? 34 : 26) * scaleFactor)}px sans-serif`;
-        ctx.fillText(`【 到達島 】 ${island.name} (${island.region_id || 'Japan'})`, cx, infoY);
-        
-        ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : '#F59E0B';
-        ctx.font = `bold ${Math.round((isVert ? 28 : 20) * scaleFactor)}px sans-serif`;
-        ctx.fillText(`【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})`, cx, infoY + Math.round(45 * scaleFactor));
-
-        ctx.fillStyle = secondaryColor;
-        ctx.font = `${Math.round((isVert ? 26 : 20) * scaleFactor)}px monospace`;
-        ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + Math.round(90 * scaleFactor));
-
-        // Hero Image (Smart 縦写真 & 横写真 自動適応対応)
-        if (heroImg) {
-          ctx.save();
-          const isPortraitPhoto = heroImg.height > heroImg.width;
+          // Headers
+          ctx.fillStyle = secondaryColor;
+          ctx.font = 'bold 28px serif';
+          ctx.fillText(hasHologram ? 'VERIFIED PHOTO DIARY RECORD' : 'VERIFIED RECORD OF ARRIVAL', cx, 160);
           
-          let heroW: number;
-          let heroH: number;
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 64px serif';
+          ctx.fillText(certificateType === 'card' ? '到 達 証' : '島 旅 到 達 公 認 証', cx, 250);
 
-          if (isVert) {
-            // 縦型スマホレイアウト（9:16）
-            heroW = isPortraitPhoto ? Math.round(width * 0.68) : Math.round(width * 0.82);
-            heroH = isPortraitPhoto ? Math.round(height * 0.42) : Math.round(height * 0.28);
-          } else {
-            // 横型A4印刷レイアウト（1.414:1）
-            heroW = isPortraitPhoto ? Math.round(width * 0.26) : Math.round(width * 0.42);
-            heroH = isPortraitPhoto ? Math.round(height * 0.34) : Math.round(height * 0.32);
+          // Name Ribbon Plate
+          const nameY = 410;
+          ctx.fillStyle = 'rgba(128, 128, 128, 0.12)';
+          ctx.fillRect(cx - 360, nameY - 45, 720, 75);
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(cx - 360, nameY - 45, 720, 75);
+          ctx.fillStyle = primaryColor;
+          ctx.font = 'bold 50px serif';
+          ctx.fillText(travelerName || 'Voyager', cx, nameY + 10);
+
+          // Island Info
+          const infoY = 570;
+          const diff = getIslandDifficulty(island);
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 36px sans-serif';
+          ctx.fillText(`【 到達島 】 ${island.name} (${island.region_id || 'Japan'})`, cx, infoY);
+          
+          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : '#F59E0B';
+          ctx.font = 'bold 28px sans-serif';
+          ctx.fillText(`【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})`, cx, infoY + 55);
+
+          ctx.fillStyle = secondaryColor;
+          ctx.font = '26px monospace';
+          ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 110);
+
+          // Hero Image (Smart 縦写真 & 横写真 自動対応)
+          if (heroImg) {
+            ctx.save();
+            const isPortraitPhoto = heroImg.height > heroImg.width;
+            const heroW = isPortraitPhoto ? 680 : 860;
+            const heroH = isPortraitPhoto ? 840 : 540;
+            const heroX = cx - heroW / 2;
+            const heroY = isPortraitPhoto ? 780 : 860;
+
+            ctx.beginPath();
+            ctx.rect(heroX, heroY, heroW, heroH);
+            ctx.clip();
+
+            const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
+            const dw = heroImg.width * scale;
+            const dh = heroImg.height * scale;
+            ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
+            ctx.restore();
+
+            // Gold Frame
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = 6;
+            ctx.strokeRect(heroX, heroY, heroW, heroH);
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(heroX - 6, heroY - 6, heroW + 12, heroH + 12);
           }
 
-          const heroX = cx - heroW / 2;
-          const heroY = isVert ? Math.round(height * (isPortraitPhoto ? 0.44 : 0.48)) : Math.round(height * (isPortraitPhoto ? 0.58 : 0.58));
-
+          // Seal Stamp (Bottom-Right)
+          const sealX = width - 180;
+          const sealY = height - 200;
+          const sealRadius = 75;
           ctx.beginPath();
-          ctx.rect(heroX, heroY, heroW, heroH);
-          ctx.clip();
+          ctx.arc(sealX, sealY, sealRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = '#E11D48';
+          ctx.lineWidth = 5;
+          ctx.stroke();
+          ctx.fillStyle = '#E11D48';
+          ctx.font = 'bold 22px serif';
+          ctx.fillText('KIRATABI', sealX, sealY - 14);
+          ctx.font = 'bold 26px serif';
+          ctx.fillText('公認証明', sealX, sealY + 18);
 
-          const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
-          const dw = heroImg.width * scale;
-          const dh = heroImg.height * scale;
-          ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
-          ctx.restore();
+          // Serial Number (Bottom-Left)
+          const displaySerial = assignedSerial || `No.0001`;
+          ctx.textAlign = 'left';
+          ctx.fillStyle = secondaryColor;
+          ctx.font = '22px monospace';
+          ctx.fillText(`SERIAL: ${displaySerial}`, 90, height - 90);
 
-          // Double Gold Frame Border & Outer Accent Line
-          ctx.strokeStyle = accentColor;
-          ctx.lineWidth = Math.round(4 * scaleFactor);
-          ctx.strokeRect(heroX, heroY, heroW, heroH);
+        } else {
+          // 📄 【横型テンプレート】 ISO A4 Print Paper 1.414:1 (1414 x 1000 px)
+          ctx.textAlign = 'center';
 
-          ctx.strokeStyle = '#F59E0B';
-          ctx.lineWidth = Math.round(1.5 * scaleFactor);
-          ctx.strokeRect(heroX - 4, heroY - 4, heroW + 8, heroH + 8);
+          // Headers
+          ctx.fillStyle = secondaryColor;
+          ctx.font = 'bold 22px serif';
+          ctx.fillText(hasHologram ? 'VERIFIED PHOTO DIARY RECORD' : 'VERIFIED RECORD OF ARRIVAL', cx, 110);
+          
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 52px serif';
+          ctx.fillText(certificateType === 'card' ? '到 達 証' : '島 旅 到 達 公 認 証', cx, 180);
+
+          // Name Ribbon Plate
+          const nameY = 300;
+          ctx.fillStyle = 'rgba(128, 128, 128, 0.12)';
+          ctx.fillRect(cx - 300, nameY - 38, 600, 65);
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(cx - 300, nameY - 38, 600, 65);
+          ctx.fillStyle = primaryColor;
+          ctx.font = 'bold 42px serif';
+          ctx.fillText(travelerName || 'Voyager', cx, nameY + 8);
+
+          // Island Info
+          const infoY = 410;
+          const diff = getIslandDifficulty(island);
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 28px sans-serif';
+          ctx.fillText(`【 到達島 】 ${island.name} (${island.region_id || 'Japan'})`, cx, infoY);
+          
+          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : '#F59E0B';
+          ctx.font = 'bold 22px sans-serif';
+          ctx.fillText(`【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})`, cx, infoY + 45);
+
+          ctx.fillStyle = secondaryColor;
+          ctx.font = '20px monospace';
+          ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 88);
+
+          // Hero Image (Smart 縦写真 & 横写真 自動対応)
+          if (heroImg) {
+            ctx.save();
+            const isPortraitPhoto = heroImg.height > heroImg.width;
+            const heroW = isPortraitPhoto ? 340 : 620;
+            const heroH = isPortraitPhoto ? 380 : 320;
+            const heroX = cx - heroW / 2;
+            const heroY = 560;
+
+            ctx.beginPath();
+            ctx.rect(heroX, heroY, heroW, heroH);
+            ctx.clip();
+
+            const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
+            const dw = heroImg.width * scale;
+            const dh = heroImg.height * scale;
+            ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
+            ctx.restore();
+
+            // Gold Frame
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = 5;
+            ctx.strokeRect(heroX, heroY, heroW, heroH);
+            ctx.strokeStyle = '#F59E0B';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(heroX - 5, heroY - 5, heroW + 10, heroH + 10);
+          }
+
+          // Seal Stamp (Bottom-Right)
+          const sealX = width - 180;
+          const sealY = height - 160;
+          const sealRadius = 65;
+          ctx.beginPath();
+          ctx.arc(sealX, sealY, sealRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = '#E11D48';
+          ctx.lineWidth = 5;
+          ctx.stroke();
+          ctx.fillStyle = '#E11D48';
+          ctx.font = 'bold 18px serif';
+          ctx.fillText('KIRATABI', sealX, sealY - 12);
+          ctx.font = 'bold 22px serif';
+          ctx.fillText('公認証明', sealX, sealY + 14);
+
+          // Serial Number (Bottom-Left)
+          const displaySerial = assignedSerial || `No.0001`;
+          ctx.textAlign = 'left';
+          ctx.fillStyle = secondaryColor;
+          ctx.font = '18px monospace';
+          ctx.fillText(`SERIAL: ${displaySerial}`, 80, height - 60);
         }
-
-        // Seal
-        const sealX = width - Math.round(width * (isVert ? 0.15 : 0.12));
-        const sealY = height - Math.round(height * (isVert ? 0.10 : 0.14));
-        const sealRadius = Math.round((isVert ? 75 : 65) * scaleFactor);
-        
-        ctx.beginPath();
-        ctx.arc(sealX, sealY, sealRadius, 0, Math.PI * 2);
-        ctx.strokeStyle = '#E11D48';
-        ctx.lineWidth = Math.round((isVert ? 4 : 5) * scaleFactor);
-        ctx.stroke();
-
-        ctx.fillStyle = '#E11D48';
-        ctx.font = `bold ${Math.round((isVert ? 20 : 18) * scaleFactor)}px serif`;
-        ctx.fillText('KIRATABI', sealX, sealY - Math.round(15 * scaleFactor));
-        ctx.font = `bold ${Math.round((isVert ? 24 : 22) * scaleFactor)}px serif`;
-        ctx.fillText('公認証明', sealX, sealY + Math.round(15 * scaleFactor));
-
-        // Serial Number
-        const displaySerial = assignedSerial || `No.0001`;
-        ctx.textAlign = 'left';
-        ctx.fillStyle = secondaryColor;
-        ctx.font = `${Math.round((isVert ? 20 : 16) * scaleFactor)}px monospace`;
-        ctx.fillText(`SERIAL: ${displaySerial}`, Math.round(width * 0.08), height - Math.round(height * 0.05));
       };
 
       if (customImage) {
