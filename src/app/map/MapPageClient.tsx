@@ -19,11 +19,20 @@ const ARCHIPELAGOS = [
   { name: '八重山', bounds: [[24.0, 123.5], [24.6, 124.5]] as [[number, number], [number, number]] },
   { name: '宮古', bounds: [[24.6, 125.0], [25.0, 125.5]] as [[number, number], [number, number]] },
   { name: '沖縄本島', bounds: [[25.8, 127.0], [27.0, 128.5]] as [[number, number], [number, number]] },
-  { name: '奄美', bounds: [[27.0, 128.0], [28.5, 130.2]] as [[number, number], [number, number]] },
-  { name: '小笠原', bounds: [[26.5, 142.0], [27.2, 142.3]] as [[number, number], [number, number]] },
-  { name: '伊豆', bounds: [[33.0, 139.0], [34.8, 140.0]] as [[number, number], [number, number]] },
-  { name: '五島', bounds: [[32.5, 128.5], [33.5, 129.5]] as [[number, number], [number, number]] },
+  { name: '奄美群島', bounds: [[27.0, 128.0], [28.5, 130.2]] as [[number, number], [number, number]] },
+  { name: 'トカラ列島', bounds: [[29.0, 129.0], [30.1, 130.2]] as [[number, number], [number, number]] },
+  { name: '大隅諸島', bounds: [[30.0, 130.0], [30.9, 131.2]] as [[number, number], [number, number]] },
+  { name: '五島列島', bounds: [[32.5, 128.5], [33.5, 129.5]] as [[number, number], [number, number]] },
+  { name: '対馬・壱岐', bounds: [[33.7, 129.5], [34.7, 129.6]] as [[number, number], [number, number]] },
+  { name: '天草諸島', bounds: [[32.1, 129.9], [32.6, 130.6]] as [[number, number], [number, number]] },
   { name: '瀬戸内', bounds: [[33.8, 131.0], [34.8, 135.0]] as [[number, number], [number, number]] },
+  { name: '隠岐諸島', bounds: [[35.9, 132.9], [36.4, 133.4]] as [[number, number], [number, number]] },
+  { name: '佐渡・粟島', bounds: [[37.7, 138.1], [38.6, 139.3]] as [[number, number], [number, number]] },
+  { name: '伊豆諸島', bounds: [[32.4, 139.0], [34.8, 140.0]] as [[number, number], [number, number]] },
+  { name: '小笠原諸島', bounds: [[26.5, 142.0], [27.2, 142.3]] as [[number, number], [number, number]] },
+  { name: '大東諸島', bounds: [[25.7, 131.1], [26.0, 131.4]] as [[number, number], [number, number]] },
+  { name: '三陸・東北', bounds: [[38.0, 140.5], [39.5, 142.2]] as [[number, number], [number, number]] },
+  { name: '北海道離島', bounds: [[42.0, 139.0], [45.6, 141.5]] as [[number, number], [number, number]] },
 ];
 function GlobalMapContent() {
   const router = useRouter();
@@ -193,40 +202,42 @@ function GlobalMapContent() {
         />
 
         {difficultyFilter !== null && (
-          <div className="bg-slate-900/90 backdrop-blur-md text-amber-300 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max border border-amber-500/30">
+          <button 
+            onClick={() => setDifficultyFilter(null)}
+            className="bg-slate-900/90 hover:bg-slate-950 backdrop-blur-md text-amber-300 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max border border-amber-500/30 transition-all cursor-pointer group"
+            title="クリックで全表示に戻す"
+          >
             <span>
-              {difficultyFilter === 0 ? '⛔ 上陸制限島（EX）を抽出中' : `★${difficultyFilter} 難易度フィルター中`} ({filteredIslands.length}島)
+              {difficultyFilter === 0 ? '🔒 渡航制限島（対象外）を抽出中' : `★${difficultyFilter} 難易度フィルター中`} ({filteredIslands.length}島)
             </span>
-            <button 
-              onClick={() => setDifficultyFilter(null)}
-              className="ml-2 bg-white/20 hover:bg-white/30 text-white rounded-full w-5 h-5 flex items-center justify-center transition-colors text-xs"
-              title="フィルター解除"
-            >
-              ×
-            </button>
-          </div>
+            <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+              解除 ✕
+            </span>
+          </button>
         )}
 
         {filterParam && (
-          <div className="bg-blue-600/90 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max">
+          <button 
+            onClick={() => {
+              const params = new URLSearchParams(searchParams.toString());
+              params.delete('filter');
+              router.replace(`/map?${params.toString()}`);
+            }}
+            className="bg-blue-600/90 hover:bg-blue-700 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max transition-all cursor-pointer group"
+            title="クリックで解除"
+          >
             <span>🔍 「{filterParam}」でフィルター中</span>
-            <button 
-              onClick={() => {
-                const params = new URLSearchParams(searchParams.toString());
-                params.delete('filter');
-                router.replace(`/map?${params.toString()}`);
-              }}
-              className="ml-2 bg-blue-700 hover:bg-blue-800 rounded-full w-5 h-5 flex items-center justify-center transition-colors"
-            >
-              ×
-            </button>
-          </div>
+            <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full group-hover:bg-white group-hover:text-blue-600 transition-colors">
+              解除 ✕
+            </span>
+          </button>
         )}
       </div>
 
       {/* Archipelago Quick Nav (諸島ナビ) */}
       <div className="absolute top-28 lg:top-24 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center gap-2 w-full pointer-events-auto">
         <div className="bg-white/80 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] hide-scrollbar">
+          <span className="text-[10px] font-bold text-slate-400 px-2 shrink-0">人気の諸島:</span>
           <button 
             onClick={() => { setManualBounds(null); setDifficultyFilter(null); }} 
             className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all bg-slate-900 text-white shrink-0 shadow-sm"
@@ -241,7 +252,7 @@ function GlobalMapContent() {
                 setManualBounds(arch.bounds);
                 setSelectedIslandId(null);
               }}
-              className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all text-slate-700 hover:bg-slate-100 hover:text-slate-900 shrink-0 border border-transparent hover:border-slate-200"
+              className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all text-slate-700 hover:bg-slate-100 hover:text-slate-900 shrink-0 border border-transparent hover:border-slate-200 whitespace-nowrap"
             >
               {arch.name}
             </button>
@@ -268,9 +279,9 @@ function GlobalMapContent() {
         ))}
         <button 
           onClick={() => { setDifficultyFilter(0); setManualBounds(null); }} 
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-rose-600 hover:bg-rose-50'}`}
+          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-slate-600 hover:bg-slate-100'}`}
         >
-          ⛔ 上陸制限島 (EX)
+          🔒 渡航制限島（対象外）
         </button>
       </div>
       </div>

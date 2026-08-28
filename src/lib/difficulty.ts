@@ -46,14 +46,14 @@ export function getIslandDifficulty(island: any): DifficultyInfo {
   if (!isSatsumaIwo && (RESTRICTED_ISLANDS.some(k => name.includes(k)) || island.is_conquest_target === false)) {
     return {
       level: 0,
-      stars: '⛔ 対象外',
-      label: 'EX 一般立入制限島',
-      shortLabel: '対象外/制限島',
+      stars: '🔒 対象外',
+      label: '🔒 渡航制限島（制覇対象外）',
+      shortLabel: '渡航制限島（対象外）',
       color: 'text-slate-400',
       bgColor: 'bg-slate-500/15',
       borderColor: 'border-slate-500/50',
       badgeColor: 'bg-slate-700 text-slate-300 border border-slate-500',
-      description: '自衛隊基地や自然保護区などのため一般人の渡航・上陸が不可能な島。コンプリート達成の対象外です。'
+      description: '自衛隊基地や自然保護区などのため一般人の渡航・上陸が不可能な島。ゲーム制覇・コンプリート達成の対象外（番外枠）です。'
     };
   }
 
