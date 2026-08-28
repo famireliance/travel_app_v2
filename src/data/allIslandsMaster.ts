@@ -6979,6 +6979,25 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "遠隔離島",
     "is_conquest_target": true
   },
+  "fukajijima": {
+    "id": "fukajijima",
+    "name": "外地島（慶良間）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.1685, 127.2917",
+    "description": "慶留間島と外地大橋で結ばれ、慶良間空港が位置する慶良間諸島の無人島。",
+    "access": "阿嘉島・慶留間島より外地大橋で陸路アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.83,
+    "radius_m": 500.0,
+    "checkin_radius_m": 1500.0,
+    "points": 400.0,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true
+  },
   "380": {
     "id": "380",
     "name": "久米島",

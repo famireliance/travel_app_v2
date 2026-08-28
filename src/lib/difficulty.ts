@@ -34,10 +34,11 @@ const EXTREME_ISLANDS = [
 // 本格離島・中長距離定期船・航路1.5〜3時間 (★3 アドベンチャー)
 const ADVENTURE_ISLANDS = [
   '八丈島', '伊豆大島', '神津島', '新島', '式根島', '三宅島', 
-  '佐渡島', '粟島（新潟', 
+  '佐渡島', '粟岛（新潟', 
   '隠岐の島', '西ノ島', '中ノ島（隠岐', '知夫里島', 
   '屋久島', '種子島', '壱岐', '対馬', '福江島', '中通島', '奈留島', '若松島', '小値賀島', 
-  '久米島', '座間味島', '阿嘉島', '渡嘉敷島', '伊江島', '伊平屋島', '伊是名島', '水納島（沖縄', 
+  '久米島', '座間味島', '阿嘉島', '慶留間島', '外地島', '渡嘉敷島', '伊江島', '伊平屋島', '伊是名島', '水納島（沖縄', 
+  '由布島', '伊良部島', '池間島', '来間島', 
   '奥尻島', '天売島', '焼尻島'
 ];
 
@@ -68,6 +69,7 @@ export function getIslandDifficulty(island: any): DifficultyInfo {
   const name = island.name || '';
   const access = island.access || '';
   const desc = island.description || '';
+  const reg = island.region_id || '';
 
   // 鹿児島県・薩摩硫黄島は定期便フェリー「みしま」で一般上陸可能
   const isSatsumaIwo = name.includes('薩摩硫黄島') || (name.includes('鹿児島') && name.includes('硫黄島')) || String(island.id) === '343';
@@ -87,24 +89,28 @@ export function getIslandDifficulty(island: any): DifficultyInfo {
     };
   }
 
-  // 明示的なマッピング判定
+  // 1. 明示的な名鑑マッピング（最優先）
   if (LEGENDARY_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(5);
   if (EXTREME_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(4);
   if (ADVENTURE_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(3);
-  if (EASY_BRIDGED_ISLANDS.some(k => name.includes(k)) || access.includes('橋') || desc.includes('橋')) return getDifficultyInfoByLevel(1);
   if (STANDARD_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(2);
+  if (EASY_BRIDGED_ISLANDS.some(k => name.includes(k))) return getDifficultyInfoByLevel(1);
 
-  // 地域・属性に応じた合理的なフォールバック推定
-  const reg = island.region_id || '';
-  if (['ogasawara', 'tokara'].includes(reg) || name.includes('小笠原') || name.includes('大東')) {
-    return getDifficultyInfoByLevel(5);
+  // 2. 親諸島のアクセスポン継承ルール（リモート諸島内の子島は親諸島の難易度を継承）
+  const isRemoteArchipelago = ['kerama', 'yaeyama', 'amami', 'tokara', 'ogasawara', 'goto', 'tsushima', 'iki', 'oki', 'satsunan', 'daito', 'kume', 'izu'].includes(reg);
+
+  if (isRemoteArchipelago) {
+    if (['ogasawara', 'tokara', 'daito'].includes(reg) || name.includes('小笠原') || name.includes('大東')) return getDifficultyInfoByLevel(5);
+    if (['amami', 'remote'].includes(reg) || name.includes('トカラ')) return getDifficultyInfoByLevel(4);
+    if (['kerama', 'yaeyama', 'izu', 'kagoshima', 'hokkaido', 'tsushima', 'iki', 'oki', 'goto'].includes(reg)) return getDifficultyInfoByLevel(3);
   }
-  if (['amami', 'yaeyama', 'remote'].includes(reg) || name.includes('トカラ') || name.includes('五島')) {
-    return getDifficultyInfoByLevel(4);
+
+  // 3. 本土・主島から直接「橋」で繋がっている島のみ ★1（風の回廊）
+  if (access.includes('橋') || desc.includes('橋')) {
+    return getDifficultyInfoByLevel(1);
   }
-  if (['izu', 'okinawa', 'kagoshima', 'hokkaido', 'tsushima', 'iki', 'oki'].includes(reg)) {
-    return getDifficultyInfoByLevel(3);
-  }
+
+  // 4. 一般の地域フォールバック
   if (['sanriku', 'setouchi', 'biwako', 'kanto', 'chugoku', 'kyushu'].includes(reg)) {
     return getDifficultyInfoByLevel(2);
   }
