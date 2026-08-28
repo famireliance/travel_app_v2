@@ -85,26 +85,37 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
         const isPlanning = status === 'planning';
         const isRestricted = getIslandDifficulty(island).level === 0;
 
-        const markerColor = isRestricted ? 'bg-slate-300' : isVisited ? 'bg-amber-400' : isPlanning ? 'bg-blue-500' : 'bg-slate-500';
-        const shadowColor = isRestricted ? 'shadow-slate-400' : isVisited ? 'shadow-amber-500' : isPlanning ? 'shadow-blue-500' : 'shadow-slate-700';
-        const pulseEffect = isVisited ? `<div class="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-30"></div>` : '';
-        const innerIcon = isVisited ? '👑' : isPlanning ? '⭐️' : '';
-        const sizeClass = isVisited ? 'w-6 h-6' : isPlanning ? 'w-5 h-5' : 'w-4 h-4';
+        const markerColor = isRestricted 
+          ? 'bg-slate-900 text-amber-400 border-2 border-amber-400/90 shadow-slate-950/80 ring-2 ring-slate-900/50' 
+          : isVisited 
+          ? 'bg-amber-400 text-slate-950 border-2 border-white shadow-amber-500/50' 
+          : isPlanning 
+          ? 'bg-blue-500 text-white border-2 border-white shadow-blue-500/50' 
+          : 'bg-slate-600 text-white border-2 border-white shadow-slate-700/50';
+
+        const pulseEffect = isVisited 
+          ? `<div class="absolute inset-0 rounded-full bg-amber-400 animate-ping opacity-30"></div>` 
+          : isRestricted 
+          ? `<div class="absolute -inset-1 rounded-full bg-amber-500/20 animate-pulse"></div>`
+          : '';
+
+        const innerIcon = isRestricted ? '🔒' : isVisited ? '👑' : isPlanning ? '⭐️' : '';
+        const sizeClass = isRestricted ? 'w-6 h-6 text-[11px]' : isVisited ? 'w-6 h-6 text-[10px]' : isPlanning ? 'w-5 h-5 text-[9px]' : 'w-4 h-4 text-[8px]';
 
         const customIcon = L.divIcon({
           className: 'custom-island-marker',
           html: `<div class="relative flex items-center justify-center">
                    ${pulseEffect}
-                   <div class="${sizeClass} ${markerColor} rounded-full border-[1.5px] border-white shadow-md ${shadowColor} flex items-center justify-center text-[10px] z-10 transition-transform duration-300 hover:scale-150">
+                   <div class="${sizeClass} ${markerColor} rounded-full shadow-md flex items-center justify-center font-bold z-10 transition-transform duration-300 hover:scale-150">
                      ${innerIcon}
                    </div>
                  </div>`,
-          iconSize: isVisited ? [24, 24] : isPlanning ? [20, 20] : [16, 16],
-          iconAnchor: isVisited ? [12, 12] : isPlanning ? [10, 10] : [8, 8],
+          iconSize: isRestricted || isVisited ? [24, 24] : isPlanning ? [20, 20] : [16, 16],
+          iconAnchor: isRestricted || isVisited ? [12, 12] : isPlanning ? [10, 10] : [8, 8],
         });
 
-        // Set z-index so that visited/planning islands stay on top
-        const zIndexOffset = isVisited ? 1000 : isPlanning ? 500 : 0;
+        // Set z-index so that visited/planning/restricted islands stay on top
+        const zIndexOffset = isRestricted ? 800 : isVisited ? 1000 : isPlanning ? 500 : 0;
 
         return (
           <Marker
@@ -123,7 +134,7 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
             <Tooltip direction="top" offset={[0, -10]} opacity={1} permanent={false}>
               <div className="font-sans">
                 {isRestricted ? (
-                  <span className="text-slate-500 font-bold flex items-center gap-1">⛔ 【上陸不可】{island.name}</span>
+                  <span className="text-amber-500 font-bold flex items-center gap-1">🔒 【渡航制限島・対象外】{island.name}</span>
                 ) : isVisited ? (
                   <span className="text-amber-600 font-bold flex items-center gap-1">👑 【到達済】{island.name}</span>
                 ) : isPlanning ? (
