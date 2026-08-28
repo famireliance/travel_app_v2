@@ -38,6 +38,7 @@ export default function Footer() {
             <li><Link href="/route-planner" className="hover:text-white transition-colors">AIアイランドホッピング提案</Link></li>
             <li><Link href="/timeline" className="hover:text-white transition-colors">みんなの島ノート</Link></li>
             <li><Link href="/companion" className="hover:text-white transition-colors">精霊キャラクター図鑑</Link></li>
+            <li><Link href="/packing-list" className="hover:text-amber-400 text-amber-300 font-bold transition-colors">🎒 持ち物チェックリスト</Link></li>
             <li><Link href="/mypage" className="hover:text-white transition-colors">マイページ・ログイン</Link></li>
           </ul>
         </div>
