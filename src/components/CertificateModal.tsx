@@ -338,18 +338,109 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           ctx.lineWidth = 2;
           ctx.strokeRect(46, 46, width - 92, height - 92);
         } else {
-          // Classic Gold
+          // Classic Gold (Rich Baroque Ornamentation)
           const grad = ctx.createRadialGradient(width / 2, height / 2, 100, width / 2, height / 2, Math.max(width, height));
           grad.addColorStop(0, '#1E293B');
-          grad.addColorStop(1, '#0F172A');
+          grad.addColorStop(0.7, '#0F172A');
+          grad.addColorStop(1, '#090D16');
           ctx.fillStyle = grad;
           ctx.fillRect(0, 0, width, height);
-          ctx.strokeStyle = '#D4AF37';
-          ctx.lineWidth = 12;
-          ctx.strokeRect(30, 30, width - 60, height - 60);
-          ctx.strokeStyle = '#F3E5AB';
+
+          // Background Nautical Compass Rose Watermark (背景航海羅針盤透かし)
+          ctx.save();
+          ctx.translate(width / 2, height / 2);
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.07)';
+          ctx.fillStyle = 'rgba(212, 175, 55, 0.04)';
           ctx.lineWidth = 2;
-          ctx.strokeRect(46, 46, width - 92, height - 92);
+          const r = Math.min(width, height) * 0.35;
+          ctx.beginPath();
+          ctx.arc(0, 0, r, 0, Math.PI * 2);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(0, 0, r * 0.85, 0, Math.PI * 2);
+          ctx.stroke();
+          for (let i = 0; i < 8; i++) {
+            const angle = (i * Math.PI) / 4;
+            const len = i % 2 === 0 ? r * 1.12 : r * 0.82;
+            const hw = i % 2 === 0 ? 14 : 7;
+            ctx.save();
+            ctx.rotate(angle);
+            ctx.beginPath();
+            ctx.moveTo(0, -len);
+            ctx.lineTo(hw, 0);
+            ctx.lineTo(0, 0);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+          }
+          ctx.restore();
+
+          // Ambient Gold Stardust Particles (背景金粉ダスト)
+          ctx.fillStyle = 'rgba(243, 229, 171, 0.12)';
+          for (let i = 0; i < 65; i++) {
+            const px = Math.sin(i * 17) * width * 0.45 + width / 2;
+            const py = Math.cos(i * 23) * height * 0.45 + height / 2;
+            const psize = (i % 3) + 1;
+            ctx.beginPath();
+            ctx.arc(px, py, psize, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Triple Layered Gold Metallic Frames (三重彫刻金枠)
+          ctx.strokeStyle = '#D4AF37';
+          ctx.lineWidth = 14;
+          ctx.strokeRect(24, 24, width - 48, height - 48);
+
+          ctx.strokeStyle = '#F59E0B';
+          ctx.lineWidth = 2;
+          ctx.strokeRect(36, 36, width - 72, height - 72);
+
+          ctx.strokeStyle = '#F3E5AB';
+          ctx.lineWidth = 3;
+          ctx.strokeRect(44, 44, width - 88, height - 88);
+
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+          ctx.lineWidth = 1;
+          ctx.strokeRect(52, 52, width - 104, height - 104);
+
+          // Baroque Gold Corner Filigree Ornaments (四隅の豪華な金箔アラベスクコーナー彫刻)
+          const cornerFiligree = (cx: number, cy: number, rot: number) => {
+            ctx.save();
+            ctx.translate(cx, cy);
+            ctx.rotate(rot);
+            ctx.strokeStyle = '#D4AF37';
+            ctx.fillStyle = '#F3E5AB';
+            ctx.lineWidth = 2.5;
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 45, 0, Math.PI / 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(0, 0, 52, 0, Math.PI / 2);
+            ctx.stroke();
+
+            // Decorative swirls
+            ctx.beginPath();
+            ctx.arc(28, 28, 12, 0, Math.PI * 2);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.arc(16, 0, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.beginPath();
+            ctx.arc(0, 16, 4, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+          };
+
+          cornerFiligree(52, 52, 0); // Top-Left
+          cornerFiligree(width - 52, 52, Math.PI / 2); // Top-Right
+          cornerFiligree(width - 52, height - 52, Math.PI); // Bottom-Right
+          cornerFiligree(52, height - 52, (Math.PI * 3) / 2); // Bottom-Left
         }
 
         // Holographic Overlay (if applicable)
