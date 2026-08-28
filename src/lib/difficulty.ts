@@ -121,62 +121,62 @@ export function getDifficultyInfoByLevel(level: number): DifficultyInfo {
       return {
         level: 5,
         stars: '★★★★★',
-        label: '★5 レジェンド到達困難島',
-        shortLabel: '★5 レジェンド',
+        label: '👑 伝説のレジェンド絶海孤島',
+        shortLabel: '👑 伝説の孤島',
         color: 'text-rose-500',
         bgColor: 'bg-rose-500/15',
         borderColor: 'border-rose-500/50',
         badgeColor: 'bg-gradient-to-r from-rose-600 to-red-600 text-white shadow-rose-500/30',
-        description: '定期船がなくチャーター船や特別巡航船等でのみ接近・上陸が許される究極の到達困難島。'
+        description: '東京から船で24時間の小笠原、週2便のトカラ列島、絶海の大東諸島。冒険者の最高峰に君臨する伝説の孤島。'
       };
     case 4:
       return {
         level: 4,
         stars: '★★★★☆',
-        label: '★4 エクストリーム秘境島',
-        shortLabel: '★4 エクストリーム',
+        label: '🌋 秘境フロンティア島',
+        shortLabel: '🌋 秘境フロンティア',
         color: 'text-purple-400',
         bgColor: 'bg-purple-500/15',
         borderColor: 'border-purple-500/50',
         badgeColor: 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white shadow-purple-500/30',
-        description: '週数便の航路または10時間以上の長期航路、欠航リスクが高く強い冒険心が求められる秘境離島。'
+        description: '長距離外洋航路やヘリ・セスナ乗り継ぎ。高い欠航リスクと強い旅の覚悟が求められる秘境フロンティア。'
       };
     case 3:
       return {
         level: 3,
         stars: '★★★☆☆',
-        label: '★3 アドベンチャー離島',
-        shortLabel: '★3 アドベンチャー',
+        label: '🧭 荒波を越える本格冒険島',
+        shortLabel: '🧭 本格冒険島',
         color: 'text-amber-400',
         bgColor: 'bg-amber-500/15',
         borderColor: 'border-amber-500/50',
         badgeColor: 'bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 shadow-amber-500/30',
-        description: '1日1〜2便の定期船や天候による運休を考慮し、事前の計画と宿泊手配が必要な本格離島。'
+        description: '中長距離定期船（1.5〜3時間）で渡る島。天候や時刻表を計算し事前の計画で挑む本格冒険アイランド。'
       };
     case 2:
       return {
         level: 2,
         stars: '★★☆☆☆',
-        label: '★2 スタンダード離島',
-        shortLabel: '★2 スタンダード',
+        label: '⛵ 風そよぐ沿岸島',
+        shortLabel: '⛵ 沿岸の旅島',
         color: 'text-blue-400',
         bgColor: 'bg-blue-500/15',
         borderColor: 'border-blue-500/50',
         badgeColor: 'bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-blue-500/30',
-        description: '1日複数便のフェリーや高速船があり、週末の旅行や1〜2泊で手軽かつ充実した旅が楽しめる人気の島。'
+        description: '近海港から高頻度フェリーで渡れる島。半日〜1泊で豊かな島風と海絶景を手軽に満喫できる人気島。'
       };
     case 1:
     default:
       return {
         level: 1,
         stars: '★☆☆☆☆',
-        label: '★1 イージーアクセス',
-        shortLabel: '★1 イージー',
+        label: '🌱 はじまりの架け橋島',
+        shortLabel: '🌱 架け橋の島',
         color: 'text-emerald-400',
         bgColor: 'bg-emerald-500/15',
         borderColor: 'border-emerald-500/50',
         badgeColor: 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-emerald-500/30',
-        description: '本土と橋で接続されているか高頻度フェリーがあり、日帰りで気軽・快適に訪れられる観光島。'
+        description: '本土・主島から海を渡る大橋で陸続きの島。天候運休を気にせずいつでも冒険の第一歩を踏み出せる入門島。'
       };
   }
 }

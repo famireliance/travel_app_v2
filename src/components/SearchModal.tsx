@@ -54,11 +54,11 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
   }, [query, selectedDifficulty, allIslands]);
 
   const difficulties = [
-    { level: 1, label: '★1 イージー', color: 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200' },
-    { level: 2, label: '★2 スタンダード', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200' },
-    { level: 3, label: '★3 アドベンチャー', color: 'bg-indigo-100 text-indigo-700 hover:bg-indigo-200 border-indigo-200' },
-    { level: 4, label: '★4 秘境島', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200' },
-    { level: 5, label: '★5 レジェンド', color: 'bg-rose-100 text-rose-700 hover:bg-rose-200 border-rose-200' },
+    { level: 1, label: '🌱 ★1 架け橋の島', color: 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 border-emerald-200' },
+    { level: 2, label: '⛵ ★2 沿岸の旅島', color: 'bg-blue-100 text-blue-700 hover:bg-blue-200 border-blue-200' },
+    { level: 3, label: '🧭 ★3 本格冒険島', color: 'bg-amber-100 text-amber-800 hover:bg-amber-200 border-amber-200' },
+    { level: 4, label: '🌋 ★4 秘境フロンティア', color: 'bg-purple-100 text-purple-700 hover:bg-purple-200 border-purple-200' },
+    { level: 5, label: '👑 ★5 伝説の孤島', color: 'bg-rose-100 text-rose-700 hover:bg-rose-200 border-rose-200' },
     { level: 0, label: '🔒 渡航制限島（対象外）', color: 'bg-slate-800 text-amber-300 hover:bg-slate-900 border-slate-700' }
   ];
 

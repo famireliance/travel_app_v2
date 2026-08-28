@@ -8,7 +8,7 @@ import SearchModal from '@/components/SearchModal';
 import AiConcierge from '@/components/AiConcierge';
 import IslandCompareModal from '@/components/IslandCompareModal';
 import { useTravel } from '@/context/TravelContext';
-import { getIslandDifficulty } from '@/lib/difficulty';
+import { getIslandDifficulty, getDifficultyInfoByLevel } from '@/lib/difficulty';
 import { fetchAllIslands } from '@/lib/supabase';
 import Breadcrumb from '@/components/Breadcrumb';
 import type { MapStyle } from '@/components/Map/InteractiveMap';
@@ -276,15 +276,18 @@ function GlobalMapContent() {
         >
           全島 ({allIslands.length})
         </button>
-        {[1, 2, 3, 4, 5].map(lvl => (
-          <button 
-            key={lvl} 
-            onClick={() => { setDifficultyFilter(lvl); setManualBounds(null); }} 
-            className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === lvl ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-          >
-            ★{lvl} {lvl === 5 ? 'レジェンド' : lvl === 4 ? '秘境島' : lvl === 3 ? 'アドベンチャー' : lvl === 2 ? 'スタンダード' : 'イージー'}
-          </button>
-        ))}
+        {[1, 2, 3, 4, 5].map(lvl => {
+          const diffInfo = getDifficultyInfoByLevel(lvl);
+          return (
+            <button 
+              key={lvl} 
+              onClick={() => { setDifficultyFilter(lvl); setManualBounds(null); }} 
+              className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === lvl ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+            >
+              {diffInfo.shortLabel}
+            </button>
+          );
+        })}
         <button 
           onClick={() => { setDifficultyFilter(0); setManualBounds(null); }} 
           className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-slate-500 hover:bg-slate-100'}`}
