@@ -752,19 +752,28 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
         {/* Tourist Flags */}
         {island.flags && Object.keys(island.flags).length > 0 && (
           <div className="mb-12">
-            <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-4 border-l-2 border-blue-500 pl-3">観光情報</h2>
-            <div className="flex flex-wrap gap-2">
-              {Object.entries(island.flags).map(([key, val]) => (
-                <div key={key} className={`px-3 py-1.5 rounded-full text-xs font-medium tracking-wide border flex items-center gap-1.5
-                  ${val === 'yes' ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 
-                    val === 'info' ? 'bg-blue-50 text-blue-700 border-blue-200' : 
-                    'bg-slate-50 text-slate-400 border-slate-200'}`}
-                >
-                  {flagIcons[key] || (val !== 'no' && <CheckSquare className="w-3 h-3" />)}
-                  {key}
-                  {val === 'no' && <span className="text-[0.6rem] ml-1">(なし)</span>}
-                </div>
-              ))}
+            <h2 className="text-sm font-bold tracking-[0.2em] text-slate-800 mb-4 border-l-2 border-blue-500 pl-3">生活・観光インフラ情報</h2>
+            <div className="flex flex-wrap gap-2.5">
+              {Object.entries(island.flags).map(([key, val]) => {
+                if (key === '陸地座標実証済') return null;
+                const strVal = String(val);
+                const isYes = val === 'yes' || strVal.includes('可能') || strVal.includes('あり');
+                const isWarning = strVal.includes('弱い') || strVal.includes('要') || strVal.includes('注意');
+                const isNo = val === 'no' || strVal === 'なし';
+
+                return (
+                  <div key={key} className={`px-3.5 py-2 rounded-2xl text-xs font-medium tracking-wide border flex items-center gap-1.5 shadow-sm ${
+                    isYes ? 'bg-emerald-50/80 text-emerald-800 border-emerald-200' : 
+                    isWarning ? 'bg-amber-50/80 text-amber-800 border-amber-200' : 
+                    isNo ? 'bg-rose-50/80 text-rose-800 border-rose-200' : 
+                    'bg-slate-50 text-slate-700 border-slate-200'
+                  }`}>
+                    {flagIcons[key] || <CheckSquare className="w-3.5 h-3.5 opacity-70 shrink-0" />}
+                    <span className="font-bold text-slate-900">{key}:</span> 
+                    <span>{val === 'yes' ? 'あり' : val === 'no' ? 'なし' : strVal}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
