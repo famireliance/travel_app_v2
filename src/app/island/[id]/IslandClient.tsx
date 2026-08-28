@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, MapPin, Users, Navigation, Compass, CheckSquare, Star, Plus, Award, BookOpen, Bot, ExternalLink, Sparkles, AlertTriangle, BedDouble, Coffee, Wifi } from 'lucide-react';
+import Link from 'next/link';
+import { ArrowLeft, MapPin, Users, Navigation, Compass, CheckSquare, Star, Plus, Award, BookOpen, Bot, ExternalLink, Sparkles, AlertTriangle, BedDouble, Coffee, Wifi, Luggage, ArrowRight, PackageCheck } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useTravel } from '@/context/TravelContext';
 import { toast } from 'react-hot-toast';
@@ -467,6 +468,65 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
             )}
           </div>
         </div>
+
+        {/* Smart Island Packing Checklist Banner (渡航・宿泊準備カード) */}
+        {(() => {
+          const isFerryOrStayIsland = Boolean(
+            island.day_trip === false ||
+            island.has_atm === false ||
+            island.has_store === false ||
+            (island.access && (
+              island.access.includes('フェリー') ||
+              island.access.includes('定期船') ||
+              island.access.includes('高速船') ||
+              island.access.includes('旅客船') ||
+              island.access.includes('おがさわら丸') ||
+              island.access.includes('船') ||
+              island.access.includes('航空便')
+            ))
+          );
+
+          if (!isFerryOrStayIsland) return null;
+
+          return (
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-10 bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-900/5 border border-amber-500/30 rounded-3xl p-6 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 relative overflow-hidden"
+            >
+              <div className="flex items-start gap-4 z-10">
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-600 flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                  <Luggage className="w-6 h-6" />
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-700 text-[0.65rem] font-bold tracking-widest uppercase">
+                      {island.day_trip === false ? '宿泊・船旅 推奨島' : 'フェリー・離島渡航島'}
+                    </span>
+                    <span className="text-xs text-amber-700 font-bold">事前準備が旅の快適さを左右します！</span>
+                  </div>
+                  <h4 className="font-serif font-bold text-slate-900 text-base md:text-lg">
+                    {island.name} への渡航前に持ち物を最終チェック！
+                  </h4>
+                  <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                    {island.day_trip === false 
+                      ? '※この島は宿泊が推奨されます。宿のコンセント不足・持ち込みタオルや酔い止め薬の準備をお忘れなく！' 
+                      : '※船移動での波しぶき・日焼け・現金準備など、離島特有の必需品をパッキングチェックリストで確認できます。'}
+                  </p>
+                </div>
+              </div>
+
+              <Link
+                href="/packing-list"
+                className="z-10 shrink-0 px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-xs tracking-wider shadow-md flex items-center justify-center gap-2 transition-all hover:scale-102"
+              >
+                <PackageCheck className="w-4 h-4" />
+                持ち物チェックリストを見る
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </motion.div>
+          );
+        })()}
 
         {/* Communications & Disaster Info Section */}
         <div className="mb-10 bg-white rounded-2xl shadow-sm border border-rose-100 overflow-hidden">

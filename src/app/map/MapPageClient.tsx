@@ -425,12 +425,19 @@ function GlobalMapContent() {
                 <p className="mt-4 text-sm text-slate-600 leading-relaxed line-clamp-2">
                   {selectedIsland.description || 'まだ詳細な説明が登録されていません。'}
                 </p>
-                <div className="mt-6 flex gap-3">
+                <div className="mt-6 flex gap-2">
                   <button 
                     onClick={() => router.push(`/island/${selectedIsland.id}`)}
-                    className="flex-1 bg-blue-600 text-white font-bold py-3.5 rounded-xl hover:bg-blue-700 transition-colors shadow-md flex items-center justify-center gap-2"
+                    className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-md flex items-center justify-center gap-2 text-sm"
                   >
-                    <Navigation size={18} /> 詳細を見る
+                    <Navigation size={16} /> 詳細を見る
+                  </button>
+                  <button 
+                    onClick={() => router.push('/packing-list')}
+                    className="px-4 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-3 rounded-xl transition-colors shadow-md flex items-center justify-center gap-1.5 text-xs shrink-0"
+                    title="持ち物・アフィリエイトチェックリストを見る"
+                  >
+                    🎒 持ち物
                   </button>
                 </div>
               </div>
