@@ -11,6 +11,31 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
   },
 });
 
+// ==========================================
+// 📊 トラッキング・アナリティクス API (従量課金用)
+// ==========================================
+export async function trackFacilityEvent(
+  facilityId: string, 
+  eventType: 'phone_call_click' | 'website_click' | 'lp_view'
+) {
+  try {
+    const { error } = await supabase
+      .from('tracking_events')
+      .insert([
+        {
+          facility_id: facilityId,
+          event_type: eventType,
+          user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
+          session_id: typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('kiratabi_session_id') : null
+        }
+      ]);
+    if (error) {
+      console.error('Tracking event failed:', error);
+    }
+  } catch (err) {
+    // ユーザーの体験を阻害しないよう、エラーは裏側でキャッチのみ
+  }
+}
 
 
 export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {

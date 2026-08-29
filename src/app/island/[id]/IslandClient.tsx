@@ -20,6 +20,7 @@ import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
 import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
 import { getIslandCategoryType, FERRY_BOATS_DICTIONARY, ACTIVITIES_DICTIONARY, getIslandGuideArticle } from '@/data/islandCategoryData';
+import { trackFacilityEvent } from '@/lib/supabase';
 import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building } from 'lucide-react';
 
 interface IslandDiarySSR {
@@ -714,6 +715,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                                   {acc.phone ? (
                                     <a
                                       href={`tel:${acc.phone}`}
+                                      onClick={() => trackFacilityEvent(acc.id, 'phone_call_click')}
                                       className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
                                     >
                                       <Phone size={14} /> {acc.phone}
@@ -725,6 +727,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                                   {isPaid && acc.sponsoredId && (
                                     <Link
                                       href={`/stay/${acc.sponsoredId}`}
+                                      onClick={() => trackFacilityEvent(acc.id, 'lp_view')}
                                       className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"
                                     >
                                       公式特設LPを見る <ArrowRight size={12} />
