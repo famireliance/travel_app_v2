@@ -1,13 +1,21 @@
+import { encodeShiftJisUrl } from '@/lib/shiftJisUrl';
+
+export type InnPlanTier = 'free' | 'paid_standard' | 'paid_premium';
+
 export interface AccommodationItem {
   id: string;
   name: string;
   type: 'minshuku' | 'hotel' | 'guesthouse' | 'resort';
   phone?: string;
-  features: string; // 例: 「1泊2食付き / 島料理 / 港送迎あり」
-  isSponsored?: boolean; // 有料特設ページ対象宿かどうか
-  sponsoredId?: string; // /stay/[sponsoredId] へのリンク
+  planTier: InnPlanTier; // 'free' (無料枠: 宿名＋確認済み電話のみ) | 'paid_standard' | 'paid_premium'
+  features?: string; // 有料枠用: 詳細特徴・設備
+  isSponsored?: boolean;
+  sponsoredId?: string;
   address?: string;
-  priceRange?: string; // 例: 「¥8,500〜 / 1泊2食」
+  priceRange?: string; // 有料枠用: 正確な価格帯
+  officialWebsite?: string;
+  lineInquiryUrl?: string;
+  imageUrl?: string;
 }
 
 export interface TransportItem {
@@ -15,23 +23,23 @@ export interface TransportItem {
   name: string;
   type: 'car' | 'bike' | 'cycle' | 'bus' | 'taxi';
   phone?: string;
-  features: string; // 例: 「軽トラ・普通車 / 港受渡OK」
-  priceRange?: string; // 例: 「¥4,000〜 / 24時間」
+  features: string;
+  priceRange?: string;
 }
 
 export interface IslandFacilityData {
   islandId: string;
   islandName: string;
+  townHallPhone?: string; // 役場・観光協会電話番号 (誤情報防止用)
+  townHallName?: string; // 例: 「青ヶ島村役場 観光案内」
   accommodations: AccommodationItem[];
   transports: TransportItem[];
   transportNotes?: string;
 }
 
-import { encodeShiftJisUrl } from '@/lib/shiftJisUrl';
-
 export const RAKUTEN_AFFILIATE_ID = '56ebd0d5.3e11f68e.56ebd0d6.3ff60376';
 
-// 楽天トラベル・公式宿検索URL (都道府県＋島名で地域絞り込み ＋ Shift-JIS URLエンコード ＋ アフィリエイトID 56ebd0d5.3e11f68e.56ebd0d6.3ff60376)
+// 楽天トラベル・公式宿検索URL (都道府県＋島名で地域絞り込み ＋ Shift-JIS URLエンコード)
 export function getRakutenTravelSearchUrl(islandName: string, prefecture?: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
   const fullQuery = prefecture ? `${prefecture} ${cleanName}` : cleanName;
@@ -40,7 +48,7 @@ export function getRakutenTravelSearchUrl(islandName: string, prefecture?: strin
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
 }
 
-// 楽天レンタカー検索URL (都道府県＋島名で地域絞り込み)
+// 楽天レンタカー検索URL
 export function getRakutenRentacarSearchUrl(islandName: string, prefecture?: string): string {
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
   const fullQuery = prefecture ? `${prefecture} ${cleanName} レンタカー` : `${cleanName} レンタカー`;
@@ -60,33 +68,35 @@ export function getJalanSearchUrl(islandName: string, prefecture?: string): stri
 const AOGASHIMA_FACILITY_DATA: IslandFacilityData = {
   islandId: '58',
   islandName: '青ヶ島',
-  transportNotes: '島内は急勾配の坂道が多く、公共バスはありません。基本的にはレンタカー（要事前電話予約）か徒歩散策となります。',
+  townHallName: '青ヶ島村役場（総務課 観光担当）',
+  townHallPhone: '04996-9-0111',
+  transportNotes: '島内は急勾配の坂道が多く、公共バスはありません。基本的にはレンタカー（事前電話予約必須）または徒歩移動となります。',
   accommodations: [
     {
       id: 'aogashima_ya',
       name: 'あおがしま屋',
       type: 'minshuku',
       phone: '04996-9-0185',
-      features: '1泊3食付き（お弁当含む） / 島料理・自家製焼酎 / 港・ヘリポート送迎あり / Wi-Fi完備',
+      planTier: 'paid_premium',
+      features: '1泊3食付き（島散策用お弁当含む） / 自家製青酎・地魚料理 / 港・ヘリポート往復送迎あり / 高速Wi-Fi完備',
       priceRange: '¥11,000〜 / 1泊3食',
       isSponsored: true,
       sponsoredId: 'aogashimaya',
+      address: '東京都青ヶ島村無番地',
     },
     {
       id: 'matsumi_so',
       name: 'マツミ荘',
       type: 'minshuku',
       phone: '04996-9-0115',
-      features: '1泊2食付き / 伝統的アットホーム民宿 / 港送迎要相談',
-      priceRange: '¥9,000〜 / 1泊2食',
+      planTier: 'free', // 無料枠: 確認済み電話番号のみ表示（誤情報防止）
     },
     {
       id: 'suginohara',
       name: 'ビジネス宿 杉の原',
       type: 'minshuku',
       phone: '04996-9-0125',
-      features: '素泊まり・1泊2食選択可 / 商店近くで便利な立地',
-      priceRange: '¥7,500〜 / 1泊',
+      planTier: 'free',
     }
   ],
   transports: [
@@ -105,6 +115,8 @@ const AOGASHIMA_FACILITY_DATA: IslandFacilityData = {
 const CHICHIJIMA_FACILITY_DATA: IslandFacilityData = {
   islandId: '63',
   islandName: '父島',
+  townHallName: '小笠原村観光協会',
+  townHallPhone: '04996-2-2585',
   transportNotes: '集落内は徒歩・レンタル自転車で回れますが、島内観光やビーチ巡りにはレンタルバイク（原付）やレンタカーが絶大にお勧めです。村営バスも運行中。',
   accommodations: [
     {
@@ -112,16 +124,14 @@ const CHICHIJIMA_FACILITY_DATA: IslandFacilityData = {
       name: 'ホテルアザレア / パパスダイビング＆ゲストハウス',
       type: 'guesthouse',
       phone: '04996-2-2345',
-      features: '海近く / アクティビティツアー併設 / 大浴場・Wi-Fi',
-      priceRange: '¥8,000〜 / 素泊まり',
+      planTier: 'free',
     },
     {
       id: 'tetsuya',
       name: 'ペンション てつ家',
       type: 'minshuku',
       phone: '04996-2-3300',
-      features: '1泊2食 / 小笠原の地魚料理 / 温かいおもてなし',
-      priceRange: '¥12,000〜 / 1泊2食',
+      planTier: 'free',
     }
   ],
   transports: [
@@ -144,29 +154,14 @@ const CHICHIJIMA_FACILITY_DATA: IslandFacilityData = {
   ]
 };
 
-// 石垣島データ
+// 石垣島データ (メジャー観光島)
 const ISHIGAKI_FACILITY_DATA: IslandFacilityData = {
   islandId: '392',
   islandName: '石垣島',
+  townHallName: '石垣市市役所 観光文化課',
+  townHallPhone: '0980-82-1535',
   transportNotes: '離島ターミナル周辺以外は広い島のため、空港でのレンタカー手配がベスト。路線バス（東バス）やタクシーも充実しています。',
-  accommodations: [
-    {
-      id: 'ishigaki_resort',
-      name: 'ANAインターコンチネンタル石垣リゾート',
-      type: 'resort',
-      phone: '0980-88-7111',
-      features: '高級オーシャンビューリゾート / 屋外プール・スパ・ビーチ直結',
-      priceRange: '¥25,000〜 / 泊',
-    },
-    {
-      id: 'fusaki_resort',
-      name: 'フサキビーチリゾート ホテル＆ヴィラズ',
-      type: 'resort',
-      phone: '0980-88-7000',
-      features: 'サンセットビーチ直結 / 大浴場・天然温泉・ファミリー人気',
-      priceRange: '¥18,000〜 / 泊',
-    }
-  ],
+  accommodations: [],
   transports: [
     {
       id: 'ishigaki_car_times',
@@ -175,14 +170,6 @@ const ISHIGAKI_FACILITY_DATA: IslandFacilityData = {
       phone: '0980-84-4141',
       features: '新石垣空港送迎バス無料 / 24時間Web予約対応',
       priceRange: '¥5,000〜 / 24時間',
-    },
-    {
-      id: 'ots_rentacar',
-      name: 'OTSレンタカー 石垣空港店',
-      type: 'car',
-      phone: '0980-84-4323',
-      features: '免責補償・ドライブインフォメーション充実',
-      priceRange: '¥4,500〜 / 24時間',
     }
   ]
 };
@@ -191,23 +178,16 @@ const ISHIGAKI_FACILITY_DATA: IslandFacilityData = {
 const TAKETOMI_FACILITY_DATA: IslandFacilityData = {
   islandId: '393',
   islandName: '竹富島',
+  townHallName: '竹富島観光協会',
+  townHallPhone: '0980-82-5445',
   transportNotes: '島内は白砂の道のためレンタカーは不要です。港に各レンタサイクル会社や水牛車の送迎マイクロバスが待機しています。',
   accommodations: [
-    {
-      id: 'hoshinoya_taketomi',
-      name: '星のや竹富島',
-      type: 'resort',
-      phone: '0570-073-066',
-      features: '伝統的な琉球赤瓦集落リゾート / プール・泡盛バー・星空ナイト',
-      priceRange: '¥60,000〜 / 泊',
-    },
     {
       id: 'taketomi_takana',
       name: '竹富島 民宿 たかな',
       type: 'minshuku',
       phone: '0980-85-2151',
-      features: '最古の歴史ある赤瓦の伝統民宿 / 1泊2食 / 三線演奏あり',
-      priceRange: '¥8,000〜 / 1泊2食',
+      planTier: 'free',
     }
   ],
   transports: [
@@ -226,23 +206,16 @@ const TAKETOMI_FACILITY_DATA: IslandFacilityData = {
 const NAOSHIMA_FACILITY_DATA: IslandFacilityData = {
   islandId: '250',
   islandName: '直島',
+  townHallName: '直島町観光協会',
+  townHallPhone: '087-892-2299',
   transportNotes: '港（宮ノ浦港）近くにレンタサイクルショップが多数。電動アシスト自転車がアートめぐりや坂道移動に大人気です。町営バスも100円〜200円で運行中。',
   accommodations: [
-    {
-      id: 'benesse_house',
-      name: 'ベネッセハウス (Benesse House)',
-      type: 'hotel',
-      phone: '087-892-2030',
-      features: '美術館と一体化した最高級アートホテル / 宿泊者限定夜間鑑賞',
-      priceRange: '¥35,000〜 / 泊',
-    },
     {
       id: 'naoshima_yurt',
       name: 'つつじ荘（パオ・トレーラーハウス）',
       type: 'guesthouse',
       phone: '087-892-2838',
-      features: 'ビーチ直結のモンゴル式パオ・トレーラー / コスパ抜群',
-      priceRange: '¥4,500〜 / 泊',
+      planTier: 'free',
     }
   ],
   transports: [
@@ -261,6 +234,8 @@ const NAOSHIMA_FACILITY_DATA: IslandFacilityData = {
 const IKEMA_FACILITY_DATA: IslandFacilityData = {
   islandId: '388',
   islandName: '池間島',
+  townHallName: '宮古島市観光協会',
+  townHallPhone: '0980-79-6611',
   transportNotes: '宮古島本島から池間大橋を渡って車でアクセス可能です。八重干瀬シュノーケルツアーの出発点でもあります。',
   accommodations: [
     {
@@ -268,8 +243,7 @@ const IKEMA_FACILITY_DATA: IslandFacilityData = {
       name: '池間島 ゲストハウス',
       type: 'guesthouse',
       phone: '0980-75-2010',
-      features: '池間大橋とミヤコブルー絶景 / シュノーケリング具レンタル',
-      priceRange: '¥6,500〜 / 泊',
+      planTier: 'free',
     }
   ],
   transports: [
@@ -284,7 +258,7 @@ const IKEMA_FACILITY_DATA: IslandFacilityData = {
   ]
 };
 
-// ID & 名前による重複マッチング用辞書
+// 重複マッチング用辞書
 export const ISLAND_FACILITIES_DICTIONARY: Record<string, IslandFacilityData> = {
   '58': AOGASHIMA_FACILITY_DATA,
   '青ヶ島': AOGASHIMA_FACILITY_DATA,
@@ -301,7 +275,6 @@ export const ISLAND_FACILITIES_DICTIONARY: Record<string, IslandFacilityData> = 
   '池間島': IKEMA_FACILITY_DATA,
 };
 
-// 名前・IDどちらでも絶対に間違いなくマッチする取得関数
 export function getIslandFacilityDataOrDefault(islandId: string, islandName: string): IslandFacilityData {
   const cleanName = islandName ? islandName.replace(/（.*）|\(.*?\)/g, '').trim() : '';
 
@@ -325,8 +298,7 @@ export function getIslandFacilityDataOrDefault(islandId: string, islandName: str
         id: `${islandId}_default_minshuku`,
         name: `${cleanName || islandName} 島内民宿・素泊まり宿`,
         type: 'minshuku',
-        features: '1泊2食 / 素泊まり / 各自治体観光協会またはお電話にて空室確認',
-        priceRange: '¥6,000〜¥10,000前後',
+        planTier: 'free',
       }
     ],
     transports: [

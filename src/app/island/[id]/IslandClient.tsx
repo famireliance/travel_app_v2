@@ -19,7 +19,8 @@ import Breadcrumb from '@/components/Breadcrumb';
 import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
 import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
-import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike } from 'lucide-react';
+import { getIslandCategoryType, FERRY_BOATS_DICTIONARY, ACTIVITIES_DICTIONARY, getIslandGuideArticle } from '@/data/islandCategoryData';
+import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building } from 'lucide-react';
 
 interface IslandDiarySSR {
   id: string;
@@ -529,101 +530,355 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
           );
         })()}
 
-        {/* Accommodations & Local Transport Infrastructure Section (宿泊 ＆ 島内交通) */}
+        {/* Tiered Island Accommodations, Transport, Ferry & Activity Sections */}
         {(() => {
+          const categoryType = getIslandCategoryType(island.id, island.name);
           const facilityData = getIslandFacilityDataOrDefault(island.id, island.name);
+          const ferryBoats = FERRY_BOATS_DICTIONARY[island.id] || FERRY_BOATS_DICTIONARY[island.name] || FERRY_BOATS_DICTIONARY['zamami_uninhabited'] || [];
+          const activities = ACTIVITIES_DICTIONARY[island.id] || ACTIVITIES_DICTIONARY[island.name] || ACTIVITIES_DICTIONARY['392'] || [];
+          const guideLink = getIslandGuideArticle(island.name);
 
           return (
             <div className="space-y-10 mb-10">
-              
-              {/* 🏨 1. 宿泊施設・民宿ガイド */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-amber-500/10 via-yellow-500/5 to-slate-900/5 border-b border-amber-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <span className="text-[0.65rem] font-bold text-amber-700 uppercase tracking-widest block mb-1">ACCOMMODATION GUIDE</span>
-                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-                      <Hotel className="w-5 h-5 text-amber-500" /> {island.name}の宿泊施設・民宿ガイド
-                    </h3>
-                  </div>
 
-                  {/* Affiliate Action Buttons */}
-                  <div className="flex flex-wrap items-center gap-2 shrink-0">
-                    <a
-                      href={getRakutenTravelSearchUrl(island.name, island.prefecture)}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
-                      className="px-4 py-2 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
-                    >
-                      <ExternalLink size={12} />
-                      楽天トラベルで宿を探す
-                    </a>
-                    <a
-                      href={getJalanSearchUrl(island.name, island.prefecture)}
-                      target="_blank"
-                      rel="noopener noreferrer sponsored"
-                      className="px-4 py-2 bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
-                    >
-                      <ExternalLink size={12} />
-                      じゃらんで探す
-                    </a>
+              {/* 📖 KIRATABI エコシステムガイド記事連携カード */}
+              <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-slate-900 rounded-3xl p-6 text-white shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4 border border-blue-500/30">
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-0.5 rounded-full bg-blue-500/30 text-blue-300 font-bold text-[0.65rem] tracking-wider uppercase border border-blue-400/40">
+                      KIRATABI GUIDE LINK
+                    </span>
+                    <span className="text-xs text-blue-200">公式ガイド記事連携</span>
+                  </div>
+                  <h4 className="font-serif font-bold text-lg md:text-xl text-white">
+                    {guideLink.articleTitle}
+                  </h4>
+                  <p className="text-xs text-slate-300 font-serif leading-relaxed line-clamp-2">
+                    {guideLink.snippet}
+                  </p>
+                </div>
+
+                <a
+                  href={guideLink.articleUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="shrink-0 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-400 hover:to-indigo-500 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition-all hover:scale-102"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  ガイド記事を読む
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+              
+              {/* ========================================== */}
+              {/* TYPE 1: 【メジャー観光離島】 (石垣・宮古・直島等) */}
+              {/* ========================================== */}
+              {categoryType === 'major' && (
+                <div className="space-y-8">
+                  {/* 大手予約サイト ダイレクト比較カード */}
+                  <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div className="bg-gradient-to-r from-amber-500/10 via-yellow-500/5 to-slate-900/5 border-b border-amber-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <span className="text-[0.65rem] font-bold text-amber-700 uppercase tracking-widest block mb-1">MAJOR ISLAND HOTEL SEARCH</span>
+                        <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                          <Hotel className="w-5 h-5 text-amber-500" /> {island.name}のホテル・リゾート宿予約（比較・アフィリエイト）
+                        </h3>
+                      </div>
+
+                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                        <a
+                          href={getRakutenTravelSearchUrl(island.name, island.prefecture)}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="px-5 py-2.5 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
+                        >
+                          <ExternalLink size={14} />
+                          楽天トラベルで【{island.name}】を探す
+                        </a>
+                        <a
+                          href={getJalanSearchUrl(island.name, island.prefecture)}
+                          target="_blank"
+                          rel="noopener noreferrer sponsored"
+                          className="px-5 py-2.5 bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
+                        >
+                          <ExternalLink size={14} />
+                          じゃらんで【{island.name}】を探す
+                        </a>
+                      </div>
+                    </div>
+
+                    {/* 特別広告枠（直契約・スポンサー枠: 初期0件） */}
+                    <div className="p-6 bg-slate-50 border-t border-slate-100 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-amber-700 uppercase tracking-widest flex items-center gap-1">
+                          <Star className="w-4 h-4 text-amber-500 fill-amber-500" /> KIRATABI 厳選・当サイトおすすめ宿枠
+                        </span>
+                        <span className="text-[0.65rem] text-slate-400">※当サイト直契約・特別広告掲載枠（随時受付中）</span>
+                      </div>
+
+                      <div className="p-6 rounded-2xl bg-white border border-dashed border-slate-300 text-center space-y-2">
+                        <p className="text-xs text-slate-500 font-serif">
+                          現在、{island.name}の直掲載おすすめ宿枠は空枠です。<br/>大手予約サイト（楽天トラベル・じゃらん）のダイレクト検索をご利用ください。
+                        </p>
+                        <a 
+                          href="/contact" 
+                          className="inline-block text-[0.7rem] text-blue-600 font-bold hover:underline"
+                        >
+                          宿の直掲載・広告枠のお問い合わせはこちら ➔
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================== */}
+              {/* TYPE 2: 【秘境・小規模離島】 (青ヶ島・御蔵島等) */}
+              {/* ========================================== */}
+              {categoryType === 'remote' && (
+                <div className="space-y-8">
+                  {/* 自治体公式ガイド ＆ 誤情報0% 宿ディレクトリ */}
+                  <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div className="bg-gradient-to-r from-emerald-500/10 via-teal-500/5 to-slate-900/5 border-b border-emerald-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <span className="text-[0.65rem] font-bold text-emerald-700 uppercase tracking-widest block mb-1">REMOTE ISLAND OFFICIAL DIRECTORY</span>
+                        <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                          <Building className="w-5 h-5 text-emerald-600" /> {island.name}の公式宿泊施設ガイド ＆ 役場公認名簿
+                        </h3>
+                      </div>
+
+                      {facilityData.townHallPhone && (
+                        <a
+                          href={`tel:${facilityData.townHallPhone}`}
+                          className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102 shrink-0 font-mono"
+                        >
+                          <PhoneCall size={14} />
+                          {facilityData.townHallName || '公的観光案内'}: {facilityData.townHallPhone}
+                        </a>
+                      )}
+                    </div>
+
+                    <div className="p-6 space-y-6">
+                      <div className="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 font-serif leading-relaxed flex items-start gap-2.5">
+                        <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                        <div>
+                          <strong>秘境島での宿泊ご予約について:</strong><br/>
+                          {island.name}などの小規模離島では大手予約サイトに非掲載の伝統的民宿が主となります。当サイトでは誤情報をゼロにするため、公的ディレクトリ確認済みの電話番号のみを無料掲載しております。
+                        </div>
+                      </div>
+
+                      {/* 宿一覧 (無料枠 vs 有料枠) */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {facilityData.accommodations.map((acc) => {
+                          const isPaid = acc.planTier === 'paid_standard' || acc.planTier === 'paid_premium';
+
+                          return (
+                            <div 
+                              key={acc.id} 
+                              className={`p-5 rounded-2xl border transition-all ${
+                                isPaid 
+                                  ? 'bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-900/5 border-amber-400 shadow-md' 
+                                  : 'bg-slate-50 border-slate-200'
+                              }`}
+                            >
+                              <div className="space-y-3">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div>
+                                    {isPaid ? (
+                                      <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
+                                        🌟 KIRATABI 公式特設掲載宿
+                                      </span>
+                                    ) : (
+                                      <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
+                                        ✅ 公的ディレクトリ確認済み
+                                      </span>
+                                    )}
+                                    <h4 className="font-serif font-bold text-slate-900 text-base">{acc.name}</h4>
+                                  </div>
+
+                                  {isPaid && acc.priceRange && (
+                                    <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-lg shrink-0">
+                                      {acc.priceRange}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {/* 無料枠: 余計な推測情報は載せず電話番号のみ！ / 有料枠: 写真・詳細特徴 */}
+                                {isPaid && acc.features && (
+                                  <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                                    {acc.features}
+                                  </p>
+                                )}
+
+                                <div className="pt-2 flex items-center justify-between gap-2 border-t border-slate-200/60">
+                                  {acc.phone ? (
+                                    <a
+                                      href={`tel:${acc.phone}`}
+                                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
+                                    >
+                                      <Phone size={14} /> {acc.phone}
+                                    </a>
+                                  ) : (
+                                    <span className="text-xs text-slate-400">電話要確認</span>
+                                  )}
+
+                                  {isPaid && acc.sponsoredId && (
+                                    <Link
+                                      href={`/stay/${acc.sponsoredId}`}
+                                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"
+                                    >
+                                      公式特設LPを見る <ArrowRight size={12} />
+                                    </Link>
+                                  )}
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* 補助的 大手検索リンク */}
+                      <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-xs text-slate-500">※大手サイトに載っている場合の補助検索:</span>
+                        <div className="flex gap-2">
+                          <a
+                            href={getRakutenTravelSearchUrl(island.name, island.prefecture)}
+                            target="_blank"
+                            rel="noopener noreferrer sponsored"
+                            className="text-xs font-bold text-[#BF0000] hover:underline flex items-center gap-1"
+                          >
+                            <ExternalLink size={12} /> 楽天トラベルで検索
+                          </a>
+                          <a
+                            href={getJalanSearchUrl(island.name, island.prefecture)}
+                            target="_blank"
+                            rel="noopener noreferrer sponsored"
+                            className="text-xs font-bold text-[#FF6600] hover:underline flex items-center gap-1"
+                          >
+                            <ExternalLink size={12} /> じゃらんで検索
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================== */}
+              {/* TYPE 3: 【日帰り・渡し船・無人島】 (猿島・水納島・無人島等) */}
+              {/* ========================================== */}
+              {categoryType === 'ferry_daytrip' && (
+                <div className="space-y-8">
+                  {/* 🛥️ 渡し船・マリンタクシー・渡船ガイド */}
+                  <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                    <div className="bg-gradient-to-r from-teal-500/10 via-cyan-500/5 to-slate-900/5 border-b border-teal-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div>
+                        <span className="text-[0.65rem] font-bold text-teal-700 uppercase tracking-widest block mb-1">LOCAL FERRY & BOAT TRANSIT</span>
+                        <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                          <Waves className="w-5 h-5 text-teal-600" /> {island.name}の渡し船・マリンタクシー・渡船ガイド
+                        </h3>
+                      </div>
+                    </div>
+
+                    <div className="p-6 space-y-4">
+                      <div className="p-4 rounded-2xl bg-teal-50 border border-teal-100 text-xs text-teal-900 font-serif leading-relaxed flex items-start gap-2.5">
+                        <LifeBuoy className="w-4 h-4 text-teal-600 shrink-0 mt-0.5" />
+                        <div>
+                          <strong>渡船・アクセスについて:</strong><br/>
+                          {island.name}は日帰りや渡し船でのアクセスがメインとなる島です。島内に宿がない、または数が非常に限られているため、出港地となる本島・隣接島の宿のご利用をお勧めいたします。
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {ferryBoats.map((boat) => (
+                          <div key={boat.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                                <Ship size={16} className="text-teal-600" />
+                                {boat.name}
+                              </h4>
+                              {boat.priceRange && (
+                                <span className="font-mono text-[0.7rem] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 shrink-0">
+                                  {boat.priceRange}
+                                </span>
+                              )}
+                            </div>
+
+                            <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                              {boat.features}
+                            </p>
+
+                            <div className="pt-1 flex items-center justify-between text-xs font-mono text-slate-500">
+                              <span>📍 {boat.departurePort}</span>
+                              {boat.phone && (
+                                <a href={`tel:${boat.phone}`} className="text-blue-600 font-bold hover:underline flex items-center gap-1">
+                                  <Phone size={12} /> {boat.phone}
+                                </a>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* 本土・近隣島の宿検索ボタン */}
+                      <div className="pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                        <span className="text-xs font-bold text-slate-700">隣接する本島・母島の宿を探す:</span>
+                        <div className="flex flex-wrap gap-2">
+                          <a
+                            href={getRakutenTravelSearchUrl(island.name, island.prefecture)}
+                            target="_blank"
+                            rel="noopener noreferrer sponsored"
+                            className="px-4 py-2 bg-[#BF0000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"
+                          >
+                            <ExternalLink size={12} /> 近隣の宿を楽天トラベルで探す
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* ========================================== */}
+              {/* COMMON 1: 🦺 アクティビティ・ツアー掲載枠 */}
+              {/* ========================================== */}
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-500/10 via-pink-500/5 to-slate-900/5 border-b border-purple-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[0.65rem] font-bold text-purple-700 uppercase tracking-widest block mb-1">ISLAND ACTIVITIES & TOURS</span>
+                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                      <Ticket className="w-5 h-5 text-purple-600" /> {island.name}のアクティビティ・オプショナルツアーガイド
+                    </h3>
                   </div>
                 </div>
 
                 <div className="p-6 space-y-4">
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">島内の代表的な宿・民宿リスト</span>
-                  
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {facilityData.accommodations.map((acc) => (
-                      <div 
-                        key={acc.id} 
-                        className={`p-5 rounded-2xl border transition-all ${
-                          acc.isSponsored 
-                            ? 'bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-900/5 border-amber-400 shadow-md' 
-                            : 'bg-slate-50 border-slate-200'
-                        }`}
-                      >
-                        <div className="space-y-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <div>
-                              {acc.isSponsored && (
-                                <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
-                                  🌟 KIRATABI 公式掲載宿
-                                </span>
-                              )}
-                              <h4 className="font-serif font-bold text-slate-900 text-base">{acc.name}</h4>
-                            </div>
-                            {acc.priceRange && (
-                              <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-lg shrink-0">
-                                {acc.priceRange}
-                              </span>
-                            )}
-                          </div>
+                    {activities.map((act) => (
+                      <div key={act.id} className="p-4 rounded-2xl bg-purple-50/50 border border-purple-100 space-y-2">
+                        <div className="flex items-start justify-between gap-2">
+                          <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                            <Sparkles size={16} className="text-purple-600" />
+                            {act.name}
+                          </h4>
+                          {act.priceRange && (
+                            <span className="font-mono text-[0.7rem] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md shrink-0">
+                              {act.priceRange}
+                            </span>
+                          )}
+                        </div>
 
-                          <p className="text-xs text-slate-600 leading-relaxed">
-                            {acc.features}
-                          </p>
+                        <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                          {act.features}
+                        </p>
 
-                          <div className="pt-2 flex items-center justify-between gap-2">
-                            {acc.phone ? (
-                              <a
-                                href={`tel:${acc.phone}`}
-                                className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
-                              >
-                                <Phone size={12} /> {acc.phone}
-                              </a>
-                            ) : (
-                              <span className="text-xs text-slate-400">電話要確認</span>
-                            )}
-
-                            {acc.isSponsored && acc.sponsoredId && (
-                              <Link
-                                href={`/stay/${acc.sponsoredId}`}
-                                className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"
-                              >
-                                公式特設ページを見る <ArrowRight size={12} />
-                              </Link>
-                            )}
-                          </div>
+                        <div className="pt-2 flex items-center justify-between">
+                          <span className="text-[0.65rem] text-purple-700 font-bold bg-purple-100 px-2 py-0.5 rounded-full uppercase">
+                            {act.category}
+                          </span>
+                          <a href="/contact" className="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1">
+                            ツアーの相談・掲載問い合わせ ➔
+                          </a>
                         </div>
                       </div>
                     ))}
@@ -631,7 +886,9 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                 </div>
               </div>
 
-              {/* 🚗 2. 島内交通インフラ・レンタカー・移動ガイド */}
+              {/* ========================================== */}
+              {/* COMMON 2: 🚗 島内交通インフラ・レンタカーガイド */}
+              {/* ========================================== */}
               <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
                 <div className="bg-gradient-to-r from-blue-500/10 via-indigo-500/5 to-slate-900/5 border-b border-blue-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
                   <div>
@@ -641,7 +898,6 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                     </h3>
                   </div>
 
-                  {/* Rent-a-car Affiliate Button */}
                   <a
                     href={getRakutenRentacarSearchUrl(island.name, island.prefecture)}
                     target="_blank"
