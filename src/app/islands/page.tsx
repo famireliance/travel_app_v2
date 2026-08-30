@@ -72,7 +72,7 @@ export default function AllIslandsDirectory() {
                   {islandsInRegion.map(island => (
                     <li key={island.id}>
                       <Link 
-                        href={`/island/${island.id}`}
+                        href={`/island/${island.slug || island.id}`}
                         className="flex items-center gap-2 p-3 rounded-xl hover:bg-blue-50 border border-transparent hover:border-blue-100 transition-colors group"
                       >
                         <span className="w-2 h-2 rounded-full bg-slate-300 group-hover:bg-blue-400 transition-colors" />

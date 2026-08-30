@@ -169,7 +169,7 @@ export default function RegionMap() {
           <ul>
             {regionIslands.map((island) => (
               <li key={island.id}>
-                <Link href={`/island/${island.id}`}>{island.name}</Link>
+                <Link href={`/island/${island.slug || island.id}`}>{island.name}</Link>
               </li>
             ))}
           </ul>

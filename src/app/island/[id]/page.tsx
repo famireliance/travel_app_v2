@@ -11,7 +11,14 @@ export async function generateMetadata(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   { params }: { params: any } 
 ): Promise<Metadata> {
-  const { id } = await params;
+  const { id: slugOrId } = await params;
+  
+  // slugから内部IDを逆引き
+  let internalId = slugOrId;
+  const masterEntry = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.slug === slugOrId || isl.id === slugOrId);
+  if (masterEntry) {
+    internalId = masterEntry.id;
+  }
   
   // 1. まずDBから最新の実用情報（人口、アクセス等）と最新の口コミを並行してフェッチ
   let islandName = '未知の島';
@@ -19,21 +26,17 @@ export async function generateMetadata(
   let population = '';
   
   const [islandResult, diariesResult] = await Promise.all([
-    supabase.from('islands').select('name, description, population').eq('id', id).single(),
-    supabase.from('island_diaries').select('content').eq('island_id', id).eq('is_hidden', false).order('created_at', { ascending: false }).limit(2)
+    supabase.from('islands').select('name, description, population').eq('id', internalId).single(),
+    supabase.from('island_diaries').select('content').eq('island_id', internalId).eq('is_hidden', false).order('created_at', { ascending: false }).limit(2)
   ]);
   
   if (islandResult.data) {
     islandName = islandResult.data.name;
     description = islandResult.data.description || description;
     population = islandResult.data.population ? `人口: ${islandResult.data.population}` : '';
-  } else {
-    // フォールバック: DBにない場合はマスター辞書を参照
-    const master = ALL_ISLANDS_MASTER_DICTIONARY[id];
-    if (master) {
-      islandName = master.name;
-      description = master.description || description;
-    }
+  } else if (masterEntry) {
+    islandName = masterEntry.name;
+    description = masterEntry.description || description;
   }
 
   // 最新の口コミテキストをメタディスクリプションに反映
@@ -54,13 +57,13 @@ export async function generateMetadata(
     title,
     description: metaDesc,
     alternates: {
-      canonical: `https://island.kira-tabi.com/island/${id}`,
+      canonical: `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`,
     },
     keywords: [islandName, '離島', '観光', 'アクセス', '旅行', 'キラ旅'],
     openGraph: {
       title,
       description: metaDesc,
-      url: `https://island.kira-tabi.com/island/${id}`,
+      url: `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`,
       siteName: 'キラ旅',
       images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${islandName} | キラ旅` }],
       type: 'website',
@@ -78,31 +81,37 @@ export async function generateMetadata(
 // サーバーコンポーネント本体
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export default async function Page({ params }: { params: any }) {
-  const { id } = await params; 
+  const { id: slugOrId } = await params; 
+  
+  // slugから内部IDを逆引き
+  let internalId = slugOrId;
+  const masterEntry = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.slug === slugOrId || isl.id === slugOrId);
+  if (masterEntry) {
+    internalId = masterEntry.id;
+  }
 
   // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR)
   const [diariesResult, accommodationsResult, islandResult] = await Promise.all([
     supabase
       .from('island_diaries')
       .select('*')
-      .eq('island_id', id)
+      .eq('island_id', internalId)
       .eq('is_hidden', false)
       .order('created_at', { ascending: false })
       .limit(5),
     supabase
       .from('accommodations')
       .select('*')
-      .eq('island_id', id),
+      .eq('island_id', internalId),
     supabase
       .from('islands')
       .select('name, region_id')
-      .eq('id', id)
+      .eq('id', internalId)
       .single()
   ]);
 
-  const master = ALL_ISLANDS_MASTER_DICTIONARY[id];
-  const islandName = islandResult.data?.name || master?.name || '未知の島';
-  const regionId = islandResult.data?.region_id || master?.region_id || '';
+  const islandName = islandResult.data?.name || masterEntry?.name || '未知の島';
+  const regionId = islandResult.data?.region_id || masterEntry?.region_id || '';
 
   // JSON-LD 構造化データ (BreadcrumbList)
   const jsonLd = {
@@ -125,7 +134,7 @@ export default async function Page({ params }: { params: any }) {
         "@type": "ListItem",
         "position": 3,
         "name": islandName,
-        "item": `https://island.kira-tabi.com/island/${id}`
+        "item": `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`
       }
     ]
   };
@@ -137,7 +146,7 @@ export default async function Page({ params }: { params: any }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <IslandClient 
-        islandId={id} 
+        islandId={internalId} 
         initialDiaries={diariesResult.data ?? []} 
         initialAccommodations={accommodationsResult.data ?? []} 
       />

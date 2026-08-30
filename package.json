@@ -24,6 +24,8 @@
     "ffmpeg-static": "^5.3.0",
     "framer-motion": "^12.42.2",
     "iconv-lite": "^0.7.3",
+    "kuroshiro": "^1.2.0",
+    "kuroshiro-analyzer-kuromoji": "^1.1.0",
     "leaflet": "^1.9.4",
     "lucide-react": "^1.23.0",
     "next": "15.5.20",

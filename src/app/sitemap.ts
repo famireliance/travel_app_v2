@@ -60,7 +60,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // 島の個別ページ（全432島）
   const islandPages: MetadataRoute.Sitemap = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).map((island) => ({
-    url: `${BASE_URL}/island/${island.id}`,
+    url: `${BASE_URL}/island/${island.slug || island.id}`,
     lastModified: now,
     changeFrequency: 'weekly' as const,
     priority: island.is_conquest_target ? 0.8 : 0.6,

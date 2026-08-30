@@ -14,11 +14,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 81.25,
-    "radius_m": 5086.0,
-    "checkin_radius_m": 6086.0,
-    "points": 140.0,
+    "radius_m": 5086,
+    "checkin_radius_m": 6086,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "rebunto"
   },
   "2": {
     "id": "2",
@@ -33,11 +34,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 182.08,
-    "radius_m": 7613.0,
-    "checkin_radius_m": 8613.0,
-    "points": 140.0,
+    "radius_m": 7613,
+    "checkin_radius_m": 8613,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "rishirito"
   },
   "3": {
     "id": "3",
@@ -52,11 +54,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.47,
-    "radius_m": 1320.0,
-    "checkin_radius_m": 2320.0,
-    "points": 140.0,
+    "radius_m": 1320,
+    "checkin_radius_m": 2320,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "teurito"
   },
   "4": {
     "id": "4",
@@ -71,11 +74,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.19,
-    "radius_m": 1285.0,
-    "checkin_radius_m": 2285.0,
-    "points": 140.0,
+    "radius_m": 1285,
+    "checkin_radius_m": 2285,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yagishirito"
   },
   "5": {
     "id": "5",
@@ -90,11 +94,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 142.7,
-    "radius_m": 6740.0,
-    "checkin_radius_m": 7740.0,
-    "points": 140.0,
+    "radius_m": 6740,
+    "checkin_radius_m": 7740,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okushirito"
   },
   "6": {
     "id": "6",
@@ -111,7 +116,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kamometo"
   },
   "7": {
     "id": "7",
@@ -128,7 +134,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "atsukeshikojima"
   },
   "8": {
     "id": "8",
@@ -145,7 +152,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kembokkito"
   },
   "9": {
     "id": "9",
@@ -162,7 +170,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "oshimaoshimamasakioshima"
   },
   "10": {
     "id": "10",
@@ -179,7 +188,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "oshimakojimamasakikojima"
   },
   "11": {
     "id": "11",
@@ -196,7 +206,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "yururito"
   },
   "12": {
     "id": "12",
@@ -213,7 +224,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "moyururito"
   },
   "13": {
     "id": "13",
@@ -230,7 +242,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "daikokujimaatsukeshimachi"
   },
   "14": {
     "id": "14",
@@ -247,7 +260,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kiritapputoyunieto"
   },
   "15": {
     "id": "15",
@@ -262,11 +276,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.05,
-    "radius_m": 126.0,
-    "checkin_radius_m": 1126.0,
-    "points": 140.0,
+    "radius_m": 126,
+    "checkin_radius_m": 1126,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "kojimamasakimachi"
   },
   "16": {
     "id": "16",
@@ -283,7 +298,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "bentenjimawakkanaishisoyamisaki"
   },
   "17": {
     "id": "17",
@@ -298,11 +314,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.73,
-    "radius_m": 932.0,
-    "checkin_radius_m": 1932.0,
-    "points": 60.0,
+    "radius_m": 932,
+    "checkin_radius_m": 1932,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tobishimayamagataken"
   },
   "18": {
     "id": "18",
@@ -319,7 +336,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kaburajimaaomoriken"
   },
   "19": {
     "id": "19",
@@ -336,7 +354,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "hisaisagotoaomoriken"
   },
   "20": {
     "id": "20",
@@ -353,7 +372,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "shoajirotoaomoriken"
   },
   "21": {
     "id": "21",
@@ -370,7 +390,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tsubakishimaiwatekenrikuzentakata"
   },
   "22": {
     "id": "22",
@@ -387,7 +408,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "aomatsushimaiwateken"
   },
   "23": {
     "id": "23",
@@ -404,7 +426,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gongenjimaiwatekenyamadamachi"
   },
   "25": {
     "id": "25",
@@ -421,7 +444,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kesennumaoshima"
   },
   "26": {
     "id": "26",
@@ -436,11 +460,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 6.49,
-    "radius_m": 1437.0,
-    "checkin_radius_m": 2437.0,
-    "points": 60.0,
+    "radius_m": 1437,
+    "checkin_radius_m": 2437,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ajishima"
   },
   "27": {
     "id": "27",
@@ -455,11 +480,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.92,
-    "radius_m": 964.0,
-    "checkin_radius_m": 1964.0,
-    "points": 60.0,
+    "radius_m": 964,
+    "checkin_radius_m": 1964,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tashirotonekoshima"
   },
   "28": {
     "id": "28",
@@ -474,11 +500,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 9.92,
-    "radius_m": 1777.0,
-    "checkin_radius_m": 2777.0,
-    "points": 60.0,
+    "radius_m": 1777,
+    "checkin_radius_m": 2777,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kimukazan"
   },
   "29": {
     "id": "29",
@@ -493,11 +520,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.72,
-    "radius_m": 479.0,
-    "checkin_radius_m": 1479.0,
-    "points": 400.0,
+    "radius_m": 479,
+    "checkin_radius_m": 1479,
+    "points": 400,
     "difficulty": "特殊手段限定",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "katsurashimamiyagikenurato"
   },
   "30": {
     "id": "30",
@@ -512,11 +540,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.48,
-    "radius_m": 391.0,
-    "checkin_radius_m": 1391.0,
-    "points": 60.0,
+    "radius_m": 391,
+    "checkin_radius_m": 1391,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nonoshima"
   },
   "31": {
     "id": "31",
@@ -531,11 +560,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.37,
-    "radius_m": 660.0,
-    "checkin_radius_m": 1660.0,
-    "points": 60.0,
+    "radius_m": 660,
+    "checkin_radius_m": 1660,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sabusawajima"
   },
   "32": {
     "id": "32",
@@ -550,11 +580,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.1,
-    "radius_m": 1503.0,
-    "checkin_radius_m": 2503.0,
-    "points": 10.0,
+    "radius_m": 1503,
+    "checkin_radius_m": 2503,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "miyatojima"
   },
   "33": {
     "id": "33",
@@ -569,11 +600,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.62,
-    "radius_m": 913.0,
-    "checkin_radius_m": 1913.0,
-    "points": 60.0,
+    "radius_m": 913,
+    "checkin_radius_m": 1913,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "dejimamiyagikenonagawamachi"
   },
   "34": {
     "id": "34",
@@ -588,11 +620,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.33,
-    "radius_m": 324.0,
-    "checkin_radius_m": 1324.0,
-    "points": 60.0,
+    "radius_m": 324,
+    "checkin_radius_m": 1324,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ejimamiyagikenonagawamachi"
   },
   "35": {
     "id": "35",
@@ -609,7 +642,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "amikojimamiyagiken"
   },
   "36": {
     "id": "36",
@@ -624,11 +658,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 8.51,
-    "radius_m": 1646.0,
-    "checkin_radius_m": 2646.0,
-    "points": 60.0,
+    "radius_m": 1646,
+    "checkin_radius_m": 2646,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "oshimamiyagikenshiogamashi"
   },
   "37": {
     "id": "37",
@@ -643,11 +678,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.14,
-    "radius_m": 211.0,
-    "checkin_radius_m": 1211.0,
-    "points": 60.0,
+    "radius_m": 211,
+    "checkin_radius_m": 1211,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hojimamiyagikenurato"
   },
   "38": {
     "id": "38",
@@ -664,7 +700,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "ashibitokesennuma"
   },
   "39": {
     "id": "39",
@@ -681,7 +718,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tsukumojimamatsushimakaiikidaihyoto"
   },
   "40": {
     "id": "40",
@@ -698,7 +736,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "yahataiwamiyagiken"
   },
   "41": {
     "id": "41",
@@ -715,7 +754,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "sasajimamiyagiken"
   },
   "42": {
     "id": "42",
@@ -732,7 +772,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "namishimamiyagiken"
   },
   "43": {
     "id": "43",
@@ -749,7 +790,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "yoshidajimamiyagiken"
   },
   "44": {
     "id": "44",
@@ -766,7 +808,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "nagashimamiyagikenmatsushima"
   },
   "45": {
     "id": "45",
@@ -783,7 +826,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "dejimateramamiyagikenonagawamachi"
   },
   "46": {
     "id": "46",
@@ -800,7 +844,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "nekitomiyagiken"
   },
   "47": {
     "id": "47",
@@ -817,7 +862,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "fukitomiyagiken"
   },
   "48": {
     "id": "48",
@@ -834,7 +880,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "karakuwahantookioshimamiyagiken"
   },
   "49": {
     "id": "49",
@@ -851,7 +898,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "izuoshima"
   },
   "50": {
     "id": "50",
@@ -866,11 +914,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 4.12,
-    "radius_m": 1145.0,
-    "checkin_radius_m": 2145.0,
-    "points": 60.0,
+    "radius_m": 1145,
+    "checkin_radius_m": 2145,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "toshima"
   },
   "51": {
     "id": "51",
@@ -885,11 +934,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 22.97,
-    "radius_m": 2704.0,
-    "checkin_radius_m": 3704.0,
-    "points": 60.0,
+    "radius_m": 2704,
+    "checkin_radius_m": 3704,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nijima"
   },
   "52": {
     "id": "52",
@@ -904,11 +954,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.67,
-    "radius_m": 1081.0,
-    "checkin_radius_m": 2081.0,
-    "points": 60.0,
+    "radius_m": 1081,
+    "checkin_radius_m": 2081,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shikinejima"
   },
   "53": {
     "id": "53",
@@ -923,11 +974,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 18.24,
-    "radius_m": 2410.0,
-    "checkin_radius_m": 3410.0,
-    "points": 60.0,
+    "radius_m": 2410,
+    "checkin_radius_m": 3410,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kozushima"
   },
   "54": {
     "id": "54",
@@ -942,11 +994,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 55.2,
-    "radius_m": 4192.0,
-    "checkin_radius_m": 5192.0,
-    "points": 60.0,
+    "radius_m": 4192,
+    "checkin_radius_m": 5192,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "miyakejima"
   },
   "55": {
     "id": "55",
@@ -961,11 +1014,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 20.51,
-    "radius_m": 2555.0,
-    "checkin_radius_m": 3555.0,
-    "points": 60.0,
+    "radius_m": 2555,
+    "checkin_radius_m": 3555,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "mikurajima"
   },
   "56": {
     "id": "56",
@@ -980,11 +1034,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 69.11,
-    "radius_m": 4690.0,
-    "checkin_radius_m": 5690.0,
-    "points": 60.0,
+    "radius_m": 4690,
+    "checkin_radius_m": 5690,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hachijojima"
   },
   "57": {
     "id": "57",
@@ -1001,7 +1056,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "hachijokojima"
   },
   "58": {
     "id": "58",
@@ -1018,7 +1074,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "aogashima"
   },
   "59": {
     "id": "59",
@@ -1035,7 +1092,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "hayashimanijimaoki"
   },
   "60": {
     "id": "60",
@@ -1052,7 +1110,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "udoneshima"
   },
   "61": {
     "id": "61",
@@ -1069,7 +1128,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "torishimaizushoto"
   },
   "62": {
     "id": "62",
@@ -1086,7 +1146,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "sumisujima"
   },
   "63": {
     "id": "63",
@@ -1101,11 +1162,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 23.45,
-    "radius_m": 2732.0,
-    "checkin_radius_m": 3732.0,
-    "points": 900.0,
+    "radius_m": 2732,
+    "checkin_radius_m": 3732,
+    "points": 900,
     "difficulty": "秘境中の秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "chichijimaogasawarashoto"
   },
   "64": {
     "id": "64",
@@ -1120,11 +1182,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 19.88,
-    "radius_m": 2516.0,
-    "checkin_radius_m": 3516.0,
-    "points": 900.0,
+    "radius_m": 2516,
+    "checkin_radius_m": 3516,
+    "points": 900,
     "difficulty": "秘境中の秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hahajimaogasawarashoto"
   },
   "65": {
     "id": "65",
@@ -1142,7 +1205,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "anijimaogasawarashoto"
   },
   "66": {
     "id": "66",
@@ -1160,7 +1224,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "ototojimaogasawarashoto"
   },
   "67": {
     "id": "67",
@@ -1177,7 +1242,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "hetoogasawara"
   },
   "68": {
     "id": "68",
@@ -1194,7 +1260,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "mukojimaogasawarahahajimaretto"
   },
   "69": {
     "id": "69",
@@ -1211,7 +1278,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "nishinoshimaogasawarakazanto"
   },
   "70": {
     "id": "70",
@@ -1228,7 +1296,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "iotoogasawarakazanretto"
   },
   "71": {
     "id": "71",
@@ -1245,7 +1314,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "minamitorishima"
   },
   "72": {
     "id": "72",
@@ -1262,7 +1332,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "okinotorishima"
   },
   "73": {
     "id": "73",
@@ -1277,11 +1348,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.39,
-    "radius_m": 352.0,
-    "checkin_radius_m": 1352.0,
+    "radius_m": 352,
+    "checkin_radius_m": 1352,
     "points": 0,
     "difficulty": "未判定(要データ収集)",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "enoshima"
   },
   "74": {
     "id": "74",
@@ -1299,7 +1371,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "sashima"
   },
   "75": {
     "id": "75",
@@ -1314,11 +1387,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.82,
-    "radius_m": 511.0,
-    "checkin_radius_m": 1511.0,
-    "points": 10.0,
+    "radius_m": 511,
+    "checkin_radius_m": 1511,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "jogashima"
   },
   "76": {
     "id": "76",
@@ -1333,11 +1407,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 854.81,
-    "radius_m": 16495.0,
-    "checkin_radius_m": 17495.0,
-    "points": 140.0,
+    "radius_m": 16495,
+    "checkin_radius_m": 17495,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sadoto"
   },
   "77": {
     "id": "77",
@@ -1352,11 +1427,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 9.69,
-    "radius_m": 1756.0,
-    "checkin_radius_m": 2756.0,
-    "points": 140.0,
+    "radius_m": 1756,
+    "checkin_radius_m": 2756,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "awashimanigataken"
   },
   "78": {
     "id": "78",
@@ -1371,11 +1447,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 46.58,
-    "radius_m": 3851.0,
-    "checkin_radius_m": 4851.0,
-    "points": 10.0,
+    "radius_m": 3851,
+    "checkin_radius_m": 4851,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "notojima"
   },
   "79": {
     "id": "79",
@@ -1390,11 +1467,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.57,
-    "radius_m": 426.0,
-    "checkin_radius_m": 1426.0,
-    "points": 140.0,
+    "radius_m": 426,
+    "checkin_radius_m": 1426,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hegurajima"
   },
   "80": {
     "id": "80",
@@ -1411,7 +1489,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "nanatsujimaishikawaken"
   },
   "81": {
     "id": "81",
@@ -1428,7 +1507,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "mitsukejimagunkantonoto"
   },
   "82": {
     "id": "82",
@@ -1445,7 +1525,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "bentenjimanigatakenkashiwazakishi"
   },
   "83": {
     "id": "83",
@@ -1462,7 +1543,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "arashimafukuikensankoku"
   },
   "84": {
     "id": "84",
@@ -1479,7 +1561,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "ojimafukuikentojimbooki"
   },
   "85": {
     "id": "85",
@@ -1496,7 +1579,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "mizushimafukuikentsurugashihokurikunohawai"
   },
   "86": {
     "id": "86",
@@ -1513,7 +1597,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "takeshimafukuikenwakasamachi"
   },
   "87": {
     "id": "87",
@@ -1528,11 +1613,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.52,
-    "radius_m": 407.0,
-    "checkin_radius_m": 1407.0,
-    "points": 60.0,
+    "radius_m": 407,
+    "checkin_radius_m": 1407,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hatsushimashizuokakenatamishi"
   },
   "88": {
     "id": "88",
@@ -1549,7 +1635,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "mikomotojimashizuokakenshimoda"
   },
   "89": {
     "id": "89",
@@ -1566,7 +1653,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "teishijimashizuokakenitoshi"
   },
   "90": {
     "id": "90",
@@ -1581,11 +1669,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.51,
-    "radius_m": 693.0,
-    "checkin_radius_m": 1693.0,
-    "points": 60.0,
+    "radius_m": 693,
+    "checkin_radius_m": 1693,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okishimabiwako"
   },
   "91": {
     "id": "91",
@@ -1603,7 +1692,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "chikubushimabiwako"
   },
   "92": {
     "id": "92",
@@ -1620,7 +1710,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "takeishimabiwako"
   },
   "93": {
     "id": "93",
@@ -1637,7 +1728,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "okitoshigakenomihachimanshi"
   },
   "94": {
     "id": "94",
@@ -1654,7 +1746,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "yahashikihantobiwakojinkoto"
   },
   "95": {
     "id": "95",
@@ -1669,11 +1762,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.8,
-    "radius_m": 505.0,
-    "checkin_radius_m": 1505.0,
-    "points": 60.0,
+    "radius_m": 505,
+    "checkin_radius_m": 1505,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "himakajima"
   },
   "96": {
     "id": "96",
@@ -1688,11 +1782,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.91,
-    "radius_m": 538.0,
-    "checkin_radius_m": 1538.0,
-    "points": 60.0,
+    "radius_m": 538,
+    "checkin_radius_m": 1538,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shinojima"
   },
   "97": {
     "id": "97",
@@ -1707,11 +1802,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.73,
-    "radius_m": 742.0,
-    "checkin_radius_m": 1742.0,
-    "points": 60.0,
+    "radius_m": 742,
+    "checkin_radius_m": 1742,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sakushima"
   },
   "98": {
     "id": "98",
@@ -1728,7 +1824,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "takeshimaaichikengamagorishi"
   },
   "99": {
     "id": "99",
@@ -1745,7 +1842,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "maejimaaichikenminamichita"
   },
   "100": {
     "id": "100",
@@ -1762,7 +1860,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "okishimaaichikennishioshi"
   },
   "101": {
     "id": "101",
@@ -1777,11 +1876,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 4.41,
-    "radius_m": 1185.0,
-    "checkin_radius_m": 2185.0,
-    "points": 60.0,
+    "radius_m": 1185,
+    "checkin_radius_m": 2185,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sugashima"
   },
   "102": {
     "id": "102",
@@ -1796,11 +1896,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 6.96,
-    "radius_m": 1488.0,
-    "checkin_radius_m": 2488.0,
-    "points": 60.0,
+    "radius_m": 1488,
+    "checkin_radius_m": 2488,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "toshijima"
   },
   "103": {
     "id": "103",
@@ -1815,11 +1916,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.69,
-    "radius_m": 469.0,
-    "checkin_radius_m": 1469.0,
-    "points": 60.0,
+    "radius_m": 469,
+    "checkin_radius_m": 1469,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kamishimamiekentoppashi"
   },
   "104": {
     "id": "104",
@@ -1834,11 +1936,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.67,
-    "radius_m": 462.0,
-    "checkin_radius_m": 1462.0,
-    "points": 10.0,
+    "radius_m": 462,
+    "checkin_radius_m": 1462,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kashikojima"
   },
   "105": {
     "id": "105",
@@ -1853,11 +1956,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.4,
-    "radius_m": 357.0,
-    "checkin_radius_m": 1357.0,
-    "points": 60.0,
+    "radius_m": 357,
+    "checkin_radius_m": 1357,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "masakijima"
   },
   "106": {
     "id": "106",
@@ -1872,11 +1976,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.71,
-    "radius_m": 475.0,
-    "checkin_radius_m": 1475.0,
-    "points": 60.0,
+    "radius_m": 475,
+    "checkin_radius_m": 1475,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sakatejima"
   },
   "107": {
     "id": "107",
@@ -1891,11 +1996,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.63,
-    "radius_m": 448.0,
-    "checkin_radius_m": 1448.0,
-    "points": 60.0,
+    "radius_m": 448,
+    "checkin_radius_m": 1448,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "watakanojimamiekenshimashi"
   },
   "108": {
     "id": "108",
@@ -1910,11 +2016,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.06,
-    "radius_m": 138.0,
-    "checkin_radius_m": 1138.0,
-    "points": 1200.0,
+    "radius_m": 138,
+    "checkin_radius_m": 1138,
+    "points": 1200,
     "difficulty": "到達伝説",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yokoyamatomiekenshimashi"
   },
   "109": {
     "id": "109",
@@ -1931,7 +2038,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "oshimamiekenkihokumachi"
   },
   "110": {
     "id": "110",
@@ -1948,7 +2056,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kashirajimamiekentoppashi"
   },
   "111": {
     "id": "111",
@@ -1965,7 +2074,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "ukishimamieken"
   },
   "112": {
     "id": "112",
@@ -1982,7 +2092,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kammurishimakyotofumaizuruoki"
   },
   "113": {
     "id": "113",
@@ -1999,7 +2110,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kutsujimakyotofu"
   },
   "114": {
     "id": "114",
@@ -2014,11 +2126,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 592.51,
-    "radius_m": 13733.0,
-    "checkin_radius_m": 14733.0,
-    "points": 10.0,
+    "radius_m": 13733,
+    "checkin_radius_m": 14733,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "awajishima"
   },
   "115": {
     "id": "115",
@@ -2033,11 +2146,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.67,
-    "radius_m": 922.0,
-    "checkin_radius_m": 1922.0,
-    "points": 60.0,
+    "radius_m": 922,
+    "checkin_radius_m": 1922,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nushima"
   },
   "116": {
     "id": "116",
@@ -2052,11 +2166,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.4,
-    "radius_m": 1311.0,
-    "checkin_radius_m": 2311.0,
-    "points": 60.0,
+    "radius_m": 1311,
+    "checkin_radius_m": 2311,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iejima"
   },
   "117": {
     "id": "117",
@@ -2071,11 +2186,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.92,
-    "radius_m": 782.0,
-    "checkin_radius_m": 1782.0,
-    "points": 60.0,
+    "radius_m": 782,
+    "checkin_radius_m": 1782,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "bozejima"
   },
   "118": {
     "id": "118",
@@ -2090,11 +2206,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 4.53,
-    "radius_m": 1201.0,
-    "checkin_radius_m": 2201.0,
-    "points": 60.0,
+    "radius_m": 1201,
+    "checkin_radius_m": 2201,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tangashima"
   },
   "119": {
     "id": "119",
@@ -2109,11 +2226,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 6.52,
-    "radius_m": 1441.0,
-    "checkin_radius_m": 2441.0,
-    "points": 60.0,
+    "radius_m": 1441,
+    "checkin_radius_m": 2441,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "nishijimahyogokeniejimagunto"
   },
   "120": {
     "id": "120",
@@ -2130,7 +2248,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kuragakejimahyogoken"
   },
   "121": {
     "id": "121",
@@ -2147,7 +2266,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "matsushimahyogokeniejima"
   },
   "122": {
     "id": "122",
@@ -2164,7 +2284,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "narugashimahyogokensumotoshi"
   },
   "123": {
     "id": "123",
@@ -2179,11 +2300,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 9.47,
-    "radius_m": 1736.0,
-    "checkin_radius_m": 2736.0,
-    "points": 10.0,
+    "radius_m": 1736,
+    "checkin_radius_m": 2736,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kiiooshima"
   },
   "124": {
     "id": "124",
@@ -2200,7 +2322,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "nakanoshimawakayamakennachikatsuura"
   },
   "125": {
     "id": "125",
@@ -2217,7 +2340,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tomogashimaokinoshimawakayama"
   },
   "126": {
     "id": "126",
@@ -2234,7 +2358,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "jinoshimawakayamakenaritashi"
   },
   "127": {
     "id": "127",
@@ -2251,7 +2376,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "bentenjimawakayamaken"
   },
   "128": {
     "id": "128",
@@ -2268,7 +2394,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tsuyashimawakayamaken"
   },
   "129": {
     "id": "129",
@@ -2285,7 +2412,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "fujishimawakayamakentanabeshi"
   },
   "130": {
     "id": "130",
@@ -2300,11 +2428,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 10.14,
-    "radius_m": 1797.0,
-    "checkin_radius_m": 2797.0,
-    "points": 10.0,
+    "radius_m": 1797,
+    "checkin_radius_m": 2797,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kakuijima"
   },
   "131": {
     "id": "131",
@@ -2319,11 +2448,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.57,
-    "radius_m": 426.0,
-    "checkin_radius_m": 1426.0,
-    "points": 10.0,
+    "radius_m": 426,
+    "checkin_radius_m": 1426,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kashirajimaokayamakenbizenshi"
   },
   "132": {
     "id": "132",
@@ -2340,7 +2470,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tsurushimaokayamaken"
   },
   "133": {
     "id": "133",
@@ -2355,11 +2486,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.07,
-    "radius_m": 812.0,
-    "checkin_radius_m": 1812.0,
-    "points": 60.0,
+    "radius_m": 812,
+    "checkin_radius_m": 1812,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kojimaokayamakenbizenshi"
   },
   "134": {
     "id": "134",
@@ -2374,11 +2506,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.41,
-    "radius_m": 876.0,
-    "checkin_radius_m": 1876.0,
-    "points": 10.0,
+    "radius_m": 876,
+    "checkin_radius_m": 1876,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "maejimaokayamakensetouchishiushimado"
   },
   "135": {
     "id": "135",
@@ -2393,11 +2526,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.95,
-    "radius_m": 969.0,
-    "checkin_radius_m": 1969.0,
-    "points": 60.0,
+    "radius_m": 969,
+    "checkin_radius_m": 1969,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shiraishito"
   },
   "136": {
     "id": "136",
@@ -2412,11 +2546,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.48,
-    "radius_m": 1543.0,
-    "checkin_radius_m": 2543.0,
-    "points": 60.0,
+    "radius_m": 1543,
+    "checkin_radius_m": 2543,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kitagishima"
   },
   "137": {
     "id": "137",
@@ -2431,11 +2566,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.48,
-    "radius_m": 686.0,
-    "checkin_radius_m": 1686.0,
-    "points": 60.0,
+    "radius_m": 686,
+    "checkin_radius_m": 1686,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "manabeshima"
   },
   "138": {
     "id": "138",
@@ -2450,11 +2586,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.05,
-    "radius_m": 578.0,
-    "checkin_radius_m": 1578.0,
-    "points": 60.0,
+    "radius_m": 578,
+    "checkin_radius_m": 1578,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takashimaokayamakenkasaokashi"
   },
   "139": {
     "id": "139",
@@ -2469,11 +2606,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.33,
-    "radius_m": 324.0,
-    "checkin_radius_m": 1324.0,
-    "points": 60.0,
+    "radius_m": 324,
+    "checkin_radius_m": 1324,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kobishimakasaokashoto"
   },
   "140": {
     "id": "140",
@@ -2488,11 +2626,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.96,
-    "radius_m": 553.0,
-    "checkin_radius_m": 1553.0,
-    "points": 60.0,
+    "radius_m": 553,
+    "checkin_radius_m": 1553,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "obishimakasaokashoto"
   },
   "141": {
     "id": "141",
@@ -2507,11 +2646,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.92,
-    "radius_m": 541.0,
-    "checkin_radius_m": 1541.0,
-    "points": 60.0,
+    "radius_m": 541,
+    "checkin_radius_m": 1541,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "rokutookayamakenkasaokashi"
   },
   "142": {
     "id": "142",
@@ -2526,11 +2666,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 35.04,
-    "radius_m": 3340.0,
-    "checkin_radius_m": 4340.0,
-    "points": 10.0,
+    "radius_m": 3340,
+    "checkin_radius_m": 4340,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "innoshima"
   },
   "143": {
     "id": "143",
@@ -2545,11 +2686,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 31.21,
-    "radius_m": 3152.0,
-    "checkin_radius_m": 4152.0,
-    "points": 10.0,
+    "radius_m": 3152,
+    "checkin_radius_m": 4152,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikuchishima"
   },
   "144": {
     "id": "144",
@@ -2564,11 +2706,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 22.31,
-    "radius_m": 2665.0,
-    "checkin_radius_m": 3665.0,
-    "points": 60.0,
+    "radius_m": 2665,
+    "checkin_radius_m": 3665,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "mukojimahiroshimakenonomichishi"
   },
   "145": {
     "id": "145",
@@ -2583,11 +2726,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.72,
-    "radius_m": 479.0,
-    "checkin_radius_m": 1479.0,
-    "points": 60.0,
+    "radius_m": 479,
+    "checkin_radius_m": 1479,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "okunoshimausagito"
   },
   "146": {
     "id": "146",
@@ -2602,11 +2746,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 30.33,
-    "radius_m": 3107.0,
-    "checkin_radius_m": 4107.0,
-    "points": 60.0,
+    "radius_m": 3107,
+    "checkin_radius_m": 4107,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "itsukushimamiyajima"
   },
   "147": {
     "id": "147",
@@ -2621,11 +2766,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.84,
-    "radius_m": 1106.0,
-    "checkin_radius_m": 2106.0,
-    "points": 60.0,
+    "radius_m": 1106,
+    "checkin_radius_m": 2106,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ninoshimahiroshimashiminamiku"
   },
   "148": {
     "id": "148",
@@ -2640,11 +2786,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.05,
-    "radius_m": 578.0,
-    "checkin_radius_m": 1578.0,
-    "points": 60.0,
+    "radius_m": 578,
+    "checkin_radius_m": 1578,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kanawajimahiroshimashi"
   },
   "149": {
     "id": "149",
@@ -2659,30 +2806,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 91.33,
-    "radius_m": 5392.0,
-    "checkin_radius_m": 6392.0,
+    "radius_m": 5392,
+    "checkin_radius_m": 6392,
     "points": 0,
     "difficulty": "未判定(要データ収集)",
-    "is_conquest_target": true
-  },
-  "noumi": {
-    "id": "noumi",
-    "name": "能美島",
-    "region_id": "kasaoka",
-    "prefecture": "広島県",
-    "coordinates": "34.2000, 132.4500",
-    "description": "極上のカキ小屋やオリーブ園、みかん畑が広がる瀬戸内海有数の島。江田島と陸続き。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 91.33,
-    "radius_m": 5392.0,
-    "checkin_radius_m": 6392.0,
-    "points": 0,
-    "difficulty": "未判定(要データ収集)",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "etajima"
   },
   "150": {
     "id": "150",
@@ -2697,11 +2826,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 69.46,
-    "radius_m": 4702.0,
-    "checkin_radius_m": 5702.0,
-    "points": 10.0,
+    "radius_m": 4702,
+    "checkin_radius_m": 5702,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kurahashijima"
   },
   "151": {
     "id": "151",
@@ -2716,11 +2846,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 18.79,
-    "radius_m": 2446.0,
-    "checkin_radius_m": 3446.0,
-    "points": 10.0,
+    "radius_m": 2446,
+    "checkin_radius_m": 3446,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kamikamagarishimaakinadatobishimakaido"
   },
   "152": {
     "id": "152",
@@ -2735,11 +2866,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.98,
-    "radius_m": 1594.0,
-    "checkin_radius_m": 2594.0,
-    "points": 10.0,
+    "radius_m": 1594,
+    "checkin_radius_m": 2594,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shimokamagarijimaakinadatobishimakaido"
   },
   "153": {
     "id": "153",
@@ -2754,11 +2886,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.64,
-    "radius_m": 1340.0,
-    "checkin_radius_m": 2340.0,
-    "points": 10.0,
+    "radius_m": 1340,
+    "checkin_radius_m": 2340,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "toshimahiroshimakenkureshi"
   },
   "154": {
     "id": "154",
@@ -2773,11 +2906,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 17.37,
-    "radius_m": 2351.0,
-    "checkin_radius_m": 3351.0,
-    "points": 10.0,
+    "radius_m": 2351,
+    "checkin_radius_m": 3351,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "osakishimojimaakinadatobishimakaido"
   },
   "155": {
     "id": "155",
@@ -2792,11 +2926,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 38.27,
-    "radius_m": 3490.0,
-    "checkin_radius_m": 4490.0,
-    "points": 60.0,
+    "radius_m": 3490,
+    "checkin_radius_m": 4490,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "osakikamijima"
   },
   "156": {
     "id": "156",
@@ -2811,11 +2946,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.76,
-    "radius_m": 492.0,
-    "checkin_radius_m": 1492.0,
-    "points": 60.0,
+    "radius_m": 492,
+    "checkin_radius_m": 1492,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "mikadoshimahiroshimakenkureshi"
   },
   "157": {
     "id": "157",
@@ -2830,11 +2966,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.7,
-    "radius_m": 472.0,
-    "checkin_radius_m": 1472.0,
-    "points": 60.0,
+    "radius_m": 472,
+    "checkin_radius_m": 1472,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hosojimahiroshimakenonomichishi"
   },
   "158": {
     "id": "158",
@@ -2849,11 +2986,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.25,
-    "radius_m": 846.0,
-    "checkin_radius_m": 1846.0,
-    "points": 60.0,
+    "radius_m": 846,
+    "checkin_radius_m": 1846,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikunotohiroshimakenosakiuejimamachi"
   },
   "159": {
     "id": "159",
@@ -2868,11 +3006,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.09,
-    "radius_m": 169.0,
-    "checkin_radius_m": 1169.0,
-    "points": 60.0,
+    "radius_m": 169,
+    "checkin_radius_m": 1169,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "chikirishimahiroshimakengunkanto"
   },
   "160": {
     "id": "160",
@@ -2887,11 +3026,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.08,
-    "radius_m": 990.0,
-    "checkin_radius_m": 1990.0,
-    "points": 60.0,
+    "radius_m": 990,
+    "checkin_radius_m": 1990,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hyakushimahiroshimakenonomichishi"
   },
   "161": {
     "id": "161",
@@ -2906,11 +3046,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 8.71,
-    "radius_m": 1665.0,
-    "checkin_radius_m": 2665.0,
-    "points": 60.0,
+    "radius_m": 1665,
+    "checkin_radius_m": 2665,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sagishimahiroshimakenmiharashi"
   },
   "162": {
     "id": "162",
@@ -2925,11 +3066,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.43,
-    "radius_m": 370.0,
-    "checkin_radius_m": 1370.0,
-    "points": 60.0,
+    "radius_m": 370,
+    "checkin_radius_m": 1370,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kosagishimahiroshimakenmiharashi"
   },
   "163": {
     "id": "163",
@@ -2944,11 +3086,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.39,
-    "radius_m": 872.0,
-    "checkin_radius_m": 1872.0,
-    "points": 60.0,
+    "radius_m": 872,
+    "checkin_radius_m": 1872,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "atatajimahiroshimakenotakeshi"
   },
   "164": {
     "id": "164",
@@ -2965,7 +3108,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "inokoshimahiroshimakenotakeshi"
   },
   "165": {
     "id": "165",
@@ -2982,7 +3126,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "sensuijimahiroshimakenfukuyamashinoura"
   },
   "166": {
     "id": "166",
@@ -2997,11 +3142,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.16,
-    "radius_m": 829.0,
-    "checkin_radius_m": 1829.0,
-    "points": 60.0,
+    "radius_m": 829,
+    "checkin_radius_m": 1829,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hashirijimahiroshimakenfukuyamashi"
   },
   "167": {
     "id": "167",
@@ -3018,7 +3164,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "suooshimayashirojima"
   },
   "168": {
     "id": "168",
@@ -3033,11 +3180,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.84,
-    "radius_m": 1106.0,
-    "checkin_radius_m": 2106.0,
-    "points": 10.0,
+    "radius_m": 1106,
+    "checkin_radius_m": 2106,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tsunoshima"
   },
   "169": {
     "id": "169",
@@ -3052,11 +3200,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 14.82,
-    "radius_m": 2172.0,
-    "checkin_radius_m": 3172.0,
-    "points": 10.0,
+    "radius_m": 2172,
+    "checkin_radius_m": 3172,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "omijima"
   },
   "170": {
     "id": "170",
@@ -3070,12 +3219,13 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
     },
-    "area": 1.0,
-    "radius_m": 564.0,
-    "checkin_radius_m": 1564.0,
-    "points": 60.0,
+    "area": 1,
+    "radius_m": 564,
+    "checkin_radius_m": 1564,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nasakejimayamaguchikeniwakuni"
   },
   "171": {
     "id": "171",
@@ -3090,11 +3240,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.27,
-    "radius_m": 850.0,
-    "checkin_radius_m": 1850.0,
-    "points": 60.0,
+    "radius_m": 850,
+    "checkin_radius_m": 1850,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ukishimayamaguchikensuhooshimamachi"
   },
   "172": {
     "id": "172",
@@ -3109,11 +3260,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 11.68,
-    "radius_m": 1928.0,
-    "checkin_radius_m": 2928.0,
-    "points": 10.0,
+    "radius_m": 1928,
+    "checkin_radius_m": 2928,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kasadoshima"
   },
   "173": {
     "id": "173",
@@ -3128,11 +3280,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.73,
-    "radius_m": 482.0,
-    "checkin_radius_m": 1482.0,
-    "points": 60.0,
+    "radius_m": 482,
+    "checkin_radius_m": 1482,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nojimayamaguchikenhofushi"
   },
   "174": {
     "id": "174",
@@ -3147,11 +3300,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.9,
-    "radius_m": 778.0,
-    "checkin_radius_m": 1778.0,
-    "points": 60.0,
+    "radius_m": 778,
+    "checkin_radius_m": 1778,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ushijimayamaguchikenhikarishi"
   },
   "175": {
     "id": "175",
@@ -3166,11 +3320,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 4.16,
-    "radius_m": 1151.0,
-    "checkin_radius_m": 2151.0,
-    "points": 60.0,
+    "radius_m": 1151,
+    "checkin_radius_m": 2151,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yajimayamaguchikenkamisekimachi"
   },
   "176": {
     "id": "176",
@@ -3185,11 +3340,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.68,
-    "radius_m": 1564.0,
-    "checkin_radius_m": 2564.0,
-    "points": 60.0,
+    "radius_m": 1564,
+    "checkin_radius_m": 2564,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iwaishimayamaguchikenkamisekimachi"
   },
   "177": {
     "id": "177",
@@ -3206,7 +3362,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "hirasatatoyamaguchiken"
   },
   "178": {
     "id": "178",
@@ -3221,11 +3378,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.97,
-    "radius_m": 556.0,
-    "checkin_radius_m": 1556.0,
-    "points": 10.0,
+    "radius_m": 556,
+    "checkin_radius_m": 1556,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okikamurojimayamaguchikensuhooshima"
   },
   "179": {
     "id": "179",
@@ -3240,11 +3398,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.09,
-    "radius_m": 589.0,
-    "checkin_radius_m": 1589.0,
-    "points": 10.0,
+    "radius_m": 589,
+    "checkin_radius_m": 1589,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "maejimayamaguchikensuhooshima"
   },
   "180": {
     "id": "180",
@@ -3261,7 +3420,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "takeshimayamaguchiken"
   },
   "181": {
     "id": "181",
@@ -3276,11 +3436,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.32,
-    "radius_m": 859.0,
-    "checkin_radius_m": 1859.0,
+    "radius_m": 859,
+    "checkin_radius_m": 1859,
     "points": 0,
     "difficulty": "未判定(要データ収集)",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "futaoijimayamaguchikenshimonosekishi"
   },
   "182": {
     "id": "182",
@@ -3295,11 +3456,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.74,
-    "radius_m": 485.0,
-    "checkin_radius_m": 1485.0,
-    "points": 60.0,
+    "radius_m": 485,
+    "checkin_radius_m": 1485,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "mutsurejimayamaguchikenshimonosekishi"
   },
   "183": {
     "id": "183",
@@ -3314,11 +3476,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.76,
-    "radius_m": 1572.0,
-    "checkin_radius_m": 2572.0,
-    "points": 60.0,
+    "radius_m": 1572,
+    "checkin_radius_m": 2572,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "mishimayamaguchikenhagishi"
   },
   "184": {
     "id": "184",
@@ -3333,11 +3496,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.99,
-    "radius_m": 976.0,
-    "checkin_radius_m": 1976.0,
-    "points": 60.0,
+    "radius_m": 976,
+    "checkin_radius_m": 1976,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimayamaguchikenhagishi"
   },
   "185": {
     "id": "185",
@@ -3352,11 +3516,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.37,
-    "radius_m": 869.0,
-    "checkin_radius_m": 1869.0,
-    "points": 60.0,
+    "radius_m": 869,
+    "checkin_radius_m": 1869,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "aijimayamaguchikenhagishi"
   },
   "186": {
     "id": "186",
@@ -3371,11 +3536,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.74,
-    "radius_m": 485.0,
-    "checkin_radius_m": 1485.0,
+    "radius_m": 485,
+    "checkin_radius_m": 1485,
     "points": 0,
     "difficulty": "到達不可",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "hitsushimayamaguchikenhagishi"
   },
   "187": {
     "id": "187",
@@ -3392,7 +3558,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "okinoshimamaenishinoshima"
   },
   "188": {
     "id": "188",
@@ -3409,7 +3576,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "okinoshimamaenakanoshimaamamachi"
   },
   "189": {
     "id": "189",
@@ -3426,7 +3594,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "okinoshimamaechiburijima"
   },
   "190": {
     "id": "190",
@@ -3443,7 +3612,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "okinoshimagoshimanekenokinoshimamachi"
   },
   "191": {
     "id": "191",
@@ -3458,11 +3628,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.15,
-    "radius_m": 1280.0,
-    "checkin_radius_m": 2280.0,
-    "points": 10.0,
+    "radius_m": 1280,
+    "checkin_radius_m": 2280,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "onejima"
   },
   "192": {
     "id": "192",
@@ -3479,7 +3650,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "etomotosaninkaigan"
   },
   "193": {
     "id": "193",
@@ -3494,11 +3666,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.58,
-    "radius_m": 906.0,
-    "checkin_radius_m": 1906.0,
-    "points": 60.0,
+    "radius_m": 906,
+    "checkin_radius_m": 1906,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ejimashimanekenmatsueshi"
   },
   "194": {
     "id": "194",
@@ -3515,7 +3688,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kyojimashimanekenizumoshi"
   },
   "195": {
     "id": "195",
@@ -3530,11 +3704,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.82,
-    "radius_m": 1578.0,
-    "checkin_radius_m": 2578.0,
-    "points": 60.0,
+    "radius_m": 1578,
+    "checkin_radius_m": 2578,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "naoshima"
   },
   "196": {
     "id": "196",
@@ -3549,11 +3724,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 14.5,
-    "radius_m": 2148.0,
-    "checkin_radius_m": 3148.0,
-    "points": 10.0,
+    "radius_m": 2148,
+    "checkin_radius_m": 3148,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "toshimakagawaken"
   },
   "197": {
     "id": "197",
@@ -3568,11 +3744,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 153.26,
-    "radius_m": 6985.0,
-    "checkin_radius_m": 7985.0,
-    "points": 60.0,
+    "radius_m": 6985,
+    "checkin_radius_m": 7985,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shodoshima"
   },
   "198": {
     "id": "198",
@@ -3587,11 +3764,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.34,
-    "radius_m": 653.0,
-    "checkin_radius_m": 1653.0,
-    "points": 60.0,
+    "radius_m": 653,
+    "checkin_radius_m": 1653,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ogijima"
   },
   "199": {
     "id": "199",
@@ -3606,11 +3784,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.62,
-    "radius_m": 913.0,
-    "checkin_radius_m": 1913.0,
-    "points": 60.0,
+    "radius_m": 913,
+    "checkin_radius_m": 1913,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "megijimaonigashima"
   },
   "200": {
     "id": "200",
@@ -3627,7 +3806,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "shiwakuhonto"
   },
   "201": {
     "id": "201",
@@ -3642,11 +3822,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.72,
-    "radius_m": 1088.0,
-    "checkin_radius_m": 2088.0,
-    "points": 60.0,
+    "radius_m": 1088,
+    "checkin_radius_m": 2088,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "awashimakagawaken"
   },
   "202": {
     "id": "202",
@@ -3661,11 +3842,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.1,
-    "radius_m": 592.0,
-    "checkin_radius_m": 1592.0,
-    "points": 60.0,
+    "radius_m": 592,
+    "checkin_radius_m": 1592,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shotoshimakagawaken"
   },
   "203": {
     "id": "203",
@@ -3680,11 +3862,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.12,
-    "radius_m": 195.0,
-    "checkin_radius_m": 1195.0,
-    "points": 400.0,
+    "radius_m": 195,
+    "checkin_radius_m": 1195,
+    "points": 400,
     "difficulty": "特殊手段限定",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "byobutokagawaken"
   },
   "204": {
     "id": "204",
@@ -3699,11 +3882,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 22.31,
-    "radius_m": 2665.0,
-    "checkin_radius_m": 3665.0,
-    "points": 60.0,
+    "radius_m": 2665,
+    "checkin_radius_m": 3665,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "mukojimakagawakenmarugameshi"
   },
   "205": {
     "id": "205",
@@ -3718,11 +3902,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.93,
-    "radius_m": 544.0,
-    "checkin_radius_m": 1544.0,
-    "points": 10.0,
+    "radius_m": 544,
+    "checkin_radius_m": 1544,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okinoshimakagawakenazushimaoki"
   },
   "206": {
     "id": "206",
@@ -3739,7 +3924,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "yotoazushimaenjerurodosaki"
   },
   "207": {
     "id": "207",
@@ -3754,11 +3940,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 11.72,
-    "radius_m": 1931.0,
-    "checkin_radius_m": 2931.0,
-    "points": 60.0,
+    "radius_m": 1931,
+    "checkin_radius_m": 2931,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hiroshimakagawakenmarugameshi"
   },
   "208": {
     "id": "208",
@@ -3773,11 +3960,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.41,
-    "radius_m": 1042.0,
-    "checkin_radius_m": 2042.0,
-    "points": 60.0,
+    "radius_m": 1042,
+    "checkin_radius_m": 2042,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tejimakagawakenmarugameshi"
   },
   "209": {
     "id": "209",
@@ -3792,11 +3980,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.54,
-    "radius_m": 415.0,
-    "checkin_radius_m": 1415.0,
-    "points": 60.0,
+    "radius_m": 415,
+    "checkin_radius_m": 1415,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oteshimakagawaken"
   },
   "210": {
     "id": "210",
@@ -3811,11 +4000,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.84,
-    "radius_m": 517.0,
-    "checkin_radius_m": 1517.0,
-    "points": 60.0,
+    "radius_m": 517,
+    "checkin_radius_m": 1517,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ushijimakagawakenmarugameshi"
   },
   "211": {
     "id": "211",
@@ -3830,11 +4020,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.36,
-    "radius_m": 867.0,
-    "checkin_radius_m": 1867.0,
-    "points": 60.0,
+    "radius_m": 867,
+    "checkin_radius_m": 1867,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takamijimakagawakentadotsumachi"
   },
   "212": {
     "id": "212",
@@ -3849,11 +4040,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.83,
-    "radius_m": 763.0,
-    "checkin_radius_m": 1763.0,
-    "points": 60.0,
+    "radius_m": 763,
+    "checkin_radius_m": 1763,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sanagijimakagawakentadotsumachinekoshima"
   },
   "213": {
     "id": "213",
@@ -3868,11 +4060,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.6,
-    "radius_m": 437.0,
-    "checkin_radius_m": 1437.0,
-    "points": 60.0,
+    "radius_m": 437,
+    "checkin_radius_m": 1437,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shishijimakagawakenmitoyoshi"
   },
   "214": {
     "id": "214",
@@ -3887,11 +4080,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.01,
-    "radius_m": 567.0,
-    "checkin_radius_m": 1567.0,
-    "points": 60.0,
+    "radius_m": 567,
+    "checkin_radius_m": 1567,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ibukijimakagawakenkannonjishi"
   },
   "215": {
     "id": "215",
@@ -3906,11 +4100,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 41.88,
-    "radius_m": 3651.0,
-    "checkin_radius_m": 4651.0,
-    "points": 60.0,
+    "radius_m": 3651,
+    "checkin_radius_m": 4651,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimaehimekenshimanamikaido"
   },
   "216": {
     "id": "216",
@@ -3925,11 +4120,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 20.99,
-    "radius_m": 2585.0,
-    "checkin_radius_m": 3585.0,
-    "points": 10.0,
+    "radius_m": 2585,
+    "checkin_radius_m": 3585,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hakatajima"
   },
   "217": {
     "id": "217",
@@ -3944,11 +4140,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 64.57,
-    "radius_m": 4534.0,
-    "checkin_radius_m": 5534.0,
-    "points": 10.0,
+    "radius_m": 4534,
+    "checkin_radius_m": 5534,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "omishima"
   },
   "218": {
     "id": "218",
@@ -3963,11 +4160,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 8.68,
-    "radius_m": 1662.0,
-    "checkin_radius_m": 2662.0,
-    "points": 60.0,
+    "radius_m": 1662,
+    "checkin_radius_m": 2662,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yugeshimaueshimashoto"
   },
   "219": {
     "id": "219",
@@ -3982,11 +4180,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 21.27,
-    "radius_m": 2602.0,
-    "checkin_radius_m": 3602.0,
-    "points": 400.0,
+    "radius_m": 2602,
+    "checkin_radius_m": 3602,
+    "points": 400,
     "difficulty": "特殊手段限定",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nakajimakutsunashoto"
   },
   "220": {
     "id": "220",
@@ -4001,11 +4200,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 8.4,
-    "radius_m": 1635.0,
-    "checkin_radius_m": 2635.0,
-    "points": 60.0,
+    "radius_m": 1635,
+    "checkin_radius_m": 2635,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "gogoshimakutsunashoto"
   },
   "221": {
     "id": "221",
@@ -4020,11 +4220,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.74,
-    "radius_m": 1091.0,
-    "checkin_radius_m": 2091.0,
-    "points": 60.0,
+    "radius_m": 1091,
+    "checkin_radius_m": 2091,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hiburishimauwakai"
   },
   "222": {
     "id": "222",
@@ -4039,11 +4240,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.37,
-    "radius_m": 1036.0,
-    "checkin_radius_m": 2036.0,
-    "points": 10.0,
+    "radius_m": 1036,
+    "checkin_radius_m": 2036,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kushimauwakai"
   },
   "223": {
     "id": "223",
@@ -4058,11 +4260,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.43,
-    "radius_m": 675.0,
-    "checkin_radius_m": 1675.0,
-    "points": 60.0,
+    "radius_m": 675,
+    "checkin_radius_m": 1675,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tsushimaehimekenimabarishi"
   },
   "224": {
     "id": "224",
@@ -4077,11 +4280,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.8,
-    "radius_m": 505.0,
-    "checkin_radius_m": 1505.0,
-    "points": 60.0,
+    "radius_m": 505,
+    "checkin_radius_m": 1505,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ujimashimanami"
   },
   "225": {
     "id": "225",
@@ -4096,11 +4300,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.68,
-    "radius_m": 924.0,
-    "checkin_radius_m": 1924.0,
-    "points": 60.0,
+    "radius_m": 924,
+    "checkin_radius_m": 1924,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sajimayumeshimakaido"
   },
   "226": {
     "id": "226",
@@ -4115,11 +4320,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.67,
-    "radius_m": 1081.0,
-    "checkin_radius_m": 2081.0,
-    "points": 60.0,
+    "radius_m": 1081,
+    "checkin_radius_m": 2081,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikinajimayumeshimakaido"
   },
   "227": {
     "id": "227",
@@ -4134,11 +4340,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 8.95,
-    "radius_m": 1688.0,
-    "checkin_radius_m": 2688.0,
-    "points": 60.0,
+    "radius_m": 1688,
+    "checkin_radius_m": 2688,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iwagishimaaoiremonnoshima"
   },
   "228": {
     "id": "228",
@@ -4153,11 +4360,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.09,
-    "radius_m": 816.0,
-    "checkin_radius_m": 1816.0,
+    "radius_m": 816,
+    "checkin_radius_m": 1816,
     "points": 0,
     "difficulty": "未判定(要データ収集)",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "akahonejimaehimeken"
   },
   "229": {
     "id": "229",
@@ -4172,11 +4380,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.81,
-    "radius_m": 1101.0,
-    "checkin_radius_m": 2101.0,
-    "points": 60.0,
+    "radius_m": 1101,
+    "checkin_radius_m": 2101,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "muzukijimakutsunashoto"
   },
   "230": {
     "id": "230",
@@ -4191,11 +4400,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.94,
-    "radius_m": 547.0,
-    "checkin_radius_m": 1547.0,
-    "points": 60.0,
+    "radius_m": 547,
+    "checkin_radius_m": 1547,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nobutsunajimakutsunashoto"
   },
   "231": {
     "id": "231",
@@ -4210,11 +4420,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.51,
-    "radius_m": 403.0,
-    "checkin_radius_m": 1403.0,
-    "points": 60.0,
+    "radius_m": 403,
+    "checkin_radius_m": 1403,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tsurishimakutsunashoto"
   },
   "232": {
     "id": "232",
@@ -4229,11 +4440,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.13,
-    "radius_m": 823.0,
-    "checkin_radius_m": 1823.0,
-    "points": 60.0,
+    "radius_m": 823,
+    "checkin_radius_m": 1823,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "futagamijimakutsunashoto"
   },
   "233": {
     "id": "233",
@@ -4248,11 +4460,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.85,
-    "radius_m": 952.0,
-    "checkin_radius_m": 1952.0,
-    "points": 60.0,
+    "radius_m": 952,
+    "checkin_radius_m": 1952,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tsuwajijimakutsunashoto"
   },
   "234": {
     "id": "234",
@@ -4267,11 +4480,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 4.75,
-    "radius_m": 1230.0,
-    "checkin_radius_m": 2230.0,
-    "points": 60.0,
+    "radius_m": 1230,
+    "checkin_radius_m": 2230,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nuwajimakutsunashoto"
   },
   "235": {
     "id": "235",
@@ -4286,11 +4500,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.36,
-    "radius_m": 658.0,
-    "checkin_radius_m": 1658.0,
-    "points": 60.0,
+    "radius_m": 658,
+    "checkin_radius_m": 1658,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "uoshimaehimekenochigun"
   },
   "236": {
     "id": "236",
@@ -4305,11 +4520,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.34,
-    "radius_m": 653.0,
-    "checkin_radius_m": 1653.0,
-    "points": 60.0,
+    "radius_m": 653,
+    "checkin_radius_m": 1653,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takaikamijimaehimeken"
   },
   "237": {
     "id": "237",
@@ -4324,11 +4540,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 41.88,
-    "radius_m": 3651.0,
-    "checkin_radius_m": 4651.0,
-    "points": 60.0,
+    "radius_m": 3651,
+    "checkin_radius_m": 4651,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimaehimekenyawatahamashi"
   },
   "238": {
     "id": "238",
@@ -4343,11 +4560,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.29,
-    "radius_m": 304.0,
-    "checkin_radius_m": 1304.0,
-    "points": 60.0,
+    "radius_m": 304,
+    "checkin_radius_m": 1304,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "aijimaehimekenmatsuyamashi"
   },
   "239": {
     "id": "239",
@@ -4362,11 +4580,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.5,
-    "radius_m": 399.0,
-    "checkin_radius_m": 1399.0,
-    "points": 60.0,
+    "radius_m": 399,
+    "checkin_radius_m": 1399,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "chintaoehimekenosushinekoshima"
   },
   "240": {
     "id": "240",
@@ -4381,11 +4600,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.32,
-    "radius_m": 319.0,
-    "checkin_radius_m": 1319.0,
-    "points": 60.0,
+    "radius_m": 319,
+    "checkin_radius_m": 1319,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kashimauwakai"
   },
   "241": {
     "id": "241",
@@ -4400,11 +4620,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.76,
-    "radius_m": 937.0,
-    "checkin_radius_m": 1937.0,
-    "points": 400.0,
+    "radius_m": 937,
+    "checkin_radius_m": 1937,
+    "points": 400,
     "difficulty": "特殊手段限定",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "toshimauwakai"
   },
   "242": {
     "id": "242",
@@ -4421,7 +4642,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "takegashimaehimekenuwajima"
   },
   "243": {
     "id": "243",
@@ -4436,11 +4658,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.44,
-    "radius_m": 677.0,
-    "checkin_radius_m": 1677.0,
-    "points": 60.0,
+    "radius_m": 677,
+    "checkin_radius_m": 1677,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "itoawanoshimajima"
   },
   "244": {
     "id": "244",
@@ -4457,7 +4680,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "oshimatokushimakenmugimachi"
   },
   "245": {
     "id": "245",
@@ -4472,11 +4696,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.39,
-    "radius_m": 352.0,
-    "checkin_radius_m": 1352.0,
-    "points": 60.0,
+    "radius_m": 352,
+    "checkin_radius_m": 1352,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tebajimatokushimakenmugimachi"
   },
   "246": {
     "id": "246",
@@ -4491,11 +4716,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.39,
-    "radius_m": 352.0,
-    "checkin_radius_m": 1352.0,
-    "points": 10.0,
+    "radius_m": 352,
+    "checkin_radius_m": 1352,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takegashimatokushimakenkaiyomachi"
   },
   "247": {
     "id": "247",
@@ -4510,11 +4736,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.56,
-    "radius_m": 422.0,
-    "checkin_radius_m": 1422.0,
-    "points": 10.0,
+    "radius_m": 422,
+    "checkin_radius_m": 1422,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kashiwatokochikenotsukimachi"
   },
   "248": {
     "id": "248",
@@ -4529,11 +4756,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 10.02,
-    "radius_m": 1786.0,
-    "checkin_radius_m": 2786.0,
-    "points": 60.0,
+    "radius_m": 1786,
+    "checkin_radius_m": 2786,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okinoshimakochikensukumoshi"
   },
   "249": {
     "id": "249",
@@ -4548,11 +4776,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.31,
-    "radius_m": 646.0,
-    "checkin_radius_m": 1646.0,
-    "points": 60.0,
+    "radius_m": 646,
+    "checkin_radius_m": 1646,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ugurushimakochikensukumoshi"
   },
   "250": {
     "id": "250",
@@ -4567,11 +4796,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.76,
-    "radius_m": 937.0,
-    "checkin_radius_m": 1937.0,
-    "points": 400.0,
+    "radius_m": 937,
+    "checkin_radius_m": 1937,
+    "points": 400,
     "difficulty": "特殊手段限定",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "toshimakochikensusakishi"
   },
   "251": {
     "id": "251",
@@ -4586,11 +4816,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 32.29,
-    "radius_m": 3206.0,
-    "checkin_radius_m": 4206.0,
-    "points": 60.0,
+    "radius_m": 3206,
+    "checkin_radius_m": 4206,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "nakanoshimakochikensusakishi"
   },
   "252": {
     "id": "252",
@@ -4607,7 +4838,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tsushimanagasakiken"
   },
   "253": {
     "id": "253",
@@ -4622,11 +4854,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.14,
-    "radius_m": 211.0,
-    "checkin_radius_m": 1211.0,
+    "radius_m": 211,
+    "checkin_radius_m": 1211,
     "points": 0,
     "difficulty": "到達不可",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "unijimatsushimahokutanoki"
   },
   "254": {
     "id": "254",
@@ -4643,7 +4876,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tomaritotsushimashibitsushimamachi"
   },
   "255": {
     "id": "255",
@@ -4658,11 +4892,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.93,
-    "radius_m": 544.0,
-    "checkin_radius_m": 1544.0,
-    "points": 350.0,
+    "radius_m": 544,
+    "checkin_radius_m": 1544,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okinoshimatsushimashibitsushimamachi"
   },
   "256": {
     "id": "256",
@@ -4677,11 +4912,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.56,
-    "radius_m": 422.0,
-    "checkin_radius_m": 1422.0,
-    "points": 350.0,
+    "radius_m": 422,
+    "checkin_radius_m": 1422,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "akajimanagasakikentsushimashibitsushimamachi"
   },
   "257": {
     "id": "257",
@@ -4696,11 +4932,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.5,
-    "radius_m": 1323.0,
-    "checkin_radius_m": 2323.0,
-    "points": 350.0,
+    "radius_m": 1323,
+    "checkin_radius_m": 2323,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shimayamajimatsushimashitoyotamamachi"
   },
   "258": {
     "id": "258",
@@ -4715,11 +4952,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 134.63,
-    "radius_m": 6546.0,
-    "checkin_radius_m": 7546.0,
-    "points": 140.0,
+    "radius_m": 6546,
+    "checkin_radius_m": 7546,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikishima"
   },
   "259": {
     "id": "259",
@@ -4736,7 +4974,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tatsunoshimaikishimaoki"
   },
   "260": {
     "id": "260",
@@ -4751,11 +4990,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.54,
-    "radius_m": 415.0,
-    "checkin_radius_m": 1415.0,
-    "points": 140.0,
+    "radius_m": 415,
+    "checkin_radius_m": 1415,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "harashimaikishigonouramachi"
   },
   "261": {
     "id": "261",
@@ -4770,11 +5010,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 90.66,
-    "radius_m": 5372.0,
-    "checkin_radius_m": 6372.0,
-    "points": 10.0,
+    "radius_m": 5372,
+    "checkin_radius_m": 6372,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nagashimanagasakikenikishigonouramachi"
   },
   "262": {
     "id": "262",
@@ -4789,11 +5030,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 12.09,
-    "radius_m": 1962.0,
-    "checkin_radius_m": 2962.0,
-    "points": 60.0,
+    "radius_m": 1962,
+    "checkin_radius_m": 2962,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimanagasakikenikishigonouramachi"
   },
   "263": {
     "id": "263",
@@ -4808,11 +5050,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.6,
-    "radius_m": 437.0,
-    "checkin_radius_m": 1437.0,
+    "radius_m": 437,
+    "checkin_radius_m": 1437,
     "points": 0,
     "difficulty": "到達不可",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "wakamiyajimaikioki"
   },
   "264": {
     "id": "264",
@@ -4829,7 +5072,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gotorettofukuejima"
   },
   "265": {
     "id": "265",
@@ -4846,7 +5090,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gotorettonakatotoshinkamigoshima"
   },
   "266": {
     "id": "266",
@@ -4863,7 +5108,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gotorettowakamatsuto"
   },
   "267": {
     "id": "267",
@@ -4880,7 +5126,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gotorettonarushima"
   },
   "268": {
     "id": "268",
@@ -4897,7 +5144,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gotorettohisakajima"
   },
   "269": {
     "id": "269",
@@ -4914,7 +5162,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gotorettoojikajima"
   },
   "270": {
     "id": "270",
@@ -4931,7 +5180,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "gotorettonosakito"
   },
   "271": {
     "id": "271",
@@ -4946,11 +5196,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 24.9,
-    "radius_m": 2815.0,
-    "checkin_radius_m": 3815.0,
-    "points": 140.0,
+    "radius_m": 2815,
+    "checkin_radius_m": 3815,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ukutogotorettosaihokutan"
   },
   "272": {
     "id": "272",
@@ -4967,7 +5218,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kashiragashimashinkamigoshimamachi"
   },
   "273": {
     "id": "273",
@@ -4982,11 +5234,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.39,
-    "radius_m": 665.0,
-    "checkin_radius_m": 1665.0,
-    "points": 140.0,
+    "radius_m": 665,
+    "checkin_radius_m": 1665,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimanagasakikengoshimashi"
   },
   "274": {
     "id": "274",
@@ -5001,11 +5254,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.56,
-    "radius_m": 422.0,
-    "checkin_radius_m": 1422.0,
-    "points": 350.0,
+    "radius_m": 422,
+    "checkin_radius_m": 1422,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "akajimanagasakikengoshimashi"
   },
   "275": {
     "id": "275",
@@ -5020,11 +5274,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.07,
-    "radius_m": 149.0,
-    "checkin_radius_m": 1149.0,
-    "points": 400.0,
+    "radius_m": 149,
+    "checkin_radius_m": 1149,
+    "points": 400,
     "difficulty": "特殊手段限定",
-    "is_conquest_target": false
+    "is_conquest_target": false,
+    "slug": "warabikojimagoshimashi"
   },
   "276": {
     "id": "276",
@@ -5039,11 +5294,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.5,
-    "radius_m": 1323.0,
-    "checkin_radius_m": 2323.0,
-    "points": 350.0,
+    "radius_m": 1323,
+    "checkin_radius_m": 2323,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shimayamajimagoshimashitamanoura"
   },
   "277": {
     "id": "277",
@@ -5060,7 +5316,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "arikawahigashikaminoshimashinkamigoshima"
   },
   "278": {
     "id": "278",
@@ -5077,7 +5334,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "kushijimashinkamigoshimamachi"
   },
   "279": {
     "id": "279",
@@ -5092,11 +5350,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 163.44,
-    "radius_m": 7213.0,
-    "checkin_radius_m": 8213.0,
-    "points": 10.0,
+    "radius_m": 7213,
+    "checkin_radius_m": 8213,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hiradoshima"
   },
   "280": {
     "id": "280",
@@ -5111,11 +5370,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 16.55,
-    "radius_m": 2295.0,
-    "checkin_radius_m": 3295.0,
-    "points": 10.0,
+    "radius_m": 2295,
+    "checkin_radius_m": 3295,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikitsukishima"
   },
   "281": {
     "id": "281",
@@ -5130,11 +5390,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.57,
-    "radius_m": 1066.0,
-    "checkin_radius_m": 2066.0,
-    "points": 140.0,
+    "radius_m": 1066,
+    "checkin_radius_m": 2066,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takushimanagasakikenhiradoshi"
   },
   "282": {
     "id": "282",
@@ -5149,11 +5410,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 15.16,
-    "radius_m": 2197.0,
-    "checkin_radius_m": 3197.0,
-    "points": 140.0,
+    "radius_m": 2197,
+    "checkin_radius_m": 3197,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "azuchioshimanagasakikenhiradoshi"
   },
   "283": {
     "id": "283",
@@ -5168,11 +5430,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 16.18,
-    "radius_m": 2269.0,
-    "checkin_radius_m": 3269.0,
-    "points": 10.0,
+    "radius_m": 2269,
+    "checkin_radius_m": 3269,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takashimanagasakikenmatsuurashi"
   },
   "284": {
     "id": "284",
@@ -5187,11 +5450,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 16.94,
-    "radius_m": 2322.0,
-    "checkin_radius_m": 3322.0,
-    "points": 10.0,
+    "radius_m": 2322,
+    "checkin_radius_m": 3322,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "fukushimanagasakikenmatsuurashi"
   },
   "285": {
     "id": "285",
@@ -5206,11 +5470,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.53,
-    "radius_m": 411.0,
-    "checkin_radius_m": 1411.0,
-    "points": 140.0,
+    "radius_m": 411,
+    "checkin_radius_m": 1411,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tobishimanagasakikenmatsuurashitakashimaoki"
   },
   "286": {
     "id": "286",
@@ -5225,11 +5490,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.92,
-    "radius_m": 541.0,
-    "checkin_radius_m": 1541.0,
-    "points": 140.0,
+    "radius_m": 541,
+    "checkin_radius_m": 1541,
+    "points": 140,
     "difficulty": "乗継の壁",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "chintaonagasakikenmatsuurashi"
   },
   "287": {
     "id": "287",
@@ -5246,7 +5512,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "hashimagunkanto"
   },
   "288": {
     "id": "288",
@@ -5263,7 +5530,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "tsukumojimakuroshimasaseboshi"
   },
   "289": {
     "id": "289",
@@ -5278,11 +5546,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.67,
-    "radius_m": 922.0,
-    "checkin_radius_m": 1922.0,
-    "points": 60.0,
+    "radius_m": 922,
+    "checkin_radius_m": 1922,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takashimasaseboshitsukumoto"
   },
   "290": {
     "id": "290",
@@ -5297,11 +5566,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.21,
-    "radius_m": 621.0,
-    "checkin_radius_m": 1621.0,
-    "points": 10.0,
+    "radius_m": 621,
+    "checkin_radius_m": 1621,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iojimanagasakishi"
   },
   "291": {
     "id": "291",
@@ -5316,11 +5586,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.67,
-    "radius_m": 922.0,
-    "checkin_radius_m": 1922.0,
-    "points": 60.0,
+    "radius_m": 922,
+    "checkin_radius_m": 1922,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takashimanagasakishisekaiisan"
   },
   "292": {
     "id": "292",
@@ -5335,11 +5606,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.08,
-    "radius_m": 586.0,
-    "checkin_radius_m": 1586.0,
-    "points": 60.0,
+    "radius_m": 586,
+    "checkin_radius_m": 1586,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikejimanagasakishitankotaiken"
   },
   "293": {
     "id": "293",
@@ -5354,11 +5626,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 12.09,
-    "radius_m": 1962.0,
-    "checkin_radius_m": 2962.0,
-    "points": 60.0,
+    "radius_m": 1962,
+    "checkin_radius_m": 2962,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimanagasakikensaikaishi"
   },
   "294": {
     "id": "294",
@@ -5373,11 +5646,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.54,
-    "radius_m": 415.0,
-    "checkin_radius_m": 1415.0,
-    "points": 10.0,
+    "radius_m": 415,
+    "checkin_radius_m": 1415,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "sakitojimanagasakikensaikaishi"
   },
   "295": {
     "id": "295",
@@ -5392,11 +5666,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.58,
-    "radius_m": 906.0,
-    "checkin_radius_m": 1906.0,
-    "points": 60.0,
+    "radius_m": 906,
+    "checkin_radius_m": 1906,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ejimanagasakikensaikaishi"
   },
   "296": {
     "id": "296",
@@ -5411,11 +5686,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.47,
-    "radius_m": 1320.0,
-    "checkin_radius_m": 2320.0,
-    "points": 60.0,
+    "radius_m": 1320,
+    "checkin_radius_m": 2320,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hirashimanagasakikensaikaishi"
   },
   "297": {
     "id": "297",
@@ -5430,11 +5706,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 6.37,
-    "radius_m": 1424.0,
-    "checkin_radius_m": 2424.0,
-    "points": 60.0,
+    "radius_m": 1424,
+    "checkin_radius_m": 2424,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "matsushimanagasakikensaikaishi"
   },
   "298": {
     "id": "298",
@@ -5449,11 +5726,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 33.16,
-    "radius_m": 3249.0,
-    "checkin_radius_m": 4249.0,
-    "points": 10.0,
+    "radius_m": 3249,
+    "checkin_radius_m": 4249,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hariojimanagasakikensaseboshi"
   },
   "299": {
     "id": "299",
@@ -5468,11 +5746,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.93,
-    "radius_m": 1118.0,
-    "checkin_radius_m": 2118.0,
-    "points": 60.0,
+    "radius_m": 1118,
+    "checkin_radius_m": 2118,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nokoto"
   },
   "300": {
     "id": "300",
@@ -5487,11 +5766,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.79,
-    "radius_m": 1358.0,
-    "checkin_radius_m": 2358.0,
-    "points": 10.0,
+    "radius_m": 1358,
+    "checkin_radius_m": 2358,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shikanoshima"
   },
   "301": {
     "id": "301",
@@ -5506,11 +5786,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.22,
-    "radius_m": 623.0,
-    "checkin_radius_m": 1623.0,
-    "points": 60.0,
+    "radius_m": 623,
+    "checkin_radius_m": 1623,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "aijimafukuokakenshingumachinekoshima"
   },
   "302": {
     "id": "302",
@@ -5525,11 +5806,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.22,
-    "radius_m": 1516.0,
-    "checkin_radius_m": 2516.0,
-    "points": 60.0,
+    "radius_m": 1516,
+    "checkin_radius_m": 2516,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimafukuokakenmunakatashi"
   },
   "303": {
     "id": "303",
@@ -5544,11 +5826,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.16,
-    "radius_m": 608.0,
-    "checkin_radius_m": 1608.0,
-    "points": 60.0,
+    "radius_m": 608,
+    "checkin_radius_m": 1608,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "genkaishimafukuokashinishiku"
   },
   "304": {
     "id": "304",
@@ -5563,11 +5846,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.45,
-    "radius_m": 378.0,
-    "checkin_radius_m": 1378.0,
-    "points": 60.0,
+    "radius_m": 378,
+    "checkin_radius_m": 1378,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oronoshimafukuokashinishiku"
   },
   "305": {
     "id": "305",
@@ -5582,11 +5866,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.62,
-    "radius_m": 718.0,
-    "checkin_radius_m": 1718.0,
-    "points": 60.0,
+    "radius_m": 718,
+    "checkin_radius_m": 1718,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "jinoshimafukuokakenmunakatashi"
   },
   "306": {
     "id": "306",
@@ -5601,11 +5886,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.73,
-    "radius_m": 482.0,
-    "checkin_radius_m": 1482.0,
-    "points": 60.0,
+    "radius_m": 482,
+    "checkin_radius_m": 1482,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ainoshimakitakyushushikokurakitaku"
   },
   "307": {
     "id": "307",
@@ -5620,11 +5906,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.32,
-    "radius_m": 319.0,
-    "checkin_radius_m": 1319.0,
-    "points": 60.0,
+    "radius_m": 319,
+    "checkin_radius_m": 1319,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "umashimakitakyushushikokurakitaku"
   },
   "308": {
     "id": "308",
@@ -5639,11 +5926,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.71,
-    "radius_m": 929.0,
-    "checkin_radius_m": 1929.0,
-    "points": 10.0,
+    "radius_m": 929,
+    "checkin_radius_m": 1929,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kabeshima"
   },
   "309": {
     "id": "309",
@@ -5658,11 +5946,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.83,
-    "radius_m": 949.0,
-    "checkin_radius_m": 1949.0,
-    "points": 60.0,
+    "radius_m": 949,
+    "checkin_radius_m": 1949,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kakarashima"
   },
   "310": {
     "id": "310",
@@ -5677,11 +5966,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.77,
-    "radius_m": 495.0,
-    "checkin_radius_m": 1495.0,
-    "points": 60.0,
+    "radius_m": 495,
+    "checkin_radius_m": 1495,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ogawato"
   },
   "311": {
     "id": "311",
@@ -5696,11 +5986,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 4.24,
-    "radius_m": 1162.0,
-    "checkin_radius_m": 2162.0,
-    "points": 60.0,
+    "radius_m": 1162,
+    "checkin_radius_m": 2162,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "madarashima"
   },
   "312": {
     "id": "312",
@@ -5715,11 +6006,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.39,
-    "radius_m": 665.0,
-    "checkin_radius_m": 1665.0,
-    "points": 60.0,
+    "radius_m": 665,
+    "checkin_radius_m": 1665,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kashiwajima"
   },
   "313": {
     "id": "313",
@@ -5734,11 +6026,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.67,
-    "radius_m": 922.0,
-    "checkin_radius_m": 1922.0,
-    "points": 60.0,
+    "radius_m": 922,
+    "checkin_radius_m": 1922,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takashimasagakenkaratsushitakarakujinoshima"
   },
   "314": {
     "id": "314",
@@ -5753,11 +6046,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 6.98,
-    "radius_m": 1491.0,
-    "checkin_radius_m": 2491.0,
-    "points": 60.0,
+    "radius_m": 1491,
+    "checkin_radius_m": 2491,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "himeshimaoitaken"
   },
   "315": {
     "id": "315",
@@ -5772,11 +6066,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.83,
-    "radius_m": 514.0,
-    "checkin_radius_m": 1514.0,
-    "points": 60.0,
+    "radius_m": 514,
+    "checkin_radius_m": 1514,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hotojimaoitakentsukumishi"
   },
   "316": {
     "id": "316",
@@ -5791,11 +6086,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.61,
-    "radius_m": 716.0,
-    "checkin_radius_m": 1716.0,
-    "points": 60.0,
+    "radius_m": 716,
+    "checkin_radius_m": 1716,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimaoitakensaikishi"
   },
   "317": {
     "id": "317",
@@ -5810,11 +6106,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.8,
-    "radius_m": 505.0,
-    "checkin_radius_m": 1505.0,
-    "points": 60.0,
+    "radius_m": 505,
+    "checkin_radius_m": 1505,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "fukajimaoitakensaikishinekoshima"
   },
   "318": {
     "id": "318",
@@ -5829,11 +6126,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.07,
-    "radius_m": 584.0,
-    "checkin_radius_m": 1584.0,
-    "points": 60.0,
+    "radius_m": 584,
+    "checkin_radius_m": 1584,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yakatashimaoitakensaikishi"
   },
   "319": {
     "id": "319",
@@ -5848,11 +6146,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.86,
-    "radius_m": 954.0,
-    "checkin_radius_m": 1954.0,
-    "points": 60.0,
+    "radius_m": 954,
+    "checkin_radius_m": 1954,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shimanourashimahyuganada"
   },
   "320": {
     "id": "320",
@@ -5867,11 +6166,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.24,
-    "radius_m": 276.0,
-    "checkin_radius_m": 1276.0,
-    "points": 400.0,
+    "radius_m": 276,
+    "checkin_radius_m": 1276,
+    "points": 400,
     "difficulty": "特殊手段限定",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tsukishimamiyazakikenkushimashi"
   },
   "321": {
     "id": "321",
@@ -5888,7 +6188,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": false,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "otojimamiyazakikenmongawamachi"
   },
   "322": {
     "id": "322",
@@ -5903,11 +6204,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 574.95,
-    "radius_m": 13528.0,
-    "checkin_radius_m": 14528.0,
-    "points": 10.0,
+    "radius_m": 13528,
+    "checkin_radius_m": 14528,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "amakusashimojima"
   },
   "323": {
     "id": "323",
@@ -5922,11 +6224,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 225.93,
-    "radius_m": 8480.0,
-    "checkin_radius_m": 9480.0,
-    "points": 10.0,
+    "radius_m": 8480,
+    "checkin_radius_m": 9480,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "amakusaueshima"
   },
   "324": {
     "id": "324",
@@ -5941,11 +6244,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 12.54,
-    "radius_m": 1998.0,
-    "checkin_radius_m": 2998.0,
-    "points": 60.0,
+    "radius_m": 1998,
+    "checkin_radius_m": 2998,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "goshonourajimakyoryunoshima"
   },
   "325": {
     "id": "325",
@@ -5960,11 +6264,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 30.2,
-    "radius_m": 3100.0,
-    "checkin_radius_m": 4100.0,
-    "points": 10.0,
+    "radius_m": 3100,
+    "checkin_radius_m": 4100,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oyanoshima"
   },
   "326": {
     "id": "326",
@@ -5979,11 +6284,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.74,
-    "radius_m": 485.0,
-    "checkin_radius_m": 1485.0,
-    "points": 60.0,
+    "radius_m": 485,
+    "checkin_radius_m": 1485,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yushimakumamotokenjotenkusaichinekoshima"
   },
   "327": {
     "id": "327",
@@ -5998,11 +6304,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 6.55,
-    "radius_m": 1444.0,
-    "checkin_radius_m": 2444.0,
-    "points": 10.0,
+    "radius_m": 1444,
+    "checkin_radius_m": 2444,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iwajimajotenkusaichi"
   },
   "328": {
     "id": "328",
@@ -6017,11 +6324,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 6.95,
-    "radius_m": 1487.0,
-    "checkin_radius_m": 2487.0,
-    "points": 10.0,
+    "radius_m": 1487,
+    "checkin_radius_m": 2487,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tobasejimajoshi"
   },
   "329": {
     "id": "329",
@@ -6036,11 +6344,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.45,
-    "radius_m": 1048.0,
-    "checkin_radius_m": 2048.0,
-    "points": 10.0,
+    "radius_m": 1048,
+    "checkin_radius_m": 2048,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hinoshimajotenkusaichi"
   },
   "330": {
     "id": "330",
@@ -6055,11 +6364,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.14,
-    "radius_m": 602.0,
-    "checkin_radius_m": 1602.0,
-    "points": 60.0,
+    "radius_m": 602,
+    "checkin_radius_m": 1602,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yokourajimatengusagoshonoura"
   },
   "331": {
     "id": "331",
@@ -6074,11 +6384,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.59,
-    "radius_m": 1334.0,
-    "checkin_radius_m": 2334.0,
-    "points": 10.0,
+    "radius_m": 1334,
+    "checkin_radius_m": 2334,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "makishimakumamotokengoshonoura"
   },
   "332": {
     "id": "332",
@@ -6093,11 +6404,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 90.66,
-    "radius_m": 5372.0,
-    "checkin_radius_m": 6372.0,
-    "points": 10.0,
+    "radius_m": 5372,
+    "checkin_radius_m": 6372,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nagashimakagoshimakenizumigun"
   },
   "333": {
     "id": "333",
@@ -6112,11 +6424,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 17.06,
-    "radius_m": 2330.0,
-    "checkin_radius_m": 3330.0,
-    "points": 60.0,
+    "radius_m": 2330,
+    "checkin_radius_m": 3330,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shishitokagoshimakennagashimamachi"
   },
   "334": {
     "id": "334",
@@ -6131,11 +6444,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.71,
-    "radius_m": 1087.0,
-    "checkin_radius_m": 2087.0,
-    "points": 10.0,
+    "radius_m": 1087,
+    "checkin_radius_m": 2087,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikarajimanagashimamachi"
   },
   "335": {
     "id": "335",
@@ -6150,11 +6464,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.87,
-    "radius_m": 1110.0,
-    "checkin_radius_m": 2110.0,
-    "points": 10.0,
+    "radius_m": 1110,
+    "checkin_radius_m": 2110,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "shorajimanagashimamachi"
   },
   "336": {
     "id": "336",
@@ -6171,7 +6486,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "koshikitokamikoshikito"
   },
   "337": {
     "id": "337",
@@ -6188,7 +6504,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "koshikitonakakoshikito"
   },
   "338": {
     "id": "338",
@@ -6205,7 +6522,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "koshikitoshimokoshikito"
   },
   "339": {
     "id": "339",
@@ -6220,11 +6538,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 444.3,
-    "radius_m": 11892.0,
-    "checkin_radius_m": 12892.0,
-    "points": 220.0,
+    "radius_m": 11892,
+    "checkin_radius_m": 12892,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tanegashima"
   },
   "340": {
     "id": "340",
@@ -6239,11 +6558,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 504.29,
-    "radius_m": 12670.0,
-    "checkin_radius_m": 13670.0,
-    "points": 220.0,
+    "radius_m": 12670,
+    "checkin_radius_m": 13670,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yakushima"
   },
   "341": {
     "id": "341",
@@ -6258,11 +6578,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 35.81,
-    "radius_m": 3376.0,
-    "checkin_radius_m": 4376.0,
-    "points": 350.0,
+    "radius_m": 3376,
+    "checkin_radius_m": 4376,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kuchinoerabujima"
   },
   "342": {
     "id": "342",
@@ -6277,11 +6598,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 4.22,
-    "radius_m": 1159.0,
-    "checkin_radius_m": 2159.0,
-    "points": 350.0,
+    "radius_m": 1159,
+    "checkin_radius_m": 2159,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takeshimakagoshimakenmishimamura"
   },
   "343": {
     "id": "343",
@@ -6296,11 +6618,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 11.62,
-    "radius_m": 1923.0,
-    "checkin_radius_m": 2923.0,
-    "points": 220.0,
+    "radius_m": 1923,
+    "checkin_radius_m": 2923,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iotokagoshimakensatsumaioto"
   },
   "344": {
     "id": "344",
@@ -6315,11 +6638,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 15.39,
-    "radius_m": 2213.0,
-    "checkin_radius_m": 3213.0,
-    "points": 350.0,
+    "radius_m": 2213,
+    "checkin_radius_m": 3213,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kuroshimakagoshimakenmishimamura"
   },
   "345": {
     "id": "345",
@@ -6334,11 +6658,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 13.33,
-    "radius_m": 2060.0,
-    "checkin_radius_m": 3060.0,
-    "points": 550.0,
+    "radius_m": 2060,
+    "checkin_radius_m": 3060,
+    "points": 550,
     "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kuchinoshimatokararettosaihokutan"
   },
   "346": {
     "id": "346",
@@ -6353,11 +6678,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 34.42,
-    "radius_m": 3310.0,
-    "checkin_radius_m": 4310.0,
-    "points": 550.0,
+    "radius_m": 3310,
+    "checkin_radius_m": 4310,
+    "points": 550,
     "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nakanoshimatokararetto"
   },
   "347": {
     "id": "347",
@@ -6372,11 +6698,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 27.61,
-    "radius_m": 2965.0,
-    "checkin_radius_m": 3965.0,
-    "points": 550.0,
+    "radius_m": 2965,
+    "checkin_radius_m": 3965,
+    "points": 550,
     "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "suwanosejimatokararetto"
   },
   "348": {
     "id": "348",
@@ -6391,11 +6718,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.08,
-    "radius_m": 814.0,
-    "checkin_radius_m": 1814.0,
-    "points": 550.0,
+    "radius_m": 814,
+    "checkin_radius_m": 1814,
+    "points": 550,
     "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hirashimatokararetto"
   },
   "349": {
     "id": "349",
@@ -6410,11 +6738,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.49,
-    "radius_m": 1544.0,
-    "checkin_radius_m": 2544.0,
-    "points": 550.0,
+    "radius_m": 1544,
+    "checkin_radius_m": 2544,
+    "points": 550,
     "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "akusekijimatokararetto"
   },
   "350": {
     "id": "350",
@@ -6429,11 +6758,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.98,
-    "radius_m": 559.0,
-    "checkin_radius_m": 1559.0,
-    "points": 550.0,
+    "radius_m": 559,
+    "checkin_radius_m": 1559,
+    "points": 550,
     "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kodakarajimatokararetto"
   },
   "351": {
     "id": "351",
@@ -6448,11 +6778,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 7.07,
-    "radius_m": 1500.0,
-    "checkin_radius_m": 2500.0,
-    "points": 550.0,
+    "radius_m": 1500,
+    "checkin_radius_m": 2500,
+    "points": 550,
     "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "takarajimatokararettosainantan"
   },
   "352": {
     "id": "352",
@@ -6467,11 +6798,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 712.41,
-    "radius_m": 15059.0,
-    "checkin_radius_m": 16059.0,
-    "points": 220.0,
+    "radius_m": 15059,
+    "checkin_radius_m": 16059,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "amamioshima"
   },
   "353": {
     "id": "353",
@@ -6486,11 +6818,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 77.25,
-    "radius_m": 4959.0,
-    "checkin_radius_m": 5959.0,
-    "points": 350.0,
+    "radius_m": 4959,
+    "checkin_radius_m": 5959,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kakeromato"
   },
   "354": {
     "id": "354",
@@ -6505,11 +6838,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 13.34,
-    "radius_m": 2061.0,
-    "checkin_radius_m": 3061.0,
-    "points": 350.0,
+    "radius_m": 2061,
+    "checkin_radius_m": 3061,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ukejimaamamiguntosetouchimachi"
   },
   "355": {
     "id": "355",
@@ -6524,11 +6858,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 9.35,
-    "radius_m": 1725.0,
-    "checkin_radius_m": 2725.0,
-    "points": 350.0,
+    "radius_m": 1725,
+    "checkin_radius_m": 2725,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yokojimaamamigunto"
   },
   "356": {
     "id": "356",
@@ -6543,11 +6878,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 56.76,
-    "radius_m": 4251.0,
-    "checkin_radius_m": 5251.0,
-    "points": 220.0,
+    "radius_m": 4251,
+    "checkin_radius_m": 5251,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kikaijima"
   },
   "357": {
     "id": "357",
@@ -6562,11 +6898,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 247.85,
-    "radius_m": 8882.0,
-    "checkin_radius_m": 9882.0,
-    "points": 220.0,
+    "radius_m": 8882,
+    "checkin_radius_m": 9882,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tokunoshima"
   },
   "358": {
     "id": "358",
@@ -6581,11 +6918,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 93.65,
-    "radius_m": 5460.0,
-    "checkin_radius_m": 6460.0,
-    "points": 220.0,
+    "radius_m": 5460,
+    "checkin_radius_m": 6460,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okinoerabushima"
   },
   "359": {
     "id": "359",
@@ -6600,11 +6938,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 20.56,
-    "radius_m": 2558.0,
-    "checkin_radius_m": 3558.0,
-    "points": 220.0,
+    "radius_m": 2558,
+    "checkin_radius_m": 3558,
+    "points": 220,
     "difficulty": "空路の島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "yorontouyoronto"
   },
   "360": {
     "id": "360",
@@ -6619,11 +6958,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1208.53,
-    "radius_m": 19613.0,
-    "checkin_radius_m": 20613.0,
+    "radius_m": 19613,
+    "checkin_radius_m": 20613,
     "points": 0,
     "difficulty": "未判定(要データ収集)",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "okinawahonto"
   },
   "361": {
     "id": "361",
@@ -6638,11 +6978,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 3.17,
-    "radius_m": 1005.0,
-    "checkin_radius_m": 2005.0,
-    "points": 10.0,
+    "radius_m": 1005,
+    "checkin_radius_m": 2005,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "furuutoshima"
   },
   "362": {
     "id": "362",
@@ -6657,11 +6998,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.16,
-    "radius_m": 829.0,
-    "checkin_radius_m": 1829.0,
-    "points": 1200.0,
+    "radius_m": 829,
+    "checkin_radius_m": 1829,
+    "points": 1200,
     "difficulty": "到達伝説",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "minnashimakurowassanairando"
   },
   "363": {
     "id": "363",
@@ -6676,11 +7018,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.36,
-    "radius_m": 658.0,
-    "checkin_radius_m": 1658.0,
-    "points": 60.0,
+    "radius_m": 658,
+    "checkin_radius_m": 1658,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "kudakajimakonoshima"
   },
   "364": {
     "id": "364",
@@ -6695,11 +7038,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 20.66,
-    "radius_m": 2564.0,
-    "checkin_radius_m": 3564.0,
-    "points": 60.0,
+    "radius_m": 2564,
+    "checkin_radius_m": 3564,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iheyajima"
   },
   "365": {
     "id": "365",
@@ -6714,11 +7058,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.08,
-    "radius_m": 586.0,
-    "checkin_radius_m": 1586.0,
-    "points": 10.0,
+    "radius_m": 586,
+    "checkin_radius_m": 1586,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "nohojimaiheyamura"
   },
   "366": {
     "id": "366",
@@ -6733,11 +7078,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 14.13,
-    "radius_m": 2121.0,
-    "checkin_radius_m": 3121.0,
-    "points": 60.0,
+    "radius_m": 2121,
+    "checkin_radius_m": 3121,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "izenajima"
   },
   "367": {
     "id": "367",
@@ -6752,11 +7098,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 22.76,
-    "radius_m": 2692.0,
-    "checkin_radius_m": 3692.0,
-    "points": 60.0,
+    "radius_m": 2692,
+    "checkin_radius_m": 3692,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "iejima_367"
   },
   "368": {
     "id": "368",
@@ -6771,11 +7118,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.99,
-    "radius_m": 976.0,
-    "checkin_radius_m": 1976.0,
-    "points": 10.0,
+    "radius_m": 976,
+    "checkin_radius_m": 1976,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "seteito"
   },
   "369": {
     "id": "369",
@@ -6790,11 +7138,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.44,
-    "radius_m": 1316.0,
-    "checkin_radius_m": 2316.0,
-    "points": 10.0,
+    "radius_m": 1316,
+    "checkin_radius_m": 2316,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "henzajimakaichudoro"
   },
   "370": {
     "id": "370",
@@ -6809,11 +7158,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 2.09,
-    "radius_m": 816.0,
-    "checkin_radius_m": 1816.0,
-    "points": 10.0,
+    "radius_m": 816,
+    "checkin_radius_m": 1816,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "hamahigashima"
   },
   "371": {
     "id": "371",
@@ -6828,11 +7178,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 5.54,
-    "radius_m": 1328.0,
-    "checkin_radius_m": 2328.0,
-    "points": 10.0,
+    "radius_m": 1328,
+    "checkin_radius_m": 2328,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "miyagitookinawakenurumashi"
   },
   "372": {
     "id": "372",
@@ -6847,11 +7198,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.72,
-    "radius_m": 740.0,
-    "checkin_radius_m": 1740.0,
-    "points": 10.0,
+    "radius_m": 740,
+    "checkin_radius_m": 1740,
+    "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "ikeijima"
   },
   "373": {
     "id": "373",
@@ -6866,11 +7218,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.88,
-    "radius_m": 774.0,
-    "checkin_radius_m": 1774.0,
-    "points": 60.0,
+    "radius_m": 774,
+    "checkin_radius_m": 1774,
+    "points": 60,
     "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "tsukenjimakyarottoairando"
   },
   "374": {
     "id": "374",
@@ -6885,11 +7238,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.63,
-    "radius_m": 448.0,
-    "checkin_radius_m": 1448.0,
-    "points": 350.0,
+    "radius_m": 448,
+    "checkin_radius_m": 1448,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "oshimananjoshitempurato"
   },
   "375": {
     "id": "375",
@@ -6904,10 +7258,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": null,
-    "points": 10.0,
+    "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": false,
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "senagajimaumikajiterasu"
   },
   "376": {
     "id": "376",
@@ -6924,7 +7279,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "keiyokanshotozamamijima"
   },
   "377": {
     "id": "377",
@@ -6941,7 +7297,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "keiyokanshotoakajima"
   },
   "378": {
     "id": "378",
@@ -6958,7 +7315,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "keiyokanshototokashikijima"
   },
   "379": {
     "id": "379",
@@ -6973,11 +7331,1052 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 1.15,
-    "radius_m": 605.0,
-    "checkin_radius_m": 1605.0,
-    "points": 350.0,
+    "radius_m": 605,
+    "checkin_radius_m": 1605,
+    "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
+    "is_conquest_target": true,
+    "slug": "gerumajimakeiyokan"
+  },
+  "380": {
+    "id": "380",
+    "name": "久米島",
+    "region_id": "kume",
+    "prefecture": "沖縄県",
+    "coordinates": "26.3467, 126.7767",
+    "description": "琉球王国時代に「球美の島」と讃えられた楽園。東洋一のサンゴの砂州「ハテの浜」や畳石、海洋深層水スパ。",
+    "access": "那覇空港より直行航空便 / 那覇泊港発 定期フェリー",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 59.53,
+    "radius_m": 4353,
+    "checkin_radius_m": 5353,
+    "points": 220,
+    "difficulty": "空路の島",
+    "is_conquest_target": true,
+    "slug": "kumejima"
+  },
+  "381": {
+    "id": "381",
+    "name": "奥武島（久米島）",
+    "region_id": "kume",
+    "prefecture": "沖縄県",
+    "coordinates": "26.3417, 126.8317",
+    "description": "久米島と海中道路でつながり国の天然記念物「畳石」とウミガメ館がある絶景リゾート。",
+    "access": "勝連半島より海中道路・大橋直結（車アクセス）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.63,
+    "radius_m": 448,
+    "checkin_radius_m": 1448,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "oshimakumejima"
+  },
+  "382": {
+    "id": "382",
+    "name": "粟国島",
+    "region_id": "kume",
+    "prefecture": "沖縄県",
+    "coordinates": "26.5867, 127.2283",
+    "description": "那覇の北西約60kmに浮かぶ映画『ナビィの恋』の舞台となったソテツとミネラル豊富な「粟国の塩」の島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 7.62,
+    "radius_m": 1557,
+    "checkin_radius_m": 2557,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "agunijima"
+  },
+  "383": {
+    "id": "383",
+    "name": "渡名喜島",
+    "region_id": "kume",
+    "prefecture": "沖縄県",
+    "coordinates": "26.3717, 127.1433",
+    "description": "国の重要伝統的建造物群保存地区に指定された赤瓦とフクギ並木の集落が保存され夜は足元灯が優しく照らす島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 3.58,
+    "radius_m": 1067,
+    "checkin_radius_m": 2067,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "tonakijima"
+  },
+  "384": {
+    "id": "384",
+    "name": "北大東島",
+    "region_id": "daito",
+    "prefecture": "沖縄県",
+    "coordinates": "25.9517, 131.3083",
+    "description": "沖縄本島東約360km、絶海に浮かぶ隆起サンゴ礁の島。断崖絶壁に囲まれクレーンで船から上陸するダイナミックな港。",
+    "access": "那覇空港よりRAC直行航空便 / 那覇港発 定期船「だいとう」",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 11.91,
+    "radius_m": 1947,
+    "checkin_radius_m": 2947,
+    "points": 550,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true,
+    "slug": "kitadaitojima"
+  },
+  "385": {
+    "id": "385",
+    "name": "南大東島",
+    "region_id": "daito",
+    "prefecture": "沖縄県",
+    "coordinates": "25.8450, 131.2333",
+    "description": "八丈島からの開拓者たちが切り拓いた八丈文化が息づく島。東洋一の鍾乳洞「星野洞」やカルスト地形。",
+    "access": "那覇空港よりRAC直行航空便 / 那覇港発 定期船「だいとう」",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 30.52,
+    "radius_m": 3117,
+    "checkin_radius_m": 4117,
+    "points": 550,
+    "difficulty": "半日がかりの秘境",
+    "is_conquest_target": true,
+    "slug": "minamidaitojima"
+  },
+  "386": {
+    "id": "386",
+    "name": "宮古島",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.8000, 125.2833",
+    "description": "東洋屈指の透明度を誇る「ミヤコブルー」と「与那覇前浜ビーチ」。3つの大橋で周辺離島と絶景ドライブが楽しい島。",
+    "access": "羽田・関空・那覇等より直行航空便直結",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 158.93,
+    "radius_m": 7113,
+    "checkin_radius_m": 8113,
+    "points": 220,
+    "difficulty": "空路の島",
+    "is_conquest_target": true,
+    "slug": "miyakojima"
+  },
+  "387": {
+    "id": "387",
+    "name": "伊良部島",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.8367, 125.1883",
+    "description": "全長3,540mの伊良部大橋で宮古島と直結！ダイナミックな自然景観と青の洞窟で知られる島。",
+    "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "irabujima"
+  },
+  "388": {
+    "id": "388",
+    "name": "池間島",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.9300, 125.2433",
+    "description": "宮古島北端から池間大橋で渡るミヤコブルーの聖域。八重干瀬サンゴ礁への出港地。",
+    "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.83,
+    "radius_m": 949,
+    "checkin_radius_m": 1949,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "ikemajima"
+  },
+  "389": {
+    "id": "389",
+    "name": "来間島",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.7233, 125.2533",
+    "description": "与那覇前浜ビーチの正面に位置し来間大橋でつながる島。竜宮城展望台と絶品フルーツカフェ。",
+    "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.84,
+    "radius_m": 951,
+    "checkin_radius_m": 1951,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "kurimajima"
+  },
+  "390": {
+    "id": "390",
+    "name": "多良間島",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.6600, 124.7000",
+    "description": "宮古島と石垣島のほぼ中間に浮かぶ「日本で最も美しい村」。国指定重要無形民俗文化財「八月踊り」。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 19.81,
+    "radius_m": 2511,
+    "checkin_radius_m": 3511,
+    "points": 220,
+    "difficulty": "空路の島",
+    "is_conquest_target": true,
+    "slug": "taramashima"
+  },
+  "391": {
+    "id": "391",
+    "name": "大神島（宮古島）",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.9167, 125.3117",
+    "description": "島尻港からフェリーで約15分。島全体が神聖なパワースポットとして厳格なルールが守られる神々しい島。",
+    "access": "羽田・関空・那覇等より直行航空便直結",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.27,
+    "radius_m": 293,
+    "checkin_radius_m": 1293,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "ogamijimamiyakojima"
+  },
+  "392": {
+    "id": "392",
+    "name": "石垣島",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.4167, 124.2333",
+    "description": "八重山諸島の玄関口＆中心地！ミシュラン三つ星「川平湾」、マンタと泳げる海、日本最高の星空保護区と石垣牛グルメ。",
+    "access": "羽田・関空・那覇等より直行航空便直結",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 222.24,
+    "radius_m": 8411,
+    "checkin_radius_m": 9411,
+    "points": 220,
+    "difficulty": "空路の島",
+    "is_conquest_target": true,
+    "slug": "ishigakijima"
+  },
+  "393": {
+    "id": "393",
+    "name": "竹富島",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3283, 124.0867",
+    "description": "石垣港から高速船10分！赤瓦の伝統的民家と白砂の小路、ブーゲンビリアと水牛車がゆっくり歩く琉球の原風景。",
+    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 5.43,
+    "radius_m": 1315,
+    "checkin_radius_m": 2315,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "taketomijima"
+  },
+  "394": {
+    "id": "394",
+    "name": "小浜島",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3400, 123.9817",
+    "description": "朝ドラ『ちゅらさん』の舞台！大岳展望台からの八重山360度絶景とシュガーロード、星野リゾート等の楽園。",
+    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 7.86,
+    "radius_m": 1582,
+    "checkin_radius_m": 2582,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "kohamajima"
+  },
+  "395": {
+    "id": "395",
+    "name": "黒島（八重山・ハートアイランド）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.2400, 124.0133",
+    "description": "島の形がハート型をしており約3,000頭もの肉牛が緑の牧草地で暮らすのどかな牛とウミガメの島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 10.02,
+    "radius_m": 1786,
+    "checkin_radius_m": 2786,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "kuroshimayaeyamahatoairando"
+  },
+  "396": {
+    "id": "396",
+    "name": "西表島",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3250, 123.8217",
+    "description": "2021年世界自然遺産登録！約90%が亜熱帯の原生林に覆われた秘境。イリオモテヤマネコやマングローブクルーズ。",
+    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 289.62,
+    "radius_m": 9602,
+    "checkin_radius_m": 10602,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "iriomotejima"
+  },
+  "397": {
+    "id": "397",
+    "name": "由布島（水牛車で渡る島）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3150, 123.9350",
+    "description": "西表島から浅瀬を三線が響くのんびりとした「水牛車」に乗って海を渡る亜熱帯植物楽園の島！",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.16,
+    "radius_m": 226,
+    "checkin_radius_m": 1226,
+    "points": 400,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true,
+    "slug": "yubujimasuigyushadewatarushima"
+  },
+  "398": {
+    "id": "398",
+    "name": "鳩間島",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.4717, 123.8200",
+    "description": "ドラマ『瑠璃の島』のモデル！周囲約4km、エメラルドグリーンの鳩間ブルーとウミガメの島時間が流れる秘境。",
+    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.97,
+    "radius_m": 556,
+    "checkin_radius_m": 1556,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "hatomajima"
+  },
+  "399": {
+    "id": "399",
+    "name": "新城島（パナリ島）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.2333, 123.9450",
+    "description": "定期船がなくツアーでのみ訪れることができる人魚伝説（ジュゴン）の聖域。最高の透明度。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "shinjotopanarito"
+  },
+  "400": {
+    "id": "400",
+    "name": "波照間島",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.0600, 123.7767",
+    "description": "【日本最南端の有人島】。これ以上美しい青はないと讃えられ日本一の透明度を誇る「ハテルマブルー」と「南十字星」。",
+    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 12.73,
+    "radius_m": 2013,
+    "checkin_radius_m": 3013,
+    "points": 220,
+    "difficulty": "空路の島",
+    "is_conquest_target": true,
+    "slug": "haterumajima"
+  },
+  "401": {
+    "id": "401",
+    "name": "与那国島",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.4567, 122.9883",
+    "description": "【日本最西端の島】。台湾までわずか111km、謎に包まれた海底遺跡と「与那国馬」の放牧風景が感動を呼ぶ。",
+    "access": "那覇空港・石垣空港より航空便 / 石垣港発 福山海運「フェリーよなぐに」",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 28.82,
+    "radius_m": 3029,
+    "checkin_radius_m": 4029,
+    "points": 220,
+    "difficulty": "空路の島",
+    "is_conquest_target": true,
+    "slug": "yonagunijima"
+  },
+  "402": {
+    "id": "402",
+    "name": "沖島（愛知県）",
+    "region_id": "aichi_santo",
+    "prefecture": "愛知県",
+    "coordinates": "34.7317, 137.0250",
+    "description": "三河湾沿いに位置する自然の島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "okishimaaichiken"
+  },
+  "403": {
+    "id": "403",
+    "name": "弁賀島（和歌山県）",
+    "region_id": "pseudo_awaji",
+    "prefecture": "和歌山県",
+    "coordinates": "33.6217, 135.9450",
+    "description": "勝浦湾内の景勝島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "benkatowakayamaken"
+  },
+  "404": {
+    "id": "404",
+    "name": "飛島（岡山県備前市）",
+    "region_id": "kasaoka",
+    "prefecture": "岡山県",
+    "coordinates": "34.6917, 134.2750",
+    "description": "日生海域の小さな島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "tobishimaokayamakenbizenshi"
+  },
+  "405": {
+    "id": "405",
+    "name": "黄島（岡山県瀬戸内市）",
+    "region_id": "kasaoka",
+    "prefecture": "岡山県",
+    "coordinates": "34.5917, 134.1950",
+    "description": "牛窓沖の自然島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 1.39,
+    "radius_m": 665,
+    "checkin_radius_m": 1665,
+    "points": 60,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": false,
+    "slug": "oshimaokayamakensetouchishi"
+  },
+  "406": {
+    "id": "406",
+    "name": "大島（香川県高松市）",
+    "region_id": "naoshima",
+    "prefecture": "香川県",
+    "coordinates": "34.4067, 134.1067",
+    "description": "高松沖に浮かぶ歴史と人権・癒やしの島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.65,
+    "radius_m": 455,
+    "checkin_radius_m": 1455,
+    "points": 60,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true,
+    "slug": "oshimakagawakentakamatsushi"
+  },
+  "407": {
+    "id": "407",
+    "name": "小大下島（愛媛県今治市）",
+    "region_id": "kamijima",
+    "prefecture": "愛媛県",
+    "coordinates": "34.1867, 132.8917",
+    "description": "関前諸島の一つ。古い石灰石の採掘場跡と青い入り江。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.65,
+    "radius_m": 455,
+    "checkin_radius_m": 1455,
+    "points": 60,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true,
+    "slug": "koogejimaehimekenimabarishi"
+  },
+  "408": {
+    "id": "408",
+    "name": "新谷島（愛媛県・忽那）",
+    "region_id": "kutsuna",
+    "prefecture": "愛媛県",
+    "coordinates": "33.9517, 132.6150",
+    "description": "忽那諸島の小島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "niyatoehimekenkutsuna"
+  },
+  "409": {
+    "id": "409",
+    "name": "竹Kel島（愛媛県宇和島）",
+    "region_id": "uwakai",
+    "prefecture": "愛媛県",
+    "coordinates": "33.1517, 132.4150",
+    "description": "宇和海の養殖と自然の島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "takekeltoehimekenuwajima"
+  },
+  "410": {
+    "id": "410",
+    "name": "蒋淵島（愛媛県）",
+    "region_id": "uwakai",
+    "prefecture": "愛媛県",
+    "coordinates": "33.1750, 132.4183",
+    "description": "三浦半島周辺の小島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "fuchitoehimeken"
+  },
+  "411": {
+    "id": "411",
+    "name": "高島（徳島県鳴門市）",
+    "region_id": "pseudo_tokushima",
+    "prefecture": "徳島県",
+    "coordinates": "34.2167, 134.6167",
+    "description": "ウチノ海に抱かれた鳴門の島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "takashimatokushimakennarutoshi"
+  },
+  "412": {
+    "id": "412",
+    "name": "島田島（徳島県鳴門市）",
+    "region_id": "pseudo_tokushima",
+    "prefecture": "徳島県",
+    "coordinates": "34.2333, 134.6167",
+    "description": "鳴門スカイラインが走る塩田と漁業の島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 5.73,
+    "radius_m": 1351,
+    "checkin_radius_m": 2351,
+    "points": 10,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": true,
+    "slug": "shimadatotokushimakennarutoshi"
+  },
+  "413": {
+    "id": "413",
+    "name": "玄界島沖小島（福岡）",
+    "region_id": "genkai",
+    "prefecture": "福岡県",
+    "coordinates": "33.6950, 130.2450",
+    "description": "玄界島周辺の奇岩島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "genkaishimaokikojimafukuoka"
+  },
+  "414": {
+    "id": "414",
+    "name": "向島（佐賀県唐津市）",
+    "region_id": "genkai",
+    "prefecture": "佐賀県",
+    "coordinates": "33.5167, 129.8450",
+    "description": "星賀港からフェリー約10分。唐津湾・伊万里湾沿いの自然島。",
+    "access": "しまなみ海道より橋直結（車・自転車・バスアクセス）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 22.31,
+    "radius_m": 2665,
+    "checkin_radius_m": 3665,
+    "points": 60,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true,
+    "slug": "mukojimasagakenkaratsushi"
+  },
+  "415": {
+    "id": "415",
+    "name": "竹崎島（佐賀県太良町）",
+    "region_id": "genkai",
+    "prefecture": "佐賀県",
+    "coordinates": "32.9667, 130.2250",
+    "description": "有明海・竹崎カニで有名な陸続き島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "takezakitosagakentaramachi"
+  },
+  "416": {
+    "id": "416",
+    "name": "寺島（長崎県五島市）",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "33.0833, 129.0167",
+    "description": "五島灘沖の静かな漁師島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 1.3,
+    "radius_m": 643,
+    "checkin_radius_m": 1643,
+    "points": 60,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": false,
+    "slug": "terashimanagasakikengoshimashi"
+  },
+  "417": {
+    "id": "417",
+    "name": "六島（長崎県五島市）",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "33.1000, 128.9833",
+    "description": "上五島と小値賀島の間に位置する島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.92,
+    "radius_m": 541,
+    "checkin_radius_m": 1541,
+    "points": 140,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "rokutonagasakikengoshimashi"
+  },
+  "418": {
+    "id": "418",
+    "name": "桐木島（新上五島町）",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "32.9517, 129.0317",
+    "description": "若松大橋近くの小島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "kirinokitoshinkamigoshimamachi"
+  },
+  "419": {
+    "id": "419",
+    "name": "折島（新上五島町）",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "32.9350, 129.0183",
+    "description": "若松島周辺の美しい入江島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "oreshimashinkamigoshimamachi"
+  },
+  "420": {
+    "id": "420",
+    "name": "黒島（長崎県松浦市）",
+    "region_id": "hirado",
+    "prefecture": "長崎県",
+    "coordinates": "33.3917, 129.7850",
+    "description": "伊万里湾沖に浮かぶ自然豊かな島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 4.66,
+    "radius_m": 1218,
+    "checkin_radius_m": 2218,
+    "points": 60,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": true,
+    "slug": "kuroshimanagasakikenmatsuurashi"
+  },
+  "421": {
+    "id": "421",
+    "name": "箕島（長崎県大村市）",
+    "region_id": "pseudo_saikai",
+    "prefecture": "長崎県",
+    "coordinates": "32.9167, 129.9167",
+    "description": "大村湾に浮かび現在は長崎空港ターミナルが立つ歴史的島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "mishimanagasakikenomurashi"
+  },
+  "422": {
+    "id": "422",
+    "name": "前島（長崎県時津町）",
+    "region_id": "pseudo_saikai",
+    "prefecture": "長崎県",
+    "coordinates": "32.8333, 129.8500",
+    "description": "大村湾南部の穏やかな島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.33,
+    "radius_m": 324,
+    "checkin_radius_m": 1324,
+    "points": 10,
+    "difficulty": "はじめの一歩",
+    "is_conquest_target": false,
+    "slug": "maejimanagasakikentogitsumachi"
+  },
+  "423": {
+    "id": "423",
+    "name": "鹿島（長崎県佐世保）",
+    "region_id": "pseudo_saikai",
+    "prefecture": "長崎県",
+    "coordinates": "33.1617, 129.6850",
+    "description": "佐世保湾岸の小島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.63,
+    "radius_m": 915,
+    "checkin_radius_m": 1915,
+    "points": 0,
+    "difficulty": "到達不可",
+    "is_conquest_target": false,
+    "slug": "kashimanagasakikensasebo"
+  },
+  "424": {
+    "id": "424",
+    "name": "黒島（大分県臼杵市）",
+    "region_id": "bungo",
+    "prefecture": "大分県",
+    "coordinates": "33.1500, 131.8333",
+    "description": "1600年に英国人ウィリアム・アダムス（三浦按針）のリーフデ号が漂着した歴史島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 15.39,
+    "radius_m": 2213,
+    "checkin_radius_m": 3213,
+    "points": 60,
+    "difficulty": "人気観光アイランド",
+    "is_conquest_target": false,
+    "slug": "kuroshimaoitakenkyushoshi"
+  },
+  "425": {
+    "id": "425",
+    "name": "青島（宮崎県宮崎市）",
+    "region_id": "minami_naka",
+    "prefecture": "宮崎県",
+    "coordinates": "31.8050, 131.4750",
+    "description": "国の特別天然記念物「鬼の洗濯板」と亜熱帯植物群落に包まれた宮崎を代表する陸続きの神聖な島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "chintaomiyazakikenmiyazakishi"
+  },
+  "426": {
+    "id": "426",
+    "name": "嵐口島（熊本県天草）",
+    "region_id": "amakusa",
+    "prefecture": "熊本県",
+    "coordinates": "32.3517, 130.3350",
+    "description": "御所浦島近くの島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "arashiguchitokumamotokenamakusa"
+  },
+  "427": {
+    "id": "427",
+    "name": "竹ヶ島（和歌山県那智勝浦）",
+    "region_id": "pseudo_awaji",
+    "prefecture": "和歌山県",
+    "coordinates": "33.6167, 135.9417",
+    "description": "紀伊半島南部・勝浦湾の入り江に浮かぶ自然豊かな島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "takegashimawakayamakennachikatsuura"
+  },
+  "428": {
+    "id": "428",
+    "name": "安楽島（三重県鳥羽）",
+    "region_id": "aichi_santo",
+    "prefecture": "三重県",
+    "coordinates": "34.4683, 136.8717",
+    "description": "鳥羽港周辺の緑美しい景勝の島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": true,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "arashimamiekentoppa"
+  },
+  "429": {
+    "id": "429",
+    "name": "三ツ島（三重県鳥羽）",
+    "region_id": "aichi_santo",
+    "prefecture": "三重県",
+    "coordinates": "34.4967, 136.8617",
+    "description": "鳥羽沖に並び立つ3つの美しい島影。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "mitsujimamiekentoppa"
+  },
+  "430": {
+    "id": "430",
+    "name": "横島（広島県福山市鞆の浦）",
+    "region_id": "kasaoka",
+    "prefecture": "広島県",
+    "coordinates": "34.3417, 133.3283",
+    "description": "鞆の浦沖に浮かび内海大橋で田島と結ばれる瀬戸内海国立公園の島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 4.06,
+    "radius_m": 1137,
+    "checkin_radius_m": 2137,
+    "points": 400,
+    "difficulty": "特殊手段限定",
+    "is_conquest_target": true,
+    "slug": "yokoshimahiroshimakenfukuyamashinoura"
+  },
+  "431": {
+    "id": "431",
+    "name": "弁天島（長崎県壱岐市）",
+    "region_id": "iki",
+    "prefecture": "長崎県",
+    "coordinates": "33.8017, 129.6817",
+    "description": "壱岐島沿岸部の神社と自然が融合する聖島。",
+    "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "is_conquest_target": false,
+    "points": 10,
+    "difficulty": "未設定",
+    "checkin_radius_m": 3000,
+    "slug": "bentenjimanagasakikenikishi"
+  },
+  "432": {
+    "id": "432",
+    "name": "前島（沖縄県座間味）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2167, 127.4500",
+    "description": "慶良間諸島の東端に位置し白い砂浜とケラマブルーのラグーンが輝く島。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.41,
+    "radius_m": 876,
+    "checkin_radius_m": 1876,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": false,
+    "slug": "maejimaokinawakenzamami"
+  },
+  "noumi": {
+    "id": "noumi",
+    "name": "能美島",
+    "region_id": "kasaoka",
+    "prefecture": "広島県",
+    "coordinates": "34.2000, 132.4500",
+    "description": "極上のカキ小屋やオリーブ園、みかん畑が広がる瀬戸内海有数の島。江田島と陸続き。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 91.33,
+    "radius_m": 5392,
+    "checkin_radius_m": 6392,
+    "points": 0,
+    "difficulty": "未判定(要データ収集)",
+    "is_conquest_target": true,
+    "slug": "noumi"
   },
   "fukajijima": {
     "id": "fukajijima",
@@ -6996,161 +8395,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "陸地座標実証済": "yes"
     },
     "area": 0.83,
-    "radius_m": 500.0,
-    "checkin_radius_m": 1500.0,
-    "points": 400.0,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 400,
     "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "380": {
-    "id": "380",
-    "name": "久米島",
-    "region_id": "kume",
-    "prefecture": "沖縄県",
-    "coordinates": "26.3467, 126.7767",
-    "description": "琉球王国時代に「球美の島」と讃えられた楽園。東洋一のサンゴの砂州「ハテの浜」や畳石、海洋深層水スパ。",
-    "access": "那覇空港より直行航空便 / 那覇泊港発 定期フェリー",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 59.53,
-    "radius_m": 4353.0,
-    "checkin_radius_m": 5353.0,
-    "points": 220.0,
-    "difficulty": "空路の島",
-    "is_conquest_target": true
-  },
-  "381": {
-    "id": "381",
-    "name": "奥武島（久米島）",
-    "region_id": "kume",
-    "prefecture": "沖縄県",
-    "coordinates": "26.3417, 126.8317",
-    "description": "久米島と海中道路でつながり国の天然記念物「畳石」とウミガメ館がある絶景リゾート。",
-    "access": "勝連半島より海中道路・大橋直結（車アクセス）",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.63,
-    "radius_m": 448.0,
-    "checkin_radius_m": 1448.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "382": {
-    "id": "382",
-    "name": "粟国島",
-    "region_id": "kume",
-    "prefecture": "沖縄県",
-    "coordinates": "26.5867, 127.2283",
-    "description": "那覇の北西約60kmに浮かぶ映画『ナビィの恋』の舞台となったソテツとミネラル豊富な「粟国の塩」の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 7.62,
-    "radius_m": 1557.0,
-    "checkin_radius_m": 2557.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "383": {
-    "id": "383",
-    "name": "渡名喜島",
-    "region_id": "kume",
-    "prefecture": "沖縄県",
-    "coordinates": "26.3717, 127.1433",
-    "description": "国の重要伝統的建造物群保存地区に指定された赤瓦とフクギ並木の集落が保存され夜は足元灯が優しく照らす島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 3.58,
-    "radius_m": 1067.0,
-    "checkin_radius_m": 2067.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "384": {
-    "id": "384",
-    "name": "北大東島",
-    "region_id": "daito",
-    "prefecture": "沖縄県",
-    "coordinates": "25.9517, 131.3083",
-    "description": "沖縄本島東約360km、絶海に浮かぶ隆起サンゴ礁の島。断崖絶壁に囲まれクレーンで船から上陸するダイナミックな港。",
-    "access": "那覇空港よりRAC直行航空便 / 那覇港発 定期船「だいとう」",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 11.91,
-    "radius_m": 1947.0,
-    "checkin_radius_m": 2947.0,
-    "points": 550.0,
-    "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
-  },
-  "385": {
-    "id": "385",
-    "name": "南大東島",
-    "region_id": "daito",
-    "prefecture": "沖縄県",
-    "coordinates": "25.8450, 131.2333",
-    "description": "八丈島からの開拓者たちが切り拓いた八丈文化が息づく島。東洋一の鍾乳洞「星野洞」やカルスト地形。",
-    "access": "那覇空港よりRAC直行航空便 / 那覇港発 定期船「だいとう」",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 30.52,
-    "radius_m": 3117.0,
-    "checkin_radius_m": 4117.0,
-    "points": 550.0,
-    "difficulty": "半日がかりの秘境",
-    "is_conquest_target": true
-  },
-  "386": {
-    "id": "386",
-    "name": "宮古島",
-    "region_id": "miyako",
-    "prefecture": "沖縄県",
-    "coordinates": "24.8000, 125.2833",
-    "description": "東洋屈指の透明度を誇る「ミヤコブルー」と「与那覇前浜ビーチ」。3つの大橋で周辺離島と絶景ドライブが楽しい島。",
-    "access": "羽田・関空・那覇等より直行航空便直結",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 158.93,
-    "radius_m": 7113.0,
-    "checkin_radius_m": 8113.0,
-    "points": 220.0,
-    "difficulty": "空路の島",
-    "is_conquest_target": true
-  },
-  "387": {
-    "id": "387",
-    "name": "伊良部島",
-    "region_id": "miyako",
-    "prefecture": "沖縄県",
-    "coordinates": "24.8367, 125.1883",
-    "description": "全長3,540mの伊良部大橋で宮古島と直結！ダイナミックな自然景観と青の洞窟で知られる島。",
-    "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
     "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "slug": "fukajijima"
   },
   "shimoji": {
     "id": "shimoji",
@@ -7167,2115 +8417,1384 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "points": 10,
     "difficulty": "未設定",
-    "checkin_radius_m": 3000
+    "checkin_radius_m": 3000,
+    "slug": "shimoji"
   },
-  "388": {
-    "id": "388",
-    "name": "池間島",
-    "region_id": "miyako",
-    "prefecture": "沖縄県",
-    "coordinates": "24.9300, 125.2433",
-    "description": "宮古島北端から池間大橋で渡るミヤコブルーの聖域。八重干瀬サンゴ礁への出港地。",
-    "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 2.83,
-    "radius_m": 949.0,
-    "checkin_radius_m": 1949.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "389": {
-    "id": "389",
-    "name": "来間島",
-    "region_id": "miyako",
-    "prefecture": "沖縄県",
-    "coordinates": "24.7233, 125.2533",
-    "description": "与那覇前浜ビーチの正面に位置し来間大橋でつながる島。竜宮城展望台と絶品フルーツカフェ。",
-    "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 2.84,
-    "radius_m": 951.0,
-    "checkin_radius_m": 1951.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "390": {
-    "id": "390",
-    "name": "多良間島",
-    "region_id": "miyako",
-    "prefecture": "沖縄県",
-    "coordinates": "24.6600, 124.7000",
-    "description": "宮古島と石垣島のほぼ中間に浮かぶ「日本で最も美しい村」。国指定重要無形民俗文化財「八月踊り」。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 19.81,
-    "radius_m": 2511.0,
-    "checkin_radius_m": 3511.0,
-    "points": 220.0,
-    "difficulty": "空路の島",
-    "is_conquest_target": true
-  },
-  "391": {
-    "id": "391",
-    "name": "大神島（宮古島）",
-    "region_id": "miyako",
-    "prefecture": "沖縄県",
-    "coordinates": "24.9167, 125.3117",
-    "description": "島尻港からフェリーで約15分。島全体が神聖なパワースポットとして厳格なルールが守られる神々しい島。",
-    "access": "羽田・関空・那覇等より直行航空便直結",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.27,
-    "radius_m": 293.0,
-    "checkin_radius_m": 1293.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "392": {
-    "id": "392",
-    "name": "石垣島",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.4167, 124.2333",
-    "description": "八重山諸島の玄関口＆中心地！ミシュラン三つ星「川平湾」、マンタと泳げる海、日本最高の星空保護区と石垣牛グルメ。",
-    "access": "羽田・関空・那覇等より直行航空便直結",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 222.24,
-    "radius_m": 8411.0,
-    "checkin_radius_m": 9411.0,
-    "points": 220.0,
-    "difficulty": "空路の島",
-    "is_conquest_target": true
-  },
-  "393": {
-    "id": "393",
-    "name": "竹富島",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.3283, 124.0867",
-    "description": "石垣港から高速船10分！赤瓦の伝統的民家と白砂の小路、ブーゲンビリアと水牛車がゆっくり歩く琉球の原風景。",
-    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 5.43,
-    "radius_m": 1315.0,
-    "checkin_radius_m": 2315.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "394": {
-    "id": "394",
-    "name": "小浜島",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.3400, 123.9817",
-    "description": "朝ドラ『ちゅらさん』の舞台！大岳展望台からの八重山360度絶景とシュガーロード、星野リゾート等の楽園。",
-    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 7.86,
-    "radius_m": 1582.0,
-    "checkin_radius_m": 2582.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "395": {
-    "id": "395",
-    "name": "黒島（八重山・ハートアイランド）",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.2400, 124.0133",
-    "description": "島の形がハート型をしており約3,000頭もの肉牛が緑の牧草地で暮らすのどかな牛とウミガメの島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 10.02,
-    "radius_m": 1786.0,
-    "checkin_radius_m": 2786.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "396": {
-    "id": "396",
-    "name": "西表島",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.3250, 123.8217",
-    "description": "2021年世界自然遺産登録！約90%が亜熱帯の原生林に覆われた秘境。イリオモテヤマネコやマングローブクルーズ。",
-    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 289.62,
-    "radius_m": 9602.0,
-    "checkin_radius_m": 10602.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "397": {
-    "id": "397",
-    "name": "由布島（水牛車で渡る島）",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.3150, 123.9350",
-    "description": "西表島から浅瀬を三線が響くのんびりとした「水牛車」に乗って海を渡る亜熱帯植物楽園の島！",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.16,
-    "radius_m": 226.0,
-    "checkin_radius_m": 1226.0,
-    "points": 400.0,
-    "difficulty": "特殊手段限定",
-    "is_conquest_target": true
-  },
-  "398": {
-    "id": "398",
-    "name": "鳩間島",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.4717, 123.8200",
-    "description": "ドラマ『瑠璃の島』のモデル！周囲約4km、エメラルドグリーンの鳩間ブルーとウミガメの島時間が流れる秘境。",
-    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.97,
-    "radius_m": 556.0,
-    "checkin_radius_m": 1556.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": true
-  },
-  "399": {
-    "id": "399",
-    "name": "新城島（パナリ島）",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.2333, 123.9450",
-    "description": "定期船がなくツアーでのみ訪れることができる人魚伝説（ジュゴン）の聖域。最高の透明度。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "400": {
-    "id": "400",
-    "name": "波照間島",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.0600, 123.7767",
-    "description": "【日本最南端の有人島】。これ以上美しい青はないと讃えられ日本一の透明度を誇る「ハテルマブルー」と「南十字星」。",
-    "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 12.73,
-    "radius_m": 2013.0,
-    "checkin_radius_m": 3013.0,
-    "points": 220.0,
-    "difficulty": "空路の島",
-    "is_conquest_target": true
-  },
-  "401": {
-    "id": "401",
-    "name": "与那国島",
-    "region_id": "yaeyama",
-    "prefecture": "沖縄県",
-    "coordinates": "24.4567, 122.9883",
-    "description": "【日本最西端の島】。台湾までわずか111km、謎に包まれた海底遺跡と「与那国馬」の放牧風景が感動を呼ぶ。",
-    "access": "那覇空港・石垣空港より航空便 / 石垣港発 福山海運「フェリーよなぐに」",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 28.82,
-    "radius_m": 3029.0,
-    "checkin_radius_m": 4029.0,
-    "points": 220.0,
-    "difficulty": "空路の島",
-    "is_conquest_target": true
-  },
-  "402": {
-    "id": "402",
-    "name": "沖島（愛知県）",
-    "region_id": "aichi_santo",
-    "prefecture": "愛知県",
-    "coordinates": "34.7317, 137.0250",
-    "description": "三河湾沿いに位置する自然の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "403": {
-    "id": "403",
-    "name": "弁賀島（和歌山県）",
-    "region_id": "pseudo_awaji",
-    "prefecture": "和歌山県",
-    "coordinates": "33.6217, 135.9450",
-    "description": "勝浦湾内の景勝島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "404": {
-    "id": "404",
-    "name": "飛島（岡山県備前市）",
-    "region_id": "kasaoka",
-    "prefecture": "岡山県",
-    "coordinates": "34.6917, 134.2750",
-    "description": "日生海域の小さな島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "405": {
-    "id": "405",
-    "name": "黄島（岡山県瀬戸内市）",
-    "region_id": "kasaoka",
-    "prefecture": "岡山県",
-    "coordinates": "34.5917, 134.1950",
-    "description": "牛窓沖の自然島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 1.39,
-    "radius_m": 665.0,
-    "checkin_radius_m": 1665.0,
-    "points": 60.0,
-    "difficulty": "人気観光アイランド",
-    "is_conquest_target": false
-  },
-  "406": {
-    "id": "406",
-    "name": "大島（香川県高松市）",
-    "region_id": "naoshima",
-    "prefecture": "香川県",
-    "coordinates": "34.4067, 134.1067",
-    "description": "高松沖に浮かぶ歴史と人権・癒やしの島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.65,
-    "radius_m": 455.0,
-    "checkin_radius_m": 1455.0,
-    "points": 60.0,
-    "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
-  },
-  "407": {
-    "id": "407",
-    "name": "小大下島（愛媛県今治市）",
-    "region_id": "kamijima",
-    "prefecture": "愛媛県",
-    "coordinates": "34.1867, 132.8917",
-    "description": "関前諸島の一つ。古い石灰石の採掘場跡と青い入り江。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.65,
-    "radius_m": 455.0,
-    "checkin_radius_m": 1455.0,
-    "points": 60.0,
-    "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
-  },
-  "408": {
-    "id": "408",
-    "name": "新谷島（愛媛県・忽那）",
-    "region_id": "kutsuna",
-    "prefecture": "愛媛県",
-    "coordinates": "33.9517, 132.6150",
-    "description": "忽那諸島の小島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "409": {
-    "id": "409",
-    "name": "竹Kel島（愛媛県宇和島）",
-    "region_id": "uwakai",
-    "prefecture": "愛媛県",
-    "coordinates": "33.1517, 132.4150",
-    "description": "宇和海の養殖と自然の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "410": {
-    "id": "410",
-    "name": "蒋淵島（愛媛県）",
-    "region_id": "uwakai",
-    "prefecture": "愛媛県",
-    "coordinates": "33.1750, 132.4183",
-    "description": "三浦半島周辺の小島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "411": {
-    "id": "411",
-    "name": "高島（徳島県鳴門市）",
-    "region_id": "pseudo_tokushima",
-    "prefecture": "徳島県",
-    "coordinates": "34.2167, 134.6167",
-    "description": "ウチノ海に抱かれた鳴門の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "412": {
-    "id": "412",
-    "name": "島田島（徳島県鳴門市）",
-    "region_id": "pseudo_tokushima",
-    "prefecture": "徳島県",
-    "coordinates": "34.2333, 134.6167",
-    "description": "鳴門スカイラインが走る塩田と漁業の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 5.73,
-    "radius_m": 1351.0,
-    "checkin_radius_m": 2351.0,
-    "points": 10.0,
-    "difficulty": "はじめの一歩",
-    "is_conquest_target": true
-  },
-  "413": {
-    "id": "413",
-    "name": "玄界島沖小島（福岡）",
-    "region_id": "genkai",
-    "prefecture": "福岡県",
-    "coordinates": "33.6950, 130.2450",
-    "description": "玄界島周辺の奇岩島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "414": {
-    "id": "414",
-    "name": "向島（佐賀県唐津市）",
-    "region_id": "genkai",
-    "prefecture": "佐賀県",
-    "coordinates": "33.5167, 129.8450",
-    "description": "星賀港からフェリー約10分。唐津湾・伊万里湾沿いの自然島。",
-    "access": "しまなみ海道より橋直結（車・自転車・バスアクセス）",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 22.31,
-    "radius_m": 2665.0,
-    "checkin_radius_m": 3665.0,
-    "points": 60.0,
-    "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
-  },
-  "415": {
-    "id": "415",
-    "name": "竹崎島（佐賀県太良町）",
-    "region_id": "genkai",
-    "prefecture": "佐賀県",
-    "coordinates": "32.9667, 130.2250",
-    "description": "有明海・竹崎カニで有名な陸続き島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "416": {
-    "id": "416",
-    "name": "寺島（長崎県五島市）",
-    "region_id": "goto",
-    "prefecture": "長崎県",
-    "coordinates": "33.0833, 129.0167",
-    "description": "五島灘沖の静かな漁師島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 1.3,
-    "radius_m": 643.0,
-    "checkin_radius_m": 1643.0,
-    "points": 60.0,
-    "difficulty": "人気観光アイランド",
-    "is_conquest_target": false
-  },
-  "417": {
-    "id": "417",
-    "name": "六島（長崎県五島市）",
-    "region_id": "goto",
-    "prefecture": "長崎県",
-    "coordinates": "33.1000, 128.9833",
-    "description": "上五島と小値賀島の間に位置する島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.92,
-    "radius_m": 541.0,
-    "checkin_radius_m": 1541.0,
-    "points": 140.0,
-    "difficulty": "乗継の壁",
-    "is_conquest_target": true
-  },
-  "418": {
-    "id": "418",
-    "name": "桐木島（新上五島町）",
-    "region_id": "goto",
-    "prefecture": "長崎県",
-    "coordinates": "32.9517, 129.0317",
-    "description": "若松大橋近くの小島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "419": {
-    "id": "419",
-    "name": "折島（新上五島町）",
-    "region_id": "goto",
-    "prefecture": "長崎県",
-    "coordinates": "32.9350, 129.0183",
-    "description": "若松島周辺の美しい入江島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "420": {
-    "id": "420",
-    "name": "黒島（長崎県松浦市）",
-    "region_id": "hirado",
-    "prefecture": "長崎県",
-    "coordinates": "33.3917, 129.7850",
-    "description": "伊万里湾沖に浮かぶ自然豊かな島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 4.66,
-    "radius_m": 1218.0,
-    "checkin_radius_m": 2218.0,
-    "points": 60.0,
-    "difficulty": "人気観光アイランド",
-    "is_conquest_target": true
-  },
-  "421": {
-    "id": "421",
-    "name": "箕島（長崎県大村市）",
-    "region_id": "pseudo_saikai",
-    "prefecture": "長崎県",
-    "coordinates": "32.9167, 129.9167",
-    "description": "大村湾に浮かび現在は長崎空港ターミナルが立つ歴史的島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "422": {
-    "id": "422",
-    "name": "前島（長崎県時津町）",
-    "region_id": "pseudo_saikai",
-    "prefecture": "長崎県",
-    "coordinates": "32.8333, 129.8500",
-    "description": "大村湾南部の穏やかな島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 0.33,
-    "radius_m": 324.0,
-    "checkin_radius_m": 1324.0,
-    "points": 10.0,
-    "difficulty": "はじめの一歩",
-    "is_conquest_target": false
-  },
-  "423": {
-    "id": "423",
-    "name": "鹿島（長崎県佐世保）",
-    "region_id": "pseudo_saikai",
-    "prefecture": "長崎県",
-    "coordinates": "33.1617, 129.6850",
-    "description": "佐世保湾岸の小島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 2.63,
-    "radius_m": 915.0,
-    "checkin_radius_m": 1915.0,
-    "points": 0,
-    "difficulty": "到達不可",
-    "is_conquest_target": false
-  },
-  "424": {
-    "id": "424",
-    "name": "黒島（大分県臼杵市）",
-    "region_id": "bungo",
-    "prefecture": "大分県",
-    "coordinates": "33.1500, 131.8333",
-    "description": "1600年に英国人ウィリアム・アダムス（三浦按針）のリーフデ号が漂着した歴史島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 15.39,
-    "radius_m": 2213.0,
-    "checkin_radius_m": 3213.0,
-    "points": 60.0,
-    "difficulty": "人気観光アイランド",
-    "is_conquest_target": false
-  },
-  "425": {
-    "id": "425",
-    "name": "青島（宮崎県宮崎市）",
-    "region_id": "minami_naka",
-    "prefecture": "宮崎県",
-    "coordinates": "31.8050, 131.4750",
-    "description": "国の特別天然記念物「鬼の洗濯板」と亜熱帯植物群落に包まれた宮崎を代表する陸続きの神聖な島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "426": {
-    "id": "426",
-    "name": "嵐口島（熊本県天草）",
-    "region_id": "amakusa",
-    "prefecture": "熊本県",
-    "coordinates": "32.3517, 130.3350",
-    "description": "御所浦島近くの島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "427": {
-    "id": "427",
-    "name": "竹ヶ島（和歌山県那智勝浦）",
-    "region_id": "pseudo_awaji",
-    "prefecture": "和歌山県",
-    "coordinates": "33.6167, 135.9417",
-    "description": "紀伊半島南部・勝浦湾の入り江に浮かぶ自然豊かな島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "428": {
-    "id": "428",
-    "name": "安楽島（三重県鳥羽）",
-    "region_id": "aichi_santo",
-    "prefecture": "三重県",
-    "coordinates": "34.4683, 136.8717",
-    "description": "鳥羽港周辺の緑美しい景勝の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "429": {
-    "id": "429",
-    "name": "三ツ島（三重県鳥羽）",
-    "region_id": "aichi_santo",
-    "prefecture": "三重県",
-    "coordinates": "34.4967, 136.8617",
-    "description": "鳥羽沖に並び立つ3つの美しい島影。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "430": {
-    "id": "430",
-    "name": "横島（広島県福山市鞆の浦）",
-    "region_id": "kasaoka",
-    "prefecture": "広島県",
-    "coordinates": "34.3417, 133.3283",
-    "description": "鞆の浦沖に浮かび内海大橋で田島と結ばれる瀬戸内海国立公園の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 4.06,
-    "radius_m": 1137.0,
-    "checkin_radius_m": 2137.0,
-    "points": 400.0,
-    "difficulty": "特殊手段限定",
-    "is_conquest_target": true
-  },
-  "431": {
-    "id": "431",
-    "name": "弁天島（長崎県壱岐市）",
-    "region_id": "iki",
-    "prefecture": "長崎県",
-    "coordinates": "33.8017, 129.6817",
-    "description": "壱岐島沿岸部の神社と自然が融合する聖島。",
-    "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000
-  },
-  "432": {
-    "id": "432",
-    "name": "前島（沖縄県座間味）",
-    "region_id": "kerama",
-    "prefecture": "沖縄県",
-    "coordinates": "26.2167, 127.4500",
-    "description": "慶良間諸島の東端に位置し白い砂浜とケラマブルーのラグーンが輝く島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "area": 2.41,
-    "radius_m": 876.0,
-    "checkin_radius_m": 1876.0,
-    "points": 350.0,
-    "difficulty": "遠隔離島",
-    "is_conquest_target": false
-  }
-,
   "kamishima_mie": {
-      "id": "kamishima_mie",
-      "name": "神島",
-      "region_id": "tokai",
-      "prefecture": "三重県",
-      "coordinates": "34.548, 136.982",
-      "description": "伊勢湾口に浮かぶ島で、三島由紀夫の小説『潮騒』の舞台。",
-      "access": "鳥羽港から定期船で約40分",
-      "area": 0.76,
-      "radius_m": 500,
-      "checkin_radius_m": 2000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "kamishima_mie",
+    "name": "神島",
+    "region_id": "tokai",
+    "prefecture": "三重県",
+    "coordinates": "34.548, 136.982",
+    "description": "伊勢湾口に浮かぶ島で、三島由紀夫の小説『潮騒』の舞台。",
+    "access": "鳥羽港から定期船で約40分",
+    "area": 0.76,
+    "radius_m": 500,
+    "checkin_radius_m": 2000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "kamishima_mie"
   },
   "watakanojima_mie": {
-      "id": "watakanojima_mie",
-      "name": "渡鹿野島",
-      "region_id": "tokai",
-      "prefecture": "三重県",
-      "coordinates": "34.359, 136.877",
-      "description": "的矢湾に浮かぶハート型の島。",
-      "access": "渡鹿野渡船場から船で約3分",
-      "area": 0.69,
-      "radius_m": 500,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "watakanojima_mie",
+    "name": "渡鹿野島",
+    "region_id": "tokai",
+    "prefecture": "三重県",
+    "coordinates": "34.359, 136.877",
+    "description": "的矢湾に浮かぶハート型の島。",
+    "access": "渡鹿野渡船場から船で約3分",
+    "area": 0.69,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "watakanojima_mie"
   },
   "otabujima_okayama": {
-      "id": "otabujima_okayama",
-      "name": "大多府島",
-      "region_id": "setouchi",
-      "prefecture": "岡山県",
-      "coordinates": "34.708, 134.278",
-      "description": "日生諸島の一つで、古い風待ち港の面影を残す。",
-      "access": "日生港から定期船で約15分",
-      "area": 0.4,
-      "radius_m": 400,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "otabujima_okayama",
+    "name": "大多府島",
+    "region_id": "setouchi",
+    "prefecture": "岡山県",
+    "coordinates": "34.708, 134.278",
+    "description": "日生諸島の一つで、古い風待ち港の面影を残す。",
+    "access": "日生港から定期船で約15分",
+    "area": 0.4,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "otabujima_okayama"
   },
   "kashirajima_okayama": {
-      "id": "kashirajima_okayama",
-      "name": "頭島",
-      "region_id": "setouchi",
-      "prefecture": "岡山県",
-      "coordinates": "34.717, 134.288",
-      "description": "鹿久居島と橋で結ばれている日生諸島の島。",
-      "access": "鹿久居島経由で頭島大橋にて陸続き",
-      "area": 0.58,
-      "radius_m": 500,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kashirajima_okayama",
+    "name": "頭島",
+    "region_id": "setouchi",
+    "prefecture": "岡山県",
+    "coordinates": "34.717, 134.288",
+    "description": "鹿久居島と橋で結ばれている日生諸島の島。",
+    "access": "鹿久居島経由で頭島大橋にて陸続き",
+    "area": 0.58,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kashirajima_okayama"
   },
   "maeshima_okayama": {
-      "id": "maeshima_okayama",
-      "name": "前島",
-      "region_id": "setouchi",
-      "prefecture": "岡山県",
-      "coordinates": "34.606, 134.168",
-      "description": "牛窓の沖合に浮かぶ「日本のエーゲ海」と呼ばれるリゾート島。",
-      "access": "牛窓港からフェリーで約5分",
-      "area": 2.42,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "maeshima_okayama",
+    "name": "前島",
+    "region_id": "setouchi",
+    "prefecture": "岡山県",
+    "coordinates": "34.606, 134.168",
+    "description": "牛窓の沖合に浮かぶ「日本のエーゲ海」と呼ばれるリゾート島。",
+    "access": "牛窓港からフェリーで約5分",
+    "area": 2.42,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "maeshima_okayama"
   },
   "inujima_okayama": {
-      "id": "inujima_okayama",
-      "name": "犬島",
-      "region_id": "setouchi",
-      "prefecture": "岡山県",
-      "coordinates": "34.563, 134.101",
-      "description": "銅の製錬所跡が残る、アートの島として有名な島。",
-      "access": "宝伝港から定期船で約10分",
-      "area": 0.54,
-      "radius_m": 500,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "inujima_okayama",
+    "name": "犬島",
+    "region_id": "setouchi",
+    "prefecture": "岡山県",
+    "coordinates": "34.563, 134.101",
+    "description": "銅の製錬所跡が残る、アートの島として有名な島。",
+    "access": "宝伝港から定期船で約10分",
+    "area": 0.54,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "inujima_okayama"
   },
   "takashima_okayama": {
-      "id": "takashima_okayama",
-      "name": "高島",
-      "region_id": "setouchi",
-      "prefecture": "岡山県",
-      "coordinates": "34.433, 133.513",
-      "description": "笠岡諸島の一つで、豊かな自然と史跡が残る。",
-      "access": "笠岡港から定期船で約25分",
-      "area": 1.05,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "takashima_okayama",
+    "name": "高島",
+    "region_id": "setouchi",
+    "prefecture": "岡山県",
+    "coordinates": "34.433, 133.513",
+    "description": "笠岡諸島の一つで、豊かな自然と史跡が残る。",
+    "access": "笠岡港から定期船で約25分",
+    "area": 1.05,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "takashima_okayama"
   },
   "mushima_okayama": {
-      "id": "mushima_okayama",
-      "name": "六島",
-      "region_id": "setouchi",
-      "prefecture": "岡山県",
-      "coordinates": "34.301, 133.532",
-      "description": "笠岡諸島最南端の島。水仙と灯台が美しい。",
-      "access": "笠岡港から定期船で約60分",
-      "area": 1.02,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "mushima_okayama",
+    "name": "六島",
+    "region_id": "setouchi",
+    "prefecture": "岡山県",
+    "coordinates": "34.301, 133.532",
+    "description": "笠岡諸島最南端の島。水仙と灯台が美しい。",
+    "access": "笠岡港から定期船で約60分",
+    "area": 1.02,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "mushima_okayama"
   },
   "tobishima_okayama": {
-      "id": "tobishima_okayama",
-      "name": "飛島",
-      "region_id": "setouchi",
-      "prefecture": "岡山県",
-      "coordinates": "34.323, 133.513",
-      "description": "笠岡諸島の一つで、大飛島と小飛島の総称（居住は大飛島）。",
-      "access": "笠岡港から定期船で約45分",
-      "area": 1.05,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 40,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "tobishima_okayama",
+    "name": "飛島",
+    "region_id": "setouchi",
+    "prefecture": "岡山県",
+    "coordinates": "34.323, 133.513",
+    "description": "笠岡諸島の一つで、大飛島と小飛島の総称（居住は大飛島）。",
+    "access": "笠岡港から定期船で約45分",
+    "area": 1.05,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 40,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "tobishima_okayama"
   },
   "hashirijima_hiroshima": {
-      "id": "hashirijima_hiroshima",
-      "name": "走島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.341, 133.439",
-      "description": "鞆の浦の沖に浮かぶ漁業が盛んな島。",
-      "access": "鞆の浦から定期船で約25分",
-      "area": 2.15,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "hashirijima_hiroshima",
+    "name": "走島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.341, 133.439",
+    "description": "鞆の浦の沖に浮かぶ漁業が盛んな島。",
+    "access": "鞆の浦から定期船で約25分",
+    "area": 2.15,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "hashirijima_hiroshima"
   },
   "momoshima_hiroshima": {
-      "id": "momoshima_hiroshima",
-      "name": "百島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.364, 133.266",
-      "description": "尾道水道の南に位置する静かな島。",
-      "access": "尾道港からフェリーで約45分",
-      "area": 3.08,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "momoshima_hiroshima",
+    "name": "百島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.364, 133.266",
+    "description": "尾道水道の南に位置する静かな島。",
+    "access": "尾道港からフェリーで約45分",
+    "area": 3.08,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "momoshima_hiroshima"
   },
   "sagishima_hiroshima": {
-      "id": "sagishima_hiroshima",
-      "name": "佐木島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.337, 133.111",
-      "description": "三原市の南に浮かぶミカンの島。トライアスロンでも有名。",
-      "access": "三原港からフェリーで約25分",
-      "area": 8.72,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "sagishima_hiroshima",
+    "name": "佐木島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.337, 133.111",
+    "description": "三原市の南に浮かぶミカンの島。トライアスロンでも有名。",
+    "access": "三原港からフェリーで約25分",
+    "area": 8.72,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "sagishima_hiroshima"
   },
   "kosagijima_hiroshima": {
-      "id": "kosagijima_hiroshima",
-      "name": "小佐木島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.352, 133.102",
-      "description": "佐木島の北に位置する小さな島。",
-      "access": "三原港から定期船で約15分",
-      "area": 0.5,
-      "radius_m": 400,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kosagijima_hiroshima",
+    "name": "小佐木島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.352, 133.102",
+    "description": "佐木島の北に位置する小さな島。",
+    "access": "三原港から定期船で約15分",
+    "area": 0.5,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kosagijima_hiroshima"
   },
   "koneshima_hiroshima": {
-      "id": "koneshima_hiroshima",
-      "name": "高根島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.312, 133.072",
-      "description": "生口島と高根大橋で結ばれた柑橘栽培が盛んな島。",
-      "access": "生口島から橋で陸続き",
-      "area": 5.57,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "koneshima_hiroshima",
+    "name": "高根島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.312, 133.072",
+    "description": "生口島と高根大橋で結ばれた柑橘栽培が盛んな島。",
+    "access": "生口島から橋で陸続き",
+    "area": 5.57,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "koneshima_hiroshima"
   },
   "osakishimojima_hiroshima": {
-      "id": "osakishimojima_hiroshima",
-      "name": "大崎下島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.180, 132.833",
-      "description": "安芸灘とびしま海道の島。御手洗の古い町並みが残る。",
-      "access": "安芸灘とびしま海道で陸続き",
-      "area": 17.36,
-      "radius_m": 2500,
-      "checkin_radius_m": 5000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "osakishimojima_hiroshima",
+    "name": "大崎下島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.180, 132.833",
+    "description": "安芸灘とびしま海道の島。御手洗の古い町並みが残る。",
+    "access": "安芸灘とびしま海道で陸続き",
+    "area": 17.36,
+    "radius_m": 2500,
+    "checkin_radius_m": 5000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "osakishimojima_hiroshima"
   },
   "toyoshima_hiroshima": {
-      "id": "toyoshima_hiroshima",
-      "name": "豊島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.183, 132.784",
-      "description": "大崎下島の西に位置する漁業の島。",
-      "access": "安芸灘とびしま海道で陸続き",
-      "area": 5.62,
-      "radius_m": 1500,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "toyoshima_hiroshima",
+    "name": "豊島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.183, 132.784",
+    "description": "大崎下島の西に位置する漁業の島。",
+    "access": "安芸灘とびしま海道で陸続き",
+    "area": 5.62,
+    "radius_m": 1500,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "toyoshima_hiroshima"
   },
   "kamikamagarijima_hiroshima": {
-      "id": "kamikamagarijima_hiroshima",
-      "name": "上蒲刈島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.188, 132.716",
-      "description": "県民の浜など美しいビーチがある島。",
-      "access": "安芸灘とびしま海道で陸続き",
-      "area": 18.81,
-      "radius_m": 2500,
-      "checkin_radius_m": 5000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kamikamagarijima_hiroshima",
+    "name": "上蒲刈島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.188, 132.716",
+    "description": "県民の浜など美しいビーチがある島。",
+    "access": "安芸灘とびしま海道で陸続き",
+    "area": 18.81,
+    "radius_m": 2500,
+    "checkin_radius_m": 5000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kamikamagarijima_hiroshima"
   },
   "shimokamagarijima_hiroshima": {
-      "id": "shimokamagarijima_hiroshima",
-      "name": "下蒲刈島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.191, 132.668",
-      "description": "とびしま海道の玄関口。朝鮮通信使の歴史を持つ。",
-      "access": "安芸灘とびしま海道で陸続き",
-      "area": 7.97,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "shimokamagarijima_hiroshima",
+    "name": "下蒲刈島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.191, 132.668",
+    "description": "とびしま海道の玄関口。朝鮮通信使の歴史を持つ。",
+    "access": "安芸灘とびしま海道で陸続き",
+    "area": 7.97,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "shimokamagarijima_hiroshima"
   },
   "kashima_hiroshima": {
-      "id": "kashima_hiroshima",
-      "name": "鹿島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.056, 132.531",
-      "description": "倉橋島の南端から橋で結ばれた小島。段々畑の景観が美しい。",
-      "access": "倉橋島から橋で陸続き",
-      "area": 2.64,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kashima_hiroshima",
+    "name": "鹿島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.056, 132.531",
+    "description": "倉橋島の南端から橋で結ばれた小島。段々畑の景観が美しい。",
+    "access": "倉橋島から橋で陸続き",
+    "area": 2.64,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kashima_hiroshima"
   },
   "ninoshima_hiroshima": {
-      "id": "ninoshima_hiroshima",
-      "name": "似島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.313, 132.441",
-      "description": "広島港のすぐ南に浮かぶ「安芸の小富士」と呼ばれる島。",
-      "access": "宇品港からフェリーで約20分",
-      "area": 3.87,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "ninoshima_hiroshima",
+    "name": "似島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.313, 132.441",
+    "description": "広島港のすぐ南に浮かぶ「安芸の小富士」と呼ばれる島。",
+    "access": "宇品港からフェリーで約20分",
+    "area": 3.87,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "ninoshima_hiroshima"
   },
   "kanawajima_hiroshima": {
-      "id": "kanawajima_hiroshima",
-      "name": "金輪島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.354, 132.484",
-      "description": "宇品港の東に位置する造船業の島。",
-      "access": "宇品港から定期船で約15分",
-      "area": 1.05,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kanawajima_hiroshima",
+    "name": "金輪島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.354, 132.484",
+    "description": "宇品港の東に位置する造船業の島。",
+    "access": "宇品港から定期船で約15分",
+    "area": 1.05,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kanawajima_hiroshima"
   },
   "atatajima_hiroshima": {
-      "id": "atatajima_hiroshima",
-      "name": "阿多田島",
-      "region_id": "setouchi",
-      "prefecture": "広島県",
-      "coordinates": "34.195, 132.298",
-      "description": "大竹市の沖合に浮かぶ、釣りと養殖の島。",
-      "access": "小方港からフェリーで約35分",
-      "area": 2.41,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "atatajima_hiroshima",
+    "name": "阿多田島",
+    "region_id": "setouchi",
+    "prefecture": "広島県",
+    "coordinates": "34.195, 132.298",
+    "description": "大竹市の沖合に浮かぶ、釣りと養殖の島。",
+    "access": "小方港からフェリーで約35分",
+    "area": 2.41,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "atatajima_hiroshima"
   },
   "heigunjima_yamaguchi": {
-      "id": "heigunjima_yamaguchi",
-      "name": "平郡島",
-      "region_id": "setouchi",
-      "prefecture": "山口県",
-      "coordinates": "33.766, 132.228",
-      "description": "柳井市の沖合に浮かぶ東西に細長い島。",
-      "access": "柳井港からフェリーで約100分",
-      "area": 16.56,
-      "radius_m": 2500,
-      "checkin_radius_m": 5000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "heigunjima_yamaguchi",
+    "name": "平郡島",
+    "region_id": "setouchi",
+    "prefecture": "山口県",
+    "coordinates": "33.766, 132.228",
+    "description": "柳井市の沖合に浮かぶ東西に細長い島。",
+    "access": "柳井港からフェリーで約100分",
+    "area": 16.56,
+    "radius_m": 2500,
+    "checkin_radius_m": 5000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "heigunjima_yamaguchi"
   },
   "iwaishima_yamaguchi": {
-      "id": "iwaishima_yamaguchi",
-      "name": "祝島",
-      "region_id": "setouchi",
-      "prefecture": "山口県",
-      "coordinates": "33.780, 131.975",
-      "description": "上関町の沖合に浮かぶ、石積みの練塀が特徴的な島。",
-      "access": "柳井港から定期船で約70分",
-      "area": 7.69,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 40,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "iwaishima_yamaguchi",
+    "name": "祝島",
+    "region_id": "setouchi",
+    "prefecture": "山口県",
+    "coordinates": "33.780, 131.975",
+    "description": "上関町の沖合に浮かぶ、石積みの練塀が特徴的な島。",
+    "access": "柳井港から定期船で約70分",
+    "area": 7.69,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 40,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "iwaishima_yamaguchi"
   },
   "yashima_yamaguchi": {
-      "id": "yashima_yamaguchi",
-      "name": "八島",
-      "region_id": "setouchi",
-      "prefecture": "山口県",
-      "coordinates": "33.722, 132.025",
-      "description": "山口県最南端の有人島。",
-      "access": "上関港から定期船で約30分",
-      "area": 4.17,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "yashima_yamaguchi",
+    "name": "八島",
+    "region_id": "setouchi",
+    "prefecture": "山口県",
+    "coordinates": "33.722, 132.025",
+    "description": "山口県最南端の有人島。",
+    "access": "上関港から定期船で約30分",
+    "area": 4.17,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "yashima_yamaguchi"
   },
   "ushima_yamaguchi": {
-      "id": "ushima_yamaguchi",
-      "name": "牛島",
-      "region_id": "setouchi",
-      "prefecture": "山口県",
-      "coordinates": "33.834, 131.996",
-      "description": "光市の沖に浮かぶ自然豊かな島。",
-      "access": "室積港から定期船で約20分",
-      "area": 1.9,
-      "radius_m": 800,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "ushima_yamaguchi",
+    "name": "牛島",
+    "region_id": "setouchi",
+    "prefecture": "山口県",
+    "coordinates": "33.834, 131.996",
+    "description": "光市の沖に浮かぶ自然豊かな島。",
+    "access": "室積港から定期船で約20分",
+    "area": 1.9,
+    "radius_m": 800,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "ushima_yamaguchi"
   },
   "otsushima_yamaguchi": {
-      "id": "otsushima_yamaguchi",
-      "name": "大津島",
-      "region_id": "setouchi",
-      "prefecture": "山口県",
-      "coordinates": "33.992, 131.721",
-      "description": "徳山湾に浮かぶ、回天の訓練基地跡がある島。",
-      "access": "徳山港からフェリーで約45分",
-      "area": 4.73,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "otsushima_yamaguchi",
+    "name": "大津島",
+    "region_id": "setouchi",
+    "prefecture": "山口県",
+    "coordinates": "33.992, 131.721",
+    "description": "徳山湾に浮かぶ、回天の訓練基地跡がある島。",
+    "access": "徳山港からフェリーで約45分",
+    "area": 4.73,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "otsushima_yamaguchi"
   },
   "noshima_yamaguchi": {
-      "id": "noshima_yamaguchi",
-      "name": "野島",
-      "region_id": "setouchi",
-      "prefecture": "山口県",
-      "coordinates": "33.961, 131.687",
-      "description": "防府市の沖合に浮かぶ、漁業が盛んな島。",
-      "access": "三田尻港から定期船で約30分",
-      "area": 0.73,
-      "radius_m": 500,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "noshima_yamaguchi",
+    "name": "野島",
+    "region_id": "setouchi",
+    "prefecture": "山口県",
+    "coordinates": "33.961, 131.687",
+    "description": "防府市の沖合に浮かぶ、漁業が盛んな島。",
+    "access": "三田尻港から定期船で約30分",
+    "area": 0.73,
+    "radius_m": 500,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "noshima_yamaguchi"
   },
   "hashishima_yamaguchi": {
-      "id": "hashishima_yamaguchi",
-      "name": "柱島",
-      "region_id": "setouchi",
-      "prefecture": "山口県",
-      "coordinates": "33.995, 132.419",
-      "description": "岩国市の沖合に浮かぶ柱島群島の中心。",
-      "access": "岩国港から高速船で約60分",
-      "area": 3.12,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "hashishima_yamaguchi",
+    "name": "柱島",
+    "region_id": "setouchi",
+    "prefecture": "山口県",
+    "coordinates": "33.995, 132.419",
+    "description": "岩国市の沖合に浮かぶ柱島群島の中心。",
+    "access": "岩国港から高速船で約60分",
+    "area": 3.12,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "hashishima_yamaguchi"
   },
   "mutsurejima_yamaguchi": {
-      "id": "mutsurejima_yamaguchi",
-      "name": "六連島",
-      "region_id": "sanin",
-      "prefecture": "山口県",
-      "coordinates": "33.978, 130.866",
-      "description": "下関市沖の響灘に浮かぶ、花の栽培が盛んな島。",
-      "access": "竹崎港から定期船で約20分",
-      "area": 0.71,
-      "radius_m": 500,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "mutsurejima_yamaguchi",
+    "name": "六連島",
+    "region_id": "sanin",
+    "prefecture": "山口県",
+    "coordinates": "33.978, 130.866",
+    "description": "下関市沖の響灘に浮かぶ、花の栽培が盛んな島。",
+    "access": "竹崎港から定期船で約20分",
+    "area": 0.71,
+    "radius_m": 500,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "mutsurejima_yamaguchi"
   },
   "futaoijima_yamaguchi": {
-      "id": "futaoijima_yamaguchi",
-      "name": "蓋井島",
-      "region_id": "sanin",
-      "prefecture": "山口県",
-      "coordinates": "34.098, 130.871",
-      "description": "下関市沖に浮かぶ、神事「山の神」が伝わる島。",
-      "access": "吉見港から定期船で約40分",
-      "area": 2.32,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 40,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "futaoijima_yamaguchi",
+    "name": "蓋井島",
+    "region_id": "sanin",
+    "prefecture": "山口県",
+    "coordinates": "34.098, 130.871",
+    "description": "下関市沖に浮かぶ、神事「山の神」が伝わる島。",
+    "access": "吉見港から定期船で約40分",
+    "area": 2.32,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 40,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "futaoijima_yamaguchi"
   },
   "mishima_yamaguchi": {
-      "id": "mishima_yamaguchi",
-      "name": "見島",
-      "region_id": "sanin",
-      "prefecture": "山口県",
-      "coordinates": "34.766, 131.144",
-      "description": "萩市の沖合45kmに浮かぶ国境の島。見島牛の産地。",
-      "access": "萩港から定期船で約75分",
-      "area": 7.73,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "mishima_yamaguchi",
+    "name": "見島",
+    "region_id": "sanin",
+    "prefecture": "山口県",
+    "coordinates": "34.766, 131.144",
+    "description": "萩市の沖合45kmに浮かぶ国境の島。見島牛の産地。",
+    "access": "萩港から定期船で約75分",
+    "area": 7.73,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "mishima_yamaguchi"
   },
   "oshima_hagi": {
-      "id": "oshima_hagi",
-      "name": "大島",
-      "region_id": "sanin",
-      "prefecture": "山口県",
-      "coordinates": "34.498, 131.403",
-      "description": "萩市の沖に浮かぶ萩諸島最大の島。",
-      "access": "萩港から定期船で約25分",
-      "area": 3,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "oshima_hagi",
+    "name": "大島",
+    "region_id": "sanin",
+    "prefecture": "山口県",
+    "coordinates": "34.498, 131.403",
+    "description": "萩市の沖に浮かぶ萩諸島最大の島。",
+    "access": "萩港から定期船で約25分",
+    "area": 3,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "oshima_hagi"
   },
   "aishima_hagi": {
-      "id": "aishima_hagi",
-      "name": "相島",
-      "region_id": "sanin",
-      "prefecture": "山口県",
-      "coordinates": "34.510, 131.278",
-      "description": "萩諸島の一つ。スイカの栽培が盛ん。",
-      "access": "萩港から定期船で約40分",
-      "area": 2.4,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "aishima_hagi",
+    "name": "相島",
+    "region_id": "sanin",
+    "prefecture": "山口県",
+    "coordinates": "34.510, 131.278",
+    "description": "萩諸島の一つ。スイカの栽培が盛ん。",
+    "access": "萩港から定期船で約40分",
+    "area": 2.4,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "aishima_hagi"
   },
   "hitsushima_hagi": {
-      "id": "hitsushima_hagi",
-      "name": "櫃島",
-      "region_id": "sanin",
-      "prefecture": "山口県",
-      "coordinates": "34.520, 131.298",
-      "description": "萩諸島の一つ。定期船がなくチャーターが必要。",
-      "access": "定期船なし（チャーター船）",
-      "area": 0.85,
-      "radius_m": 500,
-      "checkin_radius_m": 2000,
-      "points": 60,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "hitsushima_hagi",
+    "name": "櫃島",
+    "region_id": "sanin",
+    "prefecture": "山口県",
+    "coordinates": "34.520, 131.298",
+    "description": "萩諸島の一つ。定期船がなくチャーターが必要。",
+    "access": "定期船なし（チャーター船）",
+    "area": 0.85,
+    "radius_m": 500,
+    "checkin_radius_m": 2000,
+    "points": 60,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "hitsushima_hagi"
   },
   "teshima_kagawa": {
-      "id": "teshima_kagawa",
-      "name": "豊島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.484, 134.004",
-      "description": "豊かな食とアートで知られる瀬戸内海の島。",
-      "access": "宇野港からフェリーで約40分",
-      "area": 14.5,
-      "radius_m": 2500,
-      "checkin_radius_m": 5000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "teshima_kagawa",
+    "name": "豊島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.484, 134.004",
+    "description": "豊かな食とアートで知られる瀬戸内海の島。",
+    "access": "宇野港からフェリーで約40分",
+    "area": 14.5,
+    "radius_m": 2500,
+    "checkin_radius_m": 5000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "teshima_kagawa"
   },
   "megijima_kagawa": {
-      "id": "megijima_kagawa",
-      "name": "女木島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.393, 134.053",
-      "description": "鬼ヶ島伝説があり、巨大な洞窟がある。",
-      "access": "高松港からフェリーで約20分",
-      "area": 2.62,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "megijima_kagawa",
+    "name": "女木島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.393, 134.053",
+    "description": "鬼ヶ島伝説があり、巨大な洞窟がある。",
+    "access": "高松港からフェリーで約20分",
+    "area": 2.62,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "megijima_kagawa"
   },
   "oshima_kagawa": {
-      "id": "oshima_kagawa",
-      "name": "大島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.407, 134.107",
-      "description": "国立ハンセン病療養所がある島。",
-      "access": "高松港から官用船で約30分",
-      "area": 0.62,
-      "radius_m": 500,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "oshima_kagawa",
+    "name": "大島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.407, 134.107",
+    "description": "国立ハンセン病療養所がある島。",
+    "access": "高松港から官用船で約30分",
+    "area": 0.62,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "oshima_kagawa"
   },
   "honjima_kagawa": {
-      "id": "honjima_kagawa",
-      "name": "本島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.387, 133.774",
-      "description": "塩飽水軍の拠点として栄えた歴史ある島。",
-      "access": "丸亀港からフェリーで約35分",
-      "area": 6.74,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "honjima_kagawa",
+    "name": "本島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.387, 133.774",
+    "description": "塩飽水軍の拠点として栄えた歴史ある島。",
+    "access": "丸亀港からフェリーで約35分",
+    "area": 6.74,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "honjima_kagawa"
   },
   "hiroshima_kagawa": {
-      "id": "hiroshima_kagawa",
-      "name": "広島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.368, 133.712",
-      "description": "塩飽諸島最大の島。良質な石材「青木石」を産出。",
-      "access": "丸亀港からフェリーで約45分",
-      "area": 11.66,
-      "radius_m": 2000,
-      "checkin_radius_m": 4500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "hiroshima_kagawa",
+    "name": "広島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.368, 133.712",
+    "description": "塩飽諸島最大の島。良質な石材「青木石」を産出。",
+    "access": "丸亀港からフェリーで約45分",
+    "area": 11.66,
+    "radius_m": 2000,
+    "checkin_radius_m": 4500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "hiroshima_kagawa"
   },
   "teshima_marugame": {
-      "id": "teshima_marugame",
-      "name": "手島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.397, 133.663",
-      "description": "塩飽諸島の一つで、ヒマワリ畑が美しい。",
-      "access": "丸亀港から定期船で約75分",
-      "area": 3.41,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "teshima_marugame",
+    "name": "手島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.397, 133.663",
+    "description": "塩飽諸島の一つで、ヒマワリ畑が美しい。",
+    "access": "丸亀港から定期船で約75分",
+    "area": 3.41,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "teshima_marugame"
   },
   "oteshima_kagawa": {
-      "id": "oteshima_kagawa",
-      "name": "小手島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.378, 133.649",
-      "description": "塩飽諸島で最も小さな有人島。",
-      "access": "丸亀港から定期船で約60分",
-      "area": 0.54,
-      "radius_m": 400,
-      "checkin_radius_m": 1500,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "oteshima_kagawa",
+    "name": "小手島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.378, 133.649",
+    "description": "塩飽諸島で最も小さな有人島。",
+    "access": "丸亀港から定期船で約60分",
+    "area": 0.54,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "oteshima_kagawa"
   },
   "takamijima_kagawa": {
-      "id": "takamijima_kagawa",
-      "name": "高見島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.314, 133.673",
-      "description": "斜面に石垣の家並みが残る風情ある島。",
-      "access": "多度津港からフェリーで約25分",
-      "area": 2.33,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "takamijima_kagawa",
+    "name": "高見島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.314, 133.673",
+    "description": "斜面に石垣の家並みが残る風情ある島。",
+    "access": "多度津港からフェリーで約25分",
+    "area": 2.33,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "takamijima_kagawa"
   },
   "sanagijima_kagawa": {
-      "id": "sanagijima_kagawa",
-      "name": "佐柳島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.345, 133.626",
-      "description": "飛び猫の撮影地として有名な猫の島。",
-      "access": "多度津港からフェリーで約50分",
-      "area": 1.83,
-      "radius_m": 800,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "sanagijima_kagawa",
+    "name": "佐柳島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.345, 133.626",
+    "description": "飛び猫の撮影地として有名な猫の島。",
+    "access": "多度津港からフェリーで約50分",
+    "area": 1.83,
+    "radius_m": 800,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "sanagijima_kagawa"
   },
   "awashima_kagawa": {
-      "id": "awashima_kagawa",
-      "name": "粟島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.269, 133.633",
-      "description": "日本初の海員学校があったスクリュー型の島。",
-      "access": "須田港から定期船で約15分",
-      "area": 3.72,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "awashima_kagawa",
+    "name": "粟島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.269, 133.633",
+    "description": "日本初の海員学校があったスクリュー型の島。",
+    "access": "須田港から定期船で約15分",
+    "area": 3.72,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "awashima_kagawa"
   },
   "shishijima_kagawa": {
-      "id": "shishijima_kagawa",
-      "name": "志々島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.288, 133.674",
-      "description": "巨大な大楠がシンボルの静かな小島。",
-      "access": "宮の下港から定期船で約20分",
-      "area": 0.58,
-      "radius_m": 500,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "shishijima_kagawa",
+    "name": "志々島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.288, 133.674",
+    "description": "巨大な大楠がシンボルの静かな小島。",
+    "access": "宮の下港から定期船で約20分",
+    "area": 0.58,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "shishijima_kagawa"
   },
   "ibukijima_kagawa": {
-      "id": "ibukijima_kagawa",
-      "name": "伊吹島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.135, 133.535",
-      "description": "伊吹いりこ（煮干し）の産地として全国的に有名。",
-      "access": "観音寺港から定期船で約25分",
-      "area": 1.05,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "ibukijima_kagawa",
+    "name": "伊吹島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.135, 133.535",
+    "description": "伊吹いりこ（煮干し）の産地として全国的に有名。",
+    "access": "観音寺港から定期船で約25分",
+    "area": 1.05,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "ibukijima_kagawa"
   },
   "yoshima_kagawa": {
-      "id": "yoshima_kagawa",
-      "name": "与島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.391, 133.821",
-      "description": "瀬戸大橋の中継地で与島PAがある。",
-      "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-      "area": 1.1,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "yoshima_kagawa",
+    "name": "与島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.391, 133.821",
+    "description": "瀬戸大橋の中継地で与島PAがある。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "area": 1.1,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "yoshima_kagawa"
   },
   "hitsuishijima_kagawa": {
-      "id": "hitsuishijima_kagawa",
-      "name": "櫃石島",
-      "region_id": "setouchi",
-      "prefecture": "香川県",
-      "coordinates": "34.425, 133.805",
-      "description": "瀬戸大橋の香川県側最初の島。一般車両の乗り入れ不可。",
-      "access": "路線バスまたは島民用ゲートを利用",
-      "area": 0.85,
-      "radius_m": 500,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "hitsuishijima_kagawa",
+    "name": "櫃石島",
+    "region_id": "setouchi",
+    "prefecture": "香川県",
+    "coordinates": "34.425, 133.805",
+    "description": "瀬戸大橋の香川県側最初の島。一般車両の乗り入れ不可。",
+    "access": "路線バスまたは島民用ゲートを利用",
+    "area": 0.85,
+    "radius_m": 500,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "hitsuishijima_kagawa"
   },
   "yugeshima_ehime": {
-      "id": "yugeshima_ehime",
-      "name": "弓削島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "34.263, 133.208",
-      "description": "上島町の中心。古くは塩の荘園として栄えた。",
-      "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-      "area": 8.65,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "yugeshima_ehime",
+    "name": "弓削島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "34.263, 133.208",
+    "description": "上島町の中心。古くは塩の荘園として栄えた。",
+    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "area": 8.65,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "yugeshima_ehime"
   },
   "sashima_ehime": {
-      "id": "sashima_ehime",
-      "name": "佐島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "34.246, 133.190",
-      "description": "弓削島と生名島の間にあるゆめしま海道の島。",
-      "access": "弓削島からゆげ大橋で陸続き",
-      "area": 2.67,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "sashima_ehime",
+    "name": "佐島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "34.246, 133.190",
+    "description": "弓削島と生名島の間にあるゆめしま海道の島。",
+    "access": "弓削島からゆげ大橋で陸続き",
+    "area": 2.67,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "sashima_ehime"
   },
   "ikinajima_ehime": {
-      "id": "ikinajima_ehime",
-      "name": "生名島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "34.266, 133.175",
-      "description": "因島と近接し、フェリーが頻繁に行き交う。",
-      "access": "因島からフェリーで約5分",
-      "area": 3.67,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "ikinajima_ehime",
+    "name": "生名島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "34.266, 133.175",
+    "description": "因島と近接し、フェリーが頻繁に行き交う。",
+    "access": "因島からフェリーで約5分",
+    "area": 3.67,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "ikinajima_ehime"
   },
   "iwagijima_ehime": {
-      "id": "iwagijima_ehime",
-      "name": "岩城島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "34.257, 133.149",
-      "description": "「青いレモンの島」として柑橘栽培が盛ん。",
-      "access": "生口島からフェリーで約10分",
-      "area": 8.97,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "iwagijima_ehime",
+    "name": "岩城島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "34.257, 133.149",
+    "description": "「青いレモンの島」として柑橘栽培が盛ん。",
+    "access": "生口島からフェリーで約10分",
+    "area": 8.97,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "iwagijima_ehime"
   },
   "oshima_ehime": {
-      "id": "oshima_ehime",
-      "name": "大島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "34.137, 133.053",
-      "description": "しまなみ海道の四国側最初の島。亀老山展望公園が有名。",
-      "access": "しまなみ海道で陸続き",
-      "area": 41.87,
-      "radius_m": 3500,
-      "checkin_radius_m": 7000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "oshima_ehime",
+    "name": "大島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "34.137, 133.053",
+    "description": "しまなみ海道の四国側最初の島。亀老山展望公園が有名。",
+    "access": "しまなみ海道で陸続き",
+    "area": 41.87,
+    "radius_m": 3500,
+    "checkin_radius_m": 7000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "oshima_ehime"
   },
   "ushima_ehime": {
-      "id": "ushima_ehime",
-      "name": "魚島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "34.178, 133.318",
-      "description": "燧灘の中央に位置する漁業の島。",
-      "access": "因島・土生港から定期船で約60分",
-      "area": 1.37,
-      "radius_m": 800,
-      "checkin_radius_m": 2500,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "ushima_ehime",
+    "name": "魚島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "34.178, 133.318",
+    "description": "燧灘の中央に位置する漁業の島。",
+    "access": "因島・土生港から定期船で約60分",
+    "area": 1.37,
+    "radius_m": 800,
+    "checkin_radius_m": 2500,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "ushima_ehime"
   },
   "takaikamishima_ehime": {
-      "id": "takaikamishima_ehime",
-      "name": "高井神島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "34.192, 133.267",
-      "description": "家々の壁に描かれた漫画アートがある小さな島。",
-      "access": "因島・土生港から定期船で約45分",
-      "area": 1.34,
-      "radius_m": 800,
-      "checkin_radius_m": 2000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "takaikamishima_ehime",
+    "name": "高井神島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "34.192, 133.267",
+    "description": "家々の壁に描かれた漫画アートがある小さな島。",
+    "access": "因島・土生港から定期船で約45分",
+    "area": 1.34,
+    "radius_m": 800,
+    "checkin_radius_m": 2000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "takaikamishima_ehime"
   },
   "nakajima_ehime": {
-      "id": "nakajima_ehime",
-      "name": "中島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.967, 132.617",
-      "description": "忽那諸島最大の島。ミカン栽培やトライアスロンが盛ん。",
-      "access": "高浜港からフェリーで約60分",
-      "area": 21.17,
-      "radius_m": 2500,
-      "checkin_radius_m": 5000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "nakajima_ehime",
+    "name": "中島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.967, 132.617",
+    "description": "忽那諸島最大の島。ミカン栽培やトライアスロンが盛ん。",
+    "access": "高浜港からフェリーで約60分",
+    "area": 21.17,
+    "radius_m": 2500,
+    "checkin_radius_m": 5000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "nakajima_ehime"
   },
   "muzukijima_ehime": {
-      "id": "muzukijima_ehime",
-      "name": "睦月島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.967, 132.673",
-      "description": "伊予の小島と呼ばれ、伊予絣の行商で財を成した館が残る。",
-      "access": "高浜港からフェリーで約40分",
-      "area": 3.82,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "muzukijima_ehime",
+    "name": "睦月島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.967, 132.673",
+    "description": "伊予の小島と呼ばれ、伊予絣の行商で財を成した館が残る。",
+    "access": "高浜港からフェリーで約40分",
+    "area": 3.82,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "muzukijima_ehime"
   },
   "nogutsunajima_ehime": {
-      "id": "nogutsunajima_ehime",
-      "name": "野忽那島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.980, 132.663",
-      "description": "忽那諸島の玄関口にあたる静かな小島。",
-      "access": "高浜港からフェリーで約50分",
-      "area": 0.92,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "nogutsunajima_ehime",
+    "name": "野忽那島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.980, 132.663",
+    "description": "忽那諸島の玄関口にあたる静かな小島。",
+    "access": "高浜港からフェリーで約50分",
+    "area": 0.92,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "nogutsunajima_ehime"
   },
   "gogoshima_ehime": {
-      "id": "gogoshima_ehime",
-      "name": "興居島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.882, 132.684",
-      "description": "松山市街地から最も近い、伊予小富士がある島。",
-      "access": "高浜港からフェリーで約10分",
-      "area": 8.4,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "gogoshima_ehime",
+    "name": "興居島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.882, 132.684",
+    "description": "松山市街地から最も近い、伊予小富士がある島。",
+    "access": "高浜港からフェリーで約10分",
+    "area": 8.4,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "gogoshima_ehime"
   },
   "tsurushima_ehime": {
-      "id": "tsurushima_ehime",
-      "name": "釣島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.896, 132.637",
-      "description": "興居島の西に浮かぶタコ漁が盛んな島。",
-      "access": "三津浜港から定期船で約40分",
-      "area": 0.38,
-      "radius_m": 400,
-      "checkin_radius_m": 1500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "tsurushima_ehime",
+    "name": "釣島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.896, 132.637",
+    "description": "興居島の西に浮かぶタコ漁が盛んな島。",
+    "access": "三津浜港から定期船で約40分",
+    "area": 0.38,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "tsurushima_ehime"
   },
   "nuwajima_ehime": {
-      "id": "nuwajima_ehime",
-      "name": "怒和島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.978, 132.531",
-      "description": "忽那諸島の西部に位置し、良質なみかんを産出する。",
-      "access": "高浜港からフェリーで約80分",
-      "area": 4.81,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "nuwajima_ehime",
+    "name": "怒和島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.978, 132.531",
+    "description": "忽那諸島の西部に位置し、良質なみかんを産出する。",
+    "access": "高浜港からフェリーで約80分",
+    "area": 4.81,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "nuwajima_ehime"
   },
   "tsuwajijima_ehime": {
-      "id": "tsuwajijima_ehime",
-      "name": "津和地島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.969, 132.502",
-      "description": "忽那諸島の最西端。かつては伊予水軍の拠点。",
-      "access": "高浜港からフェリーで約100分",
-      "area": 2.88,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "tsuwajijima_ehime",
+    "name": "津和地島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.969, 132.502",
+    "description": "忽那諸島の最西端。かつては伊予水軍の拠点。",
+    "access": "高浜港からフェリーで約100分",
+    "area": 2.88,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "tsuwajijima_ehime"
   },
   "futagamijima_ehime": {
-      "id": "futagamijima_ehime",
-      "name": "二神島",
-      "region_id": "setouchi",
-      "prefecture": "愛媛県",
-      "coordinates": "33.931, 132.536",
-      "description": "古い石積みの集落景観が残る歴史ある島。",
-      "access": "高浜港からフェリーで約70分",
-      "area": 2.15,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "futagamijima_ehime",
+    "name": "二神島",
+    "region_id": "setouchi",
+    "prefecture": "愛媛県",
+    "coordinates": "33.931, 132.536",
+    "description": "古い石積みの集落景観が残る歴史ある島。",
+    "access": "高浜港からフェリーで約70分",
+    "area": 2.15,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "futagamijima_ehime"
   },
   "kushima_ehime": {
-      "id": "kushima_ehime",
-      "name": "九島",
-      "region_id": "shikoku",
-      "prefecture": "愛媛県",
-      "coordinates": "33.228, 132.534",
-      "description": "宇和島港のすぐ沖合にあり、2016年に九島大橋が開通。",
-      "access": "九島大橋で陸続き",
-      "area": 3.35,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kushima_ehime",
+    "name": "九島",
+    "region_id": "shikoku",
+    "prefecture": "愛媛県",
+    "coordinates": "33.228, 132.534",
+    "description": "宇和島港のすぐ沖合にあり、2016年に九島大橋が開通。",
+    "access": "九島大橋で陸続き",
+    "area": 3.35,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kushima_ehime"
   },
   "tojima_ehime": {
-      "id": "tojima_ehime",
-      "name": "戸島",
-      "region_id": "shikoku",
-      "prefecture": "愛媛県",
-      "coordinates": "33.210, 132.366",
-      "description": "宇和海に浮かぶハマチ養殖が盛んな島。",
-      "access": "宇野港から定期船で約50分",
-      "area": 2.82,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "tojima_ehime",
+    "name": "戸島",
+    "region_id": "shikoku",
+    "prefecture": "愛媛県",
+    "coordinates": "33.210, 132.366",
+    "description": "宇和海に浮かぶハマチ養殖が盛んな島。",
+    "access": "宇野港から定期船で約50分",
+    "area": 2.82,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "tojima_ehime"
   },
   "takashima_nagasaki": {
-      "id": "takashima_nagasaki",
-      "name": "高島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "32.658, 129.757",
-      "description": "かつて炭鉱で栄えた島。軍艦島の近くに位置する。",
-      "access": "長崎港から高速船で約35分",
-      "area": 1.19,
-      "radius_m": 800,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "takashima_nagasaki",
+    "name": "高島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "32.658, 129.757",
+    "description": "かつて炭鉱で栄えた島。軍艦島の近くに位置する。",
+    "access": "長崎港から高速船で約35分",
+    "area": 1.19,
+    "radius_m": 800,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "takashima_nagasaki"
   },
   "iojima_nagasaki": {
-      "id": "iojima_nagasaki",
-      "name": "伊王島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "32.705, 129.778",
-      "description": "リゾート施設や温泉があるリゾートの島。",
-      "access": "伊王島大橋で陸続き",
-      "area": 2.26,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "iojima_nagasaki",
+    "name": "伊王島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "32.705, 129.778",
+    "description": "リゾート施設や温泉があるリゾートの島。",
+    "access": "伊王島大橋で陸続き",
+    "area": 2.26,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "iojima_nagasaki"
   },
   "ikeshima_nagasaki": {
-      "id": "ikeshima_nagasaki",
-      "name": "池島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "32.883, 129.601",
-      "description": "九州最後の炭鉱の島。炭鉱跡の見学ツアーが人気。",
-      "access": "神浦港からフェリーで約30分",
-      "area": 0.86,
-      "radius_m": 600,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "ikeshima_nagasaki",
+    "name": "池島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "32.883, 129.601",
+    "description": "九州最後の炭鉱の島。炭鉱跡の見学ツアーが人気。",
+    "access": "神浦港からフェリーで約30分",
+    "area": 0.86,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "ikeshima_nagasaki"
   },
   "matsushima_nagasaki": {
-      "id": "matsushima_nagasaki",
-      "name": "松島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "32.932, 129.617",
-      "description": "西海市に属する、かつて捕鯨で栄えた島。",
-      "access": "瀬戸港からフェリーで約15分",
-      "area": 6.39,
-      "radius_m": 1500,
-      "checkin_radius_m": 3500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "matsushima_nagasaki",
+    "name": "松島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "32.932, 129.617",
+    "description": "西海市に属する、かつて捕鯨で栄えた島。",
+    "access": "瀬戸港からフェリーで約15分",
+    "area": 6.39,
+    "radius_m": 1500,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "matsushima_nagasaki"
   },
   "hirashima_nagasaki": {
-      "id": "hirashima_nagasaki",
-      "name": "平島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "33.004, 129.288",
-      "description": "五島灘に浮かぶ自然豊かで素朴な島。",
-      "access": "佐世保港からフェリーで約2.5時間",
-      "area": 5.49,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "hirashima_nagasaki",
+    "name": "平島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "33.004, 129.288",
+    "description": "五島灘に浮かぶ自然豊かで素朴な島。",
+    "access": "佐世保港からフェリーで約2.5時間",
+    "area": 5.49,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "hirashima_nagasaki"
   },
   "enoshima_nagasaki": {
-      "id": "enoshima_nagasaki",
-      "name": "江島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "33.008, 129.351",
-      "description": "平島の近くにあり、険しい断崖に囲まれた島。",
-      "access": "佐世保港からフェリーで約2時間",
-      "area": 2.6,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "enoshima_nagasaki",
+    "name": "江島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "33.008, 129.351",
+    "description": "平島の近くにあり、険しい断崖に囲まれた島。",
+    "access": "佐世保港からフェリーで約2時間",
+    "area": 2.6,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "enoshima_nagasaki"
   },
   "kakinoura_nagasaki": {
-      "id": "kakinoura_nagasaki",
-      "name": "蛎浦島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "33.018, 129.582",
-      "description": "西海市大島町と崎戸町の間にある細長い島。",
-      "access": "橋で陸続き",
-      "area": 4.83,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kakinoura_nagasaki",
+    "name": "蛎浦島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "33.018, 129.582",
+    "description": "西海市大島町と崎戸町の間にある細長い島。",
+    "access": "橋で陸続き",
+    "area": 4.83,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kakinoura_nagasaki"
   },
   "sakitojima_nagasaki": {
-      "id": "sakitojima_nagasaki",
-      "name": "崎戸島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "33.016, 129.558",
-      "description": "かつて炭鉱で栄え、現在は伊勢海老漁が盛ん。",
-      "access": "橋で陸続き",
-      "area": 2.58,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "sakitojima_nagasaki",
+    "name": "崎戸島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "33.016, 129.558",
+    "description": "かつて炭鉱で栄え、現在は伊勢海老漁が盛ん。",
+    "access": "橋で陸続き",
+    "area": 2.58,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "sakitojima_nagasaki"
   },
   "kuroshima_sasebo": {
-      "id": "kuroshima_sasebo",
-      "name": "黒島",
-      "region_id": "nagasaki",
-      "prefecture": "長崎県",
-      "coordinates": "33.141, 129.537",
-      "description": "潜伏キリシタンの歴史と美しい黒島天主堂がある島。",
-      "access": "相浦港からフェリーで約50分",
-      "area": 5.32,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "kuroshima_sasebo",
+    "name": "黒島",
+    "region_id": "nagasaki",
+    "prefecture": "長崎県",
+    "coordinates": "33.141, 129.537",
+    "description": "潜伏キリシタンの歴史と美しい黒島天主堂がある島。",
+    "access": "相浦港からフェリーで約50分",
+    "area": 5.32,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "kuroshima_sasebo"
   },
   "madarashima_goto": {
-      "id": "madarashima_goto",
-      "name": "斑島",
-      "region_id": "goto",
-      "prefecture": "長崎県",
-      "coordinates": "33.208, 129.022",
-      "description": "小値賀島と斑大橋で結ばれたポットホールのある島。",
-      "access": "小値賀島から斑大橋で陸続き",
-      "area": 1.57,
-      "radius_m": 800,
-      "checkin_radius_m": 2000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "madarashima_goto",
+    "name": "斑島",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "33.208, 129.022",
+    "description": "小値賀島と斑大橋で結ばれたポットホールのある島。",
+    "access": "小値賀島から斑大橋で陸続き",
+    "area": 1.57,
+    "radius_m": 800,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "madarashima_goto"
   },
   "oshima_goto": {
-      "id": "oshima_goto",
-      "name": "黄島",
-      "region_id": "goto",
-      "prefecture": "長崎県",
-      "coordinates": "32.564, 128.903",
-      "description": "五島列島福江島の南東に浮かぶ小さな溶岩の島。",
-      "access": "福江港から定期船で約40分",
-      "area": 1.38,
-      "radius_m": 800,
-      "checkin_radius_m": 2000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "oshima_goto",
+    "name": "黄島",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "32.564, 128.903",
+    "description": "五島列島福江島の南東に浮かぶ小さな溶岩の島。",
+    "access": "福江港から定期船で約40分",
+    "area": 1.38,
+    "radius_m": 800,
+    "checkin_radius_m": 2000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "oshima_goto"
   },
   "saganoshima_goto": {
-      "id": "saganoshima_goto",
-      "name": "嵯峨ノ島",
-      "region_id": "goto",
-      "prefecture": "長崎県",
-      "coordinates": "32.726, 128.601",
-      "description": "福江島の西にあり、火山海崖の絶景が広がる島。",
-      "access": "貝津港から定期船で約15分",
-      "area": 3.18,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "saganoshima_goto",
+    "name": "嵯峨ノ島",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "32.726, 128.601",
+    "description": "福江島の西にあり、火山海崖の絶景が広がる島。",
+    "access": "貝津港から定期船で約15分",
+    "area": 3.18,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "saganoshima_goto"
   },
   "shishijima_kagoshima": {
-      "id": "shishijima_kagoshima",
-      "name": "獅子島",
-      "region_id": "satsunan",
-      "prefecture": "鹿児島県",
-      "coordinates": "32.274, 130.237",
-      "description": "鹿児島県最北端の島。化石の島として有名。",
-      "access": "蔵之元港からフェリーで約20分",
-      "area": 17.01,
-      "radius_m": 2500,
-      "checkin_radius_m": 5000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "shishijima_kagoshima",
+    "name": "獅子島",
+    "region_id": "satsunan",
+    "prefecture": "鹿児島県",
+    "coordinates": "32.274, 130.237",
+    "description": "鹿児島県最北端の島。化石の島として有名。",
+    "access": "蔵之元港からフェリーで約20分",
+    "area": 17.01,
+    "radius_m": 2500,
+    "checkin_radius_m": 5000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "shishijima_kagoshima"
   },
   "ikarajima_kagoshima": {
-      "id": "ikarajima_kagoshima",
-      "name": "伊唐島",
-      "region_id": "satsunan",
-      "prefecture": "鹿児島県",
-      "coordinates": "32.193, 130.187",
-      "description": "長島と伊唐大橋で結ばれた農業と漁業の島。",
-      "access": "伊唐大橋で陸続き",
-      "area": 3.73,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "ikarajima_kagoshima",
+    "name": "伊唐島",
+    "region_id": "satsunan",
+    "prefecture": "鹿児島県",
+    "coordinates": "32.193, 130.187",
+    "description": "長島と伊唐大橋で結ばれた農業と漁業の島。",
+    "access": "伊唐大橋で陸続き",
+    "area": 3.73,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "ikarajima_kagoshima"
   },
   "shourajima_kagoshima": {
-      "id": "shourajima_kagoshima",
-      "name": "諸浦島",
-      "region_id": "satsunan",
-      "prefecture": "鹿児島県",
-      "coordinates": "32.222, 130.169",
-      "description": "長島の北端に近接し、防波堤と橋で陸続き。",
-      "access": "長島経由で陸続き",
-      "area": 3.88,
-      "radius_m": 1000,
-      "checkin_radius_m": 3000,
-      "points": 30,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "shourajima_kagoshima",
+    "name": "諸浦島",
+    "region_id": "satsunan",
+    "prefecture": "鹿児島県",
+    "coordinates": "32.222, 130.169",
+    "description": "長島の北端に近接し、防波堤と橋で陸続き。",
+    "access": "長島経由で陸続き",
+    "area": 3.88,
+    "radius_m": 1000,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "shourajima_kagoshima"
   },
   "takeshima_kagoshima": {
-      "id": "takeshima_kagoshima",
-      "name": "竹島",
-      "region_id": "osumi",
-      "prefecture": "鹿児島県",
-      "coordinates": "30.814, 130.418",
-      "description": "三島村の一つ。島全体がリュウキュウチクに覆われている。",
-      "access": "鹿児島港からフェリーで約3時間",
-      "area": 4.2,
-      "radius_m": 1200,
-      "checkin_radius_m": 3000,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "takeshima_kagoshima",
+    "name": "竹島",
+    "region_id": "osumi",
+    "prefecture": "鹿児島県",
+    "coordinates": "30.814, 130.418",
+    "description": "三島村の一つ。島全体がリュウキュウチクに覆われている。",
+    "access": "鹿児島港からフェリーで約3時間",
+    "area": 4.2,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "takeshima_kagoshima"
   },
   "iojima_kagoshima": {
-      "id": "iojima_kagoshima",
-      "name": "硫黄島",
-      "region_id": "osumi",
-      "prefecture": "鹿児島県",
-      "coordinates": "30.793, 130.297",
-      "description": "活火山の硫黄岳がそびえ、温泉が湧き出る三島村の島。",
-      "access": "鹿児島港からフェリーで約4時間",
-      "area": 11.65,
-      "radius_m": 2000,
-      "checkin_radius_m": 4500,
-      "points": 40,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "iojima_kagoshima",
+    "name": "硫黄島",
+    "region_id": "osumi",
+    "prefecture": "鹿児島県",
+    "coordinates": "30.793, 130.297",
+    "description": "活火山の硫黄岳がそびえ、温泉が湧き出る三島村の島。",
+    "access": "鹿児島港からフェリーで約4時間",
+    "area": 11.65,
+    "radius_m": 2000,
+    "checkin_radius_m": 4500,
+    "points": 40,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "iojima_kagoshima"
   },
   "kuroshima_kagoshima": {
-      "id": "kuroshima_kagoshima",
-      "name": "黒島",
-      "region_id": "osumi",
-      "prefecture": "鹿児島県",
-      "coordinates": "30.835, 129.953",
-      "description": "三島村の最西端。原生林に覆われた自然豊かな島。",
-      "access": "鹿児島港からフェリーで約6時間",
-      "area": 15.37,
-      "radius_m": 2500,
-      "checkin_radius_m": 5000,
-      "points": 50,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "kuroshima_kagoshima",
+    "name": "黒島",
+    "region_id": "osumi",
+    "prefecture": "鹿児島県",
+    "coordinates": "30.835, 129.953",
+    "description": "三島村の最西端。原生林に覆われた自然豊かな島。",
+    "access": "鹿児島港からフェリーで約6時間",
+    "area": 15.37,
+    "radius_m": 2500,
+    "checkin_radius_m": 5000,
+    "points": 50,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "kuroshima_kagoshima"
   },
   "katsurajima_kagoshima": {
-      "id": "katsurajima_kagoshima",
-      "name": "桂島",
-      "region_id": "satsunan",
-      "prefecture": "鹿児島県",
-      "coordinates": "31.849, 130.198",
-      "description": "薩摩川内市の沖に浮かぶ小さな有人島。",
-      "access": "川内港から定期船で約20分",
-      "area": 0.22,
-      "radius_m": 400,
-      "checkin_radius_m": 1500,
-      "points": 40,
-      "difficulty": "未設定",
-      "is_conquest_target": true
+    "id": "katsurajima_kagoshima",
+    "name": "桂島",
+    "region_id": "satsunan",
+    "prefecture": "鹿児島県",
+    "coordinates": "31.849, 130.198",
+    "description": "薩摩川内市の沖に浮かぶ小さな有人島。",
+    "access": "川内港から定期船で約20分",
+    "area": 0.22,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 40,
+    "difficulty": "未設定",
+    "is_conquest_target": true,
+    "slug": "katsurajima_kagoshima"
   },
   "minnajima_tarama": {
-      "id": "minnajima_tarama",
-      "name": "水納島",
-      "region_id": "okinawa",
-      "prefecture": "沖縄県",
-      "coordinates": "24.752, 124.697",
-      "description": "多良間島の北に浮かぶ小さな島。住人はごくわずか。",
-      "access": "多良間島からチャーター船",
-      "area": 2.15,
-      "radius_m": 1000,
-      "checkin_radius_m": 2500,
-      "points": 60,
-      "difficulty": "乗継の壁",
-      "is_conquest_target": true
+    "id": "minnajima_tarama",
+    "name": "水納島",
+    "region_id": "okinawa",
+    "prefecture": "沖縄県",
+    "coordinates": "24.752, 124.697",
+    "description": "多良間島の北に浮かぶ小さな島。住人はごくわずか。",
+    "access": "多良間島からチャーター船",
+    "area": 2.15,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 60,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "minnajima_tarama"
   }
 };
 

@@ -44,6 +44,7 @@ export default function BizPortalFacility() {
           has_pickup: acc.has_pickup || false,
           booking_mode: acc.booking_mode || 'request_based',
           deposit_policy: acc.deposit_policy || '',
+          enable_pre_checkin: acc.enable_pre_checkin || false,
           photo_exterior: acc.photo_exterior?.[0] || '',
           photo_room: acc.photo_room?.[0] || '',
           photo_food: acc.photo_food?.[0] || '',

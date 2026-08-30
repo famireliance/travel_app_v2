@@ -1,0 +1,2157 @@
+[
+  {
+    "source": "/island/1",
+    "destination": "/island/rebunto",
+    "permanent": true
+  },
+  {
+    "source": "/island/2",
+    "destination": "/island/rishirito",
+    "permanent": true
+  },
+  {
+    "source": "/island/3",
+    "destination": "/island/teurito",
+    "permanent": true
+  },
+  {
+    "source": "/island/4",
+    "destination": "/island/yagishirito",
+    "permanent": true
+  },
+  {
+    "source": "/island/5",
+    "destination": "/island/okushirito",
+    "permanent": true
+  },
+  {
+    "source": "/island/6",
+    "destination": "/island/kamometo",
+    "permanent": true
+  },
+  {
+    "source": "/island/7",
+    "destination": "/island/atsukeshikojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/8",
+    "destination": "/island/kembokkito",
+    "permanent": true
+  },
+  {
+    "source": "/island/9",
+    "destination": "/island/oshimaoshimamasakioshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/10",
+    "destination": "/island/oshimakojimamasakikojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/11",
+    "destination": "/island/yururito",
+    "permanent": true
+  },
+  {
+    "source": "/island/12",
+    "destination": "/island/moyururito",
+    "permanent": true
+  },
+  {
+    "source": "/island/13",
+    "destination": "/island/daikokujimaatsukeshimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/14",
+    "destination": "/island/kiritapputoyunieto",
+    "permanent": true
+  },
+  {
+    "source": "/island/15",
+    "destination": "/island/kojimamasakimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/16",
+    "destination": "/island/bentenjimawakkanaishisoyamisaki",
+    "permanent": true
+  },
+  {
+    "source": "/island/17",
+    "destination": "/island/tobishimayamagataken",
+    "permanent": true
+  },
+  {
+    "source": "/island/18",
+    "destination": "/island/kaburajimaaomoriken",
+    "permanent": true
+  },
+  {
+    "source": "/island/19",
+    "destination": "/island/hisaisagotoaomoriken",
+    "permanent": true
+  },
+  {
+    "source": "/island/20",
+    "destination": "/island/shoajirotoaomoriken",
+    "permanent": true
+  },
+  {
+    "source": "/island/21",
+    "destination": "/island/tsubakishimaiwatekenrikuzentakata",
+    "permanent": true
+  },
+  {
+    "source": "/island/22",
+    "destination": "/island/aomatsushimaiwateken",
+    "permanent": true
+  },
+  {
+    "source": "/island/23",
+    "destination": "/island/gongenjimaiwatekenyamadamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/25",
+    "destination": "/island/kesennumaoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/26",
+    "destination": "/island/ajishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/27",
+    "destination": "/island/tashirotonekoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/28",
+    "destination": "/island/kimukazan",
+    "permanent": true
+  },
+  {
+    "source": "/island/29",
+    "destination": "/island/katsurashimamiyagikenurato",
+    "permanent": true
+  },
+  {
+    "source": "/island/30",
+    "destination": "/island/nonoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/31",
+    "destination": "/island/sabusawajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/32",
+    "destination": "/island/miyatojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/33",
+    "destination": "/island/dejimamiyagikenonagawamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/34",
+    "destination": "/island/ejimamiyagikenonagawamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/35",
+    "destination": "/island/amikojimamiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/36",
+    "destination": "/island/oshimamiyagikenshiogamashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/37",
+    "destination": "/island/hojimamiyagikenurato",
+    "permanent": true
+  },
+  {
+    "source": "/island/38",
+    "destination": "/island/ashibitokesennuma",
+    "permanent": true
+  },
+  {
+    "source": "/island/39",
+    "destination": "/island/tsukumojimamatsushimakaiikidaihyoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/40",
+    "destination": "/island/yahataiwamiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/41",
+    "destination": "/island/sasajimamiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/42",
+    "destination": "/island/namishimamiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/43",
+    "destination": "/island/yoshidajimamiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/44",
+    "destination": "/island/nagashimamiyagikenmatsushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/45",
+    "destination": "/island/dejimateramamiyagikenonagawamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/46",
+    "destination": "/island/nekitomiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/47",
+    "destination": "/island/fukitomiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/48",
+    "destination": "/island/karakuwahantookioshimamiyagiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/49",
+    "destination": "/island/izuoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/50",
+    "destination": "/island/toshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/51",
+    "destination": "/island/nijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/52",
+    "destination": "/island/shikinejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/53",
+    "destination": "/island/kozushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/54",
+    "destination": "/island/miyakejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/55",
+    "destination": "/island/mikurajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/56",
+    "destination": "/island/hachijojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/57",
+    "destination": "/island/hachijokojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/58",
+    "destination": "/island/aogashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/59",
+    "destination": "/island/hayashimanijimaoki",
+    "permanent": true
+  },
+  {
+    "source": "/island/60",
+    "destination": "/island/udoneshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/61",
+    "destination": "/island/torishimaizushoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/62",
+    "destination": "/island/sumisujima",
+    "permanent": true
+  },
+  {
+    "source": "/island/63",
+    "destination": "/island/chichijimaogasawarashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/64",
+    "destination": "/island/hahajimaogasawarashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/65",
+    "destination": "/island/anijimaogasawarashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/66",
+    "destination": "/island/ototojimaogasawarashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/67",
+    "destination": "/island/hetoogasawara",
+    "permanent": true
+  },
+  {
+    "source": "/island/68",
+    "destination": "/island/mukojimaogasawarahahajimaretto",
+    "permanent": true
+  },
+  {
+    "source": "/island/69",
+    "destination": "/island/nishinoshimaogasawarakazanto",
+    "permanent": true
+  },
+  {
+    "source": "/island/70",
+    "destination": "/island/iotoogasawarakazanretto",
+    "permanent": true
+  },
+  {
+    "source": "/island/71",
+    "destination": "/island/minamitorishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/72",
+    "destination": "/island/okinotorishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/73",
+    "destination": "/island/enoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/74",
+    "destination": "/island/sashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/75",
+    "destination": "/island/jogashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/76",
+    "destination": "/island/sadoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/77",
+    "destination": "/island/awashimanigataken",
+    "permanent": true
+  },
+  {
+    "source": "/island/78",
+    "destination": "/island/notojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/79",
+    "destination": "/island/hegurajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/80",
+    "destination": "/island/nanatsujimaishikawaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/81",
+    "destination": "/island/mitsukejimagunkantonoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/82",
+    "destination": "/island/bentenjimanigatakenkashiwazakishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/83",
+    "destination": "/island/arashimafukuikensankoku",
+    "permanent": true
+  },
+  {
+    "source": "/island/84",
+    "destination": "/island/ojimafukuikentojimbooki",
+    "permanent": true
+  },
+  {
+    "source": "/island/85",
+    "destination": "/island/mizushimafukuikentsurugashihokurikunohawai",
+    "permanent": true
+  },
+  {
+    "source": "/island/86",
+    "destination": "/island/takeshimafukuikenwakasamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/87",
+    "destination": "/island/hatsushimashizuokakenatamishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/88",
+    "destination": "/island/mikomotojimashizuokakenshimoda",
+    "permanent": true
+  },
+  {
+    "source": "/island/89",
+    "destination": "/island/teishijimashizuokakenitoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/90",
+    "destination": "/island/okishimabiwako",
+    "permanent": true
+  },
+  {
+    "source": "/island/91",
+    "destination": "/island/chikubushimabiwako",
+    "permanent": true
+  },
+  {
+    "source": "/island/92",
+    "destination": "/island/takeishimabiwako",
+    "permanent": true
+  },
+  {
+    "source": "/island/93",
+    "destination": "/island/okitoshigakenomihachimanshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/94",
+    "destination": "/island/yahashikihantobiwakojinkoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/95",
+    "destination": "/island/himakajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/96",
+    "destination": "/island/shinojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/97",
+    "destination": "/island/sakushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/98",
+    "destination": "/island/takeshimaaichikengamagorishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/99",
+    "destination": "/island/maejimaaichikenminamichita",
+    "permanent": true
+  },
+  {
+    "source": "/island/100",
+    "destination": "/island/okishimaaichikennishioshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/101",
+    "destination": "/island/sugashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/102",
+    "destination": "/island/toshijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/103",
+    "destination": "/island/kamishimamiekentoppashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/104",
+    "destination": "/island/kashikojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/105",
+    "destination": "/island/masakijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/106",
+    "destination": "/island/sakatejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/107",
+    "destination": "/island/watakanojimamiekenshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/108",
+    "destination": "/island/yokoyamatomiekenshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/109",
+    "destination": "/island/oshimamiekenkihokumachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/110",
+    "destination": "/island/kashirajimamiekentoppashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/111",
+    "destination": "/island/ukishimamieken",
+    "permanent": true
+  },
+  {
+    "source": "/island/112",
+    "destination": "/island/kammurishimakyotofumaizuruoki",
+    "permanent": true
+  },
+  {
+    "source": "/island/113",
+    "destination": "/island/kutsujimakyotofu",
+    "permanent": true
+  },
+  {
+    "source": "/island/114",
+    "destination": "/island/awajishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/115",
+    "destination": "/island/nushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/116",
+    "destination": "/island/iejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/117",
+    "destination": "/island/bozejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/118",
+    "destination": "/island/tangashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/119",
+    "destination": "/island/nishijimahyogokeniejimagunto",
+    "permanent": true
+  },
+  {
+    "source": "/island/120",
+    "destination": "/island/kuragakejimahyogoken",
+    "permanent": true
+  },
+  {
+    "source": "/island/121",
+    "destination": "/island/matsushimahyogokeniejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/122",
+    "destination": "/island/narugashimahyogokensumotoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/123",
+    "destination": "/island/kiiooshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/124",
+    "destination": "/island/nakanoshimawakayamakennachikatsuura",
+    "permanent": true
+  },
+  {
+    "source": "/island/125",
+    "destination": "/island/tomogashimaokinoshimawakayama",
+    "permanent": true
+  },
+  {
+    "source": "/island/126",
+    "destination": "/island/jinoshimawakayamakenaritashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/127",
+    "destination": "/island/bentenjimawakayamaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/128",
+    "destination": "/island/tsuyashimawakayamaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/129",
+    "destination": "/island/fujishimawakayamakentanabeshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/130",
+    "destination": "/island/kakuijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/131",
+    "destination": "/island/kashirajimaokayamakenbizenshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/132",
+    "destination": "/island/tsurushimaokayamaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/133",
+    "destination": "/island/kojimaokayamakenbizenshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/134",
+    "destination": "/island/maejimaokayamakensetouchishiushimado",
+    "permanent": true
+  },
+  {
+    "source": "/island/135",
+    "destination": "/island/shiraishito",
+    "permanent": true
+  },
+  {
+    "source": "/island/136",
+    "destination": "/island/kitagishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/137",
+    "destination": "/island/manabeshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/138",
+    "destination": "/island/takashimaokayamakenkasaokashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/139",
+    "destination": "/island/kobishimakasaokashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/140",
+    "destination": "/island/obishimakasaokashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/141",
+    "destination": "/island/rokutookayamakenkasaokashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/142",
+    "destination": "/island/innoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/143",
+    "destination": "/island/ikuchishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/144",
+    "destination": "/island/mukojimahiroshimakenonomichishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/145",
+    "destination": "/island/okunoshimausagito",
+    "permanent": true
+  },
+  {
+    "source": "/island/146",
+    "destination": "/island/itsukushimamiyajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/147",
+    "destination": "/island/ninoshimahiroshimashiminamiku",
+    "permanent": true
+  },
+  {
+    "source": "/island/148",
+    "destination": "/island/kanawajimahiroshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/149",
+    "destination": "/island/etajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/150",
+    "destination": "/island/kurahashijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/151",
+    "destination": "/island/kamikamagarishimaakinadatobishimakaido",
+    "permanent": true
+  },
+  {
+    "source": "/island/152",
+    "destination": "/island/shimokamagarijimaakinadatobishimakaido",
+    "permanent": true
+  },
+  {
+    "source": "/island/153",
+    "destination": "/island/toshimahiroshimakenkureshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/154",
+    "destination": "/island/osakishimojimaakinadatobishimakaido",
+    "permanent": true
+  },
+  {
+    "source": "/island/155",
+    "destination": "/island/osakikamijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/156",
+    "destination": "/island/mikadoshimahiroshimakenkureshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/157",
+    "destination": "/island/hosojimahiroshimakenonomichishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/158",
+    "destination": "/island/ikunotohiroshimakenosakiuejimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/159",
+    "destination": "/island/chikirishimahiroshimakengunkanto",
+    "permanent": true
+  },
+  {
+    "source": "/island/160",
+    "destination": "/island/hyakushimahiroshimakenonomichishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/161",
+    "destination": "/island/sagishimahiroshimakenmiharashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/162",
+    "destination": "/island/kosagishimahiroshimakenmiharashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/163",
+    "destination": "/island/atatajimahiroshimakenotakeshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/164",
+    "destination": "/island/inokoshimahiroshimakenotakeshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/165",
+    "destination": "/island/sensuijimahiroshimakenfukuyamashinoura",
+    "permanent": true
+  },
+  {
+    "source": "/island/166",
+    "destination": "/island/hashirijimahiroshimakenfukuyamashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/167",
+    "destination": "/island/suooshimayashirojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/168",
+    "destination": "/island/tsunoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/169",
+    "destination": "/island/omijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/170",
+    "destination": "/island/nasakejimayamaguchikeniwakuni",
+    "permanent": true
+  },
+  {
+    "source": "/island/171",
+    "destination": "/island/ukishimayamaguchikensuhooshimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/172",
+    "destination": "/island/kasadoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/173",
+    "destination": "/island/nojimayamaguchikenhofushi",
+    "permanent": true
+  },
+  {
+    "source": "/island/174",
+    "destination": "/island/ushijimayamaguchikenhikarishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/175",
+    "destination": "/island/yajimayamaguchikenkamisekimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/176",
+    "destination": "/island/iwaishimayamaguchikenkamisekimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/177",
+    "destination": "/island/hirasatatoyamaguchiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/178",
+    "destination": "/island/okikamurojimayamaguchikensuhooshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/179",
+    "destination": "/island/maejimayamaguchikensuhooshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/180",
+    "destination": "/island/takeshimayamaguchiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/181",
+    "destination": "/island/futaoijimayamaguchikenshimonosekishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/182",
+    "destination": "/island/mutsurejimayamaguchikenshimonosekishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/183",
+    "destination": "/island/mishimayamaguchikenhagishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/184",
+    "destination": "/island/oshimayamaguchikenhagishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/185",
+    "destination": "/island/aijimayamaguchikenhagishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/186",
+    "destination": "/island/hitsushimayamaguchikenhagishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/187",
+    "destination": "/island/okinoshimamaenishinoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/188",
+    "destination": "/island/okinoshimamaenakanoshimaamamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/189",
+    "destination": "/island/okinoshimamaechiburijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/190",
+    "destination": "/island/okinoshimagoshimanekenokinoshimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/191",
+    "destination": "/island/onejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/192",
+    "destination": "/island/etomotosaninkaigan",
+    "permanent": true
+  },
+  {
+    "source": "/island/193",
+    "destination": "/island/ejimashimanekenmatsueshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/194",
+    "destination": "/island/kyojimashimanekenizumoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/195",
+    "destination": "/island/naoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/196",
+    "destination": "/island/toshimakagawaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/197",
+    "destination": "/island/shodoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/198",
+    "destination": "/island/ogijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/199",
+    "destination": "/island/megijimaonigashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/200",
+    "destination": "/island/shiwakuhonto",
+    "permanent": true
+  },
+  {
+    "source": "/island/201",
+    "destination": "/island/awashimakagawaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/202",
+    "destination": "/island/shotoshimakagawaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/203",
+    "destination": "/island/byobutokagawaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/204",
+    "destination": "/island/mukojimakagawakenmarugameshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/205",
+    "destination": "/island/okinoshimakagawakenazushimaoki",
+    "permanent": true
+  },
+  {
+    "source": "/island/206",
+    "destination": "/island/yotoazushimaenjerurodosaki",
+    "permanent": true
+  },
+  {
+    "source": "/island/207",
+    "destination": "/island/hiroshimakagawakenmarugameshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/208",
+    "destination": "/island/tejimakagawakenmarugameshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/209",
+    "destination": "/island/oteshimakagawaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/210",
+    "destination": "/island/ushijimakagawakenmarugameshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/211",
+    "destination": "/island/takamijimakagawakentadotsumachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/212",
+    "destination": "/island/sanagijimakagawakentadotsumachinekoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/213",
+    "destination": "/island/shishijimakagawakenmitoyoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/214",
+    "destination": "/island/ibukijimakagawakenkannonjishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/215",
+    "destination": "/island/oshimaehimekenshimanamikaido",
+    "permanent": true
+  },
+  {
+    "source": "/island/216",
+    "destination": "/island/hakatajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/217",
+    "destination": "/island/omishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/218",
+    "destination": "/island/yugeshimaueshimashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/219",
+    "destination": "/island/nakajimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/220",
+    "destination": "/island/gogoshimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/221",
+    "destination": "/island/hiburishimauwakai",
+    "permanent": true
+  },
+  {
+    "source": "/island/222",
+    "destination": "/island/kushimauwakai",
+    "permanent": true
+  },
+  {
+    "source": "/island/223",
+    "destination": "/island/tsushimaehimekenimabarishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/224",
+    "destination": "/island/ujimashimanami",
+    "permanent": true
+  },
+  {
+    "source": "/island/225",
+    "destination": "/island/sajimayumeshimakaido",
+    "permanent": true
+  },
+  {
+    "source": "/island/226",
+    "destination": "/island/ikinajimayumeshimakaido",
+    "permanent": true
+  },
+  {
+    "source": "/island/227",
+    "destination": "/island/iwagishimaaoiremonnoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/228",
+    "destination": "/island/akahonejimaehimeken",
+    "permanent": true
+  },
+  {
+    "source": "/island/229",
+    "destination": "/island/muzukijimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/230",
+    "destination": "/island/nobutsunajimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/231",
+    "destination": "/island/tsurishimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/232",
+    "destination": "/island/futagamijimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/233",
+    "destination": "/island/tsuwajijimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/234",
+    "destination": "/island/nuwajimakutsunashoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/235",
+    "destination": "/island/uoshimaehimekenochigun",
+    "permanent": true
+  },
+  {
+    "source": "/island/236",
+    "destination": "/island/takaikamijimaehimeken",
+    "permanent": true
+  },
+  {
+    "source": "/island/237",
+    "destination": "/island/oshimaehimekenyawatahamashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/238",
+    "destination": "/island/aijimaehimekenmatsuyamashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/239",
+    "destination": "/island/chintaoehimekenosushinekoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/240",
+    "destination": "/island/kashimauwakai",
+    "permanent": true
+  },
+  {
+    "source": "/island/241",
+    "destination": "/island/toshimauwakai",
+    "permanent": true
+  },
+  {
+    "source": "/island/242",
+    "destination": "/island/takegashimaehimekenuwajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/243",
+    "destination": "/island/itoawanoshimajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/244",
+    "destination": "/island/oshimatokushimakenmugimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/245",
+    "destination": "/island/tebajimatokushimakenmugimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/246",
+    "destination": "/island/takegashimatokushimakenkaiyomachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/247",
+    "destination": "/island/kashiwatokochikenotsukimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/248",
+    "destination": "/island/okinoshimakochikensukumoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/249",
+    "destination": "/island/ugurushimakochikensukumoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/250",
+    "destination": "/island/toshimakochikensusakishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/251",
+    "destination": "/island/nakanoshimakochikensusakishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/252",
+    "destination": "/island/tsushimanagasakiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/253",
+    "destination": "/island/unijimatsushimahokutanoki",
+    "permanent": true
+  },
+  {
+    "source": "/island/254",
+    "destination": "/island/tomaritotsushimashibitsushimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/255",
+    "destination": "/island/okinoshimatsushimashibitsushimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/256",
+    "destination": "/island/akajimanagasakikentsushimashibitsushimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/257",
+    "destination": "/island/shimayamajimatsushimashitoyotamamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/258",
+    "destination": "/island/ikishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/259",
+    "destination": "/island/tatsunoshimaikishimaoki",
+    "permanent": true
+  },
+  {
+    "source": "/island/260",
+    "destination": "/island/harashimaikishigonouramachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/261",
+    "destination": "/island/nagashimanagasakikenikishigonouramachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/262",
+    "destination": "/island/oshimanagasakikenikishigonouramachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/263",
+    "destination": "/island/wakamiyajimaikioki",
+    "permanent": true
+  },
+  {
+    "source": "/island/264",
+    "destination": "/island/gotorettofukuejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/265",
+    "destination": "/island/gotorettonakatotoshinkamigoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/266",
+    "destination": "/island/gotorettowakamatsuto",
+    "permanent": true
+  },
+  {
+    "source": "/island/267",
+    "destination": "/island/gotorettonarushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/268",
+    "destination": "/island/gotorettohisakajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/269",
+    "destination": "/island/gotorettoojikajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/270",
+    "destination": "/island/gotorettonosakito",
+    "permanent": true
+  },
+  {
+    "source": "/island/271",
+    "destination": "/island/ukutogotorettosaihokutan",
+    "permanent": true
+  },
+  {
+    "source": "/island/272",
+    "destination": "/island/kashiragashimashinkamigoshimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/273",
+    "destination": "/island/oshimanagasakikengoshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/274",
+    "destination": "/island/akajimanagasakikengoshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/275",
+    "destination": "/island/warabikojimagoshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/276",
+    "destination": "/island/shimayamajimagoshimashitamanoura",
+    "permanent": true
+  },
+  {
+    "source": "/island/277",
+    "destination": "/island/arikawahigashikaminoshimashinkamigoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/278",
+    "destination": "/island/kushijimashinkamigoshimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/279",
+    "destination": "/island/hiradoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/280",
+    "destination": "/island/ikitsukishima",
+    "permanent": true
+  },
+  {
+    "source": "/island/281",
+    "destination": "/island/takushimanagasakikenhiradoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/282",
+    "destination": "/island/azuchioshimanagasakikenhiradoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/283",
+    "destination": "/island/takashimanagasakikenmatsuurashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/284",
+    "destination": "/island/fukushimanagasakikenmatsuurashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/285",
+    "destination": "/island/tobishimanagasakikenmatsuurashitakashimaoki",
+    "permanent": true
+  },
+  {
+    "source": "/island/286",
+    "destination": "/island/chintaonagasakikenmatsuurashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/287",
+    "destination": "/island/hashimagunkanto",
+    "permanent": true
+  },
+  {
+    "source": "/island/288",
+    "destination": "/island/tsukumojimakuroshimasaseboshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/289",
+    "destination": "/island/takashimasaseboshitsukumoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/290",
+    "destination": "/island/iojimanagasakishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/291",
+    "destination": "/island/takashimanagasakishisekaiisan",
+    "permanent": true
+  },
+  {
+    "source": "/island/292",
+    "destination": "/island/ikejimanagasakishitankotaiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/293",
+    "destination": "/island/oshimanagasakikensaikaishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/294",
+    "destination": "/island/sakitojimanagasakikensaikaishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/295",
+    "destination": "/island/ejimanagasakikensaikaishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/296",
+    "destination": "/island/hirashimanagasakikensaikaishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/297",
+    "destination": "/island/matsushimanagasakikensaikaishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/298",
+    "destination": "/island/hariojimanagasakikensaseboshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/299",
+    "destination": "/island/nokoto",
+    "permanent": true
+  },
+  {
+    "source": "/island/300",
+    "destination": "/island/shikanoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/301",
+    "destination": "/island/aijimafukuokakenshingumachinekoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/302",
+    "destination": "/island/oshimafukuokakenmunakatashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/303",
+    "destination": "/island/genkaishimafukuokashinishiku",
+    "permanent": true
+  },
+  {
+    "source": "/island/304",
+    "destination": "/island/oronoshimafukuokashinishiku",
+    "permanent": true
+  },
+  {
+    "source": "/island/305",
+    "destination": "/island/jinoshimafukuokakenmunakatashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/306",
+    "destination": "/island/ainoshimakitakyushushikokurakitaku",
+    "permanent": true
+  },
+  {
+    "source": "/island/307",
+    "destination": "/island/umashimakitakyushushikokurakitaku",
+    "permanent": true
+  },
+  {
+    "source": "/island/308",
+    "destination": "/island/kabeshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/309",
+    "destination": "/island/kakarashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/310",
+    "destination": "/island/ogawato",
+    "permanent": true
+  },
+  {
+    "source": "/island/311",
+    "destination": "/island/madarashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/312",
+    "destination": "/island/kashiwajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/313",
+    "destination": "/island/takashimasagakenkaratsushitakarakujinoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/314",
+    "destination": "/island/himeshimaoitaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/315",
+    "destination": "/island/hotojimaoitakentsukumishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/316",
+    "destination": "/island/oshimaoitakensaikishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/317",
+    "destination": "/island/fukajimaoitakensaikishinekoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/318",
+    "destination": "/island/yakatashimaoitakensaikishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/319",
+    "destination": "/island/shimanourashimahyuganada",
+    "permanent": true
+  },
+  {
+    "source": "/island/320",
+    "destination": "/island/tsukishimamiyazakikenkushimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/321",
+    "destination": "/island/otojimamiyazakikenmongawamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/322",
+    "destination": "/island/amakusashimojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/323",
+    "destination": "/island/amakusaueshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/324",
+    "destination": "/island/goshonourajimakyoryunoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/325",
+    "destination": "/island/oyanoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/326",
+    "destination": "/island/yushimakumamotokenjotenkusaichinekoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/327",
+    "destination": "/island/iwajimajotenkusaichi",
+    "permanent": true
+  },
+  {
+    "source": "/island/328",
+    "destination": "/island/tobasejimajoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/329",
+    "destination": "/island/hinoshimajotenkusaichi",
+    "permanent": true
+  },
+  {
+    "source": "/island/330",
+    "destination": "/island/yokourajimatengusagoshonoura",
+    "permanent": true
+  },
+  {
+    "source": "/island/331",
+    "destination": "/island/makishimakumamotokengoshonoura",
+    "permanent": true
+  },
+  {
+    "source": "/island/332",
+    "destination": "/island/nagashimakagoshimakenizumigun",
+    "permanent": true
+  },
+  {
+    "source": "/island/333",
+    "destination": "/island/shishitokagoshimakennagashimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/334",
+    "destination": "/island/ikarajimanagashimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/335",
+    "destination": "/island/shorajimanagashimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/336",
+    "destination": "/island/koshikitokamikoshikito",
+    "permanent": true
+  },
+  {
+    "source": "/island/337",
+    "destination": "/island/koshikitonakakoshikito",
+    "permanent": true
+  },
+  {
+    "source": "/island/338",
+    "destination": "/island/koshikitoshimokoshikito",
+    "permanent": true
+  },
+  {
+    "source": "/island/339",
+    "destination": "/island/tanegashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/340",
+    "destination": "/island/yakushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/341",
+    "destination": "/island/kuchinoerabujima",
+    "permanent": true
+  },
+  {
+    "source": "/island/342",
+    "destination": "/island/takeshimakagoshimakenmishimamura",
+    "permanent": true
+  },
+  {
+    "source": "/island/343",
+    "destination": "/island/iotokagoshimakensatsumaioto",
+    "permanent": true
+  },
+  {
+    "source": "/island/344",
+    "destination": "/island/kuroshimakagoshimakenmishimamura",
+    "permanent": true
+  },
+  {
+    "source": "/island/345",
+    "destination": "/island/kuchinoshimatokararettosaihokutan",
+    "permanent": true
+  },
+  {
+    "source": "/island/346",
+    "destination": "/island/nakanoshimatokararetto",
+    "permanent": true
+  },
+  {
+    "source": "/island/347",
+    "destination": "/island/suwanosejimatokararetto",
+    "permanent": true
+  },
+  {
+    "source": "/island/348",
+    "destination": "/island/hirashimatokararetto",
+    "permanent": true
+  },
+  {
+    "source": "/island/349",
+    "destination": "/island/akusekijimatokararetto",
+    "permanent": true
+  },
+  {
+    "source": "/island/350",
+    "destination": "/island/kodakarajimatokararetto",
+    "permanent": true
+  },
+  {
+    "source": "/island/351",
+    "destination": "/island/takarajimatokararettosainantan",
+    "permanent": true
+  },
+  {
+    "source": "/island/352",
+    "destination": "/island/amamioshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/353",
+    "destination": "/island/kakeromato",
+    "permanent": true
+  },
+  {
+    "source": "/island/354",
+    "destination": "/island/ukejimaamamiguntosetouchimachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/355",
+    "destination": "/island/yokojimaamamigunto",
+    "permanent": true
+  },
+  {
+    "source": "/island/356",
+    "destination": "/island/kikaijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/357",
+    "destination": "/island/tokunoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/358",
+    "destination": "/island/okinoerabushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/359",
+    "destination": "/island/yorontouyoronto",
+    "permanent": true
+  },
+  {
+    "source": "/island/360",
+    "destination": "/island/okinawahonto",
+    "permanent": true
+  },
+  {
+    "source": "/island/361",
+    "destination": "/island/furuutoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/362",
+    "destination": "/island/minnashimakurowassanairando",
+    "permanent": true
+  },
+  {
+    "source": "/island/363",
+    "destination": "/island/kudakajimakonoshima",
+    "permanent": true
+  },
+  {
+    "source": "/island/364",
+    "destination": "/island/iheyajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/365",
+    "destination": "/island/nohojimaiheyamura",
+    "permanent": true
+  },
+  {
+    "source": "/island/366",
+    "destination": "/island/izenajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/367",
+    "destination": "/island/iejima_367",
+    "permanent": true
+  },
+  {
+    "source": "/island/368",
+    "destination": "/island/seteito",
+    "permanent": true
+  },
+  {
+    "source": "/island/369",
+    "destination": "/island/henzajimakaichudoro",
+    "permanent": true
+  },
+  {
+    "source": "/island/370",
+    "destination": "/island/hamahigashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/371",
+    "destination": "/island/miyagitookinawakenurumashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/372",
+    "destination": "/island/ikeijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/373",
+    "destination": "/island/tsukenjimakyarottoairando",
+    "permanent": true
+  },
+  {
+    "source": "/island/374",
+    "destination": "/island/oshimananjoshitempurato",
+    "permanent": true
+  },
+  {
+    "source": "/island/375",
+    "destination": "/island/senagajimaumikajiterasu",
+    "permanent": true
+  },
+  {
+    "source": "/island/376",
+    "destination": "/island/keiyokanshotozamamijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/377",
+    "destination": "/island/keiyokanshotoakajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/378",
+    "destination": "/island/keiyokanshototokashikijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/379",
+    "destination": "/island/gerumajimakeiyokan",
+    "permanent": true
+  },
+  {
+    "source": "/island/380",
+    "destination": "/island/kumejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/381",
+    "destination": "/island/oshimakumejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/382",
+    "destination": "/island/agunijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/383",
+    "destination": "/island/tonakijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/384",
+    "destination": "/island/kitadaitojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/385",
+    "destination": "/island/minamidaitojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/386",
+    "destination": "/island/miyakojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/387",
+    "destination": "/island/irabujima",
+    "permanent": true
+  },
+  {
+    "source": "/island/388",
+    "destination": "/island/ikemajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/389",
+    "destination": "/island/kurimajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/390",
+    "destination": "/island/taramashima",
+    "permanent": true
+  },
+  {
+    "source": "/island/391",
+    "destination": "/island/ogamijimamiyakojima",
+    "permanent": true
+  },
+  {
+    "source": "/island/392",
+    "destination": "/island/ishigakijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/393",
+    "destination": "/island/taketomijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/394",
+    "destination": "/island/kohamajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/395",
+    "destination": "/island/kuroshimayaeyamahatoairando",
+    "permanent": true
+  },
+  {
+    "source": "/island/396",
+    "destination": "/island/iriomotejima",
+    "permanent": true
+  },
+  {
+    "source": "/island/397",
+    "destination": "/island/yubujimasuigyushadewatarushima",
+    "permanent": true
+  },
+  {
+    "source": "/island/398",
+    "destination": "/island/hatomajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/399",
+    "destination": "/island/shinjotopanarito",
+    "permanent": true
+  },
+  {
+    "source": "/island/400",
+    "destination": "/island/haterumajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/401",
+    "destination": "/island/yonagunijima",
+    "permanent": true
+  },
+  {
+    "source": "/island/402",
+    "destination": "/island/okishimaaichiken",
+    "permanent": true
+  },
+  {
+    "source": "/island/403",
+    "destination": "/island/benkatowakayamaken",
+    "permanent": true
+  },
+  {
+    "source": "/island/404",
+    "destination": "/island/tobishimaokayamakenbizenshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/405",
+    "destination": "/island/oshimaokayamakensetouchishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/406",
+    "destination": "/island/oshimakagawakentakamatsushi",
+    "permanent": true
+  },
+  {
+    "source": "/island/407",
+    "destination": "/island/koogejimaehimekenimabarishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/408",
+    "destination": "/island/niyatoehimekenkutsuna",
+    "permanent": true
+  },
+  {
+    "source": "/island/409",
+    "destination": "/island/takekeltoehimekenuwajima",
+    "permanent": true
+  },
+  {
+    "source": "/island/410",
+    "destination": "/island/fuchitoehimeken",
+    "permanent": true
+  },
+  {
+    "source": "/island/411",
+    "destination": "/island/takashimatokushimakennarutoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/412",
+    "destination": "/island/shimadatotokushimakennarutoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/413",
+    "destination": "/island/genkaishimaokikojimafukuoka",
+    "permanent": true
+  },
+  {
+    "source": "/island/414",
+    "destination": "/island/mukojimasagakenkaratsushi",
+    "permanent": true
+  },
+  {
+    "source": "/island/415",
+    "destination": "/island/takezakitosagakentaramachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/416",
+    "destination": "/island/terashimanagasakikengoshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/417",
+    "destination": "/island/rokutonagasakikengoshimashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/418",
+    "destination": "/island/kirinokitoshinkamigoshimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/419",
+    "destination": "/island/oreshimashinkamigoshimamachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/420",
+    "destination": "/island/kuroshimanagasakikenmatsuurashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/421",
+    "destination": "/island/mishimanagasakikenomurashi",
+    "permanent": true
+  },
+  {
+    "source": "/island/422",
+    "destination": "/island/maejimanagasakikentogitsumachi",
+    "permanent": true
+  },
+  {
+    "source": "/island/423",
+    "destination": "/island/kashimanagasakikensasebo",
+    "permanent": true
+  },
+  {
+    "source": "/island/424",
+    "destination": "/island/kuroshimaoitakenkyushoshi",
+    "permanent": true
+  },
+  {
+    "source": "/island/425",
+    "destination": "/island/chintaomiyazakikenmiyazakishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/426",
+    "destination": "/island/arashiguchitokumamotokenamakusa",
+    "permanent": true
+  },
+  {
+    "source": "/island/427",
+    "destination": "/island/takegashimawakayamakennachikatsuura",
+    "permanent": true
+  },
+  {
+    "source": "/island/428",
+    "destination": "/island/arashimamiekentoppa",
+    "permanent": true
+  },
+  {
+    "source": "/island/429",
+    "destination": "/island/mitsujimamiekentoppa",
+    "permanent": true
+  },
+  {
+    "source": "/island/430",
+    "destination": "/island/yokoshimahiroshimakenfukuyamashinoura",
+    "permanent": true
+  },
+  {
+    "source": "/island/431",
+    "destination": "/island/bentenjimanagasakikenikishi",
+    "permanent": true
+  },
+  {
+    "source": "/island/432",
+    "destination": "/island/maejimaokinawakenzamami",
+    "permanent": true
+  }
+]
