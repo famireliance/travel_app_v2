@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Loader2, CheckCircle2, User, MapPin, Briefcase, CalendarClock, Plane } from 'lucide-react';

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Search, Compass, ExternalLink, Hotel } from 'lucide-react';
 import regionsData from '../../../data/regions.json';
+import Link from 'next/link';
 import { getRakutenTravelSearchUrl } from '@/data/islandFacilitiesData';
 import MapClient from '@/components/Map/MapClient';
 import SearchModal from '@/components/SearchModal';
@@ -160,6 +161,19 @@ export default function RegionMap() {
             {region.name}周辺の宿・ホテルを探す
           </p>
         </a>
+      </div>
+
+      {/* SEO & Accessibility Island Links */}
+      <div className="absolute top-auto bottom-0 left-0 right-0 z-0 h-0 overflow-hidden opacity-0 pointer-events-none">
+        <nav aria-label={`${region.name}の島一覧`}>
+          <ul>
+            {regionIslands.map((island) => (
+              <li key={island.id}>
+                <Link href={`/island/${island.id}`}>{island.name}</Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
 
       <SearchModal 

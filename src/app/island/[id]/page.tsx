@@ -81,7 +81,7 @@ export default async function Page({ params }: { params: any }) {
   const { id } = await params; 
 
   // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR)
-  const [diariesResult, accommodationsResult] = await Promise.all([
+  const [diariesResult, accommodationsResult, islandResult] = await Promise.all([
     supabase
       .from('island_diaries')
       .select('*')
@@ -92,12 +92,55 @@ export default async function Page({ params }: { params: any }) {
     supabase
       .from('accommodations')
       .select('*')
-      .eq('island_id', id)
+      .eq('island_id', id),
+    supabase
+      .from('islands')
+      .select('name, region_id')
+      .eq('id', id)
+      .single()
   ]);
 
-  return <IslandClient 
-    islandId={id} 
-    initialDiaries={diariesResult.data ?? []} 
-    initialAccommodations={accommodationsResult.data ?? []} 
-  />;
+  const master = ALL_ISLANDS_MASTER_DICTIONARY[id];
+  const islandName = islandResult.data?.name || master?.name || '未知の島';
+  const regionId = islandResult.data?.region_id || master?.region_id || '';
+
+  // JSON-LD 構造化データ (BreadcrumbList)
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "ホーム",
+        "item": "https://island.kira-tabi.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "日本全国離島一覧",
+        "item": "https://island.kira-tabi.com/islands"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": islandName,
+        "item": `https://island.kira-tabi.com/island/${id}`
+      }
+    ]
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <IslandClient 
+        islandId={id} 
+        initialDiaries={diariesResult.data ?? []} 
+        initialAccommodations={accommodationsResult.data ?? []} 
+      />
+    </>
+  );
 }

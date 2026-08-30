@@ -33,6 +33,7 @@ export default function Footer() {
           <h4 className="font-bold text-sm text-white tracking-widest mb-4">コンテンツ</h4>
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
             <li><Link href="/" className="hover:text-white transition-colors">探す（ホーム）</Link></li>
+            <li><Link href="/islands" className="hover:text-white transition-colors">日本全国離島一覧</Link></li>
             <li><Link href="/map" className="hover:text-white transition-colors">全国離島マップ</Link></li>
             <li><Link href="/globe" className="hover:text-white transition-colors">3D航空衛星地球儀</Link></li>
             <li><Link href="/route-planner" className="hover:text-white transition-colors">AIアイランドホッピング提案</Link></li>
