@@ -2,23 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Sparkles, X, Gift, Trophy } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import { IslandFairy } from '@/lib/fairies';
 import confetti from 'canvas-confetti';
-import AuthModal from './AuthModal';
 
 export default function FairyDiscoveryModal() {
-  const { user, newlyDiscoveredFairies, clearDiscoveredFairy, collectedFairyDates, pendingFairyDiscovery, setPendingFairyDiscovery, setPendingIslandVisit } = useTravel();
+  const { newlyDiscoveredFairies, clearDiscoveredFairy, collectedFairyDates } = useTravel();
   const [currentFairy, setCurrentFairy] = useState<IslandFairy | null>(null);
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-
-  // Check both logged-in discoveries and pending guest discoveries
-  const activeDiscoveries = user ? newlyDiscoveredFairies : pendingFairyDiscovery;
 
   useEffect(() => {
-    if (activeDiscoveries.length > 0 && !currentFairy) {
-      setCurrentFairy(activeDiscoveries[0]);
+    if (newlyDiscoveredFairies.length > 0 && !currentFairy) {
+      setCurrentFairy(newlyDiscoveredFairies[0]);
       
       // Fire confetti when a new fairy appears
       const duration = 3000;
@@ -36,17 +31,11 @@ export default function FairyDiscoveryModal() {
         confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
       }, 250);
     }
-  }, [activeDiscoveries, currentFairy]);
+  }, [newlyDiscoveredFairies, currentFairy]);
 
   const handleClose = () => {
     if (currentFairy) {
-      if (user) {
-        clearDiscoveredFairy(currentFairy.id);
-      } else {
-        // For guests, dismissing the modal clears the pending discovery and visit
-        setPendingFairyDiscovery([]);
-        setPendingIslandVisit(null);
-      }
+      clearDiscoveredFairy(currentFairy.id);
       setCurrentFairy(null);
     }
   };
@@ -93,14 +82,6 @@ export default function FairyDiscoveryModal() {
             >
               新しい妖精が仲間になった！
             </motion.h3>
-            {!user && (
-              <motion.p
-                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0 }}
-                className="text-[10px] md:text-xs text-white/80 mt-2 max-w-xs mx-auto"
-              >
-                ※現在ゲストモードです。保存するにはログインが必要です。
-              </motion.p>
-            )}
           </div>
 
           {/* Premium Trading Card UI */}
@@ -159,49 +140,15 @@ export default function FairyDiscoveryModal() {
             </div>
           </div>
 
-          {/* Guest Promo & Actions */}
-          {!user ? (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5 }}
-              className="mt-6 w-full flex flex-col gap-3"
-            >
-              <div className="bg-sky-900/80 border border-sky-400/30 rounded-xl p-4 text-center">
-                <div className="flex justify-center gap-4 mb-2 text-sky-300">
-                  <Gift size={20} />
-                  <Trophy size={20} />
-                </div>
-                <p className="text-xs text-sky-100 font-medium leading-relaxed mb-3">
-                  ✨ <strong>全国の島を巡って精霊を集めよう！</strong> ✨<br/>
-                  無料アカウントを登録すると、今回の到達記録と妖精を図鑑に永久保存でき、公式認定証も発行可能になります！
-                </p>
-                <button
-                  onClick={() => setIsAuthOpen(true)}
-                  className="w-full bg-gradient-to-r from-amber-400 to-orange-500 hover:from-amber-500 hover:to-orange-600 text-white font-bold px-6 py-3 rounded-full shadow-lg shadow-amber-500/30 transition-all hover:scale-105"
-                >
-                  無料で登録して保存する
-                </button>
-              </div>
-              <button
-                onClick={handleClose}
-                className="text-white/60 hover:text-white text-xs underline underline-offset-4 p-2 transition-colors"
-              >
-                保存せずに閉じる
-              </button>
-            </motion.div>
-          ) : (
-            <motion.button
-              initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5 }}
-              onClick={handleClose}
-              className="mt-8 bg-white hover:bg-slate-200 text-slate-900 font-bold px-8 py-3 rounded-full shadow-lg transition-colors"
-            >
-              図鑑に登録する
-            </motion.button>
-          )}
+          <motion.button
+            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 1.5 }}
+            onClick={handleClose}
+            className="mt-8 bg-white hover:bg-slate-200 text-slate-900 font-bold px-8 py-3 rounded-full shadow-lg transition-colors"
+          >
+            図鑑に登録する
+          </motion.button>
         </motion.div>
       </div>
-      
-      {/* Auth Modal Triggered by Guest Action */}
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
     </AnimatePresence>
   );
 }

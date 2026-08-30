@@ -485,7 +485,7 @@ export default function Home() {
           <div className="bg-white/10 backdrop-blur-2xl p-5 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden group w-full lg:w-[380px] shrink-0">
             <div className="flex justify-between items-end mb-4 relative z-10">
               <div>
-                <p className="text-[0.6rem] font-medium text-white/60 tracking-[0.2em] uppercase mb-1">Your Voyage</p>
+                <p className="text-[0.6rem] font-medium text-white/60 tracking-[0.2em] uppercase mb-1">{user ? 'Your Voyage' : 'Guest Voyage'}</p>
                 <h2 className="font-serif text-base text-white tracking-wider">到達アイランド</h2>
               </div>
               <div className="text-right">
@@ -544,72 +544,62 @@ export default function Home() {
 
             {/* アクションボタン群 */}
             <div className="mt-4 space-y-2.5 relative z-10">
-              {/* メインボタン：チェックイン（未ログイン時はログイン誘導） */}
-              {!user ? (
-                <button 
-                  onClick={() => setIsAuthOpen(true)}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.02]"
-                >
-                  <MapPin size={18} />
-                  <span>ログインしてチェックイン</span>
-                </button>
-              ) : (
-                <button 
-                  onClick={() => {
-                    if (!navigator.geolocation) {
-                      toast.error('お使いのブラウザは位置情報機能（GPS）をサポートしていません。');
-                      return;
-                    }
-                    const btn = document.getElementById('top-checkin-btn-text');
-                    if (btn) btn.innerText = 'GPSで検索中...';
-                    
-                    navigator.geolocation.getCurrentPosition(
-                      (position) => {
-                        const { latitude: userLat, longitude: userLng } = position.coords;
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        let closestIsland: any = null;
-                        let minDistance = Infinity;
+              {/* メインボタン：チェックイン（未ログイン時もゲストとして可能） */}
+              <button 
+                onClick={() => {
+                  if (!navigator.geolocation) {
+                    toast.error('お使いのブラウザは位置情報機能（GPS）をサポートしていません。');
+                    return;
+                  }
+                  const btn = document.getElementById('top-checkin-btn-text');
+                  if (btn) btn.innerText = 'GPSで検索中...';
+                  
+                  navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                      const { latitude: userLat, longitude: userLng } = position.coords;
+                      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                      let closestIsland: any = null;
+                      let minDistance = Infinity;
 
-                        allIslands.forEach(island => {
-                          if (island.coordinates) {
-                            const [islandLatStr, islandLngStr] = island.coordinates.split(',').map((s: string) => s.trim());
-                            const distance = calculateDistanceKm(userLat, userLng, parseFloat(islandLatStr), parseFloat(islandLngStr));
-                            if (distance < minDistance) {
-                              minDistance = distance;
-                              closestIsland = island;
-                            }
+                      allIslands.forEach(island => {
+                        if (island.coordinates) {
+                          const [islandLatStr, islandLngStr] = island.coordinates.split(',').map((s: string) => s.trim());
+                          const distance = calculateDistanceKm(userLat, userLng, parseFloat(islandLatStr), parseFloat(islandLngStr));
+                          if (distance < minDistance) {
+                            minDistance = distance;
+                            closestIsland = island;
                           }
-                        });
-
-                        if (btn) btn.innerText = '現在地からチェックイン';
-
-                        if (closestIsland) {
-                          const radiusKm = (closestIsland.checkin_radius_m || 5000) / 1000;
-                          const distText = minDistance < 1 ? `${Math.round(minDistance * 1000)}m` : `${minDistance.toFixed(1)}km`;
-                          
-                          if (minDistance <= radiusKm) {
-                            toast.success(`🎯 「${closestIsland.name}」エリア内です！チェックイン画面へ移動します`);
-                          } else {
-                            toast(`🧭 最寄りの島は「${closestIsland.name}」（約${distText}）です。チェックイン可能範囲外のため詳細ページをご案内します。`, { icon: 'ℹ️' });
-                          }
-                          router.push(`/island/${closestIsland.id}`);
-                        } else {
-                          toast.error('島データが見つかりませんでした。');
                         }
-                      },
-                      () => {
-                        if (btn) btn.innerText = '現在地からチェックイン';
-                        toast.error('現在地の取得に失敗しました。GPS許可を確認してください。');
-                      },
-                      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-                    );
-                  }}
-                  className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.02]"
-                >
-                  <MapPin size={18} />
-                  <span id="top-checkin-btn-text">現在地からチェックイン</span>
-                </button>
-              )}
+                      });
+
+                      if (btn) btn.innerText = user ? '現在地からチェックイン' : '現在地からチェックイン（ゲスト）';
+
+                      if (closestIsland) {
+                        const radiusKm = (closestIsland.checkin_radius_m || 5000) / 1000;
+                        const distText = minDistance < 1 ? `${Math.round(minDistance * 1000)}m` : `${minDistance.toFixed(1)}km`;
+                        
+                        if (minDistance <= radiusKm) {
+                          toast.success(`🎯 「${closestIsland.name}」エリア内です！チェックイン画面へ移動します`);
+                        } else {
+                          toast(`🧭 最寄りの島は「${closestIsland.name}」（約${distText}）です。チェックイン可能範囲外のため詳細ページをご案内します。`, { icon: 'ℹ️' });
+                        }
+                        router.push(`/island/${closestIsland.id}`);
+                      } else {
+                        toast.error('島データが見つかりませんでした。');
+                      }
+                    },
+                    () => {
+                      if (btn) btn.innerText = user ? '現在地からチェックイン' : '現在地からチェックイン（ゲスト）';
+                      toast.error('現在地の取得に失敗しました。GPS許可を確認してください。');
+                    },
+                    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                  );
+                }}
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold tracking-widest text-sm flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40 transition-all hover:scale-[1.02]"
+              >
+                <MapPin size={18} />
+                <span id="top-checkin-btn-text">{user ? '現在地からチェックイン' : '現在地からチェックイン（ゲスト）'}</span>
+              </button>
 
               {/* サブボタン：現在地から近くの島を探す（誰でも利用可能） */}
               <button 

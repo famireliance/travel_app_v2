@@ -30,7 +30,8 @@ import {
   Award,
   Clock,
   Save,
-  Upload
+  Upload,
+  ClipboardList
 } from 'lucide-react';
 
 import AdminDashboard from '@/components/admin/AdminDashboard';
@@ -43,6 +44,7 @@ import AdminPromoCodes from '@/components/admin/AdminPromoCodes';
 import AdminNewsletter from '@/components/admin/AdminNewsletter';
 import AdminPartners from '@/components/admin/AdminPartners';
 import AdminDistributors from '@/components/admin/AdminDistributors';
+import AgentReviewForm from '@/components/admin/AgentReviewForm';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -556,6 +558,7 @@ export default function AdminPage() {
     { id: 'moderation', label: '投稿モデレーション', icon: ShieldAlert },
     { id: 'islands', label: '島マスター管理', icon: Palmtree },
     { id: 'fairies', label: 'ご当地妖精管理', icon: Sparkles },
+    { id: 'agent_review', label: '島プロ評価・入稿', icon: ClipboardList },
     { id: 'contacts', label: 'お問い合わせ管理', icon: Mail },
     { id: 'newsletter', label: '一括メルマガ配信', icon: Mail },
     { id: 'coupons', label: 'プロモコード・クーポン', icon: Ticket },
@@ -653,7 +656,12 @@ export default function AdminPage() {
           <AdminOrders password={password} />
         )}
 
-        {/* 3. User Management Tab */}
+        {/* 3. Agent Review Form Tab */}
+        {activeTab === 'agent_review' && (
+          <AgentReviewForm password={password} />
+        )}
+
+        {/* 4. User Management Tab */}
         {activeTab === 'user' && (
           <div className="space-y-8 animate-in fade-in duration-300">
             <div className="border-b border-gray-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">

@@ -80,14 +80,24 @@ export async function generateMetadata(
 export default async function Page({ params }: { params: any }) {
   const { id } = await params; 
 
-  // サーバーサイドで最新の島ノートを5件取得 (SSR)
-  const { data: initialDiaries } = await supabase
-    .from('island_diaries')
-    .select('*')
-    .eq('island_id', id)
-    .eq('is_hidden', false)   // 非表示の投稿は除外
-    .order('created_at', { ascending: false })
-    .limit(5);                // Google向けに上位5件のみ
+  // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR)
+  const [diariesResult, accommodationsResult] = await Promise.all([
+    supabase
+      .from('island_diaries')
+      .select('*')
+      .eq('island_id', id)
+      .eq('is_hidden', false)
+      .order('created_at', { ascending: false })
+      .limit(5),
+    supabase
+      .from('accommodations')
+      .select('*')
+      .eq('island_id', id)
+  ]);
 
-  return <IslandClient islandId={id} initialDiaries={initialDiaries ?? []} />;
+  return <IslandClient 
+    islandId={id} 
+    initialDiaries={diariesResult.data ?? []} 
+    initialAccommodations={accommodationsResult.data ?? []} 
+  />;
 }

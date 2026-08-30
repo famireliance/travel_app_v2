@@ -281,7 +281,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     
     if (isMounted) setIslandStatuses(localData);
 
-    // 訪問回数〜妖精日付のローカル復元
+    // 訪問回数の復元
     let vLocal: Record<string, number> = {};
     if (userId) {
        const userVStored = localStorage.getItem(`island_visits_count_${userId}`);
@@ -292,81 +292,39 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         if (localData[id] === 'visited' || localData[id] === 'verified_visited') vLocal[id] = 1;
       });
     }
+    if (isMounted) setVisitCounts(vLocal);
 
+    // 最終訪問日の復元
     let lvLocal: Record<string, string> = {};
     if (userId) {
        const userLVStored = localStorage.getItem(`island_last_visit_dates_${userId}`);
        if (userLVStored) { try { const p = JSON.parse(userLVStored); if(p) lvLocal = p; } catch{} }
     }
+    if (isMounted) setLastVisitDates(lvLocal);
 
+    // スポットの復元
     let sLocal: Record<string, number> = {};
     if (userId) {
        const userSStored = localStorage.getItem(`island_spots_${userId}`);
        if (userSStored) { try { const p = JSON.parse(userSStored); if(p) sLocal = p; } catch{} }
     }
+    if (isMounted) setSpotsVisited(sLocal);
 
+    // 妖精の復元
     let fLocal: string[] = [];
     if (userId) {
        const userFStored = localStorage.getItem(`island_fairies_${userId}`);
        if (userFStored) { try { const p = JSON.parse(userFStored); if(Array.isArray(p)) fLocal = p; } catch{} }
     }
+    if (isMounted) setCollectedFairies(fLocal);
     
+    // 妖精日付の復元
     let dLocal: Record<string, string> = {};
     if (userId) {
        const userDStored = localStorage.getItem(`island_fairies_dates_${userId}`);
        if (userDStored) { try { const p = JSON.parse(userDStored); if(p) dLocal = p; } catch{} }
     }
-
-    if (userId) {
-      try {
-        const { data: gData, error: gError } = await supabase
-          .from('user_gamification')
-          .select('*')
-          .eq('user_id', userId)
-          .single();
-          
-        if (!gError && gData) {
-          // If Supabase has data, use it over local storage
-          if (isMounted) {
-            setTotalXP(gData.total_xp || 0);
-            setCollectedFairies(gData.collected_fairies || []);
-            setCollectedFairyDates(gData.collected_fairy_dates || {});
-            setSpotsVisited(gData.spots_visited || {});
-            
-            // Only overwrite companion if not 'default' or if local storage is missing
-            if (gData.companion_id && gData.companion_id !== 'default') {
-               setSelectedCompanionId(gData.companion_id as CompanionId);
-            }
-            
-            // Note: Since Supabase is the source of truth, we overwrite the local variables for the next merge step
-            sLocal = gData.spots_visited || {};
-            fLocal = gData.collected_fairies || [];
-            dLocal = gData.collected_fairy_dates || {};
-          }
-        } else {
-          // If no row exists yet (or error), fallback to local storage values we just parsed
-          if (isMounted) {
-            setSpotsVisited(sLocal);
-            setCollectedFairies(fLocal);
-            setCollectedFairyDates(dLocal);
-            // totalXP is already loaded in the top useEffect from kiratabi_total_xp
-          }
-        }
-      } catch (err) {
-        console.error("Failed to load gamification data from Supabase:", err);
-      }
-    } else {
-      if (isMounted) {
-        setSpotsVisited(sLocal);
-        setCollectedFairies(fLocal);
-        setCollectedFairyDates(dLocal);
-      }
-    }
-
-    if (isMounted) {
-      setVisitCounts(vLocal);
-      setLastVisitDates(lvLocal);
-    }
+    if (isMounted) setCollectedFairyDates(dLocal);
 
     // Supabaseからの同期・アップロード
     if (userId && isMounted) {
@@ -816,28 +774,6 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const playerLvInfo = useMemo(() => getPlayerLevelInfo(totalXP), [totalXP]);
   const companionChar = useMemo(() => COMPANION_CHARACTERS[selectedCompanionId] || COMPANION_CHARACTERS.shimamaru, [selectedCompanionId]);
   const companionStage = useMemo(() => getCompanionStageInfo(selectedCompanionId, playerLvInfo.level, subscriptionTier), [selectedCompanionId, playerLvInfo.level, subscriptionTier]);
-
-  // --- Supabase Gamification Sync (Background Debounced) ---
-  useEffect(() => {
-    if (!user || !isDataLoaded) return;
-    
-    const timer = setTimeout(() => {
-      supabase.from('user_gamification').upsert({
-        user_id: user.id,
-        total_xp: totalXP,
-        collected_fairies: collectedFairies,
-        collected_fairy_dates: collectedFairyDates,
-        companion_id: selectedCompanionId,
-        companion_stage: companionStage ? companionStage.stage : 1,
-        spots_visited: spotsVisited,
-        updated_at: new Date().toISOString()
-      }, { onConflict: 'user_id' }).then(({ error }) => {
-        if (error) console.error("Failed to sync gamification data:", error);
-      });
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, [user, isDataLoaded, totalXP, collectedFairies, collectedFairyDates, selectedCompanionId, spotsVisited, companionStage]);
 
   const totalVisited = useMemo(() => Object.values(islandStatuses).filter(s => s === 'visited' || s === 'verified_visited').length, [islandStatuses]);
 

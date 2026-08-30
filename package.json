@@ -39,7 +39,7 @@
     "stripe": "^22.4.0",
     "topojson-client": "^3.1.0",
     "uuid": "^14.0.2",
-    "ws": "^8.21.1"
+    "ws": "^8.21.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
@@ -51,6 +51,7 @@
     "@types/react-dom": "^19",
     "@types/topojson-client": "^3.1.5",
     "@types/uuid": "^11.0.0",
+    "@types/ws": "^8.18.1",
     "eslint": "^9",
     "eslint-config-next": "15.5.20",
     "tailwindcss": "^4",

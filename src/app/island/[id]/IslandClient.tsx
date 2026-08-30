@@ -18,7 +18,7 @@ import { getIslandDifficulty } from '@/lib/difficulty';
 import Breadcrumb from '@/components/Breadcrumb';
 import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
-import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
+import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl, getJalanRentacarSearchUrl } from '@/data/islandFacilitiesData';
 import { getIslandCategoryType, FERRY_BOATS_DICTIONARY, ACTIVITIES_DICTIONARY, getIslandGuideArticle } from '@/data/islandCategoryData';
 import { trackFacilityEvent } from '@/lib/supabase';
 import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building } from 'lucide-react';
@@ -41,9 +41,10 @@ interface IslandDiarySSR {
 interface Props {
   islandId?: string;
   initialDiaries?: IslandDiarySSR[];
+  initialAccommodations?: any[];
 }
 
-export default function IslandDetail({ islandId: propIslandId, initialDiaries = [] }: Props) {
+export default function IslandDetail({ islandId: propIslandId, initialDiaries = [], initialAccommodations = [] }: Props) {
   const params = useParams();
   const router = useRouter();
   const rawId = propIslandId || (Array.isArray(params?.id) ? params.id[0] : params?.id);
@@ -535,6 +536,21 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
         {(() => {
           const categoryType = getIslandCategoryType(island.id, island.name);
           const facilityData = getIslandFacilityDataOrDefault(island.id, island.name);
+          const accommodations = initialAccommodations && initialAccommodations.length > 0 
+            ? initialAccommodations.map((a: any) => ({
+                id: a.id,
+                name: a.name,
+                phone: a.phone_number,
+                planTier: a.plan_tier,
+                features: a.description,
+                priceRange: a.price_range,
+                address: a.address,
+                officialWebsite: a.website_url,
+                imageUrl: a.photo_urls?.[0],
+                isSponsored: a.plan_tier === 'paid_premium'
+              }))
+            : facilityData.accommodations;
+
           const ferryBoats = FERRY_BOATS_DICTIONARY[island.id] || FERRY_BOATS_DICTIONARY[island.name] || FERRY_BOATS_DICTIONARY['zamami_uninhabited'] || [];
           const activities = ACTIVITIES_DICTIONARY[island.id] || ACTIVITIES_DICTIONARY[island.name] || ACTIVITIES_DICTIONARY['392'] || [];
           const guideLink = getIslandGuideArticle(island.name);
@@ -670,7 +686,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
 
                       {/* 宿一覧 (無料枠 vs 有料枠) */}
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {facilityData.accommodations.map((acc) => {
+                        {accommodations.map((acc: any) => {
                           const isPaid = acc.planTier === 'paid_standard' || acc.planTier === 'paid_premium';
 
                           return (
@@ -845,49 +861,51 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
               {/* ========================================== */}
               {/* COMMON 1: 🦺 アクティビティ・ツアー掲載枠 */}
               {/* ========================================== */}
-              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                <div className="bg-gradient-to-r from-purple-500/10 via-pink-500/5 to-slate-900/5 border-b border-purple-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                  <div>
-                    <span className="text-[0.65rem] font-bold text-purple-700 uppercase tracking-widest block mb-1">ISLAND ACTIVITIES & TOURS</span>
-                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-                      <Ticket className="w-5 h-5 text-purple-600" /> {island.name}のアクティビティ・オプショナルツアーガイド
-                    </h3>
+              {activities.length > 0 && (
+                <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                  <div className="bg-gradient-to-r from-purple-500/10 via-pink-500/5 to-slate-900/5 border-b border-purple-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                      <span className="text-[0.65rem] font-bold text-purple-700 uppercase tracking-widest block mb-1">ISLAND ACTIVITIES & TOURS</span>
+                      <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                        <Ticket className="w-5 h-5 text-purple-600" /> {island.name}のアクティビティ・オプショナルツアーガイド
+                      </h3>
+                    </div>
                   </div>
-                </div>
-
-                <div className="p-6 space-y-4">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {activities.map((act) => (
-                      <div key={act.id} className="p-4 rounded-2xl bg-purple-50/50 border border-purple-100 space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                            <Sparkles size={16} className="text-purple-600" />
-                            {act.name}
-                          </h4>
-                          {act.priceRange && (
-                            <span className="font-mono text-[0.7rem] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md shrink-0">
-                              {act.priceRange}
+  
+                  <div className="p-6 space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {activities.map((act) => (
+                        <div key={act.id} className="p-4 rounded-2xl bg-purple-50/50 border border-purple-100 space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                              <Sparkles size={16} className="text-purple-600" />
+                              {act.name}
+                            </h4>
+                            {act.priceRange && (
+                              <span className="font-mono text-[0.7rem] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md shrink-0">
+                                {act.priceRange}
+                              </span>
+                            )}
+                          </div>
+  
+                          <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                            {act.features}
+                          </p>
+  
+                          <div className="pt-2 flex items-center justify-between">
+                            <span className="text-[0.65rem] text-purple-700 font-bold bg-purple-100 px-2 py-0.5 rounded-full uppercase">
+                              {act.category}
                             </span>
-                          )}
+                            <a href="/contact" className="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1">
+                              ツアーの相談・掲載問い合わせ ➔
+                            </a>
+                          </div>
                         </div>
-
-                        <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                          {act.features}
-                        </p>
-
-                        <div className="pt-2 flex items-center justify-between">
-                          <span className="text-[0.65rem] text-purple-700 font-bold bg-purple-100 px-2 py-0.5 rounded-full uppercase">
-                            {act.category}
-                          </span>
-                          <a href="/contact" className="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1">
-                            ツアーの相談・掲載問い合わせ ➔
-                          </a>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* ========================================== */}
               {/* COMMON 2: 🚗 島内交通インフラ・レンタカーガイド */}
@@ -901,15 +919,26 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                     </h3>
                   </div>
 
-                  <a
-                    href={getRakutenRentacarSearchUrl(island.name, island.prefecture)}
-                    target="_blank"
-                    rel="noopener noreferrer sponsored"
-                    className="px-4 py-2 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102 shrink-0 self-start md:self-auto"
-                  >
-                    <ExternalLink size={12} />
-                    楽天レンタカーで検索
-                  </a>
+                  <div className="flex flex-wrap gap-2 shrink-0 self-start md:self-auto">
+                    <a
+                      href={getRakutenRentacarSearchUrl(island.name, island.prefecture)}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="px-4 py-2 bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
+                    >
+                      <ExternalLink size={12} />
+                      楽天レンタカーで検索
+                    </a>
+                    <a
+                      href={getJalanRentacarSearchUrl(island.name, island.prefecture)}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      className="px-4 py-2 bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
+                    >
+                      <ExternalLink size={12} />
+                      じゃらんレンタカーで検索
+                    </a>
+                  </div>
                 </div>
 
                 <div className="p-6 space-y-4">

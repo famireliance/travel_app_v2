@@ -82,46 +82,7 @@ export const FERRY_BOATS_DICTIONARY: Record<string, FerryBoatItem[]> = {
 };
 
 // アクティビティツアー掲載データ
-export const ACTIVITIES_DICTIONARY: Record<string, ActivityItem[]> = {
-  // 青ヶ島
-  '58': [
-    {
-      id: 'aogashima_star',
-      name: '青ヶ島 満天の星空 ＆ ひんぎゃ蒸気体験散策ツアー',
-      category: 'night_tour',
-      features: '光害ゼロの360度大パノラマ星空観賞。地熱蒸気ひんぎゃでの蒸し卵体験アドバイス。',
-      priceRange: '事前相談要',
-    }
-  ],
-  '青ヶ島': [
-    {
-      id: 'aogashima_star',
-      name: '青ヶ島 満天の星空 ＆ ひんぎゃ蒸気体験散策ツアー',
-      category: 'night_tour',
-      features: '光害ゼロの360度大パノラマ星空観賞。地熱蒸気ひんぎゃでの蒸し卵体験アドバイス。',
-      priceRange: '事前相談要',
-    }
-  ],
-  // 石垣島
-  '392': [
-    {
-      id: 'ishigaki_manta',
-      name: '川平湾マンタシュノーケリング ＆ 青の洞窟SUPツアー',
-      category: 'snorkeling',
-      features: 'マンタ遭遇率全国屈指の川平石崎ポイント案内。初心者歓迎・写真データ無料。',
-      priceRange: '¥7,800〜 / 人',
-    }
-  ],
-  '石垣島': [
-    {
-      id: 'ishigaki_manta',
-      name: '川平湾マンタシュノーケリング ＆ 青の洞窟SUPツアー',
-      category: 'snorkeling',
-      features: 'マンタ遭遇率全国屈指の川平石崎ポイント案内。初心者歓迎・写真データ無料。',
-      priceRange: '¥7,800〜 / 人',
-    }
-  ]
-};
+export const ACTIVITIES_DICTIONARY: Record<string, ActivityItem[]> = {};
 
 // guide.kira-tabi.com 連携リンク生成
 export function getIslandGuideArticle(islandName: string): IslandGuideLink {

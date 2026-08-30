@@ -1,21 +1,17 @@
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+import WebSocket from 'ws';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
+globalThis.WebSocket = WebSocket;
+dotenv.config({ path: '.env.local' });
 
-async function checkDb() {
-  console.log("Checking total islands...");
-  const { count, error: countErr } = await supabase.from('islands').select('*', { count: 'exact', head: true });
-  console.log("Total islands:", count);
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, process.env.SUPABASE_SERVICE_ROLE_KEY);
 
-  console.log("Checking Kumejima...");
-  const { data: kumejima, error: kErr } = await supabase.from('islands').select('id, name, region_id, coordinates').like('name', '%久米島%');
-  console.log("Kumejima data:", kumejima);
-
-  console.log("Checking Yaeyama...");
-  const { data: yaeyama, error: yErr } = await supabase.from('islands').select('id, name').eq('region_id', 'yaeyama');
-  console.log("Yaeyama islands count:", yaeyama?.length);
+async function check() {
+  const { data: acc } = await supabase.from('accommodations').select('*').limit(1);
+  console.log("Accommodations Schema Keys:", acc ? Object.keys(acc[0]) : "No data");
+  
+  const { data: res } = await supabase.from('reservations').select('*').limit(1);
+  console.log("Reservations Schema Keys:", res ? Object.keys(res[0]) : "No data");
 }
-
-checkDb();
+check();

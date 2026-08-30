@@ -4,10 +4,11 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
-import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard } from 'lucide-react';
+import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard, Calendar, FileText, ArrowRight } from 'lucide-react';
 import { PlanChangeModal } from '@/components/PlanChangeModal';
 import OrderHistory from '@/components/OrderHistory';
 import ArchipelagoProgressModal from '@/components/ArchipelagoProgressModal';
+import AgentPass from '@/components/AgentPass';
 import { supabase, fetchAllIslands } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
 import { calculateDifficultyStats, getIslandDifficulty } from '@/lib/difficulty';
@@ -48,8 +49,12 @@ export default function MyPage() {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   
   // Tab State
-  const [activeTab, setActiveTab] = useState<'history' | 'diaries' | 'quests' | 'fairies' | 'planning' | 'orders' | 'settings' | 'certificates'>('history');
+  const [activeTab, setActiveTab] = useState<'history' | 'diaries' | 'reservations' | 'quests' | 'fairies' | 'planning' | 'orders' | 'settings' | 'certificates' | 'agent'>('history');
   const [filterAttribute, setFilterAttribute] = useState<string | null>(null);
+
+  // Reservations State
+  const [reservations, setReservations] = useState<any[]>([]);
+  const [isLoadingReservations, setIsLoadingReservations] = useState(false);
 
   // 1周年記念特典
   const [showAnniversaryModal, setShowAnniversaryModal] = useState(false);
@@ -77,6 +82,9 @@ export default function MyPage() {
     daysSinceUltimate <= 365 + 180 &&
     !anniversaryCertUsed;
   const anniversaryDaysLeft = Math.max(0, 365 + 180 - daysSinceUltimate);
+
+  // エージェント認定フラグ（本番ではDBの user_profiles.is_certified_agent 等で管理します。審査合格者のみtrueになります）
+  const isCertifiedAgent = false; // モック用（現在は誰にも付与されていません）
 
   // 訪問済み島リスト（申請フォーム用）
   const visitedIslandsList = useMemo(() => {
@@ -175,6 +183,25 @@ export default function MyPage() {
     ]).then(() => setIsDataLoaded(true));
   }, [islandStatuses, user, subscriptionTier]);
 
+  useEffect(() => {
+    if (activeTab === 'reservations' && user?.id) {
+      setIsLoadingReservations(true);
+      supabase
+        .from('reservations')
+        .select('*, accommodations(name)')
+        .eq('guest_id', user.id)
+        .order('created_at', { ascending: false })
+        .then(({ data, error }) => {
+          if (error) {
+            console.error('Error fetching reservations:', error);
+          } else {
+            setReservations(data || []);
+          }
+          setIsLoadingReservations(false);
+        });
+    }
+  }, [activeTab, user?.id]);
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     router.push('/');
@@ -243,10 +270,12 @@ export default function MyPage() {
   const tabs = [
     { id: 'history', label: 'トラベルヒストリー', icon: History, count: visitedList.length },
     { id: 'diaries', label: '島ログ', icon: BookOpen, count: myDiaries.length },
+    { id: 'reservations', label: '予約・宿泊履歴', icon: Calendar, count: reservations.length > 0 ? reservations.length : undefined },
     ...(subscriptionTier === 'premium' || subscriptionTier === 'ultimate' ? [{ id: 'certificates', label: '証明書', icon: Award, count: myCertificates.length }] : []),
     { id: 'quests', label: 'クエスト・称号', icon: Award, count: specialTitles.filter(t => t.unlocked).length },
     { id: 'fairies', label: '妖精図鑑', icon: Sparkles, count: unlockedFairies.filter(f => f.unlocked).length },
     { id: 'planning', label: 'お気に入り', icon: Heart, count: planningList.length },
+    ...(isCertifiedAgent ? [{ id: 'agent', label: '島プロパス', icon: Award, count: undefined }] : []),
     { id: 'orders', label: '注文履歴', icon: MapPin, count: undefined }, // Will load async
     { id: 'settings', label: '設定', icon: Edit3, count: undefined },
   ];
@@ -644,6 +673,112 @@ export default function MyPage() {
             </motion.div>
           )}
 
+          {/* Reservations Tab */}
+          {activeTab === 'reservations' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
+              {isLoadingReservations ? (
+                <div className="bg-white p-12 rounded-3xl border border-slate-200 text-center shadow-sm flex flex-col items-center justify-center gap-3">
+                  <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin" />
+                  <p className="text-sm text-slate-500 font-medium">予約履歴を読み込み中...</p>
+                </div>
+              ) : reservations.length === 0 ? (
+                <div className="bg-white p-10 rounded-3xl border border-slate-200 text-center space-y-4 shadow-sm">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-400 mx-auto">
+                    <Calendar className="w-8 h-8" />
+                  </div>
+                  <h4 className="font-serif font-bold text-slate-700 text-lg">予約・宿泊履歴はありません</h4>
+                  <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                    宿を予約すると、ここに宿泊予定や過去の宿泊履歴が表示されます。宿泊前のオンライン宿泊台帳（事前チェックイン）もここから行えます。
+                  </p>
+                  <div className="pt-2">
+                    <button
+                      onClick={() => router.push('/')}
+                      className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-sm transition-colors inline-flex items-center gap-2"
+                    >
+                      島宿を探す <ArrowRight className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {reservations.map((res) => {
+                    const accName = res.accommodations?.name || '宿泊施設';
+                    const checkIn = res.check_in_date || res.check_in || '未定';
+                    const checkOut = res.check_out_date || res.check_out || '未定';
+                    const isCheckinEligible = res.status === 'confirmed' || res.status === 'pending';
+
+                    const getStatusBadge = (status: string) => {
+                      switch (status) {
+                        case 'confirmed':
+                          return <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-full">予約確定</span>;
+                        case 'pending':
+                          return <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold rounded-full">確認中</span>;
+                        case 'cancelled':
+                          return <span className="px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold rounded-full">キャンセル済</span>;
+                        case 'completed':
+                        case 'checked_in':
+                          return <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-full">宿泊完了</span>;
+                        default:
+                          return <span className="px-3 py-1 bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold rounded-full">{status}</span>;
+                      }
+                    };
+
+                    return (
+                      <div
+                        key={res.id}
+                        className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
+                      >
+                        <div className="space-y-3 flex-1">
+                          <div className="flex flex-wrap items-center gap-3">
+                            <h4 className="font-serif font-bold text-lg text-slate-900 flex items-center gap-2">
+                              <MapPin className="w-5 h-5 text-amber-500 shrink-0" />
+                              {accName}
+                            </h4>
+                            {getStatusBadge(res.status)}
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-slate-600">
+                            <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                              <Calendar className="w-4 h-4 text-blue-500 shrink-0" />
+                              <span>
+                                宿泊日程: <strong className="text-slate-800 font-mono">{checkIn}</strong> 〜 <strong className="text-slate-800 font-mono">{checkOut}</strong>
+                              </span>
+                            </div>
+                            {res.guest_count && (
+                              <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
+                                <span className="text-slate-400 font-bold">人数:</span>
+                                <strong className="text-slate-800">{res.guest_count}名</strong>
+                              </div>
+                            )}
+                          </div>
+
+                          {res.created_at && (
+                            <p className="text-[0.7rem] text-slate-400 font-mono">
+                              予約申込日時: {new Date(res.created_at).toLocaleString('ja-JP')}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="flex flex-col sm:flex-row md:flex-col items-stretch md:items-end gap-2 shrink-0">
+                          {isCheckinEligible && (
+                            <Link
+                              href={`/checkin/${res.id}`}
+                              className="px-5 py-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white text-xs font-bold rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 text-center"
+                            >
+                              <FileText className="w-4 h-4" />
+                              事前チェックイン（宿泊台帳）へ
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </motion.div>
+          )}
+
           {/* Quests Tab */}
           {activeTab === 'quests' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2 space-y-8">
@@ -778,6 +913,13 @@ export default function MyPage() {
           {activeTab === 'orders' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
               <OrderHistory />
+            </motion.div>
+          )}
+
+          {/* Agent Pass Tab */}
+          {activeTab === 'agent' && (
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-8 pb-12">
+              <AgentPass userName={travelerName || user?.email?.split('@')[0] || 'GUEST'} isOfficial={false} />
             </motion.div>
           )}
 

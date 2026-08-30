@@ -2,8 +2,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Search, Compass } from 'lucide-react';
+import { ArrowLeft, Search, Compass, ExternalLink, Hotel } from 'lucide-react';
 import regionsData from '../../../data/regions.json';
+import { getRakutenTravelSearchUrl } from '@/data/islandFacilitiesData';
 import MapClient from '@/components/Map/MapClient';
 import SearchModal from '@/components/SearchModal';
 import { fetchAllIslands } from '@/lib/supabase';
@@ -140,6 +141,25 @@ export default function RegionMap() {
       {/* Map Area */}
       <div className="flex-1 relative w-full h-full z-0">
         <MapClient islands={regionIslands} bounds={bounds} />
+      </div>
+
+      {/* Affiliate Overlay */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 lg:bottom-12 lg:left-12 lg:translate-x-0 z-[1000] pointer-events-auto w-[90%] max-w-sm">
+        <a 
+          href={getRakutenTravelSearchUrl(region.name)}
+          target="_blank"
+          rel="noopener noreferrer sponsored"
+          className="flex flex-col gap-1.5 px-4 py-3 rounded-2xl bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/60 transition-transform hover:scale-102 group"
+        >
+          <div className="flex items-center justify-between">
+            <span className="text-[0.6rem] font-bold text-[#BF0000] uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded-full">Rakuten Travel</span>
+            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#BF0000] transition-colors" />
+          </div>
+          <p className="text-sm font-bold text-slate-800 flex items-center gap-2 font-serif">
+            <Hotel className="w-4 h-4 text-[#BF0000]" />
+            {region.name}周辺の宿・ホテルを探す
+          </p>
+        </a>
       </div>
 
       <SearchModal 

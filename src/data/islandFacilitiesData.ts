@@ -50,18 +50,34 @@ export function getRakutenTravelSearchUrl(islandName: string, prefecture?: strin
 
 // 楽天レンタカー検索URL
 export function getRakutenRentacarSearchUrl(islandName: string, prefecture?: string): string {
-  const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const fullQuery = prefecture ? `${prefecture} ${cleanName} レンタカー` : `${cleanName} レンタカー`;
-  const targetUrl = `https://search.rakuten.co.jp/search/mall/${encodeURIComponent(fullQuery)}/`;
+  // 楽天レンタカーには単純なキーワード検索URLがないため、レンタカートップページへ遷移させます
+  const targetUrl = `https://travel.rakuten.co.jp/cars/`;
   return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
 }
 
-// じゃらん・公式宿検索URL (都道府県＋島名で地域絞り込み ＋ Shift-JIS URLエンコード)
+// バリューコマース（じゃらん）のアフィリエイト情報
+export const JALAN_VC_SID = '3780092';
+export const JALAN_VC_PID = '892688780';
+export const JALAN_AFFILIATE_BASE_URL = `https://ck.jp.ap.valuecommerce.com/servlet/referral?sid=${JALAN_VC_SID}&pid=${JALAN_VC_PID}`;
+
+// じゃらんレンタカー検索URL (バリューコマースのアフィリエイトリンク)
+export function getJalanRentacarSearchUrl(islandName: string, prefecture?: string): string {
+  // ユーザー様から提供されたバリューコマースのアフィリエイト用トラッキングURLを使用します。
+  // MyLink用の場合は &vc_url= を付与しますが、今回は通常のバナーIDのためベースURLをそのまま返します。
+  return JALAN_AFFILIATE_BASE_URL;
+}
+
+// じゃらん・公式宿検索URL (バリューコマースのアフィリエイトリンク ＋ カスタム遷移)
 export function getJalanSearchUrl(islandName: string, prefecture?: string): string {
+  // 宿検索用に任意のキーワード検索結果へ飛ばす場合（MyLink対応PIDの場合）
   const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
   const fullQuery = prefecture ? `${prefecture} ${cleanName}` : cleanName;
   const sjisKeyword = encodeShiftJisUrl(fullQuery);
-  return `https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword=${sjisKeyword}`;
+  const targetUrl = `https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword=${sjisKeyword}`;
+  
+  // MyLink非対応のバナーPIDの場合はvc_urlが無視され、通常のじゃらんトップに飛びますが、
+  // アフィリエイトクッキーは正常に付与されます。
+  return `${JALAN_AFFILIATE_BASE_URL}&vc_url=${encodeURIComponent(targetUrl)}`;
 }
 
 // 青ヶ島データ
@@ -74,28 +90,28 @@ const AOGASHIMA_FACILITY_DATA: IslandFacilityData = {
   accommodations: [
     {
       id: 'aogashima_ya',
-      name: 'あおがしま屋',
+      name: 'KIRATABI アイランドロッジ（架空）',
       type: 'minshuku',
-      phone: '04996-9-0185',
+      phone: '000-000-0000',
       planTier: 'paid_premium',
       features: '1泊3食付き（島散策用お弁当含む） / 自家製青酎・地魚料理 / 港・ヘリポート往復送迎あり / 高速Wi-Fi完備',
       priceRange: '¥11,000〜 / 1泊3食',
       isSponsored: true,
       sponsoredId: 'aogashimaya',
-      address: '東京都青ヶ島村無番地',
+      address: '東京都青ヶ島村 テスト番地',
     },
     {
       id: 'matsumi_so',
-      name: 'マツミ荘',
+      name: 'ゲストハウス テスト（架空）',
       type: 'minshuku',
-      phone: '04996-9-0115',
+      phone: '000-000-0001',
       planTier: 'free', // 無料枠: 確認済み電話番号のみ表示（誤情報防止）
     },
     {
       id: 'suginohara',
-      name: 'ビジネス宿 杉の原',
+      name: 'ビジネス宿 ダミー（架空）',
       type: 'minshuku',
-      phone: '04996-9-0125',
+      phone: '000-000-0002',
       planTier: 'free',
     }
   ],
@@ -114,7 +130,7 @@ const AOGASHIMA_FACILITY_DATA: IslandFacilityData = {
 // 父島データ
 const CHICHIJIMA_FACILITY_DATA: IslandFacilityData = {
   islandId: '63',
-  islandName: '父島',
+  islandName: '父島（小笠原諸島）',
   townHallName: '小笠原村観光協会',
   townHallPhone: '04996-2-2585',
   transportNotes: '集落内は徒歩・レンタル自転車で回れますが、島内観光やビーチ巡りにはレンタルバイク（原付）やレンタカーが絶大にお勧めです。村営バスも運行中。',
@@ -204,7 +220,7 @@ const TAKETOMI_FACILITY_DATA: IslandFacilityData = {
 
 // 直島データ
 const NAOSHIMA_FACILITY_DATA: IslandFacilityData = {
-  islandId: '250',
+  islandId: '195',
   islandName: '直島',
   townHallName: '直島町観光協会',
   townHallPhone: '087-892-2299',
@@ -269,7 +285,7 @@ export const ISLAND_FACILITIES_DICTIONARY: Record<string, IslandFacilityData> = 
   '石垣島': ISHIGAKI_FACILITY_DATA,
   '393': TAKETOMI_FACILITY_DATA,
   '竹富島': TAKETOMI_FACILITY_DATA,
-  '250': NAOSHIMA_FACILITY_DATA,
+  '195': NAOSHIMA_FACILITY_DATA,
   '直島': NAOSHIMA_FACILITY_DATA,
   '388': IKEMA_FACILITY_DATA,
   '池間島': IKEMA_FACILITY_DATA,
