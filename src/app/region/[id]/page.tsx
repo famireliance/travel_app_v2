@@ -17,6 +17,7 @@ interface IslandData {
   region_id?: string;
   coordinates?: string;
   prefecture?: string;
+  slug?: string;
 }
 
 export default function RegionMap() {

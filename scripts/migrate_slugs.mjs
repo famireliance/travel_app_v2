@@ -83,7 +83,6 @@ async function main() {
   fs.writeFileSync('./redirects.txt', redirects.join(',\n'), 'utf-8');
   console.log("✅ Generated redirects.txt");
 
-  /*
   // Update Supabase DB
   console.log("Pushing updates to Supabase...");
   let successCount = 0;
@@ -96,12 +95,6 @@ async function main() {
     }
   }
   console.log(`✅ Supabase updated (${successCount}/${dbUpdates.length})`);
-  */
-  // Output a SQL file to update Supabase
-  const sqlUpdates = dbUpdates.map(u => `UPDATE islands SET slug = '${u.slug}' WHERE id = '${u.id}';`);
-  fs.writeFileSync('./supabase/migrations/20260831_update_slugs.sql', sqlUpdates.join('\n'), 'utf-8');
-  console.log("✅ Generated supabase/migrations/20260831_update_slugs.sql for manual execution.");
-
   process.exit(0);
 }
 

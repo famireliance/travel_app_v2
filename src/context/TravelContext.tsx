@@ -8,6 +8,7 @@ import { CompanionId, CompanionStageInfo, CompanionCharacter, COMPANION_CHARACTE
 import { IslandFairy, FAIRIES_MASTER } from '@/lib/fairies';
 import { COLLAB_SPOTS } from '@/lib/spots';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import toast from 'react-hot-toast';
 
 export type IslandStatus = 'visited' | 'planning' | 'none' | 'verified_visited';
 
