@@ -339,42 +339,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "checkin_radius_m": 3000,
     "slug": "kaburajimaaomoriken"
   },
-  "19": {
-    "id": "19",
-    "name": "久砂島（青森県）",
-    "region_id": "pseudo_sanriku",
-    "prefecture": "青森県",
-    "coordinates": "41.1350, 140.4017",
-    "description": "津軽半島沖に浮かぶ奇岩の島。日本海の荒波が彫り上げたダイナミックな海蝕地形が特徴。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "hisaisagotoaomoriken"
-  },
-  "20": {
-    "id": "20",
-    "name": "小網代島（青森県）",
-    "region_id": "pseudo_sanriku",
-    "prefecture": "青森県",
-    "coordinates": "41.0500, 140.3833",
-    "description": "津軽国定公園の美しい海岸線を彩る景勝の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "shoajirotoaomoriken"
-  },
   "21": {
     "id": "21",
     "name": "椿島（岩手県陸前高田）",
@@ -627,24 +591,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "slug": "ejimamiyagikenonagawamachi"
   },
-  "35": {
-    "id": "35",
-    "name": "網小島（宮城県）",
-    "region_id": "oshika",
-    "prefecture": "宮城県",
-    "coordinates": "38.2817, 141.4983",
-    "description": "網地島の隣に寄り添う自然豊かな小島。三陸沖の豊かな漁場と入り江。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "amikojimamiyagiken"
-  },
   "36": {
     "id": "36",
     "name": "大島（宮城県塩竈市）",
@@ -685,27 +631,9 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_conquest_target": true,
     "slug": "hojimamiyagikenurato"
   },
-  "38": {
-    "id": "38",
-    "name": "馬酔木島（気仙沼）",
-    "region_id": "pseudo_sanriku",
-    "prefecture": "宮城県",
-    "coordinates": "38.8783, 141.5933",
-    "description": "気仙沼湾内・大島のそばに浮かぶアセビの花が美しい島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "ashibitokesennuma"
-  },
   "39": {
     "id": "39",
-    "name": "九十九島（松島海域代表島）",
+    "name": "松島湾・九十九島（景観地域）",
     "region_id": "oshika",
     "prefecture": "宮城県",
     "coordinates": "38.3583, 141.0667",
@@ -719,25 +647,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "tsukumojimamatsushimakaiikidaihyoto"
-  },
-  "40": {
-    "id": "40",
-    "name": "八幡岩（宮城県）",
-    "region_id": "oshika",
-    "prefecture": "宮城県",
-    "coordinates": "38.3250, 141.0850",
-    "description": "松島湾の海上に浮かぶ奇岩の霊域。",
-    "access": "定期フェリー・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "yahataiwamiyagiken"
+    "slug": "matsushimawan_tsukumojima"
   },
   "41": {
     "id": "41",
@@ -811,24 +721,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "checkin_radius_m": 3000,
     "slug": "nagashimamiyagikenmatsushima"
   },
-  "45": {
-    "id": "45",
-    "name": "出島寺間（宮城県女川町）",
-    "region_id": "oshika",
-    "prefecture": "宮城県",
-    "coordinates": "38.4683, 141.5533",
-    "description": "女川出島の北端に連なる入り江の美しい島।",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "dejimateramamiyagikenonagawamachi"
-  },
   "46": {
     "id": "46",
     "name": "根木島（宮城県）",
@@ -864,24 +756,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
     "slug": "fukitomiyagiken"
-  },
-  "48": {
-    "id": "48",
-    "name": "唐桑半島沖大島（宮城県）",
-    "region_id": "pseudo_sanriku",
-    "prefecture": "宮城県",
-    "coordinates": "38.8917, 141.6467",
-    "description": "唐桑半島沖の荒々しい太平洋絶景を望む島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "karakuwahantookioshimamiyagiken"
   },
   "49": {
     "id": "49",
@@ -1715,7 +1589,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   },
   "93": {
     "id": "93",
-    "name": "奥島（滋賀県近江八幡市）",
+    "name": "奥島（歴史的島嶼・現陸続き）",
     "region_id": "pseudo_biwako",
     "prefecture": "滋賀県",
     "coordinates": "35.1617, 136.0883",
@@ -7792,24 +7666,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "checkin_radius_m": 3000,
     "slug": "okishimaaichiken"
   },
-  "403": {
-    "id": "403",
-    "name": "弁賀島（和歌山県）",
-    "region_id": "pseudo_awaji",
-    "prefecture": "和歌山県",
-    "coordinates": "33.6217, 135.9450",
-    "description": "勝浦湾内の景勝島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "benkatowakayamaken"
-  },
   "404": {
     "id": "404",
     "name": "飛島（岡山県備前市）",
@@ -7905,42 +7761,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
     "slug": "niyatoehimekenkutsuna"
-  },
-  "409": {
-    "id": "409",
-    "name": "竹Kel島（愛媛県宇和島）",
-    "region_id": "uwakai",
-    "prefecture": "愛媛県",
-    "coordinates": "33.1517, 132.4150",
-    "description": "宇和海の養殖と自然の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "takekeltoehimekenuwajima"
-  },
-  "410": {
-    "id": "410",
-    "name": "蒋淵島（愛媛県）",
-    "region_id": "uwakai",
-    "prefecture": "愛媛県",
-    "coordinates": "33.1750, 132.4183",
-    "description": "三浦半島周辺の小島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "fuchitoehimeken"
   },
   "411": {
     "id": "411",
@@ -8228,24 +8048,6 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "checkin_radius_m": 3000,
     "slug": "chintaomiyazakikenmiyazakishi"
   },
-  "426": {
-    "id": "426",
-    "name": "嵐口島（熊本県天草）",
-    "region_id": "amakusa",
-    "prefecture": "熊本県",
-    "coordinates": "32.3517, 130.3350",
-    "description": "御所浦島近くの島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": false,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "arashiguchitokumamotokenamakusa"
-  },
   "427": {
     "id": "427",
     "name": "竹ヶ島（和歌山県那智勝浦）",
@@ -8264,27 +8066,9 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "checkin_radius_m": 3000,
     "slug": "takegashimawakayamakennachikatsuura"
   },
-  "428": {
-    "id": "428",
-    "name": "安楽島（三重県鳥羽）",
-    "region_id": "aichi_santo",
-    "prefecture": "三重県",
-    "coordinates": "34.4683, 136.8717",
-    "description": "鳥羽港周辺の緑美しい景勝の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
-    "flags": {
-      "宿泊・観光": "yes",
-      "陸地座標実証済": "yes"
-    },
-    "is_conquest_target": true,
-    "points": 10,
-    "difficulty": "未設定",
-    "checkin_radius_m": 3000,
-    "slug": "arashimamiekentoppa"
-  },
   "429": {
     "id": "429",
-    "name": "三ツ島（三重県鳥羽）",
+    "name": "三ツ島（小島群）",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
     "coordinates": "34.4967, 136.8617",
