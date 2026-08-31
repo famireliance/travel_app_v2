@@ -306,7 +306,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "飛島（山形県）",
     "region_id": "pseudo_sanriku",
     "prefecture": "山形県",
-    "coordinates": "39.1967, 139.5467",
+    "coordinates": "39.1983, 139.5511",
     "description": "酒田沖の日本海に浮かぶ絶海の孤島。対馬暖流の影響で温暖な気候とダイナミックな奇岩絶景、極上の夕日の楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -326,7 +326,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "蕪島（青森県）",
     "region_id": "pseudo_sanriku",
     "prefecture": "青森県",
-    "coordinates": "40.5383, 141.5583",
+    "coordinates": "40.5391, 141.5586",
     "description": "八戸市のウミネコ繁殖地として国の天然記念物に指定。蕪嶋神社が鎮座し春には菜の花とウミネコの美しいコントラスト。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -344,7 +344,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "椿島（岩手県陸前高田）",
     "region_id": "pseudo_sanriku",
     "prefecture": "岩手県",
-    "coordinates": "38.9600, 141.7417",
+    "coordinates": "38.9566, 141.7454",
     "description": "三陸海岸・広田湾沖に浮かぶウミネコ繁殖地。島全体がツバキの林に覆われている絶景島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -362,7 +362,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "青松島（岩手県）",
     "region_id": "pseudo_sanriku",
     "prefecture": "岩手県",
-    "coordinates": "38.9733, 141.7583",
+    "coordinates": "38.9610, 141.7516",
     "description": "椿島の隣に並ぶ風光明媚な三陸の名島。松と白い岩肌の調和が美しい。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -380,7 +380,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "権現島（岩手県山田町）",
     "region_id": "pseudo_sanriku",
     "prefecture": "岩手県",
-    "coordinates": "39.4683, 141.9833",
+    "coordinates": "39.4678, 141.9840",
     "description": "山田湾に浮かぶ信仰と祈りの島。穏やかな入り江と緑豊かな自然が三陸の風情を感じさせる。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -398,7 +398,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "気仙沼大島",
     "region_id": "pseudo_sanriku",
     "prefecture": "宮城県",
-    "coordinates": "38.8611, 141.6111",
+    "coordinates": "38.8642, 141.6167",
     "description": "「緑の真珠」と称される三陸の名島。気仙沼大島大橋で本土と直結し、亀山展望台からの360度大パノラマ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -416,7 +416,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "網地島",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.2717, 141.4883",
+    "coordinates": "38.2678, 141.4872",
     "description": "「東北のハワイ」と呼ばれる美しい白砂のビーチ（網地白浜海水浴場）と透明度抜群の海を誇る牡鹿半島沖の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -436,7 +436,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "田代島（猫島）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.2950, 141.4333",
+    "coordinates": "38.2939, 141.4286",
     "description": "島民よりも猫の数が多いことで世界中に名が知られる「猫島」。猫神社やマンガアイランドなど癒やしが息づく。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -476,7 +476,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "桂島（宮城県・浦戸）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3367, 141.0967",
+    "coordinates": "38.3325, 141.0942",
     "description": "松島湾に浮かぶ浦戸諸島最大の有人島。日本三景松島の美しい多島美を歩いて実感できる癒やしの散策ルートが人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -496,7 +496,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "野々島",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3383, 141.1117",
+    "coordinates": "38.3375, 141.1108",
     "description": "松島湾・浦戸諸島の中心に位置する自然豊かな島。ツバキのトンネルや伝説の洞窟が残る秘境。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -516,7 +516,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "寒風沢島",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3300, 141.1267",
+    "coordinates": "38.3283, 141.1342",
     "description": "江戸時代には千石船が寄港する港町として栄え、日露交渉の地としても知られる歴史ロマンの島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -536,7 +536,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "宮戸島",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3417, 141.1550",
+    "coordinates": "38.3344, 141.1444",
     "description": "松島四大観の一つ「大高森」を抱く奥松島最大の島。縄文時代の里浜貝塚や日本庭園のような多島美絶景。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -556,7 +556,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "出島（宮城県女川町）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.4633, 141.5483",
+    "coordinates": "38.4552, 141.5367",
     "description": "女川港の沖合に浮かぶ、縄文時代の貝塚やリアス式海岸の雄大な景色が残る歴史の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -576,7 +576,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "江島（宮城県女川町）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.4033, 141.5950",
+    "coordinates": "38.4011, 141.5947",
     "description": "太平洋に突き出た断崖絶壁に囲まれた絶海のウミネコ繁殖島。独自の島文化と素朴な漁港風景。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -596,7 +596,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（宮城県塩竈市）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3317, 141.0767",
+    "coordinates": "38.3312, 141.0825",
     "description": "松島湾の景勝地・大高森や浦戸諸島の玄関口を構成する静かな松林の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -616,7 +616,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "朴島（宮城県・浦戸）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3433, 141.1383",
+    "coordinates": "38.3417, 141.1239",
     "description": "浦戸諸島で最も面積が小さく、春になると島一面に菜の花が咲き誇る美しい隠れ家のような有人島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -636,7 +636,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "松島湾・九十九島（景観地域）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3583, 141.0667",
+    "coordinates": "38.3686, 141.0663",
     "description": "日本三景「松島」の約260もの島々を代表する景勝の島。多島美の極致。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -654,7 +654,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "笹島（宮城県）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3333, 141.1017",
+    "coordinates": "38.3313, 141.0967",
     "description": "浦戸諸島の海域を彩る笹竹と緑の美しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -672,7 +672,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "波島（宮城県）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3183, 141.1183",
+    "coordinates": "38.3188, 141.1311",
     "description": "寒風沢島沖に浮かぶ絶景ポイント。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -690,7 +690,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "吉田島（宮城県）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3483, 141.1217",
+    "coordinates": "38.3444, 141.1325",
     "description": "松島湾の静かな入り江に佇む自然島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -708,7 +708,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "長島（宮城県松島）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3517, 141.1150",
+    "coordinates": "38.3488, 141.1350",
     "description": "奥松島の穏やかな海に細長く浮かぶ緑の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -726,7 +726,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "根木島（宮城県）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3467, 141.1283",
+    "coordinates": "38.3422, 141.1421",
     "description": "浦戸諸島の間に佇む静かな松の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
