@@ -762,7 +762,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊豆大島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.7417, 139.3833",
+    "coordinates": "34.7417, 139.3833",
     "description": "東京から高速ジェット船で最短1時間45分。三原山と黒い砂漠「裏砂漠」、椿の花と絶景海中温泉を体感できる大ジオパーク。",
     "access": "羽田空港より直行航空便 / 竹芝港発 高速ジェット船・客船",
     "flags": {
@@ -780,7 +780,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "利島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.5250, 139.2833",
+    "coordinates": "34.5250, 139.2833",
     "description": "島全体の8割を椿林が覆い、冬には紅蓮の花が咲き誇るピラミッド型の島。野生のミナミハンドウイルカと泳ぐ聖地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -800,7 +800,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "新島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.3667, 139.2667",
+    "coordinates": "34.3667, 139.2667",
     "description": "コーシャ石が輝く真っ白な羽伏浦海岸や絶景の古代ギリシャ風露天風呂「湯の浜露天温泉（24時間無料）」があるサーファーとアートの楽園。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -820,7 +820,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "式根島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.3250, 139.2167",
+    "coordinates": "34.3250, 139.2167",
     "description": "リアス式海岸に囲まれた波穏やかな入り江と、潮の満ち引きで温度が変わる絶景海中温泉が楽しめる極上癒やし島。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -840,7 +840,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "神津島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.2083, 139.1333",
+    "coordinates": "34.2083, 139.1333",
     "description": "東京都初の国際ダークスカイ協会認定「星空保護区」。花の百名山・天上山とエメラルドグリーンの赤崎遊歩道で有名な神秘の島。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -860,7 +860,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "三宅島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.0833, 139.5250",
+    "coordinates": "34.0833, 139.5250",
     "description": "地球の呼吸と火山地形をダイナミックに体感できるバードアイランド。火山遊歩道やダイビングが絶品。",
     "access": "羽田空港より直行航空便 / 竹芝港発 高速ジェット船・客船",
     "flags": {
@@ -880,7 +880,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "御蔵島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "32.8833, 139.5917",
+    "coordinates": "33.8833, 139.5917",
     "description": "島の周辺海域に約100頭以上の野生ミナミハンドウイルカが暮らす「イルカの島」。巨木のツゲ林と豊かな自然が守られている。",
     "access": "東京竹芝港発 東海汽船大型客船（黒潮状況により着岸注意）",
     "flags": {
@@ -956,7 +956,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "早島（新島沖）",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.3617, 139.2983",
+    "coordinates": "34.3617, 139.2983",
     "description": "新島のすぐ南東に浮かぶ奇岩と海鳥の楽園。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -974,7 +974,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鵜渡根島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.4833, 139.2833",
+    "coordinates": "34.4833, 139.2833",
     "description": "利島と新島の間に位置するダイナミックな岩礁の島。大型魚の釣りの絶好ポイント。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
