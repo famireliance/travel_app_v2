@@ -410,9 +410,14 @@ export default function DedicatedInnPage() {
                 {inn.name}
               </h1>
 
-              <p className="text-xs sm:text-sm text-slate-200 font-serif leading-relaxed line-clamp-2 drop-shadow-sm max-w-3xl">
-                {inn.catchphrase}
-              </p>
+              <div className="space-y-1 max-w-3xl pt-0.5">
+                {inn.catchphrase.split('\n').filter(Boolean).map((line, idx) => (
+                  <p key={idx} className="text-xs sm:text-sm text-slate-200 font-serif leading-relaxed drop-shadow-sm flex items-start gap-1.5">
+                    <span className="text-amber-400 font-bold">・</span>
+                    <span>{line}</span>
+                  </p>
+                ))}
+              </div>
             </div>
           </div>
 

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Calendar, Users, MessageSquare, Check, Loader2, 
@@ -44,13 +44,24 @@ export default function BookingModal({
   sameDayCutoff = '当日受付: 12:00まで'
 }: BookingModalProps) {
   const router = useRouter();
-  const { user } = useTravel();
+  const { user, travelerName } = useTravel();
+  const [guestName, setGuestName] = useState('');
+  const [guestPhone, setGuestPhone] = useState('');
+  const [guestEmail, setGuestEmail] = useState('');
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guestCount, setGuestCount] = useState(2);
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittedSuccess, setIsSubmittedSuccess] = useState(false);
+
+  // 初期値セット
+  useEffect(() => {
+    if (user) {
+      if (!guestName && travelerName) setGuestName(travelerName);
+      if (!guestEmail && user.email) setGuestEmail(user.email);
+    }
+  }, [user, travelerName]);
 
   // チェックイン日変更ハンドラー：自動でチェックアウト日を翌日に設定
   const handleCheckInChange = (newCheckIn: string) => {
@@ -91,6 +102,14 @@ export default function BookingModal({
       toast.error('予約リクエストを送るにはログインが必要です。');
       return;
     }
+    if (!guestName.trim()) {
+      toast.error('代表者様のお名前を入力してください。');
+      return;
+    }
+    if (!guestPhone.trim()) {
+      toast.error('緊急連絡先のお電話番号を入力してください。');
+      return;
+    }
     if (!checkIn || !checkOut) {
       toast.error('チェックイン日とチェックアウト日を入力してください。');
       return;
@@ -105,7 +124,7 @@ export default function BookingModal({
     try {
       let targetAccId = accommodationId;
 
-      if (!targetAccId) {
+      if (!targetAccId || targetAccId === 'aogashimaya') {
         // Fallback: 宿名またはオーナーから取得
         const { data: matchedAcc } = await supabase
           .from('accommodations')
@@ -127,21 +146,22 @@ export default function BookingModal({
         }
       }
 
+      const contactHeader = `【代表者様氏名】: ${guestName.trim()}\n【お電話番号】: ${guestPhone.trim()}\n【メールアドレス】: ${guestEmail.trim() || user.email || ''}`;
       const fullNotes = selectedPlan 
-        ? `【選択プラン】: ${selectedPlan.name} (${selectedPlan.price || ''})\n\n${notes}`
-        : notes;
+        ? `${contactHeader}\n【選択プラン】: ${selectedPlan.name} (${selectedPlan.price || ''})\n\n${notes}`
+        : `${contactHeader}\n\n${notes}`;
 
-      const { error } = await supabase.from('reservations').insert([
-        {
-          accommodation_id: targetAccId,
-          guest_id: user.id,
-          check_in_date: checkIn,
-          check_out_date: checkOut,
-          guest_count: guestCount,
-          status: 'pending',
-          guest_notes: fullNotes
-        }
-      ]);
+      const insertPayload: any = {
+        accommodation_id: targetAccId,
+        guest_id: user.id,
+        check_in_date: checkIn,
+        check_out_date: checkOut,
+        guest_count: guestCount,
+        status: 'pending',
+        guest_notes: fullNotes
+      };
+
+      const { error } = await supabase.from('reservations').insert([insertPayload]);
 
       if (error) throw error;
 
@@ -276,6 +296,56 @@ export default function BookingModal({
                     {sameDayCutoff}
                   </span>
                 )}
+              </div>
+
+              {/* Guest Contact Information (Name & Phone) */}
+              <div className="p-4 bg-slate-50/90 rounded-2xl border border-slate-200/80 space-y-3">
+                <span className="text-[0.65rem] font-bold text-slate-500 uppercase tracking-wider block font-mono">
+                  GUEST CONTACT (必須項目)
+                </span>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      代表者様 氏名 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="例: 山田 太郎"
+                      value={guestName}
+                      onChange={e => setGuestName(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 mb-1">
+                      ご連絡先 電話番号 <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      placeholder="例: 090-1234-5678"
+                      value={guestPhone}
+                      onChange={e => setGuestPhone(e.target.value)}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs md:text-sm text-slate-800 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-mono"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[0.7rem] font-bold text-slate-500 mb-1">
+                    ご連絡用 メールアドレス（任意）
+                  </label>
+                  <input
+                    type="email"
+                    placeholder="example@email.com"
+                    value={guestEmail}
+                    onChange={e => setGuestEmail(e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-700 focus:border-blue-500 outline-none transition-all font-mono"
+                  />
+                </div>
               </div>
 
               {/* Dates with Night Badge */}

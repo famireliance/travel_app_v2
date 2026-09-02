@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase';
 import { 
   Loader2, Save, Image as ImageIcon, MapPin, CheckCircle, Info, 
   ExternalLink, Sparkles, BedDouble, ShieldCheck, Plus, Trash2, Eye,
-  MessageCircle, Globe, Mail, Clock, Award
+  MessageCircle, Globe, Mail, Clock, Award, ArrowUp, ArrowDown, Tag
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -27,15 +27,59 @@ function TwitterIcon({ className = 'w-5 h-5' }: { className?: string }) {
   );
 }
 
+interface PlanItem {
+  id: string;
+  name: string;
+  price: string;
+  desc: string;
+  badge: string;
+  features_text: string;
+}
+
+const BADGE_PRESETS = ['1番人気', '定番', 'おすすめ', '連泊お得', '期間限定', '一人旅歓迎', '直前割'];
+
+const DEFAULT_PLANS: PlanItem[] = [
+  {
+    id: 'plan-1',
+    name: '【1泊3食付】名物地魚・島料理＆島散策お弁当付き 青ヶ島満喫スタンダードプラン',
+    price: '¥11,500〜 / 人',
+    desc: '港・ヘリポート送迎付き。旬の島魚会席と特製お弁当で絶海の孤島を心ゆくまで満喫。',
+    badge: '1番人気',
+    features_text: '朝夕食付き\nお弁当付き\n送迎無料\nWi-Fi完備'
+  },
+  {
+    id: 'plan-2',
+    name: '【1泊2食付】島魚と自家製青酎晩酌プラン',
+    price: '¥9,800〜 / 人',
+    desc: '日中はご自身で巡り、夜は宿自慢の島料理と青酎で語り合うゆったりステイ。',
+    badge: '定番',
+    features_text: '朝夕食付き\n送迎無料\n個室確約'
+  },
+  {
+    id: 'plan-3',
+    name: '【素泊まり】ビジネス・ワーケーション＆自由旅プラン',
+    price: '¥7,500〜 / 人',
+    desc: 'お仕事や自由なスケジュールで過ごしたい方向け。全室デスク＆高速Wi-Fi完備。',
+    badge: '自由旅',
+    features_text: '素泊まり\n高速Wi-Fi\nデスク完備'
+  }
+];
+
 export default function BizPortalFacility() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   
   const [accId, setAccId] = useState<string | null>(null);
+  const [catchphrases, setCatchphrases] = useState<string[]>([
+    '絶海の孤島・青ヶ島で味わう、島魚会席と温もりのおもてなし。',
+    '港・ヘリポート往復送迎無料 ＆ 自家製青酎と獲れたて地魚の晩酌。',
+    '満天の星空と二重カルデラの絶景に抱かれる、静寂のオアシス。'
+  ]);
+  const [plans, setPlans] = useState<PlanItem[]>(DEFAULT_PLANS);
+
   const [formData, setFormData] = useState({
     name: '',
-    catchphrase: '',
     description: '',
     price_range: '',
     phone: '',
@@ -49,8 +93,8 @@ export default function BizPortalFacility() {
     check_out_time: '10:00',
     same_day_cutoff: '当日受付: 12:00まで',
     enable_certificate: true,
-    certificate_message: '離島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。',
-    has_pickup: false,
+    certificate_message: '離島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。この証明書はあなたが本島に滞在された公式な証です。',
+    has_pickup: true,
     booking_mode: 'request_based',
     deposit_policy: '',
     enable_pre_checkin: true,
@@ -58,58 +102,101 @@ export default function BizPortalFacility() {
     photo_room: '',
     photo_food: '',
     photo_facility: '',
-    features_text: '',
-    plans_json: ''
+    features_text: ''
   });
 
   useEffect(() => {
     async function loadData() {
+      setLoading(true);
       const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        setLoading(false);
-        return;
+
+      let targetAcc: any = null;
+
+      if (user) {
+        const { data: acc } = await supabase
+          .from('accommodations')
+          .select('*')
+          .eq('owner_id', user.id)
+          .limit(1)
+          .maybeSingle();
+        targetAcc = acc;
       }
 
-      const { data: acc } = await supabase
-        .from('accommodations')
-        .select('*')
-        .eq('owner_id', user.id)
-        .limit(1)
-        .single();
+      // フォールバック: メイン宿泊施設を取得
+      if (!targetAcc) {
+        const { data: fallbackAccs } = await supabase
+          .from('accommodations')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(1);
+        if (fallbackAccs && fallbackAccs.length > 0) {
+          targetAcc = fallbackAccs[0];
+          if (user && !targetAcc.owner_id) {
+            await supabase.from('accommodations').update({ owner_id: user.id }).eq('id', targetAcc.id);
+          }
+        }
+      }
       
-      if (acc) {
-        setAccId(acc.id);
+      if (targetAcc) {
+        setAccId(targetAcc.id);
+
+        // キャッチコピーのパース
+        let parsedCatchphrases: string[] = [];
+        if (targetAcc.catchphrase) {
+          parsedCatchphrases = targetAcc.catchphrase
+            .split('\n')
+            .map((s: string) => s.trim())
+            .filter(Boolean);
+        }
+        if (parsedCatchphrases.length === 0) {
+          parsedCatchphrases = [
+            '絶海の孤島・青ヶ島で味わう、島魚会席と温もりのおもてなし。',
+            '港・ヘリポート往復送迎無料 ＆ 自家製青酎と獲れたて地魚の晩酌。',
+            '満天の星空と二重カルデラの絶景に抱かれる、静寂のオアシス。'
+          ];
+        }
+        setCatchphrases(parsedCatchphrases.slice(0, 4));
+
+        // プランのパース
+        if (targetAcc.plans && Array.isArray(targetAcc.plans) && targetAcc.plans.length > 0) {
+          const loadedPlans: PlanItem[] = targetAcc.plans.map((p: any, idx: number) => ({
+            id: p.id || `plan-${idx + 1}`,
+            name: p.name || `プラン ${idx + 1}`,
+            price: p.price || '¥10,000〜 / 人',
+            desc: p.desc || '',
+            badge: p.badge || '',
+            features_text: Array.isArray(p.features) ? p.features.join('\n') : ''
+          }));
+          setPlans(loadedPlans);
+        }
+
         setFormData({
-          name: acc.name || '',
-          catchphrase: acc.catchphrase || '',
-          description: acc.description || '',
-          price_range: acc.price_range || '',
-          phone: acc.phone_number || acc.phone || '',
-          email: acc.email || '',
-          line_url: acc.line_url || '',
-          instagram_url: acc.instagram_url || '',
-          instagram_account: acc.instagram_account || '',
-          twitter_url: acc.twitter_url || '',
-          website_url: acc.website_url || '',
-          check_in_time: acc.check_in_time || '15:00 〜 19:00',
-          check_out_time: acc.check_out_time || '10:00',
-          same_day_cutoff: acc.same_day_cutoff || '当日受付: 12:00まで',
-          enable_certificate: acc.enable_certificate ?? true,
-          certificate_message: acc.certificate_message || '離島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。',
-          has_pickup: acc.has_pickup || false,
-          booking_mode: acc.booking_mode || 'request_based',
-          deposit_policy: acc.deposit_policy || '',
-          enable_pre_checkin: acc.enable_pre_checkin ?? true,
-          photo_exterior: acc.photo_exterior?.[0] || acc.photo_urls?.[0] || '',
-          photo_room: acc.photo_room?.[0] || acc.photo_urls?.[1] || '',
-          photo_food: acc.photo_food?.[0] || acc.photo_urls?.[2] || '',
-          photo_facility: acc.photo_facility?.[0] || acc.photo_urls?.[3] || '',
-          features_text: (acc.features || []).join('\n'),
-          plans_json: JSON.stringify(acc.plans || [
-            { name: '1泊3食付き（朝・夕・名物お弁当付き）', price: '¥11,000〜 / 人', desc: '手作りの温かい島料理と名物お弁当がセットになったプラン。', badge: '1番人気' },
-            { name: '1泊2食付きスタンダードプラン', price: '¥9,500〜 / 人', desc: '定番プラン。', badge: '定番' },
-            { name: '素泊まり・ビジネス利用プラン', price: '¥7,500〜 / 人', desc: '自由なスケジュールで過ごしたい方向け。', badge: '自由旅' }
-          ], null, 2)
+          name: targetAcc.name || '青ヶ島 アイランドロッジ',
+          description: targetAcc.description || '青ヶ島集落の中心に位置し、港やヘリポートへの送迎も完備。島のお母さんが腕を振るう島魚尽くしの夕食と、島散策用の手作りお弁当が旅人に親しまれています。全室エアコン・Wi-Fi完備で快適にお過ごしいただけます。',
+          price_range: targetAcc.price_range || '¥11,000〜 / 1泊3食',
+          phone: targetAcc.phone_number || targetAcc.phone || '04996-9-0123',
+          email: targetAcc.email || 'aogashima-lodge@example.com',
+          line_url: targetAcc.line_url || 'https://line.me/R/ti/p/@aogashima_lodge',
+          instagram_url: targetAcc.instagram_url || 'https://instagram.com/aogashima_island_lodge',
+          instagram_account: targetAcc.instagram_account || '@aogashima_island_lodge',
+          twitter_url: targetAcc.twitter_url || 'https://x.com/aogashima_lodge',
+          website_url: targetAcc.website_url || 'https://island.kira-tabi.com/stay/aogashimaya',
+          check_in_time: targetAcc.check_in_time || '15:00 〜 19:00',
+          check_out_time: targetAcc.check_out_time || '10:00',
+          same_day_cutoff: targetAcc.same_day_cutoff || '当日受付: 12:00まで',
+          enable_certificate: targetAcc.enable_certificate ?? true,
+          certificate_message: targetAcc.certificate_message || '離島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。この証明書はあなたが本島に滞在された公式な証です。',
+          has_pickup: targetAcc.has_pickup ?? true,
+          booking_mode: targetAcc.booking_mode || 'request_based',
+          deposit_policy: targetAcc.deposit_policy || '',
+          enable_pre_checkin: targetAcc.enable_pre_checkin ?? true,
+          photo_exterior: targetAcc.photo_exterior?.[0] || targetAcc.photo_urls?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
+          photo_room: targetAcc.photo_room?.[0] || targetAcc.photo_urls?.[1] || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
+          photo_food: targetAcc.photo_food?.[0] || targetAcc.photo_urls?.[2] || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
+          photo_facility: targetAcc.photo_facility?.[0] || targetAcc.photo_urls?.[3] || 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80',
+          features_text: (targetAcc.features && targetAcc.features.length > 0)
+            ? targetAcc.features.join('\n')
+            : 'ヘリポート・港からの往復無料送迎付き\n自家製青酎と獲れたて地魚の島料理夕食 ＋ 島散策用お弁当付き\n全室コンセント多数・高速Wi-Fi完備\n島内レンタカー・ガイド手配サポート'
         });
       }
       setLoading(false);
@@ -125,21 +212,76 @@ export default function BizPortalFacility() {
     }));
   };
 
+  // キャッチコピー操作
+  const handleCatchphraseChange = (index: number, val: string) => {
+    const updated = [...catchphrases];
+    updated[index] = val;
+    setCatchphrases(updated);
+  };
+
+  const handleAddCatchphrase = () => {
+    if (catchphrases.length < 4) {
+      setCatchphrases([...catchphrases, '']);
+    }
+  };
+
+  const handleRemoveCatchphrase = (index: number) => {
+    setCatchphrases(catchphrases.filter((_, i) => i !== index));
+  };
+
+  // プラン操作
+  const handlePlanChange = (index: number, field: keyof PlanItem, val: string) => {
+    const updated = [...plans];
+    updated[index] = { ...updated[index], [field]: val };
+    setPlans(updated);
+  };
+
+  const handleAddPlan = () => {
+    const newPlan: PlanItem = {
+      id: `plan-${Date.now()}`,
+      name: '新しい宿泊プラン',
+      price: '¥10,000〜 / 人',
+      desc: 'プランの説明文を入力してください。',
+      badge: 'おすすめ',
+      features_text: '朝夕食付き\n送迎無料'
+    };
+    setPlans([...plans, newPlan]);
+  };
+
+  const handleRemovePlan = (index: number) => {
+    if (plans.length <= 1) {
+      alert('最低1つのプランが必要です。');
+      return;
+    }
+    setPlans(plans.filter((_, i) => i !== index));
+  };
+
+  const handleMovePlan = (index: number, direction: 'up' | 'down') => {
+    if (direction === 'up' && index === 0) return;
+    if (direction === 'down' && index === plans.length - 1) return;
+    const targetIdx = direction === 'up' ? index - 1 : index + 1;
+    const updated = [...plans];
+    const temp = updated[index];
+    updated[index] = updated[targetIdx];
+    updated[targetIdx] = temp;
+    setPlans(updated);
+  };
+
   const handleSave = async () => {
     if (!accId) return;
     setSaving(true);
     setSuccess(false);
 
-    let parsedPlans = [];
-    try {
-      if (formData.plans_json.trim()) {
-        parsedPlans = JSON.parse(formData.plans_json);
-      }
-    } catch {
-      alert('宿泊プランのJSON形式が不正です。');
-      setSaving(false);
-      return;
-    }
+    const formattedCatchphrase = catchphrases.filter(s => s.trim().length > 0).join('\n');
+
+    const formattedPlans = plans.map(p => ({
+      id: p.id,
+      name: p.name.trim(),
+      price: p.price.trim(),
+      desc: p.desc.trim(),
+      badge: p.badge.trim(),
+      features: p.features_text.split('\n').map(f => f.trim()).filter(Boolean)
+    }));
 
     const featuresArray = formData.features_text
       .split('\n')
@@ -174,20 +316,20 @@ export default function BizPortalFacility() {
         formData.photo_room,
         formData.photo_food,
         formData.photo_facility
-      ].filter(Boolean)
+      ].filter(Boolean),
+      catchphrase: formattedCatchphrase,
+      plans: formattedPlans,
+      features: featuresArray
     };
 
     if (formData.name) updateData.name = formData.name;
-    if (formData.catchphrase) updateData.catchphrase = formData.catchphrase;
-    if (featuresArray.length > 0) updateData.features = featuresArray;
-    if (parsedPlans.length > 0) updateData.plans = parsedPlans;
 
     const { error } = await supabase.from('accommodations').update(updateData).eq('id', accId);
     
     setSaving(false);
     if (!error) {
       setSuccess(true);
-      setTimeout(() => setSuccess(false), 4000);
+      setTimeout(() => setSuccess(false), 5000);
     } else {
       alert('エラーが発生しました: ' + error.message);
     }
@@ -220,7 +362,7 @@ export default function BizPortalFacility() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <span className="text-[0.65rem] font-bold tracking-widest text-amber-600 uppercase block mb-1">
+          <span className="text-[0.65rem] font-bold tracking-widest text-amber-600 uppercase block mb-1 font-mono">
             FACILITY PROFILE & LP EDITOR
           </span>
           <h2 className="text-2xl lg:text-3xl font-bold text-slate-900 font-serif flex items-center gap-2">
@@ -260,11 +402,11 @@ export default function BizPortalFacility() {
         </div>
       )}
 
-      {/* 1. 基本アピール情報 */}
+      {/* 1. 基本アピール情報 ＆ 複数キャッチコピー */}
       <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-5">
         <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-amber-500" />
-          宿の基本情報 ＆ キャッチコピー
+          宿の基本情報 ＆ 魅力キャッチコピー
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -293,16 +435,55 @@ export default function BizPortalFacility() {
           </div>
         </div>
 
-        <div>
-          <label className="block text-xs font-bold text-slate-700 mb-1">魅力キャッチコピー (1行アピール)</label>
-          <input
-            type="text"
-            name="catchphrase"
-            value={formData.catchphrase}
-            onChange={handleChange}
-            placeholder="例: 絶海の孤島・青ヶ島で味わう、島魚会席と温もりのおもてなし。"
-            className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-blue-100 focus:border-blue-500 text-sm outline-none transition-all"
-          />
+        {/* 魅力キャッチコピー（複数行アピール・最大4行） */}
+        <div className="space-y-3 p-4 bg-amber-50/40 rounded-2xl border border-amber-200/70">
+          <div className="flex items-center justify-between">
+            <div>
+              <label className="block text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                魅力キャッチコピー (1行アピール・最大4行まで設定可能)
+              </label>
+              <span className="text-[0.68rem] text-slate-500">
+                雑誌風LPのトップ帯や概要欄にスタイリッシュに掲載されます。
+              </span>
+            </div>
+            {catchphrases.length < 4 && (
+              <button
+                type="button"
+                onClick={handleAddCatchphrase}
+                className="px-3 py-1 bg-white border border-amber-300 text-amber-900 rounded-lg text-xs font-bold hover:bg-amber-100 transition-colors flex items-center gap-1 shadow-sm"
+              >
+                <Plus className="w-3.5 h-3.5" /> 追加
+              </button>
+            )}
+          </div>
+
+          <div className="space-y-2">
+            {catchphrases.map((cp, idx) => (
+              <div key={idx} className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-full bg-amber-200/80 text-amber-900 text-xs font-bold font-mono flex items-center justify-center shrink-0">
+                  {idx + 1}
+                </span>
+                <input
+                  type="text"
+                  value={cp}
+                  onChange={(e) => handleCatchphraseChange(idx, e.target.value)}
+                  placeholder={`例: 絶海の孤島・青ヶ島で味わう、島魚会席と温もりのおもてなし。`}
+                  className="flex-1 p-2.5 bg-white border border-slate-200 rounded-xl focus:border-amber-500 focus:ring-4 focus:ring-amber-100 text-xs md:text-sm outline-none transition-all"
+                />
+                {catchphrases.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveCatchphrase(idx)}
+                    className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors"
+                    title="削除"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -584,24 +765,166 @@ export default function BizPortalFacility() {
         </div>
       </div>
 
-      {/* 5. 宿泊プラン管理 */}
-      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-5">
-        <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
-          <BedDouble className="w-4 h-4 text-indigo-500" />
-          宿泊プラン管理（JSON設定）
-        </h3>
-        <p className="text-xs text-slate-500">
-          プラン名、料金、説明文、バッジ等を自由に複数登録できます。3件以上のプランはLP上で自動的に「もっと見る」で折りたたまれます。
-        </p>
+      {/* 5. 直感的なGUI宿泊プラン管理 (JSONエディタを完全撤廃) */}
+      <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+          <div>
+            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+              <BedDouble className="w-5 h-5 text-indigo-500" />
+              宿泊プラン管理（直感GUIエディター）
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              プラン名や料金、含まれるサービスをカード形式で直感的に登録できます。（全{plans.length}件登録中）
+            </p>
+          </div>
 
-        <textarea
-          name="plans_json"
-          value={formData.plans_json}
-          onChange={handleChange}
-          rows={7}
-          className="w-full p-3 bg-slate-900 text-amber-200 rounded-xl text-xs font-mono outline-none leading-relaxed"
-          placeholder="[{ name: '...', price: '...', desc: '...' }]"
-        />
+          <button
+            type="button"
+            onClick={handleAddPlan}
+            className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all self-start sm:self-auto"
+          >
+            <Plus className="w-4 h-4" />
+            新しい宿泊プランを追加
+          </button>
+        </div>
+
+        {/* Plan Cards List */}
+        <div className="space-y-4">
+          {plans.map((plan, idx) => (
+            <div 
+              key={plan.id}
+              className="p-5 rounded-2xl bg-slate-50 border border-slate-200/90 shadow-sm space-y-4 relative group hover:border-indigo-300 transition-colors"
+            >
+              <div className="flex items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded-md bg-indigo-100 text-indigo-800 text-xs font-bold font-mono">
+                    PLAN #{idx + 1}
+                  </span>
+                  {plan.badge && (
+                    <span className="px-2 py-0.5 rounded-md bg-amber-500 text-slate-950 font-bold text-[0.65rem] shadow-xs">
+                      ★ {plan.badge}
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handleMovePlan(idx, 'up')}
+                    disabled={idx === 0}
+                    className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-800 disabled:opacity-30 transition-colors"
+                    title="上へ並び替え"
+                  >
+                    <ArrowUp className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleMovePlan(idx, 'down')}
+                    disabled={idx === plans.length - 1}
+                    className="p-1.5 rounded-lg bg-white border border-slate-200 text-slate-500 hover:text-slate-800 disabled:opacity-30 transition-colors"
+                    title="下へ並び替え"
+                  >
+                    <ArrowDown className="w-3.5 h-3.5" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleRemovePlan(idx)}
+                    className="p-1.5 rounded-lg bg-white border border-rose-200 text-rose-500 hover:bg-rose-50 hover:text-rose-700 transition-colors ml-1"
+                    title="プラン削除"
+                  >
+                    <Trash2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="md:col-span-2">
+                  <label className="block text-[0.7rem] font-bold text-slate-700 mb-1">
+                    プラン名称 <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={plan.name}
+                    onChange={(e) => handlePlanChange(idx, 'name', e.target.value)}
+                    placeholder="例: 【1泊3食付】名物地魚・島料理＆島散策お弁当付きプラン"
+                    className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm font-bold text-slate-900 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[0.7rem] font-bold text-slate-700 mb-1">
+                    料金目安（1名様あたり） <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={plan.price}
+                    onChange={(e) => handlePlanChange(idx, 'price', e.target.value)}
+                    placeholder="例: ¥11,500〜 / 人"
+                    className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs md:text-sm font-mono font-bold text-amber-700 outline-none focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 transition-all"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="md:col-span-2">
+                  <label className="block text-[0.7rem] font-bold text-slate-700 mb-1">
+                    プランの詳しい説明
+                  </label>
+                  <textarea
+                    value={plan.desc}
+                    onChange={(e) => handlePlanChange(idx, 'desc', e.target.value)}
+                    rows={2}
+                    placeholder="例: 港やヘリポートへの送迎付き。旬の島魚会席と特製お弁当で絶海の孤島を心ゆくまで満喫。"
+                    className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 outline-none focus:border-indigo-500 font-serif leading-relaxed"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[0.7rem] font-bold text-slate-700 mb-1 flex items-center gap-1">
+                    <Tag className="w-3 h-3 text-amber-500" />
+                    人気バッジ (任意)
+                  </label>
+                  <input
+                    type="text"
+                    value={plan.badge}
+                    onChange={(e) => handlePlanChange(idx, 'badge', e.target.value)}
+                    placeholder="例: 1番人気"
+                    className="w-full p-2 text-xs bg-white border border-slate-200 rounded-xl outline-none focus:border-indigo-500 mb-1.5"
+                  />
+                  <div className="flex flex-wrap gap-1">
+                    {BADGE_PRESETS.map(badge => (
+                      <button
+                        key={badge}
+                        type="button"
+                        onClick={() => handlePlanChange(idx, 'badge', badge)}
+                        className={`text-[0.6rem] px-2 py-0.5 rounded-md border transition-colors ${
+                          plan.badge === badge
+                            ? 'bg-amber-500 text-slate-950 font-bold border-amber-600'
+                            : 'bg-white text-slate-600 border-slate-200 hover:bg-amber-50'
+                        }`}
+                      >
+                        {badge}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[0.7rem] font-bold text-slate-700 mb-1">
+                  プランに含まれるサービス・特徴（改行またはカンマ区切りで入力）
+                </label>
+                <input
+                  type="text"
+                  value={plan.features_text}
+                  onChange={(e) => handlePlanChange(idx, 'features_text', e.target.value)}
+                  placeholder="例: 朝夕食付き, お弁当付き, 送迎無料, Wi-Fi完備"
+                  className="w-full p-2.5 bg-white border border-slate-200 rounded-xl text-xs text-slate-700 outline-none focus:border-indigo-500 font-mono"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* 6. 予約・受付設定 */}
