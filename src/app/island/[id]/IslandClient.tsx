@@ -541,14 +541,15 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
             ? initialAccommodations.map((a: any) => ({
                 id: a.id,
                 name: a.name,
-                phone: a.phone_number,
+                phone: a.phone_number || a.phone,
                 planTier: a.plan_tier,
                 features: a.description,
                 priceRange: a.price_range,
                 address: a.address,
                 officialWebsite: a.website_url,
                 imageUrl: a.photo_urls?.[0],
-                isSponsored: a.plan_tier === 'paid_premium'
+                isSponsored: a.plan_tier === 'paid_premium' || a.plan_tier === 'paid_standard',
+                sponsoredId: a.id
               }))
             : facilityData.accommodations;
 
