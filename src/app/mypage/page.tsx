@@ -183,12 +183,14 @@ export default function MyPage() {
     ]).then(() => setIsDataLoaded(true));
   }, [islandStatuses, user, subscriptionTier]);
 
+  const [selectedCertRes, setSelectedCertRes] = useState<any | null>(null);
+
   useEffect(() => {
     if (activeTab === 'reservations' && user?.id) {
       setIsLoadingReservations(true);
       supabase
         .from('reservations')
-        .select('*, accommodations(name)')
+        .select('*, accommodations(id, name, address, enable_certificate, certificate_message)')
         .eq('guest_id', user.id)
         .order('created_at', { ascending: false })
         .then(({ data, error }) => {
@@ -770,10 +772,77 @@ export default function MyPage() {
                               事前チェックイン（宿泊台帳）へ
                             </Link>
                           )}
+
+                          {res.status === 'confirmed' && (
+                            <button
+                              onClick={() => setSelectedCertRes(res)}
+                              className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-amber-300 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 border border-amber-400/40"
+                            >
+                              <Award className="w-4 h-4 text-amber-400" />
+                              公式宿泊証明書を表示
+                            </button>
+                          )}
                         </div>
                       </div>
                     );
                   })}
+                </div>
+              )}
+
+              {/* Digital Certificate Modal */}
+              {selectedCertRes && (
+                <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
+                  <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-amber-300 animate-in fade-in zoom-in-95 duration-200">
+                    <div className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-700 p-6 text-white text-center relative">
+                      <button 
+                        onClick={() => setSelectedCertRes(null)}
+                        className="absolute top-4 right-4 p-1.5 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors"
+                      >
+                        ✕
+                      </button>
+                      <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner border border-white/30">
+                        🏅
+                      </div>
+                      <span className="text-[0.65rem] tracking-widest uppercase font-mono text-amber-100 block">
+                        KIRATABI OFFICIAL STAY PASS
+                      </span>
+                      <h3 className="font-serif font-bold text-xl text-white">
+                        公式提携宿 宿泊証明書
+                      </h3>
+                    </div>
+
+                    <div className="p-6 space-y-4 text-center">
+                      <div className="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/80 space-y-2">
+                        <span className="text-[0.65rem] text-amber-800 font-bold uppercase tracking-wider block font-mono">
+                          ACCOMMODATION & GUEST
+                        </span>
+                        <h4 className="font-serif font-bold text-lg text-slate-900">
+                          {selectedCertRes.accommodations?.name || '公式提携宿'}
+                        </h4>
+                        <p className="text-xs text-slate-700 font-bold">
+                          宿泊者: {travelerName || user?.email || 'KIRATABI 会員'} 様
+                        </p>
+                        <p className="text-[0.7rem] text-slate-500 font-mono">
+                          宿泊日: {selectedCertRes.check_in_date} 〜 {selectedCertRes.check_out_date}
+                        </p>
+                        <p className="text-xs text-slate-600 font-serif leading-relaxed pt-2 border-t border-amber-200/60">
+                          {selectedCertRes.accommodations?.certificate_message || '離島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。'}
+                        </p>
+                      </div>
+
+                      <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-500 space-y-1 text-left font-mono">
+                        <p>🎫 予約認証番号: {selectedCertRes.id?.slice(0, 13)}</p>
+                        <p>🛡️ 発行認証: KIRATABI Official Verified Stay</p>
+                      </div>
+
+                      <button
+                        onClick={() => setSelectedCertRes(null)}
+                        className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-colors"
+                      >
+                        閉じる
+                      </button>
+                    </div>
+                  </div>
                 </div>
               )}
             </motion.div>

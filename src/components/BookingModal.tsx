@@ -20,6 +20,9 @@ interface BookingModalProps {
     name: string;
     price?: string;
   } | null;
+  checkInWindow?: string;
+  checkOutWindow?: string;
+  sameDayCutoff?: string;
 }
 
 const QUICK_TAGS = [
@@ -35,7 +38,10 @@ export default function BookingModal({
   onClose, 
   innName, 
   accommodationId,
-  selectedPlan 
+  selectedPlan,
+  checkInWindow = '15:00 〜 19:00',
+  checkOutWindow = '10:00',
+  sameDayCutoff = '当日受付: 12:00まで'
 }: BookingModalProps) {
   const router = useRouter();
   const { user } = useTravel();
@@ -45,6 +51,22 @@ export default function BookingModal({
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittedSuccess, setIsSubmittedSuccess] = useState(false);
+
+  // チェックイン日変更ハンドラー：自動でチェックアウト日を翌日に設定
+  const handleCheckInChange = (newCheckIn: string) => {
+    setCheckIn(newCheckIn);
+    if (newCheckIn) {
+      const inDate = new Date(newCheckIn);
+      const nextDay = new Date(inDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+      const nextDayStr = nextDay.toISOString().split('T')[0];
+      
+      // チェックアウト日が未設定、またはチェックイン日以前の場合は自動で翌日をセット
+      if (!checkOut || new Date(checkOut) <= inDate) {
+        setCheckOut(nextDayStr);
+      }
+    }
+  };
 
   // 計算: 宿泊日数
   const stayNights = useMemo(() => {
@@ -243,6 +265,19 @@ export default function BookingModal({
             /* Form State */
             <form onSubmit={handleSubmit} className="p-6 md:p-8 space-y-6">
               
+              {/* Check-in info banner */}
+              <div className="p-3 bg-blue-50/70 border border-blue-100 rounded-2xl flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-1.5 text-blue-900 font-medium">
+                  <Clock className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                  <span>チェックイン可能: <strong className="font-bold">{checkInWindow}</strong></span>
+                </div>
+                {sameDayCutoff && (
+                  <span className="px-2 py-0.5 rounded-md bg-white border border-blue-200 text-blue-700 font-bold text-[0.65rem]">
+                    {sameDayCutoff}
+                  </span>
+                )}
+              </div>
+
               {/* Dates with Night Badge */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -264,7 +299,7 @@ export default function BookingModal({
                       required
                       min={new Date().toISOString().split('T')[0]}
                       value={checkIn} 
-                      onChange={e => setCheckIn(e.target.value)}
+                      onChange={e => handleCheckInChange(e.target.value)}
                       className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3 text-sm text-slate-800 focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-100 outline-none transition-all font-mono"
                     />
                   </div>

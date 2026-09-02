@@ -6,9 +6,28 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { 
   ArrowLeft, Phone, Calendar, MapPin, Wifi, Coffee, Utensils, 
   Car, ShieldCheck, Star, ExternalLink, Sparkles, Check, Info, BedDouble, 
-  Award, Quote, ChevronRight, Image as ImageIcon, CheckCircle2, PhoneCall,
-  Clock, Share2, Heart
+  Award, Quote, ChevronRight, ChevronDown, ChevronUp, Image as ImageIcon, 
+  CheckCircle2, PhoneCall, Clock, Share2, Heart, MessageCircle, Mail, 
+  Navigation, Globe, QrCode
 } from 'lucide-react';
+
+function InstagramIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+      <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+    </svg>
+  );
+}
+
+function TwitterIcon({ className = 'w-5 h-5' }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+  );
+}
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import BookingModal from '@/components/BookingModal';
@@ -51,6 +70,12 @@ interface InnData {
   description: string;
   phone: string;
   address: string;
+  email?: string;
+  lineUrl?: string;
+  instagramUrl?: string;
+  instagramAccount?: string;
+  twitterUrl?: string;
+  websiteUrl?: string;
   priceRange?: string;
   priceNotice?: string;
   features: string[];
@@ -60,7 +85,10 @@ interface InnData {
   agentReview?: AgentReviewData;
   checkInTime?: string;
   checkOutTime?: string;
+  sameDayCutoff?: string;
   pickupInfo?: string;
+  enableCertificate?: boolean;
+  certificateMessage?: string;
 }
 
 // 青ヶ島アイランドロッジ等のデフォルト充実データ（DBに個別未登録時の高品質フォールバック）
@@ -73,17 +101,27 @@ const DEFAULT_FALLBACK_INN: InnData = {
   description: '青ヶ島集落の中心に位置し、港やヘリポートへの往復無料送迎も完備。主人が獲った新鮮な地魚や自家栽培の島野菜、青ヶ島名産の幻の焼酎「青酎」を楽しめる島旅人に大人気の宿です。全室Wi-Fi・エアコン・個別コンセント完備。',
   phone: '04996-9-0000',
   address: '東京都青ヶ島村 集落中央',
+  email: 'info@aogashima-lodge.jp',
+  lineUrl: 'https://line.me/R/ti/p/@kiratabi_sample',
+  instagramUrl: 'https://instagram.com/aogashima_island_lodge',
+  instagramAccount: '@aogashima_island_lodge',
+  twitterUrl: 'https://x.com/aogashima_lodge',
+  websiteUrl: 'https://aogashima-lodge.jp',
   priceRange: '¥11,000〜 / 1泊3食',
   priceNotice: '※天候による欠航や季節により変動する場合がございます。お電話またはWeb予約にてご確認ください。',
-  checkInTime: '15:00（到着便に合わせて柔軟対応）',
+  checkInTime: '15:00 〜 19:00（到着便に合わせて柔軟対応）',
   checkOutTime: '10:00（出発便に合わせて送迎）',
+  sameDayCutoff: '当日受付: 12:00まで',
   pickupInfo: 'ヘリポート・三宝港まで車で無料送迎（事前予約制）',
+  enableCertificate: true,
+  certificateMessage: '絶海の絶景島・青ヶ島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。',
   features: [
     '🚁 ヘリポート・三宝港からの往復無料送迎付き',
     '🍱 自家製青酎と獲れたて地魚の島料理夕食 ＋ 島散策用お弁当付き（1泊3食）',
     '📶 全室個別コンセント多数・高速Wi-Fi完備',
     '🌋 ひんぎゃの蒸気釜・絶景星空散策ガイドアドバイス',
     '🚲 島内散策用E-Bike（電動アシスト自転車）優先貸出',
+    '🏅 KIRATABI 公式提携宿「デジタル宿泊証明書」発行対象',
   ],
   plans: [
     { 
@@ -109,6 +147,22 @@ const DEFAULT_FALLBACK_INN: InnData = {
       desc: '自由なスケジュールで過ごしたい方向け。周辺商店まで徒歩3分。',
       badge: 'ビジネス・自由旅',
       features: ['高速Wi-Fi', 'デスク完備', '共用電子レンジ']
+    },
+    { 
+      id: 'plan-longstay',
+      name: '2泊3日 島時間ゆったり連泊割プラン（朝夕食付き）', 
+      price: '¥19,800〜 / 人', 
+      desc: '絶海の青ヶ島を余すことなく満喫するお得な連泊プラン。ひんぎゃサウナ巡りにも最適です。',
+      badge: '連泊お得',
+      features: ['毎朝夕食付き', 'ひんぎゃ地熱釜セット付き', '往復送迎無料']
+    },
+    { 
+      id: 'plan-fishing',
+      name: '釣果持ち込み調理歓迎！釣り人応援プラン（氷・クーラー保管無料）', 
+      price: '¥10,500〜 / 人', 
+      desc: '三宝港等で釣り上げた島魚を女将が夕食に特別調理！釣具洗い場や大型冷凍庫もご利用いただけます。',
+      badge: 'アクティビティ',
+      features: ['釣果持ち込み調理無料', '氷・冷凍保管無料', '朝食・夕食付き']
     },
   ],
   galleryImages: [
@@ -152,7 +206,9 @@ export default function DedicatedInnPage() {
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedPlanForModal, setSelectedPlanForModal] = useState<PlanItem | null>(null);
-  const [activeSection, setActiveSection] = useState<'features' | 'review' | 'plans' | 'amenities' | 'info'>('features');
+  const [activeSection, setActiveSection] = useState<'features' | 'review' | 'plans' | 'sns' | 'amenities' | 'info'>('features');
+  const [showAllPlans, setShowAllPlans] = useState(false);
+  const [showCertPreviewModal, setShowCertPreviewModal] = useState(false);
 
   // Supabaseから該当宿の実データをロード
   useEffect(() => {
@@ -164,7 +220,6 @@ export default function DedicatedInnPage() {
           return;
         }
 
-        // 1. UUID または ID で accommodations テーブルを検索
         const { data: accData, error } = await supabase
           .from('accommodations')
           .select('*')
@@ -173,7 +228,6 @@ export default function DedicatedInnPage() {
           .single();
 
         if (accData) {
-          // DBのデータをリッチなInnData型にマッピング
           const photos = [
             ...(accData.photo_exterior || []),
             ...(accData.photo_room || []),
@@ -191,6 +245,12 @@ export default function DedicatedInnPage() {
             description: accData.description || DEFAULT_FALLBACK_INN.description,
             phone: accData.phone_number || accData.phone || DEFAULT_FALLBACK_INN.phone,
             address: accData.address || DEFAULT_FALLBACK_INN.address,
+            email: accData.email || DEFAULT_FALLBACK_INN.email,
+            lineUrl: accData.line_url || DEFAULT_FALLBACK_INN.lineUrl,
+            instagramUrl: accData.instagram_url || DEFAULT_FALLBACK_INN.instagramUrl,
+            instagramAccount: accData.instagram_account || DEFAULT_FALLBACK_INN.instagramAccount,
+            twitterUrl: accData.twitter_url || DEFAULT_FALLBACK_INN.twitterUrl,
+            websiteUrl: accData.website_url || DEFAULT_FALLBACK_INN.websiteUrl,
             priceRange: accData.price_range || DEFAULT_FALLBACK_INN.priceRange,
             priceNotice: accData.deposit_policy || DEFAULT_FALLBACK_INN.priceNotice,
             features: accData.features && accData.features.length > 0 ? accData.features : DEFAULT_FALLBACK_INN.features,
@@ -200,12 +260,14 @@ export default function DedicatedInnPage() {
             agentReview: accData.agent_review || DEFAULT_FALLBACK_INN.agentReview,
             checkInTime: accData.check_in_time || DEFAULT_FALLBACK_INN.checkInTime,
             checkOutTime: accData.check_out_time || DEFAULT_FALLBACK_INN.checkOutTime,
-            pickupInfo: accData.has_pickup ? '無料送迎あり（事前予約制）' : DEFAULT_FALLBACK_INN.pickupInfo
+            sameDayCutoff: accData.same_day_cutoff || DEFAULT_FALLBACK_INN.sameDayCutoff,
+            pickupInfo: accData.has_pickup ? '無料送迎あり（事前予約制）' : DEFAULT_FALLBACK_INN.pickupInfo,
+            enableCertificate: accData.enable_certificate ?? DEFAULT_FALLBACK_INN.enableCertificate,
+            certificateMessage: accData.certificate_message || DEFAULT_FALLBACK_INN.certificateMessage
           };
 
           setInn(mappedInn);
         } else {
-          // DBにレコードがない場合はデフォルトの高品質サンプルを表示
           setInn(DEFAULT_FALLBACK_INN);
         }
       } catch (err) {
@@ -241,6 +303,12 @@ export default function DedicatedInnPage() {
       toast.success('URLをクリップボードにコピーしました！');
     }
   };
+
+  const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${inn.name} ${inn.address}`)}`;
+  const appleMapsUrl = `https://maps.apple.com/?q=${encodeURIComponent(`${inn.name} ${inn.address}`)}`;
+
+  // 表示するプラン（3件超える場合は折りたたみ）
+  const visiblePlans = showAllPlans ? inn.plans : inn.plans.slice(0, 3);
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans text-slate-800 relative">
@@ -292,7 +360,7 @@ export default function DedicatedInnPage() {
         <div className="bg-white rounded-3xl overflow-hidden shadow-sm border border-slate-200/80">
           
           {/* Main Large Photo Display */}
-          <div className="relative h-72 sm:h-96 md:h-[420px] w-full overflow-hidden bg-slate-900 group">
+          <div className="relative h-72 sm:h-96 md:h-[440px] w-full overflow-hidden bg-slate-900 group">
             <AnimatePresence mode="wait">
               <motion.img 
                 key={activeImageIndex}
@@ -331,6 +399,11 @@ export default function DedicatedInnPage() {
                     目安: {inn.priceRange}
                   </span>
                 )}
+                {inn.sameDayCutoff && (
+                  <span className="px-2.5 py-0.5 bg-blue-500/80 backdrop-blur-sm text-white font-mono text-[0.65rem] font-bold rounded-md">
+                    {inn.sameDayCutoff}
+                  </span>
+                )}
               </div>
 
               <h1 className="font-serif font-bold text-2xl sm:text-3xl md:text-4xl text-white drop-shadow-md tracking-wide">
@@ -367,8 +440,9 @@ export default function DedicatedInnPage() {
             { id: 'features', label: 'こだわり・魅力', icon: Sparkles },
             { id: 'review', label: '公式滞在記', icon: Award },
             { id: 'plans', label: '料金プラン', icon: BedDouble },
+            { id: 'sns', label: '公式SNS・島情報', icon: InstagramIcon },
             { id: 'amenities', label: '設備・アメニティ', icon: ShieldCheck },
-            { id: 'info', label: 'アクセス・基本情報', icon: MapPin },
+            { id: 'info', label: 'アクセス・地図', icon: MapPin },
           ].map(tab => (
             <button
               key={tab.id}
@@ -399,7 +473,7 @@ export default function DedicatedInnPage() {
             {/* 1. Features & Highlights Card */}
             <div id="features" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
               <div className="border-b border-slate-100 pb-4">
-                <span className="text-[0.65rem] font-bold tracking-widest text-amber-600 uppercase block mb-1">
+                <span className="text-[0.65rem] font-bold tracking-widest text-amber-600 uppercase block mb-1 font-mono">
                   HIGHLIGHTS & REASONS TO STAY
                 </span>
                 <h2 className="font-serif font-bold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
@@ -416,6 +490,31 @@ export default function DedicatedInnPage() {
                   </div>
                 ))}
               </div>
+
+              {/* 宿泊証明書（デジタル版）バナー */}
+              {inn.enableCertificate && (
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-500/15 via-yellow-500/10 to-amber-500/5 border border-amber-300/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-amber-500 text-slate-950 font-bold flex items-center justify-center text-lg shadow-sm">
+                      🏅
+                    </div>
+                    <div>
+                      <strong className="text-xs md:text-sm text-slate-900 block font-serif">
+                        公式提携宿「デジタル宿泊証明書」発行対象
+                      </strong>
+                      <p className="text-[0.7rem] text-slate-600">
+                        宿泊完了後、マイページにて公式認定のデジタル到達・宿泊パスを発行できます。
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowCertPreviewModal(true)}
+                    className="px-3.5 py-1.5 bg-white text-slate-800 border border-amber-300 hover:bg-amber-50 text-xs font-bold rounded-xl shadow-sm transition-colors whitespace-nowrap self-start sm:self-auto"
+                  >
+                    証明書サンプルを見る
+                  </button>
+                </div>
+              )}
 
               <div className="pt-4 border-t border-slate-100">
                 <h3 className="font-bold text-sm text-slate-900 mb-2">宿主からのご案内</h3>
@@ -436,7 +535,7 @@ export default function DedicatedInnPage() {
                         <Award className="w-6 h-6" />
                       </div>
                       <div>
-                        <span className="text-[0.65rem] font-bold text-amber-700 uppercase tracking-widest block">
+                        <span className="text-[0.65rem] font-bold text-amber-700 uppercase tracking-widest block font-mono">
                           VERIFIED STAY REPORT
                         </span>
                         <h2 className="font-serif font-bold text-slate-900 text-lg md:text-xl">
@@ -494,12 +593,12 @@ export default function DedicatedInnPage() {
               </div>
             )}
 
-            {/* 3. Plans & Pricing (宿泊プラン一覧) */}
+            {/* 3. Plans & Pricing (宿泊プラン一覧 & 折りたたみ / もっと見る) */}
             <div id="plans" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
               <div className="border-b border-slate-100 pb-4 flex items-center justify-between">
                 <div>
-                  <span className="text-[0.65rem] font-bold tracking-widest text-blue-600 uppercase block mb-1">
-                    ROOM & MEAL PLANS
+                  <span className="text-[0.65rem] font-bold tracking-widest text-blue-600 uppercase block mb-1 font-mono">
+                    ROOM & MEAL PLANS ({inn.plans.length} PLANS)
                   </span>
                   <h2 className="font-serif font-bold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
                     <BedDouble className="w-5 h-5 text-blue-500" />
@@ -509,9 +608,12 @@ export default function DedicatedInnPage() {
               </div>
 
               <div className="space-y-4">
-                {inn.plans.map((plan, idx) => (
-                  <div 
-                    key={idx} 
+                {visiblePlans.map((plan, idx) => (
+                  <motion.div 
+                    key={plan.id || idx}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
                     className="p-5 rounded-2xl bg-slate-50 hover:bg-blue-50/40 border border-slate-200 hover:border-blue-200 transition-all space-y-4 group"
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
@@ -559,9 +661,29 @@ export default function DedicatedInnPage() {
                         このプランで予約リクエスト
                       </button>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
+
+              {/* もっと見る / 折りたたみボタン (プランが3件より多い場合) */}
+              {inn.plans.length > 3 && (
+                <div className="text-center pt-2">
+                  <button
+                    onClick={() => setShowAllPlans(!showAllPlans)}
+                    className="px-6 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-2xl transition-all inline-flex items-center gap-1.5 shadow-sm"
+                  >
+                    {showAllPlans ? (
+                      <>
+                        <ChevronUp className="w-4 h-4" /> プラン一覧を折りたたむ
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="w-4 h-4" /> すべての宿泊プランを表示する（全{inn.plans.length}件）
+                      </>
+                    )}
+                  </button>
+                </div>
+              )}
 
               {inn.priceNotice && (
                 <p className="text-xs text-slate-500 font-serif bg-slate-50 p-3.5 rounded-xl border border-slate-100 flex items-start gap-2">
@@ -571,10 +693,131 @@ export default function DedicatedInnPage() {
               )}
             </div>
 
-            {/* 4. Amenities Checklist (アメニティ・設備) */}
+            {/* 4. 公式SNS ＆ インスタグラム情報カード */}
+            <div id="sns" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
+              <div className="border-b border-slate-100 pb-4">
+                <span className="text-[0.65rem] font-bold tracking-widest text-pink-600 uppercase block mb-1 font-mono">
+                  OFFICIAL SOCIAL MEDIA
+                </span>
+                <h2 className="font-serif font-bold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
+                  <InstagramIcon className="w-5 h-5 text-pink-500" />
+                  公式SNS ＆ 島の最新日常
+                </h2>
+              </div>
+
+              {/* Instagram Card */}
+              {inn.instagramUrl && (
+                <div className="p-5 rounded-2xl bg-gradient-to-br from-pink-50 via-purple-50/50 to-orange-50/30 border border-pink-200/80 space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 via-pink-500 to-purple-600 flex items-center justify-center text-white shadow-md">
+                        <InstagramIcon className="w-6 h-6" />
+                      </div>
+                      <div>
+                        <span className="text-[0.65rem] font-bold text-pink-600 uppercase tracking-wider block">
+                          INSTAGRAM OFFICIAL
+                        </span>
+                        <h4 className="font-bold text-slate-900 text-sm md:text-base">
+                          {inn.instagramAccount || `${inn.name} 公式`}
+                        </h4>
+                      </div>
+                    </div>
+
+                    <a
+                      href={inn.instagramUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all self-start sm:self-auto"
+                    >
+                      <span>インスタを見る</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  <p className="text-xs text-slate-600 font-serif leading-relaxed">
+                    本日の獲れたて地魚や天候・ヘリ就航状況、島野菜の収穫風景など、島のリアルタイムな日常をInstagramで発信中！
+                  </p>
+
+                  {/* Visual Instagram photo previews */}
+                  <div className="grid grid-cols-3 gap-2 pt-2">
+                    {inn.galleryImages.slice(1, 4).map((img, idx) => (
+                      <a
+                        key={idx}
+                        href={inn.instagramUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="h-24 sm:h-28 rounded-xl overflow-hidden border border-pink-100 group relative block"
+                      >
+                        <img src={img} alt="SNS写真" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                          <InstagramIcon className="w-5 h-5" />
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Other SNS Links Grid */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {inn.lineUrl && (
+                  <a
+                    href={inn.lineUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3.5 rounded-2xl bg-[#06C755]/10 hover:bg-[#06C755]/20 border border-[#06C755]/30 flex items-center gap-3 transition-colors group"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-[#06C755] flex items-center justify-center text-white shadow-sm">
+                      <MessageCircle className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <span className="text-[0.65rem] text-slate-500 block">LINE公式アカウント</span>
+                      <strong className="text-xs text-slate-900 group-hover:text-emerald-700">友だち追加 / 問い合わせ</strong>
+                    </div>
+                  </a>
+                )}
+
+                {inn.twitterUrl && (
+                  <a
+                    href={inn.twitterUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200 flex items-center gap-3 transition-colors group"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-black flex items-center justify-center text-white shadow-sm">
+                      <TwitterIcon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-[0.65rem] text-slate-500 block">公式 X (Twitter)</span>
+                      <strong className="text-xs text-slate-900 group-hover:text-slate-700">最新情報を見る</strong>
+                    </div>
+                  </a>
+                )}
+
+                {inn.websiteUrl && (
+                  <a
+                    href={inn.websiteUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="p-3.5 rounded-2xl bg-blue-50/70 hover:bg-blue-100/70 border border-blue-200/70 flex items-center gap-3 transition-colors group"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
+                      <Globe className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <span className="text-[0.65rem] text-slate-500 block">公式ホームページ</span>
+                      <strong className="text-xs text-slate-900 group-hover:text-blue-700">オフィシャルサイト</strong>
+                    </div>
+                  </a>
+                )}
+              </div>
+
+            </div>
+
+            {/* 5. Amenities Checklist (アメニティ・設備) */}
             <div id="amenities" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
               <div className="border-b border-slate-100 pb-4">
-                <span className="text-[0.65rem] font-bold tracking-widest text-emerald-600 uppercase block mb-1">
+                <span className="text-[0.65rem] font-bold tracking-widest text-emerald-600 uppercase block mb-1 font-mono">
                   FACILITIES & AMENITIES
                 </span>
                 <h2 className="font-serif font-bold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
@@ -593,37 +836,73 @@ export default function DedicatedInnPage() {
               </div>
             </div>
 
-            {/* 5. Basic Info & Access */}
+            {/* 6. Basic Info & Access & Maps */}
             <div id="info" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
-              <div className="border-b border-slate-100 pb-4">
-                <span className="text-[0.65rem] font-bold tracking-widest text-slate-500 uppercase block mb-1">
-                  ACCESS & INFORMATION
-                </span>
-                <h2 className="font-serif font-bold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
-                  <MapPin className="w-5 h-5 text-blue-500" />
-                  基本情報 ＆ アクセス
-                </h2>
+              <div className="border-b border-slate-100 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <span className="text-[0.65rem] font-bold tracking-widest text-slate-500 uppercase block mb-1 font-mono">
+                    ACCESS & MAP NAVIGATION
+                  </span>
+                  <h2 className="font-serif font-bold text-xl md:text-2xl text-slate-900 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-blue-500" />
+                    基本情報 ＆ マップナビ
+                  </h2>
+                </div>
+
+                {/* Map Navigation Buttons */}
+                <div className="flex items-center gap-2">
+                  <a
+                    href={googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                  >
+                    <Navigation className="w-3.5 h-3.5 text-blue-400" />
+                    <span>Googleマップで開く</span>
+                  </a>
+                </div>
               </div>
 
               <div className="space-y-3 text-xs md:text-sm">
                 <div className="flex flex-col sm:flex-row py-2.5 border-b border-slate-100">
-                  <span className="w-32 font-bold text-slate-500">所在地</span>
-                  <span className="text-slate-800">{inn.address}</span>
+                  <span className="w-36 font-bold text-slate-500">所在地</span>
+                  <div className="flex-1 flex flex-wrap items-center justify-between gap-2">
+                    <span className="text-slate-800 font-medium">{inn.address}</span>
+                    <a 
+                      href={googleMapsUrl} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline text-xs flex items-center gap-1"
+                    >
+                      <MapPin size={12} /> 地図を表示
+                    </a>
+                  </div>
                 </div>
+
                 <div className="flex flex-col sm:flex-row py-2.5 border-b border-slate-100">
-                  <span className="w-32 font-bold text-slate-500">チェックイン</span>
+                  <span className="w-36 font-bold text-slate-500">チェックイン時間</span>
                   <span className="text-slate-800">{inn.checkInTime}</span>
                 </div>
+
                 <div className="flex flex-col sm:flex-row py-2.5 border-b border-slate-100">
-                  <span className="w-32 font-bold text-slate-500">チェックアウト</span>
+                  <span className="w-36 font-bold text-slate-500">チェックアウト時間</span>
                   <span className="text-slate-800">{inn.checkOutTime}</span>
                 </div>
+
+                {inn.sameDayCutoff && (
+                  <div className="flex flex-col sm:flex-row py-2.5 border-b border-slate-100">
+                    <span className="w-36 font-bold text-slate-500">当日予約受付</span>
+                    <span className="text-blue-700 font-bold">{inn.sameDayCutoff}</span>
+                  </div>
+                )}
+
                 <div className="flex flex-col sm:flex-row py-2.5 border-b border-slate-100">
-                  <span className="w-32 font-bold text-slate-500">送迎サービス</span>
+                  <span className="w-36 font-bold text-slate-500">送迎サービス</span>
                   <span className="text-slate-800">{inn.pickupInfo}</span>
                 </div>
+
                 <div className="flex flex-col sm:flex-row py-2.5">
-                  <span className="w-32 font-bold text-slate-500">電話番号</span>
+                  <span className="w-36 font-bold text-slate-500">ご予約・問合せ電話</span>
                   <a href={`tel:${inn.phone}`} className="text-blue-600 font-mono font-bold hover:underline">
                     {inn.phone}
                   </a>
@@ -633,19 +912,19 @@ export default function DedicatedInnPage() {
 
           </div>
 
-          {/* Right Column: Sticky Direct Booking & Inquiry Action Card */}
+          {/* Right Column: Sticky Direct Booking & Multi-Contact Inquiry Card */}
           <div className="space-y-4">
-            <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-amber-950 p-6 rounded-3xl text-white border border-amber-500/40 shadow-2xl space-y-6 sticky top-28">
+            <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-amber-950 p-6 rounded-3xl text-white border border-amber-500/40 shadow-2xl space-y-5 sticky top-28">
               
               <div className="space-y-1">
                 <span className="text-[0.65rem] font-bold tracking-widest uppercase text-amber-400 block font-mono">
-                  DIRECT RESERVATION
+                  DIRECT RESERVATION & CONTACT
                 </span>
                 <h3 className="font-serif font-bold text-xl md:text-2xl text-white">
                   宿泊予約 ＆ 問い合わせ
                 </h3>
                 <p className="text-xs text-slate-300 font-serif leading-relaxed">
-                  離島の宿はお電話またはWebリクエストから直接予約が可能です。
+                  離島の宿はお電話・Webリクエスト・公式LINE等から直接コンタクトが可能です。
                 </p>
               </div>
 
@@ -664,12 +943,37 @@ export default function DedicatedInnPage() {
                 </span>
               </div>
 
+              {/* Primary Call Button */}
               <button
                 onClick={handleCall}
                 className="w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm tracking-wider flex items-center justify-center gap-2 transition-all border border-white/20 hover:scale-[1.01]"
               >
                 <Phone className="w-4 h-4 text-amber-300" /> お電話で直接問い合わせ
               </button>
+
+              {/* Multi Contact: LINE or Email */}
+              {(inn.lineUrl || inn.email) && (
+                <div className="grid grid-cols-2 gap-2 pt-1">
+                  {inn.lineUrl && (
+                    <a
+                      href={inn.lineUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="py-2.5 px-3 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                    >
+                      <MessageCircle className="w-4 h-4" /> LINEで聞く
+                    </a>
+                  )}
+                  {inn.email && (
+                    <a
+                      href={`mailto:${inn.email}?subject=${encodeURIComponent(`【宿泊のお問い合わせ】${inn.name}`)}`}
+                      className="py-2.5 px-3 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors border border-white/20"
+                    >
+                      <Mail className="w-4 h-4" /> メール送信
+                    </a>
+                  )}
+                </div>
+              )}
 
               <div className="relative flex items-center py-1">
                 <div className="flex-grow border-t border-white/10"></div>
@@ -692,9 +996,17 @@ export default function DedicatedInnPage() {
                 </button>
               </div>
 
+              {/* Google Maps quick link */}
               <div className="pt-2 text-center text-xs text-slate-400 flex items-center justify-center gap-1.5 font-serif">
-                <MapPin size={13} className="text-amber-400 shrink-0" />
-                <span className="line-clamp-1">{inn.address}</span>
+                <a 
+                  href={googleMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-amber-300 flex items-center gap-1 transition-colors"
+                >
+                  <Navigation size={12} className="text-amber-400 shrink-0" />
+                  <span className="line-clamp-1">{inn.address} (地図を開く)</span>
+                </a>
               </div>
 
             </div>
@@ -711,6 +1023,17 @@ export default function DedicatedInnPage() {
           <span className="font-mono font-bold text-amber-700 text-sm">{inn.priceRange || '料金はお問い合わせ'}</span>
         </div>
         <div className="flex items-center gap-2">
+          {inn.lineUrl && (
+            <a
+              href={inn.lineUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-3 bg-[#06C755] text-white rounded-2xl font-bold text-xs flex items-center justify-center shadow-sm"
+              title="LINEで問い合わせ"
+            >
+              <MessageCircle size={16} />
+            </a>
+          )}
           <button
             onClick={handleCall}
             className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold text-xs flex items-center justify-center transition-colors"
@@ -735,7 +1058,64 @@ export default function DedicatedInnPage() {
         innName={inn.name} 
         accommodationId={inn.id}
         selectedPlan={selectedPlanForModal}
+        checkInWindow={inn.checkInTime}
+        checkOutWindow={inn.checkOutTime}
+        sameDayCutoff={inn.sameDayCutoff}
       />
+
+      {/* Digital Stay Certificate Preview Modal */}
+      {showCertPreviewModal && (
+        <div className="fixed inset-0 bg-slate-950/70 backdrop-blur-md z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-amber-200 animate-in fade-in zoom-in-95 duration-200">
+            {/* Certificate Header */}
+            <div className="bg-gradient-to-r from-amber-600 via-yellow-500 to-amber-700 p-6 text-white text-center relative">
+              <button 
+                onClick={() => setShowCertPreviewModal(false)}
+                className="absolute top-4 right-4 p-1.5 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors"
+              >
+                ✕
+              </button>
+              <div className="w-14 h-14 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-2 text-2xl shadow-inner border border-white/30">
+                🏅
+              </div>
+              <span className="text-[0.65rem] tracking-widest uppercase font-mono text-amber-100 block">
+                KIRATABI OFFICIAL STAY PASS
+              </span>
+              <h3 className="font-serif font-bold text-xl text-white">
+                公式提携宿 宿泊証明書
+              </h3>
+            </div>
+
+            {/* Certificate Body */}
+            <div className="p-6 space-y-4 text-center">
+              <div className="p-4 bg-amber-50/60 rounded-2xl border border-amber-200/80 space-y-2">
+                <span className="text-[0.65rem] text-amber-800 font-bold uppercase tracking-wider block font-mono">
+                  ACCOMMODATION NAME
+                </span>
+                <h4 className="font-serif font-bold text-lg text-slate-900">
+                  {inn.name}
+                </h4>
+                <p className="text-xs text-slate-600 font-serif leading-relaxed">
+                  {inn.certificateMessage}
+                </p>
+              </div>
+
+              <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs text-slate-500 space-y-1">
+                <p>📍 所在地: {inn.address}</p>
+                <p>🛡️ 発行主体: KIRATABI 運営事務局 ＆ {inn.name}</p>
+              </div>
+
+              <button
+                onClick={() => setShowCertPreviewModal(false)}
+                className="w-full py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-colors"
+              >
+                閉じる
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </main>
   );
 }
