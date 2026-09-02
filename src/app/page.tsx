@@ -17,7 +17,7 @@ import { calculateDistanceKm } from '@/lib/geo';
 import { toast } from 'react-hot-toast';
 
 
-const ALL_ISLANDS_COUNT = 432;
+const ALL_ISLANDS_COUNT = 429;
 
 const getIslandIdFromLocation = (location: string) => {
   if (location.includes('西表')) return '396';

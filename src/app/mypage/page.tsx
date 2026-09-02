@@ -31,7 +31,7 @@ export default function MyPage() {
     }
   }, [user, router]);
 
-  const ALL_ISLANDS_COUNT = conquestTargetCount || 425;
+  const ALL_ISLANDS_COUNT = conquestTargetCount || 429;
   const progressPct = (totalVisited / ALL_ISLANDS_COUNT) * 100;
   const playerLvInfo = getPlayerLevelInfo(totalPoints || 0);
 
