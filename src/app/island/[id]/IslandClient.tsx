@@ -21,6 +21,7 @@ import BannerCarousel from '@/components/BannerCarousel';
 import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl, getJalanRentacarSearchUrl } from '@/data/islandFacilitiesData';
 import { getIslandCategoryType, FERRY_BOATS_DICTIONARY, ACTIVITIES_DICTIONARY, getIslandGuideArticle } from '@/data/islandCategoryData';
 import { trackFacilityEvent } from '@/lib/supabase';
+import NearbyIslands from '@/components/NearbyIslands';
 import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building } from 'lucide-react';
 
 interface IslandDiarySSR {
@@ -1481,6 +1482,9 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
             </div>
           )}
         </div>
+
+        {/* Nearby Islands Carousel (周辺の島々) */}
+        <NearbyIslands currentIsland={island} />
 
         {/* Island Diaries (島ログ) - SEOのために初期データを渡す */}
         <IslandDiaries islandId={islandId} islandName={island.name} initialDiaries={initialDiaries} />

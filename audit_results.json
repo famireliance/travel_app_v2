@@ -1,0 +1,3407 @@
+{
+  "notFound": [
+    {
+      "id": "277",
+      "name": "有川東神ノ島（新上五島）",
+      "region_id": "goto",
+      "coordinates": "32.9933, 129.1683"
+    }
+  ],
+  "misaligned": [
+    {
+      "id": "6",
+      "name": "かもめ島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "41.8683, 140.1183",
+      "apiCoords": {
+        "lat": 38.608519,
+        "lon": 141.5237751
+      },
+      "distKm": "381.58"
+    },
+    {
+      "id": "7",
+      "name": "厚岸小島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "42.9450, 144.8230",
+      "apiCoords": {
+        "lat": 42.9747012,
+        "lon": 144.879424
+      },
+      "distKm": "5.66"
+    },
+    {
+      "id": "8",
+      "name": "嶮暮帰島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "42.9667, 145.1333",
+      "apiCoords": {
+        "lat": 43.0491645,
+        "lon": 145.1044811
+      },
+      "distKm": "9.46"
+    },
+    {
+      "id": "15",
+      "name": "小島（松前町）",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "41.3600, 139.8100",
+      "apiCoords": {
+        "lat": 34.1255932,
+        "lon": 132.9793118
+      },
+      "distKm": "1003.17"
+    },
+    {
+      "id": "16",
+      "name": "弁天島（稚内市・宗谷岬）",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "45.5267, 141.9367",
+      "apiCoords": {
+        "lat": 34.689512,
+        "lon": 137.6033088
+      },
+      "distKm": "1259.62"
+    },
+    {
+      "id": "21",
+      "name": "椿島（岩手県陸前高田）",
+      "region_id": "pseudo_sanriku",
+      "coordinates": "38.9566, 141.7454",
+      "apiCoords": {
+        "lat": 38.9356668,
+        "lon": 141.7171474
+      },
+      "distKm": "3.37"
+    },
+    {
+      "id": "22",
+      "name": "青松島（岩手県）",
+      "region_id": "pseudo_sanriku",
+      "coordinates": "38.9610, 141.7516",
+      "apiCoords": {
+        "lat": 35.769705,
+        "lon": 139.5106311
+      },
+      "distKm": "406.34"
+    },
+    {
+      "id": "23",
+      "name": "権現島（岩手県山田町）",
+      "region_id": "pseudo_sanriku",
+      "coordinates": "39.4678, 141.9840",
+      "apiCoords": {
+        "lat": 35.4347927,
+        "lon": 132.638835
+      },
+      "distKm": "938.24"
+    },
+    {
+      "id": "25",
+      "name": "気仙沼大島",
+      "region_id": "pseudo_sanriku",
+      "coordinates": "38.8642, 141.6167",
+      "apiCoords": {
+        "lat": 35.9120382,
+        "lon": 139.6617765
+      },
+      "distKm": "370.90"
+    },
+    {
+      "id": "30",
+      "name": "野々島",
+      "region_id": "oshika",
+      "coordinates": "38.3375, 141.1108",
+      "apiCoords": {
+        "lat": 33.9424305,
+        "lon": 131.6937009
+      },
+      "distKm": "975.95"
+    },
+    {
+      "id": "33",
+      "name": "出島（宮城県女川町）",
+      "region_id": "oshika",
+      "coordinates": "38.4552, 141.5367",
+      "apiCoords": {
+        "lat": 32.7434177,
+        "lon": 129.872962
+      },
+      "distKm": "1229.56"
+    },
+    {
+      "id": "34",
+      "name": "江島（宮城県女川町）",
+      "region_id": "oshika",
+      "coordinates": "38.4011, 141.5947",
+      "apiCoords": {
+        "lat": 34.867991,
+        "lon": 137.4417271
+      },
+      "distKm": "539.93"
+    },
+    {
+      "id": "36",
+      "name": "大島（宮城県塩竈市）",
+      "region_id": "oshika",
+      "coordinates": "38.3312, 141.0825",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "1552.38"
+    },
+    {
+      "id": "41",
+      "name": "笹島（宮城県）",
+      "region_id": "oshika",
+      "coordinates": "38.3313, 141.0967",
+      "apiCoords": {
+        "lat": 34.1884885,
+        "lon": 132.7680963
+      },
+      "distKm": "876.85"
+    },
+    {
+      "id": "42",
+      "name": "波島（宮城県）",
+      "region_id": "oshika",
+      "coordinates": "38.3188, 141.1311",
+      "apiCoords": {
+        "lat": 34.1599391,
+        "lon": 133.0246168
+      },
+      "distKm": "861.11"
+    },
+    {
+      "id": "43",
+      "name": "吉田島（宮城県）",
+      "region_id": "oshika",
+      "coordinates": "38.3444, 141.1325",
+      "apiCoords": {
+        "lat": 35.3330526,
+        "lon": 139.1304946
+      },
+      "distKm": "379.27"
+    },
+    {
+      "id": "44",
+      "name": "長島（宮城県松島）",
+      "region_id": "oshika",
+      "coordinates": "38.3488, 141.1350",
+      "apiCoords": {
+        "lat": 32.159463,
+        "lon": 130.1601271
+      },
+      "distKm": "1209.67"
+    },
+    {
+      "id": "46",
+      "name": "根木島（宮城県）",
+      "region_id": "oshika",
+      "coordinates": "38.3422, 141.1421",
+      "apiCoords": {
+        "lat": 35.7781212,
+        "lon": 139.7915719
+      },
+      "distKm": "309.26"
+    },
+    {
+      "id": "47",
+      "name": "福貴島（宮城県）",
+      "region_id": "oshika",
+      "coordinates": "38.3400, 141.1083",
+      "apiCoords": {
+        "lat": 37.0298804,
+        "lon": 139.3941968
+      },
+      "distKm": "209.69"
+    },
+    {
+      "id": "49",
+      "name": "伊豆大島",
+      "region_id": "izu",
+      "coordinates": "33.7417, 139.3833",
+      "apiCoords": {
+        "lat": 34.738479,
+        "lon": 139.4023682
+      },
+      "distKm": "110.85"
+    },
+    {
+      "id": "50",
+      "name": "利島",
+      "region_id": "izu",
+      "coordinates": "33.5250, 139.2833",
+      "apiCoords": {
+        "lat": 34.5230122,
+        "lon": 139.2800339
+      },
+      "distKm": "110.97"
+    },
+    {
+      "id": "51",
+      "name": "新島",
+      "region_id": "izu",
+      "coordinates": "33.3667, 139.2667",
+      "apiCoords": {
+        "lat": 34.381297,
+        "lon": 139.2654475
+      },
+      "distKm": "112.82"
+    },
+    {
+      "id": "52",
+      "name": "式根島",
+      "region_id": "izu",
+      "coordinates": "33.3250, 139.2167",
+      "apiCoords": {
+        "lat": 34.3264269,
+        "lon": 139.213704
+      },
+      "distKm": "111.35"
+    },
+    {
+      "id": "53",
+      "name": "神津島",
+      "region_id": "izu",
+      "coordinates": "33.2083, 139.1333",
+      "apiCoords": {
+        "lat": 34.214225,
+        "lon": 139.1522742
+      },
+      "distKm": "111.87"
+    },
+    {
+      "id": "54",
+      "name": "三宅島",
+      "region_id": "izu",
+      "coordinates": "33.0833, 139.5250",
+      "apiCoords": {
+        "lat": 34.085378,
+        "lon": 139.5212773
+      },
+      "distKm": "111.43"
+    },
+    {
+      "id": "55",
+      "name": "御蔵島",
+      "region_id": "izu",
+      "coordinates": "32.8833, 139.5917",
+      "apiCoords": {
+        "lat": 33.8764255,
+        "lon": 139.6031029
+      },
+      "distKm": "110.44"
+    },
+    {
+      "id": "59",
+      "name": "早島（新島沖）",
+      "region_id": "izu",
+      "coordinates": "33.3617, 139.2983",
+      "apiCoords": {
+        "lat": 34.6023047,
+        "lon": 133.8335967
+      },
+      "distKm": "522.33"
+    },
+    {
+      "id": "60",
+      "name": "鵜渡根島",
+      "region_id": "izu",
+      "coordinates": "33.4833, 139.2833",
+      "apiCoords": {
+        "lat": 34.47406,
+        "lon": 139.2927888
+      },
+      "distKm": "110.17"
+    },
+    {
+      "id": "67",
+      "name": "舳島（小笠原）",
+      "region_id": "ogasawara",
+      "coordinates": "26.6333, 142.1467",
+      "apiCoords": {
+        "lat": 34.0208445,
+        "lon": 132.4123337
+      },
+      "distKm": "1242.86"
+    },
+    {
+      "id": "68",
+      "name": "向島（小笠原母島列島）",
+      "region_id": "ogasawara",
+      "coordinates": "26.6000, 142.1333",
+      "apiCoords": {
+        "lat": 34.3828144,
+        "lon": 133.1976678
+      },
+      "distKm": "1216.27"
+    },
+    {
+      "id": "76",
+      "name": "佐渡島",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "38.0167, 138.3667",
+      "apiCoords": {
+        "lat": 38.0673186,
+        "lon": 138.3514426
+      },
+      "distKm": "5.78"
+    },
+    {
+      "id": "80",
+      "name": "七ツ島（石川県）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "37.6000, 136.8833",
+      "apiCoords": {
+        "lat": 31.471907,
+        "lon": 130.5151761
+      },
+      "distKm": "896.48"
+    },
+    {
+      "id": "82",
+      "name": "弁天島（新潟県柏崎市）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "37.3683, 138.5367",
+      "apiCoords": {
+        "lat": 34.689512,
+        "lon": 137.6033088
+      },
+      "distKm": "309.46"
+    },
+    {
+      "id": "83",
+      "name": "荒島（福井県三国）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "36.2250, 136.1367",
+      "apiCoords": {
+        "lat": 35.4317491,
+        "lon": 133.2075178
+      },
+      "distKm": "278.40"
+    },
+    {
+      "id": "85",
+      "name": "水島（福井県敦賀市・北陸のハワイ）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "35.7067, 136.0350",
+      "apiCoords": {
+        "lat": 34.5291948,
+        "lon": 133.741293
+      },
+      "distKm": "246.29"
+    },
+    {
+      "id": "86",
+      "name": "竹島（福井県若狭町）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "35.5867, 135.8850",
+      "apiCoords": {
+        "lat": 30.809986,
+        "lon": 130.4290056
+      },
+      "distKm": "734.46"
+    },
+    {
+      "id": "92",
+      "name": "多景島（琵琶湖）",
+      "region_id": "pseudo_biwako",
+      "coordinates": "35.2967, 136.2150",
+      "apiCoords": {
+        "lat": 35.2965841,
+        "lon": 136.1779598
+      },
+      "distKm": "3.36"
+    },
+    {
+      "id": "93",
+      "name": "奥島（歴史的島嶼・現陸続き）",
+      "region_id": "pseudo_biwako",
+      "coordinates": "35.1617, 136.0883",
+      "apiCoords": {
+        "lat": 42.1523485,
+        "lon": 139.4670114
+      },
+      "distKm": "830.65"
+    },
+    {
+      "id": "98",
+      "name": "竹島（愛知県蒲郡市）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.8150, 137.2317",
+      "apiCoords": {
+        "lat": 30.809986,
+        "lon": 130.4290056
+      },
+      "distKm": "775.87"
+    },
+    {
+      "id": "99",
+      "name": "前島（愛知県南知多）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.7000, 136.9800",
+      "apiCoords": {
+        "lat": 32.802821,
+        "lon": 128.9343231
+      },
+      "distKm": "772.93"
+    },
+    {
+      "id": "100",
+      "name": "沖島（愛知県西尾市）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.7317, 137.0250",
+      "apiCoords": {
+        "lat": 35.2054407,
+        "lon": 136.0631332
+      },
+      "distKm": "102.26"
+    },
+    {
+      "id": "109",
+      "name": "大島（三重県紀北町）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.1867, 136.3317",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "926.93"
+    },
+    {
+      "id": "110",
+      "name": "頭島（三重県鳥羽市）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.4867, 136.8783",
+      "apiCoords": {
+        "lat": 34.7002915,
+        "lon": 134.2864791
+      },
+      "distKm": "238.42"
+    },
+    {
+      "id": "111",
+      "name": "浮島（三重県）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.3683, 136.8667",
+      "apiCoords": {
+        "lat": 33.9502255,
+        "lon": 132.3455437
+      },
+      "distKm": "418.55"
+    },
+    {
+      "id": "114",
+      "name": "淡路島",
+      "region_id": "pseudo_awaji",
+      "coordinates": "34.3417, 134.8250",
+      "apiCoords": {
+        "lat": 34.3989194,
+        "lon": 134.8325215
+      },
+      "distKm": "6.40"
+    },
+    {
+      "id": "120",
+      "name": "鞍掛島（兵庫県）",
+      "region_id": "ieshima",
+      "coordinates": "34.6133, 134.4817",
+      "apiCoords": {
+        "lat": 34.6853732,
+        "lon": 134.6393292
+      },
+      "distKm": "16.50"
+    },
+    {
+      "id": "121",
+      "name": "松島（兵庫県家島）",
+      "region_id": "ieshima",
+      "coordinates": "34.6217, 134.5050",
+      "apiCoords": {
+        "lat": 38.3670646,
+        "lon": 141.071251
+      },
+      "distKm": "719.38"
+    },
+    {
+      "id": "124",
+      "name": "中之島（和歌山県那智勝浦）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "33.6267, 135.9467",
+      "apiCoords": {
+        "lat": 34.6899097,
+        "lon": 135.4881046
+      },
+      "distKm": "125.53"
+    },
+    {
+      "id": "127",
+      "name": "弁天島（和歌山県）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "33.6233, 135.9483",
+      "apiCoords": {
+        "lat": 34.689512,
+        "lon": 137.6033088
+      },
+      "distKm": "192.99"
+    },
+    {
+      "id": "129",
+      "name": "藤島（和歌山県田辺市）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "33.7167, 135.3333",
+      "apiCoords": {
+        "lat": 38.7689066,
+        "lon": 139.8945165
+      },
+      "distKm": "694.70"
+    },
+    {
+      "id": "132",
+      "name": "鶴島（岡山県）",
+      "region_id": "kasaoka",
+      "coordinates": "34.7217, 134.2633",
+      "apiCoords": {
+        "lat": 35.6051615,
+        "lon": 133.0988853
+      },
+      "distKm": "144.41"
+    },
+    {
+      "id": "134",
+      "name": "前島（岡山県瀬戸内市牛窓）",
+      "region_id": "kasaoka",
+      "coordinates": "34.6067, 134.1817",
+      "apiCoords": {
+        "lat": 32.802821,
+        "lon": 128.9343231
+      },
+      "distKm": "525.12"
+    },
+    {
+      "id": "138",
+      "name": "高島（岡山県笠岡市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.4317, 133.5117",
+      "apiCoords": {
+        "lat": 35.4622243,
+        "lon": 139.6227788
+      },
+      "distKm": "568.55"
+    },
+    {
+      "id": "141",
+      "name": "六島（岡山県笠岡市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3017, 133.5317",
+      "apiCoords": {
+        "lat": 33.2238355,
+        "lon": 129.1351987
+      },
+      "distKm": "423.68"
+    },
+    {
+      "id": "153",
+      "name": "豊島（広島県呉市）",
+      "region_id": "kamijima",
+      "coordinates": "34.1750, 132.7850",
+      "apiCoords": {
+        "lat": 34.479641,
+        "lon": 134.0703417
+      },
+      "distKm": "122.79"
+    },
+    {
+      "id": "164",
+      "name": "猪子島（広島県大竹市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.1850, 132.3250",
+      "apiCoords": {
+        "lat": 34.9556775,
+        "lon": 139.7642976
+      },
+      "distKm": "686.36"
+    },
+    {
+      "id": "170",
+      "name": "情島（山口県・岩国）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.9667, 132.3333",
+      "apiCoords": {
+        "lat": 33.9600537,
+        "lon": 132.474188
+      },
+      "distKm": "13.01"
+    },
+    {
+      "id": "177",
+      "name": "平佐多島（山口県）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.9400, 132.2200",
+      "apiCoords": {
+        "lat": 31.3895699,
+        "lon": 130.8823432
+      },
+      "distKm": "310.00"
+    },
+    {
+      "id": "179",
+      "name": "前島（山口県周防大島）",
+      "region_id": "suo_oshima",
+      "coordinates": "34.0067, 132.2617",
+      "apiCoords": {
+        "lat": 32.802821,
+        "lon": 128.9343231
+      },
+      "distKm": "336.60"
+    },
+    {
+      "id": "180",
+      "name": "竹島（山口県）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.9683, 132.0667",
+      "apiCoords": {
+        "lat": 30.809986,
+        "lon": 130.4290056
+      },
+      "distKm": "383.36"
+    },
+    {
+      "id": "184",
+      "name": "大島（山口県萩市）",
+      "region_id": "hagi",
+      "coordinates": "34.5033, 131.4083",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "713.52"
+    },
+    {
+      "id": "185",
+      "name": "相島（山口県萩市）",
+      "region_id": "hagi",
+      "coordinates": "34.5067, 131.2850",
+      "apiCoords": {
+        "lat": 33.7610167,
+        "lon": 130.3682003
+      },
+      "distKm": "118.30"
+    },
+    {
+      "id": "186",
+      "name": "櫃島（山口県萩市）",
+      "region_id": "hagi",
+      "coordinates": "34.5167, 131.1567",
+      "apiCoords": {
+        "lat": 34.5180715,
+        "lon": 131.3880411
+      },
+      "distKm": "21.20"
+    },
+    {
+      "id": "187",
+      "name": "隠岐島前・西ノ島",
+      "region_id": "oki",
+      "coordinates": "36.1000, 133.0167",
+      "apiCoords": {
+        "lat": 31.9191856,
+        "lon": 131.424074
+      },
+      "distKm": "487.49"
+    },
+    {
+      "id": "188",
+      "name": "隠岐島前・中ノ島（海士町）",
+      "region_id": "oki",
+      "coordinates": "36.0833, 133.1000",
+      "apiCoords": {
+        "lat": 31.9191856,
+        "lon": 131.424074
+      },
+      "distKm": "488.10"
+    },
+    {
+      "id": "189",
+      "name": "隠岐島前・知夫里島",
+      "region_id": "oki",
+      "coordinates": "36.0167, 133.0333",
+      "apiCoords": {
+        "lat": 31.9191856,
+        "lon": 131.424074
+      },
+      "distKm": "479.16"
+    },
+    {
+      "id": "190",
+      "name": "隠岐島後（島根県隠岐の島町）",
+      "region_id": "oki",
+      "coordinates": "36.2333, 133.3167",
+      "apiCoords": {
+        "lat": 39.7545671,
+        "lon": 140.0687118
+      },
+      "distKm": "709.17"
+    },
+    {
+      "id": "193",
+      "name": "江島（島根県松江市）",
+      "region_id": "pseudo_san_in",
+      "coordinates": "35.5183, 133.1833",
+      "apiCoords": {
+        "lat": 34.867991,
+        "lon": 137.4417271
+      },
+      "distKm": "393.63"
+    },
+    {
+      "id": "197",
+      "name": "小豆島",
+      "region_id": "naoshima",
+      "coordinates": "34.5167, 134.2833",
+      "apiCoords": {
+        "lat": 34.489774,
+        "lon": 134.2603733
+      },
+      "distKm": "3.66"
+    },
+    {
+      "id": "200",
+      "name": "塩飽本島",
+      "region_id": "shiwaku",
+      "coordinates": "34.3833, 133.7833",
+      "apiCoords": {
+        "lat": 35.4715426,
+        "lon": 136.6750864
+      },
+      "distKm": "290.06"
+    },
+    {
+      "id": "201",
+      "name": "粟島（香川県）",
+      "region_id": "shiwaku",
+      "coordinates": "34.2717, 133.6333",
+      "apiCoords": {
+        "lat": 38.463664,
+        "lon": 139.2428792
+      },
+      "distKm": "684.97"
+    },
+    {
+      "id": "203",
+      "name": "屏風島（香川県）",
+      "region_id": "naoshima",
+      "coordinates": "34.4750, 133.9183",
+      "apiCoords": {
+        "lat": 34.4989109,
+        "lon": 133.9720648
+      },
+      "distKm": "5.60"
+    },
+    {
+      "id": "204",
+      "name": "向島（香川県丸亀市）",
+      "region_id": "shiwaku",
+      "coordinates": "34.3733, 133.7717",
+      "apiCoords": {
+        "lat": 34.3828144,
+        "lon": 133.1976678
+      },
+      "distKm": "52.69"
+    },
+    {
+      "id": "205",
+      "name": "沖之島（香川県小豆島沖）",
+      "region_id": "naoshima",
+      "coordinates": "34.4933, 134.2233",
+      "apiCoords": {
+        "lat": 32.6964428,
+        "lon": 129.7793363
+      },
+      "distKm": "457.48"
+    },
+    {
+      "id": "206",
+      "name": "余島（小豆島エンジェルロード先）",
+      "region_id": "naoshima",
+      "coordinates": "34.4783, 134.1883",
+      "apiCoords": {
+        "lat": 33.6213157,
+        "lon": 131.1265739
+      },
+      "distKm": "297.72"
+    },
+    {
+      "id": "207",
+      "name": "広島（香川県丸亀市）",
+      "region_id": "shiwaku",
+      "coordinates": "34.3667, 133.7083",
+      "apiCoords": {
+        "lat": 34.3970993,
+        "lon": 132.4758627
+      },
+      "distKm": "113.15"
+    },
+    {
+      "id": "210",
+      "name": "牛島（香川県丸亀市）",
+      "region_id": "shiwaku",
+      "coordinates": "34.3617, 133.7783",
+      "apiCoords": {
+        "lat": 33.8615777,
+        "lon": 132.0184701
+      },
+      "distKm": "171.29"
+    },
+    {
+      "id": "214",
+      "name": "伊吹島（香川県観音寺市）",
+      "region_id": "shiwaku",
+      "coordinates": "34.1033, 133.5350",
+      "apiCoords": {
+        "lat": 34.1303021,
+        "lon": 133.5355647
+      },
+      "distKm": "3.00"
+    },
+    {
+      "id": "215",
+      "name": "大島（愛媛県・しまなみ海道）",
+      "region_id": "kamijima",
+      "coordinates": "34.1417, 133.0667",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "735.25"
+    },
+    {
+      "id": "219",
+      "name": "中島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9717, 132.6167",
+      "apiCoords": {
+        "lat": 32.530868,
+        "lon": 130.4334697
+      },
+      "distKm": "258.61"
+    },
+    {
+      "id": "231",
+      "name": "釣島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9167, 132.6167",
+      "apiCoords": {
+        "lat": 33.8908384,
+        "lon": 132.6422286
+      },
+      "distKm": "3.72"
+    },
+    {
+      "id": "237",
+      "name": "大島（愛媛県八幡浜市）",
+      "region_id": "uwakai",
+      "coordinates": "33.5133, 132.3617",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "642.93"
+    },
+    {
+      "id": "238",
+      "name": "安居島（愛媛県松山市）",
+      "region_id": "kutsuna",
+      "coordinates": "34.0250, 132.7050",
+      "apiCoords": {
+        "lat": 34.0695966,
+        "lon": 132.7045323
+      },
+      "distKm": "4.96"
+    },
+    {
+      "id": "241",
+      "name": "戸島（宇和海）",
+      "region_id": "uwakai",
+      "coordinates": "33.2250, 132.3917",
+      "apiCoords": {
+        "lat": 33.2046485,
+        "lon": 132.3612964
+      },
+      "distKm": "3.62"
+    },
+    {
+      "id": "242",
+      "name": "竹ヶ島（愛媛県宇和島）",
+      "region_id": "uwakai",
+      "coordinates": "33.1617, 132.4333",
+      "apiCoords": {
+        "lat": 33.544361,
+        "lon": 134.3191567
+      },
+      "distKm": "180.25"
+    },
+    {
+      "id": "244",
+      "name": "大島（徳島県牟岐町）",
+      "region_id": "pseudo_tokushima",
+      "coordinates": "33.6367, 134.4850",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "764.48"
+    },
+    {
+      "id": "250",
+      "name": "戸島（高知県須崎市）",
+      "region_id": "pseudo_tosa",
+      "coordinates": "33.3933, 133.3067",
+      "apiCoords": {
+        "lat": 33.2046485,
+        "lon": 132.3612964
+      },
+      "distKm": "90.33"
+    },
+    {
+      "id": "251",
+      "name": "中ノ島（高知県須崎市）",
+      "region_id": "pseudo_tosa",
+      "coordinates": "33.3850, 133.3100",
+      "apiCoords": {
+        "lat": 36.0774475,
+        "lon": 133.0939211
+      },
+      "distKm": "300.04"
+    },
+    {
+      "id": "253",
+      "name": "海栗島（対馬北端沖）",
+      "region_id": "tsushima",
+      "coordinates": "34.6983, 129.4750",
+      "apiCoords": {
+        "lat": 34.7058335,
+        "lon": 129.4346344
+      },
+      "distKm": "3.78"
+    },
+    {
+      "id": "254",
+      "name": "泊島（対馬市美津島町）",
+      "region_id": "tsushima",
+      "coordinates": "34.3317, 129.3517",
+      "apiCoords": {
+        "lat": 34.3596101,
+        "lon": 129.403941
+      },
+      "distKm": "5.71"
+    },
+    {
+      "id": "255",
+      "name": "沖ノ島（対馬市美津島町）",
+      "region_id": "tsushima",
+      "coordinates": "34.3417, 129.3667",
+      "apiCoords": {
+        "lat": 34.2440216,
+        "lon": 130.1044577
+      },
+      "distKm": "68.64"
+    },
+    {
+      "id": "256",
+      "name": "赤島（長崎県対馬市美津島町）",
+      "region_id": "tsushima",
+      "coordinates": "34.3517, 129.3783",
+      "apiCoords": {
+        "lat": 32.595034,
+        "lon": 128.9207212
+      },
+      "distKm": "199.89"
+    },
+    {
+      "id": "257",
+      "name": "島山島（対馬市豊玉町）",
+      "region_id": "tsushima",
+      "coordinates": "34.3683, 129.2833",
+      "apiCoords": {
+        "lat": 32.6585125,
+        "lon": 128.6260659
+      },
+      "distKm": "199.64"
+    },
+    {
+      "id": "261",
+      "name": "長島（長崎県壱岐市郷ノ浦町）",
+      "region_id": "iki",
+      "coordinates": "33.7275, 129.6383",
+      "apiCoords": {
+        "lat": 32.159463,
+        "lon": 130.1601271
+      },
+      "distKm": "181.03"
+    },
+    {
+      "id": "262",
+      "name": "大島（長崎県壱岐市郷ノ浦町）",
+      "region_id": "iki",
+      "coordinates": "33.7367, 129.6183",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "602.69"
+    },
+    {
+      "id": "264",
+      "name": "五島列島・福江島",
+      "region_id": "goto",
+      "coordinates": "32.6950, 128.8417",
+      "apiCoords": {
+        "lat": 32.6558964,
+        "lon": 128.8069309
+      },
+      "distKm": "5.43"
+    },
+    {
+      "id": "265",
+      "name": "五島列島・中通島（新上五島）",
+      "region_id": "goto",
+      "coordinates": "32.9750, 129.0833",
+      "apiCoords": {
+        "lat": 32.6558964,
+        "lon": 128.8069309
+      },
+      "distKm": "43.89"
+    },
+    {
+      "id": "266",
+      "name": "五島列島・若松島",
+      "region_id": "goto",
+      "coordinates": "32.8917, 129.0250",
+      "apiCoords": {
+        "lat": 32.6558964,
+        "lon": 128.8069309
+      },
+      "distKm": "33.21"
+    },
+    {
+      "id": "267",
+      "name": "五島列島・奈留島",
+      "region_id": "goto",
+      "coordinates": "32.8333, 128.9333",
+      "apiCoords": {
+        "lat": 32.6558964,
+        "lon": 128.8069309
+      },
+      "distKm": "23.00"
+    },
+    {
+      "id": "268",
+      "name": "五島列島・久賀島",
+      "region_id": "goto",
+      "coordinates": "32.8000, 128.8667",
+      "apiCoords": {
+        "lat": 32.6558964,
+        "lon": 128.8069309
+      },
+      "distKm": "16.97"
+    },
+    {
+      "id": "269",
+      "name": "五島列島・小値賀島",
+      "region_id": "goto",
+      "coordinates": "33.1933, 129.0633",
+      "apiCoords": {
+        "lat": 32.6558964,
+        "lon": 128.8069309
+      },
+      "distKm": "64.37"
+    },
+    {
+      "id": "270",
+      "name": "五島列島・野崎島",
+      "region_id": "goto",
+      "coordinates": "33.1833, 129.1333",
+      "apiCoords": {
+        "lat": 32.6558964,
+        "lon": 128.8069309
+      },
+      "distKm": "66.08"
+    },
+    {
+      "id": "275",
+      "name": "蕨小島（五島市）",
+      "region_id": "goto",
+      "coordinates": "32.7833, 128.8417",
+      "apiCoords": {
+        "lat": 32.8280865,
+        "lon": 128.8938475
+      },
+      "distKm": "6.97"
+    },
+    {
+      "id": "276",
+      "name": "島山島（五島市玉之浦）",
+      "region_id": "goto",
+      "coordinates": "32.6283, 128.6083",
+      "apiCoords": {
+        "lat": 32.6585125,
+        "lon": 128.6260659
+      },
+      "distKm": "3.75"
+    },
+    {
+      "id": "278",
+      "name": "串島（新上五島町）",
+      "region_id": "goto",
+      "coordinates": "32.9667, 129.0417",
+      "apiCoords": {
+        "lat": 32.954809,
+        "lon": 128.9867985
+      },
+      "distKm": "5.29"
+    },
+    {
+      "id": "279",
+      "name": "平戸島",
+      "region_id": "hirado",
+      "coordinates": "33.3500, 129.5333",
+      "apiCoords": {
+        "lat": 33.289114,
+        "lon": 129.4679048
+      },
+      "distKm": "9.10"
+    },
+    {
+      "id": "283",
+      "name": "鷹島（長崎県松浦市）",
+      "region_id": "hirado",
+      "coordinates": "33.4333, 129.7500",
+      "apiCoords": {
+        "lat": 33.5587288,
+        "lon": 129.9031612
+      },
+      "distKm": "19.91"
+    },
+    {
+      "id": "284",
+      "name": "福島（長崎県松浦市）",
+      "region_id": "hirado",
+      "coordinates": "33.3750, 129.8250",
+      "apiCoords": {
+        "lat": 37.75454,
+        "lon": 140.4592144
+      },
+      "distKm": "1077.19"
+    },
+    {
+      "id": "285",
+      "name": "飛島（長崎県松浦市鷹島沖）",
+      "region_id": "hirado",
+      "coordinates": "33.4683, 129.7850",
+      "apiCoords": {
+        "lat": 39.1950432,
+        "lon": 139.5497673
+      },
+      "distKm": "1080.88"
+    },
+    {
+      "id": "286",
+      "name": "青島（長崎県松浦市）",
+      "region_id": "hirado",
+      "coordinates": "33.4125, 129.7383",
+      "apiCoords": {
+        "lat": 33.7358713,
+        "lon": 132.4815144
+      },
+      "distKm": "256.67"
+    },
+    {
+      "id": "288",
+      "name": "九十九島・黒島（佐世保市）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "33.1417, 129.5883",
+      "apiCoords": {
+        "lat": 33.1414245,
+        "lon": 129.5334635
+      },
+      "distKm": "5.11"
+    },
+    {
+      "id": "289",
+      "name": "高島（佐世保市九十九島）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "33.1817, 129.6150",
+      "apiCoords": {
+        "lat": 35.4622243,
+        "lon": 139.6227788
+      },
+      "distKm": "952.90"
+    },
+    {
+      "id": "291",
+      "name": "高島（長崎市・世界遺産）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "32.6617, 129.7567",
+      "apiCoords": {
+        "lat": 35.4622243,
+        "lon": 139.6227788
+      },
+      "distKm": "960.17"
+    },
+    {
+      "id": "293",
+      "name": "大島（長崎県西海市）",
+      "region_id": "goto",
+      "coordinates": "33.0417, 129.6183",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "525.47"
+    },
+    {
+      "id": "295",
+      "name": "江島（長崎県西海市）",
+      "region_id": "goto",
+      "coordinates": "33.0117, 129.3467",
+      "apiCoords": {
+        "lat": 34.867991,
+        "lon": 137.4417271
+      },
+      "distKm": "774.51"
+    },
+    {
+      "id": "296",
+      "name": "平島（長崎県西海市）",
+      "region_id": "goto",
+      "coordinates": "32.9967, 129.2883",
+      "apiCoords": {
+        "lat": 29.6866346,
+        "lon": 129.5324973
+      },
+      "distKm": "368.79"
+    },
+    {
+      "id": "297",
+      "name": "松島（長崎県西海市）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "32.9367, 129.6150",
+      "apiCoords": {
+        "lat": 38.3670646,
+        "lon": 141.071251
+      },
+      "distKm": "1197.01"
+    },
+    {
+      "id": "298",
+      "name": "針尾島（長崎県佐世保市）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "33.0617, 129.7567",
+      "apiCoords": {
+        "lat": 33.096802,
+        "lon": 129.7481421
+      },
+      "distKm": "3.98"
+    },
+    {
+      "id": "302",
+      "name": "大島（福岡県宗像市）",
+      "region_id": "genkai",
+      "coordinates": "33.8983, 130.4283",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "628.00"
+    },
+    {
+      "id": "307",
+      "name": "馬島（北九州市小倉北区）",
+      "region_id": "genkai",
+      "coordinates": "33.9850, 130.8250",
+      "apiCoords": {
+        "lat": 34.1176569,
+        "lon": 132.9929296
+      },
+      "distKm": "200.27"
+    },
+    {
+      "id": "311",
+      "name": "馬渡島",
+      "region_id": "genkai",
+      "coordinates": "33.5417, 129.8083",
+      "apiCoords": {
+        "lat": 33.5728861,
+        "lon": 129.7566983
+      },
+      "distKm": "5.91"
+    },
+    {
+      "id": "313",
+      "name": "高島（佐賀県唐津市宝くじの島）",
+      "region_id": "genkai",
+      "coordinates": "33.5017, 130.0017",
+      "apiCoords": {
+        "lat": 35.4622243,
+        "lon": 139.6227788
+      },
+      "distKm": "907.98"
+    },
+    {
+      "id": "316",
+      "name": "大島（大分県佐伯市）",
+      "region_id": "bungo",
+      "coordinates": "32.9617, 132.0633",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "575.68"
+    },
+    {
+      "id": "317",
+      "name": "深島（大分県佐伯市・猫島）",
+      "region_id": "bungo",
+      "coordinates": "32.7217, 132.0917",
+      "apiCoords": {
+        "lat": 32.7207494,
+        "lon": 131.9263484
+      },
+      "distKm": "15.47"
+    },
+    {
+      "id": "318",
+      "name": "屋形島（大分県佐伯市）",
+      "region_id": "bungo",
+      "coordinates": "32.7783, 131.9867",
+      "apiCoords": {
+        "lat": 32.7741377,
+        "lon": 131.9176492
+      },
+      "distKm": "6.47"
+    },
+    {
+      "id": "319",
+      "name": "島野浦島（日向灘）",
+      "region_id": "minami_naka",
+      "coordinates": "32.6683, 131.7850",
+      "apiCoords": {
+        "lat": 37.8994907,
+        "lon": 138.9970346
+      },
+      "distKm": "875.19"
+    },
+    {
+      "id": "320",
+      "name": "築島（宮崎県串間市）",
+      "region_id": "minami_naka",
+      "coordinates": "31.4583, 131.3367",
+      "apiCoords": {
+        "lat": 31.4764928,
+        "lon": 131.3899779
+      },
+      "distKm": "5.44"
+    },
+    {
+      "id": "321",
+      "name": "乙島（宮崎県門川町）",
+      "region_id": "minami_naka",
+      "coordinates": "32.4783, 131.6917",
+      "apiCoords": {
+        "lat": 35.6061908,
+        "lon": 133.0966966
+      },
+      "distKm": "371.10"
+    },
+    {
+      "id": "322",
+      "name": "天草下島",
+      "region_id": "amakusa",
+      "coordinates": "32.4000, 130.1333",
+      "apiCoords": {
+        "lat": 32.369978,
+        "lon": 130.1034251
+      },
+      "distKm": "4.36"
+    },
+    {
+      "id": "323",
+      "name": "天草上島",
+      "region_id": "amakusa",
+      "coordinates": "32.5167, 130.3833",
+      "apiCoords": {
+        "lat": 31.6031629,
+        "lon": 130.5472001
+      },
+      "distKm": "102.75"
+    },
+    {
+      "id": "326",
+      "name": "湯島（熊本県上天草市・猫島）",
+      "region_id": "amakusa",
+      "coordinates": "32.6017, 130.3667",
+      "apiCoords": {
+        "lat": 35.7073938,
+        "lon": 139.7678135
+      },
+      "distKm": "930.92"
+    },
+    {
+      "id": "328",
+      "name": "戸馳島（宇城市）",
+      "region_id": "amakusa",
+      "coordinates": "32.6167, 130.4667",
+      "apiCoords": {
+        "lat": 34.4717778,
+        "lon": 133.3032932
+      },
+      "distKm": "334.13"
+    },
+    {
+      "id": "329",
+      "name": "樋島（上天草市）",
+      "region_id": "amakusa",
+      "coordinates": "32.4167, 130.4333",
+      "apiCoords": {
+        "lat": 32.383296,
+        "lon": 130.4169245
+      },
+      "distKm": "4.02"
+    },
+    {
+      "id": "331",
+      "name": "牧島（熊本県御所浦）",
+      "region_id": "amakusa",
+      "coordinates": "32.3167, 130.3567",
+      "apiCoords": {
+        "lat": 32.3537575,
+        "lon": 130.3191308
+      },
+      "distKm": "5.43"
+    },
+    {
+      "id": "335",
+      "name": "諸浦島（長島町）",
+      "region_id": "pseudo_nagashima",
+      "coordinates": "32.2350, 130.1417",
+      "apiCoords": {
+        "lat": 32.24746,
+        "lon": 130.1717635
+      },
+      "distKm": "3.15"
+    },
+    {
+      "id": "336",
+      "name": "甑島・上甑島",
+      "region_id": "koshiki",
+      "coordinates": "31.8667, 129.8833",
+      "apiCoords": {
+        "lat": 34.290932,
+        "lon": 133.1594046
+      },
+      "distKm": "407.18"
+    },
+    {
+      "id": "337",
+      "name": "甑島・中甑島",
+      "region_id": "koshiki",
+      "coordinates": "31.8167, 129.8500",
+      "apiCoords": {
+        "lat": 34.290932,
+        "lon": 133.1594046
+      },
+      "distKm": "413.26"
+    },
+    {
+      "id": "338",
+      "name": "甑島・下甑島",
+      "region_id": "koshiki",
+      "coordinates": "31.6833, 129.7333",
+      "apiCoords": {
+        "lat": 34.290932,
+        "lon": 133.1594046
+      },
+      "distKm": "431.44"
+    },
+    {
+      "id": "339",
+      "name": "種子島",
+      "region_id": "osumi",
+      "coordinates": "30.5667, 130.9833",
+      "apiCoords": {
+        "lat": 30.591848,
+        "lon": 130.9958948
+      },
+      "distKm": "3.05"
+    },
+    {
+      "id": "343",
+      "name": "硫黄島（鹿児島県薩摩硫黄島）",
+      "region_id": "pseudo_satsuma",
+      "coordinates": "30.7917, 130.3067",
+      "apiCoords": {
+        "lat": 24.7803301,
+        "lon": 141.3205867
+      },
+      "distKm": "1271.99"
+    },
+    {
+      "id": "344",
+      "name": "黒島（鹿児島県三島村）",
+      "region_id": "osumi",
+      "coordinates": "30.8383, 129.9333",
+      "apiCoords": {
+        "lat": 32.600454,
+        "lon": 128.8339236
+      },
+      "distKm": "221.82"
+    },
+    {
+      "id": "346",
+      "name": "中之島（トカラ列島）",
+      "region_id": "tokara",
+      "coordinates": "29.8333, 129.8667",
+      "apiCoords": {
+        "lat": 34.6899097,
+        "lon": 135.4881046
+      },
+      "distKm": "755.37"
+    },
+    {
+      "id": "350",
+      "name": "小宝島（トカラ列島）",
+      "region_id": "tokara",
+      "coordinates": "29.1967, 129.1300",
+      "apiCoords": {
+        "lat": 29.223488,
+        "lon": 129.3248396
+      },
+      "distKm": "19.14"
+    },
+    {
+      "id": "352",
+      "name": "奄美大島",
+      "region_id": "amami",
+      "coordinates": "28.3833, 129.4833",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "11.01"
+    },
+    {
+      "id": "353",
+      "name": "加計呂麻島",
+      "region_id": "amami",
+      "coordinates": "28.1250, 129.2983",
+      "apiCoords": {
+        "lat": 28.131697,
+        "lon": 129.2326088
+      },
+      "distKm": "6.48"
+    },
+    {
+      "id": "357",
+      "name": "徳之島",
+      "region_id": "amami",
+      "coordinates": "27.7500, 128.9667",
+      "apiCoords": {
+        "lat": 27.7775025,
+        "lon": 128.9580709
+      },
+      "distKm": "3.17"
+    },
+    {
+      "id": "360",
+      "name": "沖縄本島",
+      "region_id": "okinawa_main",
+      "coordinates": "26.5000, 127.9667",
+      "apiCoords": {
+        "lat": 26.4749889,
+        "lon": 127.9115291
+      },
+      "distKm": "6.15"
+    },
+    {
+      "id": "376",
+      "name": "慶良間諸島・座間味島",
+      "region_id": "kerama",
+      "coordinates": "26.2267, 127.3033",
+      "apiCoords": {
+        "lat": 36.4289917,
+        "lon": 120.0668031
+      },
+      "distKm": "1325.37"
+    },
+    {
+      "id": "377",
+      "name": "慶良間諸島・阿嘉島",
+      "region_id": "kerama",
+      "coordinates": "26.1967, 127.2800",
+      "apiCoords": {
+        "lat": 36.4289917,
+        "lon": 120.0668031
+      },
+      "distKm": "1327.14"
+    },
+    {
+      "id": "378",
+      "name": "慶良間諸島・渡嘉敷島",
+      "region_id": "kerama",
+      "coordinates": "26.1917, 127.3583",
+      "apiCoords": {
+        "lat": 36.4289917,
+        "lon": 120.0668031
+      },
+      "distKm": "1331.45"
+    },
+    {
+      "id": "381",
+      "name": "奥武島（久米島）",
+      "region_id": "kume",
+      "coordinates": "26.3417, 126.8317",
+      "apiCoords": {
+        "lat": 26.1297064,
+        "lon": 127.7734784
+      },
+      "distKm": "96.85"
+    },
+    {
+      "id": "392",
+      "name": "石垣島",
+      "region_id": "yaeyama",
+      "coordinates": "24.4167, 124.2333",
+      "apiCoords": {
+        "lat": 24.4710165,
+        "lon": 124.2385061
+      },
+      "distKm": "6.06"
+    },
+    {
+      "id": "395",
+      "name": "黒島（八重山・ハートアイランド）",
+      "region_id": "yaeyama",
+      "coordinates": "24.2400, 124.0133",
+      "apiCoords": {
+        "lat": 32.600454,
+        "lon": 128.8339236
+      },
+      "distKm": "1041.97"
+    },
+    {
+      "id": "397",
+      "name": "由布島（水牛車で渡る島）",
+      "region_id": "yaeyama",
+      "coordinates": "24.3150, 123.9350",
+      "apiCoords": {
+        "lat": 24.3443145,
+        "lon": 123.9354075
+      },
+      "distKm": "3.26"
+    },
+    {
+      "id": "402",
+      "name": "沖島（愛知県）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.7317, 137.0250",
+      "apiCoords": {
+        "lat": 35.2054407,
+        "lon": 136.0631332
+      },
+      "distKm": "102.26"
+    },
+    {
+      "id": "404",
+      "name": "飛島（岡山県備前市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.6917, 134.2750",
+      "apiCoords": {
+        "lat": 39.1950432,
+        "lon": 139.5497673
+      },
+      "distKm": "685.66"
+    },
+    {
+      "id": "405",
+      "name": "黄島（岡山県瀬戸内市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.5917, 134.1950",
+      "apiCoords": {
+        "lat": 32.5664035,
+        "lon": 128.8996266
+      },
+      "distKm": "539.68"
+    },
+    {
+      "id": "406",
+      "name": "大島（香川県高松市）",
+      "region_id": "naoshima",
+      "coordinates": "34.4067, 134.1067",
+      "apiCoords": {
+        "lat": 28.3198743,
+        "lon": 129.3968408
+      },
+      "distKm": "810.95"
+    },
+    {
+      "id": "408",
+      "name": "新谷島（愛媛県・忽那）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9517, 132.6150",
+      "apiCoords": {
+        "lat": 37.9859743,
+        "lon": 139.3156682
+      },
+      "distKm": "751.22"
+    },
+    {
+      "id": "411",
+      "name": "高島（徳島県鳴門市）",
+      "region_id": "pseudo_tokushima",
+      "coordinates": "34.2167, 134.6167",
+      "apiCoords": {
+        "lat": 35.4622243,
+        "lon": 139.6227788
+      },
+      "distKm": "477.34"
+    },
+    {
+      "id": "413",
+      "name": "玄界島沖小島（福岡）",
+      "region_id": "genkai",
+      "coordinates": "33.6950, 130.2450",
+      "apiCoords": {
+        "lat": 30.4070676,
+        "lon": 120.1354136
+      },
+      "distKm": "1019.93"
+    },
+    {
+      "id": "414",
+      "name": "向島（佐賀県唐津市）",
+      "region_id": "genkai",
+      "coordinates": "33.5167, 129.8450",
+      "apiCoords": {
+        "lat": 34.3828144,
+        "lon": 133.1976678
+      },
+      "distKm": "323.88"
+    },
+    {
+      "id": "416",
+      "name": "寺島（長崎県五島市）",
+      "region_id": "goto",
+      "coordinates": "33.0833, 129.0167",
+      "apiCoords": {
+        "lat": 33.2537494,
+        "lon": 129.0699876
+      },
+      "distKm": "19.59"
+    },
+    {
+      "id": "417",
+      "name": "六島（長崎県五島市）",
+      "region_id": "goto",
+      "coordinates": "33.1000, 128.9833",
+      "apiCoords": {
+        "lat": 33.2238355,
+        "lon": 129.1351987
+      },
+      "distKm": "19.74"
+    },
+    {
+      "id": "418",
+      "name": "桐木島（新上五島町）",
+      "region_id": "goto",
+      "coordinates": "32.9517, 129.0317",
+      "apiCoords": {
+        "lat": 34.6656393,
+        "lon": 135.4324527
+      },
+      "distKm": "621.19"
+    },
+    {
+      "id": "419",
+      "name": "折島（新上五島町）",
+      "region_id": "goto",
+      "coordinates": "32.9350, 129.0183",
+      "apiCoords": {
+        "lat": 32.988767,
+        "lon": 129.0240577
+      },
+      "distKm": "6.00"
+    },
+    {
+      "id": "420",
+      "name": "黒島（長崎県松浦市）",
+      "region_id": "hirado",
+      "coordinates": "33.3917, 129.7850",
+      "apiCoords": {
+        "lat": 32.600454,
+        "lon": 128.8339236
+      },
+      "distKm": "124.93"
+    },
+    {
+      "id": "421",
+      "name": "箕島（長崎県大村市）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "32.9167, 129.9167",
+      "apiCoords": {
+        "lat": 34.0861023,
+        "lon": 135.1246277
+      },
+      "distKm": "500.02"
+    },
+    {
+      "id": "422",
+      "name": "前島（長崎県時津町）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "32.8333, 129.8500",
+      "apiCoords": {
+        "lat": 32.802821,
+        "lon": 128.9343231
+      },
+      "distKm": "85.63"
+    },
+    {
+      "id": "423",
+      "name": "鹿島（長崎県佐世保）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "33.1617, 129.6850",
+      "apiCoords": {
+        "lat": 34.0603316,
+        "lon": 132.5324548
+      },
+      "distKm": "281.97"
+    },
+    {
+      "id": "424",
+      "name": "黒島（大分県臼杵市）",
+      "region_id": "bungo",
+      "coordinates": "33.1500, 131.8333",
+      "apiCoords": {
+        "lat": 32.600454,
+        "lon": 128.8339236
+      },
+      "distKm": "286.68"
+    },
+    {
+      "id": "425",
+      "name": "青島（宮崎県宮崎市）",
+      "region_id": "minami_naka",
+      "coordinates": "31.8050, 131.4750",
+      "apiCoords": {
+        "lat": 33.7358713,
+        "lon": 132.4815144
+      },
+      "distKm": "234.42"
+    },
+    {
+      "id": "427",
+      "name": "竹ヶ島（和歌山県那智勝浦）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "33.6167, 135.9417",
+      "apiCoords": {
+        "lat": 33.544361,
+        "lon": 134.3191567
+      },
+      "distKm": "150.52"
+    },
+    {
+      "id": "429",
+      "name": "三ツ島（小島群）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.4967, 136.8617",
+      "apiCoords": {
+        "lat": 32.5359327,
+        "lon": 130.5276632
+      },
+      "distKm": "626.23"
+    },
+    {
+      "id": "430",
+      "name": "横島（広島県福山市鞆の浦）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3417, 133.3283",
+      "apiCoords": {
+        "lat": 32.3730505,
+        "lon": 130.2324497
+      },
+      "distKm": "361.34"
+    },
+    {
+      "id": "431",
+      "name": "弁天島（長崎県壱岐市）",
+      "region_id": "iki",
+      "coordinates": "33.8017, 129.6817",
+      "apiCoords": {
+        "lat": 34.689512,
+        "lon": 137.6033088
+      },
+      "distKm": "734.60"
+    },
+    {
+      "id": "432",
+      "name": "水納島",
+      "region_id": "okinawa",
+      "coordinates": "24.752, 124.697",
+      "apiCoords": {
+        "lat": 26.6476712,
+        "lon": 127.8179109
+      },
+      "distKm": "377.09"
+    }
+  ],
+  "ok": [
+    {
+      "id": "1",
+      "name": "礼文島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "45.3583, 141.0367"
+    },
+    {
+      "id": "2",
+      "name": "利尻島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "45.1833, 141.2333"
+    },
+    {
+      "id": "3",
+      "name": "天売島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "44.4333, 141.3167"
+    },
+    {
+      "id": "4",
+      "name": "焼尻島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "44.4333, 141.4167"
+    },
+    {
+      "id": "5",
+      "name": "奥尻島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "42.1667, 139.4667"
+    },
+    {
+      "id": "9",
+      "name": "渡島大島（松前大島）",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "41.5167, 139.3667"
+    },
+    {
+      "id": "10",
+      "name": "渡島小島（松前小島）",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "41.3583, 139.8083"
+    },
+    {
+      "id": "11",
+      "name": "ユルリ島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "43.2100, 145.5883"
+    },
+    {
+      "id": "12",
+      "name": "モユルリ島",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "43.2250, 145.5967"
+    },
+    {
+      "id": "13",
+      "name": "大黒島（厚岸町）",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "42.9567, 144.8633"
+    },
+    {
+      "id": "14",
+      "name": "霧多布島（湯沸島）",
+      "region_id": "pseudo_hokkaido",
+      "coordinates": "43.0667, 145.1500"
+    },
+    {
+      "id": "17",
+      "name": "飛島（山形県）",
+      "region_id": "pseudo_sanriku",
+      "coordinates": "39.1983, 139.5511"
+    },
+    {
+      "id": "18",
+      "name": "蕪島（青森県）",
+      "region_id": "pseudo_sanriku",
+      "coordinates": "40.5391, 141.5586"
+    },
+    {
+      "id": "26",
+      "name": "網地島",
+      "region_id": "oshika",
+      "coordinates": "38.2678, 141.4872"
+    },
+    {
+      "id": "27",
+      "name": "田代島（猫島）",
+      "region_id": "oshika",
+      "coordinates": "38.2939, 141.4286"
+    },
+    {
+      "id": "28",
+      "name": "金華山",
+      "region_id": "oshika",
+      "coordinates": "38.2917, 141.5767"
+    },
+    {
+      "id": "29",
+      "name": "桂島（宮城県・浦戸）",
+      "region_id": "oshika",
+      "coordinates": "38.3325, 141.0942"
+    },
+    {
+      "id": "31",
+      "name": "寒風沢島",
+      "region_id": "oshika",
+      "coordinates": "38.3283, 141.1342"
+    },
+    {
+      "id": "32",
+      "name": "宮戸島",
+      "region_id": "oshika",
+      "coordinates": "38.3344, 141.1444"
+    },
+    {
+      "id": "37",
+      "name": "朴島（宮城県・浦戸）",
+      "region_id": "oshika",
+      "coordinates": "38.3417, 141.1239"
+    },
+    {
+      "id": "39",
+      "name": "松島湾・九十九島（景観地域）",
+      "region_id": "oshika",
+      "coordinates": "38.3686, 141.0663"
+    },
+    {
+      "id": "56",
+      "name": "八丈島",
+      "region_id": "izu",
+      "coordinates": "33.1167, 139.7833"
+    },
+    {
+      "id": "57",
+      "name": "八丈小島",
+      "region_id": "izu",
+      "coordinates": "33.1250, 139.6833"
+    },
+    {
+      "id": "58",
+      "name": "青ヶ島",
+      "region_id": "izu",
+      "coordinates": "32.4583, 139.7667"
+    },
+    {
+      "id": "61",
+      "name": "鳥島（伊豆諸島）",
+      "region_id": "izu",
+      "coordinates": "30.4833, 140.3000"
+    },
+    {
+      "id": "62",
+      "name": "須美寿島",
+      "region_id": "izu",
+      "coordinates": "31.4333, 140.0500"
+    },
+    {
+      "id": "63",
+      "name": "父島（小笠原諸島）",
+      "region_id": "ogasawara",
+      "coordinates": "27.0667, 142.1833"
+    },
+    {
+      "id": "64",
+      "name": "母島（小笠原諸島）",
+      "region_id": "ogasawara",
+      "coordinates": "26.6500, 142.1500"
+    },
+    {
+      "id": "65",
+      "name": "兄島（小笠原諸島）",
+      "region_id": "ogasawara",
+      "coordinates": "27.1167, 142.2167"
+    },
+    {
+      "id": "66",
+      "name": "弟島（小笠原諸島）",
+      "region_id": "ogasawara",
+      "coordinates": "27.1667, 142.1833"
+    },
+    {
+      "id": "69",
+      "name": "西之島（小笠原火山島）",
+      "region_id": "ogasawara",
+      "coordinates": "27.2467, 140.8750"
+    },
+    {
+      "id": "70",
+      "name": "硫黄島（小笠原・火山列島）",
+      "region_id": "ogasawara",
+      "coordinates": "24.7833, 141.3167"
+    },
+    {
+      "id": "71",
+      "name": "南鳥島",
+      "region_id": "ogasawara",
+      "coordinates": "24.2867, 153.9800"
+    },
+    {
+      "id": "72",
+      "name": "沖ノ鳥島",
+      "region_id": "ogasawara",
+      "coordinates": "20.4250, 136.0833"
+    },
+    {
+      "id": "73",
+      "name": "江の島",
+      "region_id": "pseudo_kanto",
+      "coordinates": "35.3000, 139.4800"
+    },
+    {
+      "id": "74",
+      "name": "猿島",
+      "region_id": "pseudo_kanto",
+      "coordinates": "35.2867, 139.6917"
+    },
+    {
+      "id": "75",
+      "name": "城ヶ島",
+      "region_id": "pseudo_kanto",
+      "coordinates": "35.1317, 139.6183"
+    },
+    {
+      "id": "77",
+      "name": "粟島（新潟県）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "38.4667, 139.2500"
+    },
+    {
+      "id": "78",
+      "name": "能登島",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "37.1167, 136.9667"
+    },
+    {
+      "id": "79",
+      "name": "舳倉島",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "37.8500, 136.9167"
+    },
+    {
+      "id": "81",
+      "name": "見附島（軍艦島・能登）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "37.3917, 137.2517"
+    },
+    {
+      "id": "84",
+      "name": "雄島（福井県東尋坊沖）",
+      "region_id": "pseudo_hokuriku",
+      "coordinates": "36.2467, 136.1217"
+    },
+    {
+      "id": "87",
+      "name": "初島（静岡県熱海市）",
+      "region_id": "pseudo_kanto",
+      "coordinates": "35.0417, 139.1717"
+    },
+    {
+      "id": "88",
+      "name": "神子元島（静岡県下田）",
+      "region_id": "izu",
+      "coordinates": "34.5750, 138.9417"
+    },
+    {
+      "id": "89",
+      "name": "手石島（静岡県伊東市）",
+      "region_id": "izu",
+      "coordinates": "34.9667, 139.1333"
+    },
+    {
+      "id": "90",
+      "name": "沖島（琵琶湖）",
+      "region_id": "pseudo_biwako",
+      "coordinates": "35.2050, 136.0650"
+    },
+    {
+      "id": "91",
+      "name": "竹生島（琵琶湖）",
+      "region_id": "pseudo_biwako",
+      "coordinates": "35.4233, 136.1433"
+    },
+    {
+      "id": "94",
+      "name": "矢橋帰帆島（琵琶湖人工島）",
+      "region_id": "pseudo_biwako",
+      "coordinates": "35.0033, 135.9183"
+    },
+    {
+      "id": "95",
+      "name": "日間賀島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.7033, 137.0050"
+    },
+    {
+      "id": "96",
+      "name": "篠島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.6733, 137.0083"
+    },
+    {
+      "id": "97",
+      "name": "佐久島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.7217, 137.0433"
+    },
+    {
+      "id": "101",
+      "name": "菅島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.4933, 136.8900"
+    },
+    {
+      "id": "102",
+      "name": "答志島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.5250, 136.8833"
+    },
+    {
+      "id": "103",
+      "name": "神島（三重県鳥羽市）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.5483, 136.9817"
+    },
+    {
+      "id": "104",
+      "name": "賢島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.3100, 136.8283"
+    },
+    {
+      "id": "105",
+      "name": "間崎島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.2917, 136.8333"
+    },
+    {
+      "id": "106",
+      "name": "坂手島",
+      "region_id": "aichi_santo",
+      "coordinates": "34.4817, 136.8633"
+    },
+    {
+      "id": "107",
+      "name": "渡鹿野島（三重県志摩市）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.3583, 136.8850"
+    },
+    {
+      "id": "108",
+      "name": "横山島（三重県志摩市）",
+      "region_id": "aichi_santo",
+      "coordinates": "34.3183, 136.8217"
+    },
+    {
+      "id": "112",
+      "name": "冠島（京都府舞鶴沖）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "35.6833, 135.4333"
+    },
+    {
+      "id": "113",
+      "name": "沓島（京都府）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "35.7167, 135.4333"
+    },
+    {
+      "id": "115",
+      "name": "沼島",
+      "region_id": "pseudo_awaji",
+      "coordinates": "34.1683, 134.8233"
+    },
+    {
+      "id": "116",
+      "name": "家島",
+      "region_id": "ieshima",
+      "coordinates": "34.6800, 134.5300"
+    },
+    {
+      "id": "117",
+      "name": "坊勢島",
+      "region_id": "ieshima",
+      "coordinates": "34.6467, 134.5150"
+    },
+    {
+      "id": "118",
+      "name": "男鹿島",
+      "region_id": "ieshima",
+      "coordinates": "34.6617, 134.5683"
+    },
+    {
+      "id": "119",
+      "name": "西島（兵庫県・家島群島）",
+      "region_id": "ieshima",
+      "coordinates": "34.6633, 134.4833"
+    },
+    {
+      "id": "122",
+      "name": "成ヶ島（兵庫県洲本市）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "34.2817, 134.9517"
+    },
+    {
+      "id": "123",
+      "name": "紀伊大島",
+      "region_id": "pseudo_awaji",
+      "coordinates": "33.4750, 135.8167"
+    },
+    {
+      "id": "125",
+      "name": "友ヶ島（沖ノ島・和歌山）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "34.2833, 135.0067"
+    },
+    {
+      "id": "126",
+      "name": "地ノ島（和歌山県有田市）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "34.0950, 135.1050"
+    },
+    {
+      "id": "128",
+      "name": "通夜島（和歌山県）",
+      "region_id": "pseudo_awaji",
+      "coordinates": "33.4683, 135.8017"
+    },
+    {
+      "id": "130",
+      "name": "鹿久居島",
+      "region_id": "kasaoka",
+      "coordinates": "34.7083, 134.2833"
+    },
+    {
+      "id": "131",
+      "name": "頭島（岡山県備前市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.6850, 134.2900"
+    },
+    {
+      "id": "133",
+      "name": "鴻島（岡山県備前市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.7017, 134.2500"
+    },
+    {
+      "id": "135",
+      "name": "白石島",
+      "region_id": "kasaoka",
+      "coordinates": "34.4050, 133.5183"
+    },
+    {
+      "id": "136",
+      "name": "北木島",
+      "region_id": "kasaoka",
+      "coordinates": "34.3883, 133.5383"
+    },
+    {
+      "id": "137",
+      "name": "真鍋島",
+      "region_id": "kasaoka",
+      "coordinates": "34.3600, 133.5783"
+    },
+    {
+      "id": "139",
+      "name": "小飛島（笠岡諸島）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3483, 133.5167"
+    },
+    {
+      "id": "140",
+      "name": "大飛島（笠岡諸島）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3467, 133.5017"
+    },
+    {
+      "id": "142",
+      "name": "因島",
+      "region_id": "kasaoka",
+      "coordinates": "34.3250, 133.1667"
+    },
+    {
+      "id": "143",
+      "name": "生口島",
+      "region_id": "kasaoka",
+      "coordinates": "34.2917, 133.1000"
+    },
+    {
+      "id": "144",
+      "name": "向島（広島県尾道市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3750, 133.2083"
+    },
+    {
+      "id": "145",
+      "name": "大久野島（うさぎ島）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3083, 132.9933"
+    },
+    {
+      "id": "146",
+      "name": "厳島（宮島）",
+      "region_id": "kasaoka",
+      "coordinates": "34.2800, 132.3217"
+    },
+    {
+      "id": "147",
+      "name": "似島（広島市南区）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3167, 132.4333"
+    },
+    {
+      "id": "148",
+      "name": "金輪島（広島市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3500, 132.4833"
+    },
+    {
+      "id": "149",
+      "name": "江田島",
+      "region_id": "kasaoka",
+      "coordinates": "34.2500, 132.4833"
+    },
+    {
+      "id": "150",
+      "name": "倉橋島",
+      "region_id": "kasaoka",
+      "coordinates": "34.1167, 132.5167"
+    },
+    {
+      "id": "151",
+      "name": "上蒲刈島（安芸灘とびしま海道）",
+      "region_id": "kamijima",
+      "coordinates": "34.1833, 132.7333"
+    },
+    {
+      "id": "152",
+      "name": "下蒲刈島（安芸灘とびしま海道）",
+      "region_id": "kamijima",
+      "coordinates": "34.1933, 132.6733"
+    },
+    {
+      "id": "154",
+      "name": "大崎下島（安芸灘とびしま海道）",
+      "region_id": "kamijima",
+      "coordinates": "34.1750, 132.8333"
+    },
+    {
+      "id": "155",
+      "name": "大崎上島",
+      "region_id": "kamijima",
+      "coordinates": "34.2500, 132.8833"
+    },
+    {
+      "id": "156",
+      "name": "三角島（広島県呉市）",
+      "region_id": "kamijima",
+      "coordinates": "34.1917, 132.8167"
+    },
+    {
+      "id": "157",
+      "name": "細島（広島県尾道市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3667, 133.1333"
+    },
+    {
+      "id": "158",
+      "name": "生野島（広島県大崎上島町）",
+      "region_id": "kamijima",
+      "coordinates": "34.2917, 132.9083"
+    },
+    {
+      "id": "159",
+      "name": "契島（広島県・軍艦島）",
+      "region_id": "kamijima",
+      "coordinates": "34.3017, 132.8983"
+    },
+    {
+      "id": "160",
+      "name": "百島（広島県尾道市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3800, 133.2667"
+    },
+    {
+      "id": "161",
+      "name": "佐木島（広島県三原市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3383, 133.1117"
+    },
+    {
+      "id": "162",
+      "name": "小佐木島（広島県三原市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3600, 133.1017"
+    },
+    {
+      "id": "163",
+      "name": "阿多田島（広島県大竹市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.1833, 132.3167"
+    },
+    {
+      "id": "165",
+      "name": "仙酔島（広島県福山市鞆の浦）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3833, 133.3967"
+    },
+    {
+      "id": "166",
+      "name": "走島（広島県福山市）",
+      "region_id": "kasaoka",
+      "coordinates": "34.3333, 133.4333"
+    },
+    {
+      "id": "167",
+      "name": "周防大島（屋代島）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.9167, 132.2333"
+    },
+    {
+      "id": "168",
+      "name": "角島",
+      "region_id": "hagi",
+      "coordinates": "34.3528, 130.8528"
+    },
+    {
+      "id": "169",
+      "name": "青海島",
+      "region_id": "hagi",
+      "coordinates": "34.4083, 131.2050"
+    },
+    {
+      "id": "171",
+      "name": "浮島（山口県周防大島町）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.9583, 132.3500"
+    },
+    {
+      "id": "172",
+      "name": "笠戸島",
+      "region_id": "suo_oshima",
+      "coordinates": "33.9750, 131.8500"
+    },
+    {
+      "id": "173",
+      "name": "野島（山口県防府市）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.9317, 131.6917"
+    },
+    {
+      "id": "174",
+      "name": "牛島（山口県光市）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.8483, 132.0167"
+    },
+    {
+      "id": "175",
+      "name": "八島（山口県上関町）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.7167, 132.1467"
+    },
+    {
+      "id": "176",
+      "name": "祝島（山口県上関町）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.7833, 131.9833"
+    },
+    {
+      "id": "178",
+      "name": "沖家室島（山口県周防大島）",
+      "region_id": "suo_oshima",
+      "coordinates": "33.8267, 132.3583"
+    },
+    {
+      "id": "181",
+      "name": "蓋井島（山口県下関市）",
+      "region_id": "hagi",
+      "coordinates": "34.0983, 130.7850"
+    },
+    {
+      "id": "182",
+      "name": "六連島（山口県下関市）",
+      "region_id": "hagi",
+      "coordinates": "33.9767, 130.8733"
+    },
+    {
+      "id": "183",
+      "name": "見島（山口県萩市）",
+      "region_id": "hagi",
+      "coordinates": "34.7733, 131.1417"
+    },
+    {
+      "id": "191",
+      "name": "大根島",
+      "region_id": "oki",
+      "coordinates": "35.4950, 133.1717"
+    },
+    {
+      "id": "192",
+      "name": "恵曇島（山陰海岸）",
+      "region_id": "pseudo_san_in",
+      "coordinates": "35.5333, 132.9667"
+    },
+    {
+      "id": "194",
+      "name": "経島（島根県出雲市）",
+      "region_id": "pseudo_san_in",
+      "coordinates": "35.4333, 132.6283"
+    },
+    {
+      "id": "195",
+      "name": "直島",
+      "region_id": "naoshima",
+      "coordinates": "34.4583, 133.9950"
+    },
+    {
+      "id": "196",
+      "name": "豊島（香川県）",
+      "region_id": "naoshima",
+      "coordinates": "34.4833, 134.0833"
+    },
+    {
+      "id": "198",
+      "name": "男木島",
+      "region_id": "naoshima",
+      "coordinates": "34.4233, 134.0583"
+    },
+    {
+      "id": "199",
+      "name": "女木島（鬼ヶ島）",
+      "region_id": "naoshima",
+      "coordinates": "34.3950, 134.0533"
+    },
+    {
+      "id": "202",
+      "name": "小豊島（香川県）",
+      "region_id": "naoshima",
+      "coordinates": "34.4833, 134.1350"
+    },
+    {
+      "id": "208",
+      "name": "手島（香川県丸亀市）",
+      "region_id": "shiwaku",
+      "coordinates": "34.3983, 133.6667"
+    },
+    {
+      "id": "209",
+      "name": "小手島（香川県）",
+      "region_id": "shiwaku",
+      "coordinates": "34.3850, 133.6650"
+    },
+    {
+      "id": "211",
+      "name": "高見島（香川県多度津町）",
+      "region_id": "shiwaku",
+      "coordinates": "34.3167, 133.6750"
+    },
+    {
+      "id": "212",
+      "name": "佐柳島（香川県多度津町・猫島）",
+      "region_id": "shiwaku",
+      "coordinates": "34.3367, 133.6233"
+    },
+    {
+      "id": "213",
+      "name": "志々島（香川県三豊市）",
+      "region_id": "shiwaku",
+      "coordinates": "34.2667, 133.6833"
+    },
+    {
+      "id": "216",
+      "name": "伯方島",
+      "region_id": "kamijima",
+      "coordinates": "34.2083, 133.0917"
+    },
+    {
+      "id": "217",
+      "name": "大三島",
+      "region_id": "kamijima",
+      "coordinates": "34.2467, 133.0033"
+    },
+    {
+      "id": "218",
+      "name": "弓削島（上島諸島）",
+      "region_id": "kamijima",
+      "coordinates": "34.2667, 133.2167"
+    },
+    {
+      "id": "220",
+      "name": "興居島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.8867, 132.6833"
+    },
+    {
+      "id": "221",
+      "name": "日振島（宇和海）",
+      "region_id": "uwakai",
+      "coordinates": "33.1617, 132.3217"
+    },
+    {
+      "id": "222",
+      "name": "九島（宇和海）",
+      "region_id": "uwakai",
+      "coordinates": "33.2267, 132.5333"
+    },
+    {
+      "id": "223",
+      "name": "津島（愛媛県今治市）",
+      "region_id": "kamijima",
+      "coordinates": "34.1350, 133.0233"
+    },
+    {
+      "id": "224",
+      "name": "鵜島（しまなみ）",
+      "region_id": "kamijima",
+      "coordinates": "34.1867, 133.0817"
+    },
+    {
+      "id": "225",
+      "name": "佐島（ゆめしま海道）",
+      "region_id": "kamijima",
+      "coordinates": "34.2500, 133.2167"
+    },
+    {
+      "id": "226",
+      "name": "生名島（ゆめしま海道）",
+      "region_id": "kamijima",
+      "coordinates": "34.2750, 133.1667"
+    },
+    {
+      "id": "227",
+      "name": "岩城島（青いレモンの島）",
+      "region_id": "kamijima",
+      "coordinates": "34.2583, 133.1467"
+    },
+    {
+      "id": "228",
+      "name": "赤穂根島（愛媛県）",
+      "region_id": "kamijima",
+      "coordinates": "34.2467, 133.1317"
+    },
+    {
+      "id": "229",
+      "name": "睦月島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9800, 132.6667"
+    },
+    {
+      "id": "230",
+      "name": "野忽那島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9833, 132.6933"
+    },
+    {
+      "id": "232",
+      "name": "二神島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9317, 132.5317"
+    },
+    {
+      "id": "233",
+      "name": "津和地島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9783, 132.4933"
+    },
+    {
+      "id": "234",
+      "name": "怒和島（忽那諸島）",
+      "region_id": "kutsuna",
+      "coordinates": "33.9683, 132.5183"
+    },
+    {
+      "id": "235",
+      "name": "魚島（愛媛県越智郡）",
+      "region_id": "kamijima",
+      "coordinates": "34.1750, 133.3250"
+    },
+    {
+      "id": "236",
+      "name": "高井神島（愛媛県）",
+      "region_id": "kamijima",
+      "coordinates": "34.1917, 133.2667"
+    },
+    {
+      "id": "239",
+      "name": "青島（愛媛県大洲市・猫島）",
+      "region_id": "uwakai",
+      "coordinates": "33.7383, 132.4833"
+    },
+    {
+      "id": "240",
+      "name": "嘉島（宇和海）",
+      "region_id": "uwakai",
+      "coordinates": "33.2267, 132.3617"
+    },
+    {
+      "id": "243",
+      "name": "伊島（阿波の島々）",
+      "region_id": "pseudo_tokushima",
+      "coordinates": "33.8450, 134.8167"
+    },
+    {
+      "id": "245",
+      "name": "出羽島（徳島県牟岐町）",
+      "region_id": "pseudo_tokushima",
+      "coordinates": "33.6550, 134.4383"
+    },
+    {
+      "id": "246",
+      "name": "竹ヶ島（徳島県海陽町）",
+      "region_id": "pseudo_tokushima",
+      "coordinates": "33.5417, 134.3167"
+    },
+    {
+      "id": "247",
+      "name": "柏島（高知県・大月町）",
+      "region_id": "pseudo_tosa",
+      "coordinates": "32.7667, 132.6283"
+    },
+    {
+      "id": "248",
+      "name": "沖の島（高知県・宿毛市）",
+      "region_id": "pseudo_tosa",
+      "coordinates": "32.7317, 132.5533"
+    },
+    {
+      "id": "249",
+      "name": "鵜来島（高知県宿毛市）",
+      "region_id": "pseudo_tosa",
+      "coordinates": "32.8050, 132.5183"
+    },
+    {
+      "id": "252",
+      "name": "対馬（長崎県）",
+      "region_id": "tsushima",
+      "coordinates": "34.4167, 129.3333"
+    },
+    {
+      "id": "258",
+      "name": "壱岐島",
+      "region_id": "iki",
+      "coordinates": "33.7833, 129.6833"
+    },
+    {
+      "id": "259",
+      "name": "辰の島（壱岐島沖）",
+      "region_id": "iki",
+      "coordinates": "33.8617, 129.6883"
+    },
+    {
+      "id": "260",
+      "name": "原島（壱岐市郷ノ浦町）",
+      "region_id": "iki",
+      "coordinates": "33.7167, 129.6583"
+    },
+    {
+      "id": "263",
+      "name": "若宮島（壱岐沖）",
+      "region_id": "iki",
+      "coordinates": "33.8767, 129.6967"
+    },
+    {
+      "id": "271",
+      "name": "宇久島（五島列島最北端）",
+      "region_id": "goto",
+      "coordinates": "33.2667, 129.1167"
+    },
+    {
+      "id": "272",
+      "name": "頭ヶ島（新上五島町）",
+      "region_id": "goto",
+      "coordinates": "33.0133, 129.1833"
+    },
+    {
+      "id": "273",
+      "name": "黄島（長崎県五島市）",
+      "region_id": "goto",
+      "coordinates": "32.5683, 128.8983"
+    },
+    {
+      "id": "274",
+      "name": "赤島（長崎県五島市）",
+      "region_id": "goto",
+      "coordinates": "32.6033, 128.9200"
+    },
+    {
+      "id": "280",
+      "name": "生月島",
+      "region_id": "hirado",
+      "coordinates": "33.3833, 129.4333"
+    },
+    {
+      "id": "281",
+      "name": "度島（長崎県平戸市）",
+      "region_id": "hirado",
+      "coordinates": "33.4350, 129.5467"
+    },
+    {
+      "id": "282",
+      "name": "的山大島（長崎県平戸市）",
+      "region_id": "hirado",
+      "coordinates": "33.4717, 129.5583"
+    },
+    {
+      "id": "287",
+      "name": "端島（軍艦島）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "32.6278, 129.7383"
+    },
+    {
+      "id": "290",
+      "name": "伊王島（長崎市）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "32.7050, 129.7783"
+    },
+    {
+      "id": "292",
+      "name": "池島（長崎市・炭鉱体験）",
+      "region_id": "pseudo_saikai",
+      "coordinates": "32.8833, 129.6000"
+    },
+    {
+      "id": "294",
+      "name": "崎戸島（長崎県西海市）",
+      "region_id": "goto",
+      "coordinates": "33.0167, 129.5667"
+    },
+    {
+      "id": "299",
+      "name": "能古島",
+      "region_id": "chikuzen",
+      "coordinates": "33.6183, 130.3017"
+    },
+    {
+      "id": "300",
+      "name": "志賀島",
+      "region_id": "chikuzen",
+      "coordinates": "33.6667, 130.3067"
+    },
+    {
+      "id": "301",
+      "name": "相島（福岡県新宮町・猫島）",
+      "region_id": "genkai",
+      "coordinates": "33.7617, 130.3833"
+    },
+    {
+      "id": "303",
+      "name": "玄界島（福岡市西区）",
+      "region_id": "genkai",
+      "coordinates": "33.6867, 130.2383"
+    },
+    {
+      "id": "304",
+      "name": "小呂島（福岡市西区）",
+      "region_id": "genkai",
+      "coordinates": "33.8733, 130.0383"
+    },
+    {
+      "id": "305",
+      "name": "地島（福岡県宗像市）",
+      "region_id": "genkai",
+      "coordinates": "33.8833, 130.4833"
+    },
+    {
+      "id": "306",
+      "name": "藍島（北九州市小倉北区）",
+      "region_id": "genkai",
+      "coordinates": "33.9967, 130.8167"
+    },
+    {
+      "id": "308",
+      "name": "加部島",
+      "region_id": "genkai",
+      "coordinates": "33.5600, 129.8833"
+    },
+    {
+      "id": "309",
+      "name": "加唐島",
+      "region_id": "genkai",
+      "coordinates": "33.6067, 129.8450"
+    },
+    {
+      "id": "310",
+      "name": "小川島",
+      "region_id": "genkai",
+      "coordinates": "33.5850, 129.8983"
+    },
+    {
+      "id": "312",
+      "name": "神集島",
+      "region_id": "genkai",
+      "coordinates": "33.5350, 129.9850"
+    },
+    {
+      "id": "314",
+      "name": "姫島（大分県）",
+      "region_id": "bungo",
+      "coordinates": "33.7250, 131.6667"
+    },
+    {
+      "id": "315",
+      "name": "保戸島（大分県津久見市）",
+      "region_id": "bungo",
+      "coordinates": "33.1017, 131.9867"
+    },
+    {
+      "id": "324",
+      "name": "御所浦島（恐竜の島）",
+      "region_id": "amakusa",
+      "coordinates": "32.3333, 130.3450"
+    },
+    {
+      "id": "325",
+      "name": "大矢野島",
+      "region_id": "amakusa",
+      "coordinates": "32.5833, 130.4333"
+    },
+    {
+      "id": "327",
+      "name": "維和島（上天草市）",
+      "region_id": "amakusa",
+      "coordinates": "32.5717, 130.4567"
+    },
+    {
+      "id": "330",
+      "name": "横浦島（天草御所浦）",
+      "region_id": "amakusa",
+      "coordinates": "32.3617, 130.3417"
+    },
+    {
+      "id": "332",
+      "name": "長島（鹿児島県出水郡）",
+      "region_id": "pseudo_nagashima",
+      "coordinates": "32.1667, 130.1667"
+    },
+    {
+      "id": "333",
+      "name": "獅子島（鹿児島県長島町）",
+      "region_id": "pseudo_nagashima",
+      "coordinates": "32.2833, 130.2333"
+    },
+    {
+      "id": "334",
+      "name": "伊唐島（長島町）",
+      "region_id": "pseudo_nagashima",
+      "coordinates": "32.2217, 130.1783"
+    },
+    {
+      "id": "340",
+      "name": "屋久島",
+      "region_id": "osumi",
+      "coordinates": "30.3500, 130.5333"
+    },
+    {
+      "id": "341",
+      "name": "口永良部島",
+      "region_id": "osumi",
+      "coordinates": "30.4417, 130.2167"
+    },
+    {
+      "id": "342",
+      "name": "竹島（鹿児島県三島村）",
+      "region_id": "pseudo_satsuma",
+      "coordinates": "30.8167, 130.4250"
+    },
+    {
+      "id": "345",
+      "name": "口之島（トカラ列島最北端）",
+      "region_id": "tokara",
+      "coordinates": "29.9667, 129.9250"
+    },
+    {
+      "id": "347",
+      "name": "諏訪之瀬島（トカラ列島）",
+      "region_id": "tokara",
+      "coordinates": "29.6383, 129.7150"
+    },
+    {
+      "id": "348",
+      "name": "平島（トカラ列島）",
+      "region_id": "tokara",
+      "coordinates": "29.6833, 129.5467"
+    },
+    {
+      "id": "349",
+      "name": "悪石島（トカラ列島）",
+      "region_id": "tokara",
+      "coordinates": "29.4583, 129.6000"
+    },
+    {
+      "id": "351",
+      "name": "宝島（トカラ列島最南端）",
+      "region_id": "tokara",
+      "coordinates": "29.1433, 129.2067"
+    },
+    {
+      "id": "354",
+      "name": "請島（奄美群島瀬戸内町）",
+      "region_id": "amami",
+      "coordinates": "28.0250, 129.2383"
+    },
+    {
+      "id": "355",
+      "name": "与路島（奄美群島）",
+      "region_id": "amami",
+      "coordinates": "28.0417, 129.1633"
+    },
+    {
+      "id": "356",
+      "name": "喜界島",
+      "region_id": "amami",
+      "coordinates": "28.3167, 129.9667"
+    },
+    {
+      "id": "358",
+      "name": "沖永良部島",
+      "region_id": "amami",
+      "coordinates": "27.3667, 128.5833"
+    },
+    {
+      "id": "359",
+      "name": "与論島（ヨロン島）",
+      "region_id": "amami",
+      "coordinates": "27.0433, 128.4283"
+    },
+    {
+      "id": "361",
+      "name": "古宇利島",
+      "region_id": "okinawa_main",
+      "coordinates": "26.7017, 128.0217"
+    },
+    {
+      "id": "362",
+      "name": "水納島（クロワッサンアイランド）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.6467, 127.8167"
+    },
+    {
+      "id": "363",
+      "name": "久高島（神の島）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.1600, 127.8933"
+    },
+    {
+      "id": "364",
+      "name": "伊平屋島",
+      "region_id": "okinawa_main",
+      "coordinates": "27.0400, 127.9667"
+    },
+    {
+      "id": "365",
+      "name": "野甫島（伊平屋村）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.9967, 127.9417"
+    },
+    {
+      "id": "366",
+      "name": "伊是名島",
+      "region_id": "okinawa_main",
+      "coordinates": "26.9317, 127.9367"
+    },
+    {
+      "id": "367",
+      "name": "伊江島",
+      "region_id": "okinawa_main",
+      "coordinates": "26.7217, 127.8017"
+    },
+    {
+      "id": "368",
+      "name": "瀬底島",
+      "region_id": "okinawa_main",
+      "coordinates": "26.6433, 127.8633"
+    },
+    {
+      "id": "369",
+      "name": "平安座島（海中道路）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.3467, 127.9617"
+    },
+    {
+      "id": "370",
+      "name": "浜比嘉島",
+      "region_id": "okinawa_main",
+      "coordinates": "26.3183, 127.9583"
+    },
+    {
+      "id": "371",
+      "name": "宮城島（沖縄県うるま市）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.3683, 127.9867"
+    },
+    {
+      "id": "372",
+      "name": "伊計島",
+      "region_id": "okinawa_main",
+      "coordinates": "26.3933, 127.9967"
+    },
+    {
+      "id": "373",
+      "name": "津堅島（キャロットアイランド）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.2500, 127.9433"
+    },
+    {
+      "id": "374",
+      "name": "奥武島（南城市・天ぷら島）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.1317, 127.7733"
+    },
+    {
+      "id": "375",
+      "name": "瀬長島（ウミカジテラス）",
+      "region_id": "okinawa_main",
+      "coordinates": "26.1750, 127.6433"
+    },
+    {
+      "id": "379",
+      "name": "慶留間島（慶良間）",
+      "region_id": "kerama",
+      "coordinates": "26.1817, 127.2883"
+    },
+    {
+      "id": "380",
+      "name": "久米島",
+      "region_id": "kume",
+      "coordinates": "26.3467, 126.7767"
+    },
+    {
+      "id": "382",
+      "name": "粟国島",
+      "region_id": "kume",
+      "coordinates": "26.5867, 127.2283"
+    },
+    {
+      "id": "383",
+      "name": "渡名喜島",
+      "region_id": "kume",
+      "coordinates": "26.3717, 127.1433"
+    },
+    {
+      "id": "384",
+      "name": "北大東島",
+      "region_id": "daito",
+      "coordinates": "25.9517, 131.3083"
+    },
+    {
+      "id": "385",
+      "name": "南大東島",
+      "region_id": "daito",
+      "coordinates": "25.8450, 131.2333"
+    },
+    {
+      "id": "386",
+      "name": "宮古島",
+      "region_id": "miyako",
+      "coordinates": "24.8000, 125.2833"
+    },
+    {
+      "id": "387",
+      "name": "伊良部島",
+      "region_id": "miyako",
+      "coordinates": "24.8367, 125.1883"
+    },
+    {
+      "id": "388",
+      "name": "池間島",
+      "region_id": "miyako",
+      "coordinates": "24.9300, 125.2433"
+    },
+    {
+      "id": "389",
+      "name": "来間島",
+      "region_id": "miyako",
+      "coordinates": "24.7233, 125.2533"
+    },
+    {
+      "id": "390",
+      "name": "多良間島",
+      "region_id": "miyako",
+      "coordinates": "24.6600, 124.7000"
+    },
+    {
+      "id": "391",
+      "name": "大神島（宮古島）",
+      "region_id": "miyako",
+      "coordinates": "24.9167, 125.3117"
+    },
+    {
+      "id": "393",
+      "name": "竹富島",
+      "region_id": "yaeyama",
+      "coordinates": "24.3283, 124.0867"
+    },
+    {
+      "id": "394",
+      "name": "小浜島",
+      "region_id": "yaeyama",
+      "coordinates": "24.3400, 123.9817"
+    },
+    {
+      "id": "396",
+      "name": "西表島",
+      "region_id": "yaeyama",
+      "coordinates": "24.3250, 123.8217"
+    },
+    {
+      "id": "398",
+      "name": "鳩間島",
+      "region_id": "yaeyama",
+      "coordinates": "24.4717, 123.8200"
+    },
+    {
+      "id": "399",
+      "name": "新城島（パナリ島）",
+      "region_id": "yaeyama",
+      "coordinates": "24.2333, 123.9450"
+    },
+    {
+      "id": "400",
+      "name": "波照間島",
+      "region_id": "yaeyama",
+      "coordinates": "24.0600, 123.7767"
+    },
+    {
+      "id": "401",
+      "name": "与那国島",
+      "region_id": "yaeyama",
+      "coordinates": "24.4567, 122.9883"
+    },
+    {
+      "id": "407",
+      "name": "小大下島（愛媛県今治市）",
+      "region_id": "kamijima",
+      "coordinates": "34.1867, 132.8917"
+    },
+    {
+      "id": "412",
+      "name": "島田島（徳島県鳴門市）",
+      "region_id": "pseudo_tokushima",
+      "coordinates": "34.2333, 134.6167"
+    },
+    {
+      "id": "415",
+      "name": "竹崎島（佐賀県太良町）",
+      "region_id": "genkai",
+      "coordinates": "32.9667, 130.2250"
+    }
+  ]
+}
