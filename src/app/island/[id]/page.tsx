@@ -6,6 +6,37 @@ import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 // 60秒間キャッシュする（高トラフィック時の負荷対策）
 export const revalidate = 60;
 
+function findMasterEntry(slugOrId: string) {
+  if (!slugOrId) return undefined;
+  const lower = slugOrId.toLowerCase().trim();
+  
+  // 1. 完全一致 (slug または id)
+  let found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.slug === lower || isl.id === slugOrId);
+  if (found) return found;
+
+  // 2. 代表的エイリアス (chichijima -> chichijimaogasawarashoto 等)
+  if (lower === 'chichijima') {
+    found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.id === '63' || isl.slug === 'chichijimaogasawarashoto');
+    if (found) return found;
+  }
+  if (lower === 'hahajima') {
+    found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.id === '64');
+    if (found) return found;
+  }
+  if (lower === 'aogashima') {
+    found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.id === '58');
+    if (found) return found;
+  }
+  if (lower === 'ishigaki' || lower === 'ishigakijima') {
+    found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.id === '392');
+    if (found) return found;
+  }
+
+  // 3. 前方一致・部分一致
+  found = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.slug?.startsWith(lower) || isl.name.includes(slugOrId));
+  return found;
+}
+
 // 動的メタデータ生成 (SEO強化)
 export async function generateMetadata(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -14,11 +45,8 @@ export async function generateMetadata(
   const { id: slugOrId } = await params;
   
   // slugから内部IDを逆引き
-  let internalId = slugOrId;
-  const masterEntry = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.slug === slugOrId || isl.id === slugOrId);
-  if (masterEntry) {
-    internalId = masterEntry.id;
-  }
+  const masterEntry = findMasterEntry(slugOrId);
+  const internalId = masterEntry ? masterEntry.id : slugOrId;
   
   // 1. まずDBから最新の実用情報（人口、アクセス等）と最新の口コミを並行してフェッチ
   let islandName = '未知の島';
@@ -84,11 +112,8 @@ export default async function Page({ params }: { params: any }) {
   const { id: slugOrId } = await params; 
   
   // slugから内部IDを逆引き
-  let internalId = slugOrId;
-  const masterEntry = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(isl => isl.slug === slugOrId || isl.id === slugOrId);
-  if (masterEntry) {
-    internalId = masterEntry.id;
-  }
+  const masterEntry = findMasterEntry(slugOrId);
+  const internalId = masterEntry ? masterEntry.id : slugOrId;
 
   // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR)
   const [diariesResult, accommodationsResult, islandResult] = await Promise.all([

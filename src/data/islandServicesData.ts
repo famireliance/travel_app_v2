@@ -272,12 +272,28 @@ export const ISLAND_SERVICES_DICTIONARY: Record<string, IslandServiceItem> = {
   }
 };
 
-export function getIslandServicesByIslandId(islandId: string): IslandServiceItem[] {
-  return Object.values(ISLAND_SERVICES_DICTIONARY).filter(
-    s => s.islandId === islandId || s.islandId === islandId.toLowerCase()
-  );
+// 島のID（数値・slug・日本語名）の相互解決マップ
+const ISLAND_ALIAS_MAP: Record<string, string[]> = {
+  'aogashima': ['58', 'aogashima', '青ヶ島'],
+  'chichijima': ['63', 'chichijima', 'chichijimaogasawarashoto', '父島', '父島（小笠原諸島）'],
+  'ishigaki': ['392', 'ishigaki', 'ishigakijima', '石垣島'],
+};
+
+export function getIslandServicesByIslandId(islandIdOrSlugOrName: string): IslandServiceItem[] {
+  if (!islandIdOrSlugOrName) return [];
+  const target = islandIdOrSlugOrName.toLowerCase().trim();
+
+  return Object.values(ISLAND_SERVICES_DICTIONARY).filter(s => {
+    const sId = s.islandId.toLowerCase();
+    if (sId === target || s.islandName === islandIdOrSlugOrName) return true;
+    
+    // エイリアスチェック（数値ID・slug・島名どれでも合致）
+    const aliases = ISLAND_ALIAS_MAP[sId] || [];
+    return aliases.some(alias => alias.toLowerCase() === target || target.includes(alias.toLowerCase()));
+  });
 }
 
 export function getServiceById(id: string): IslandServiceItem | null {
   return ISLAND_SERVICES_DICTIONARY[id] || null;
 }
+

@@ -12,6 +12,92 @@ import { useTravel } from '@/context/TravelContext';
 import { useRouter } from 'next/navigation';
 import { ServicePlanItem, IslandServiceItem } from '@/data/islandServicesData';
 
+export interface BookingOptionItem {
+  id: string;
+  name: string;
+  price: number;
+  priceLabel: string;
+  desc: string;
+  badge?: string;
+  perDay?: boolean;
+}
+
+const RENTAL_CAR_OPTIONS: BookingOptionItem[] = [
+  {
+    id: 'opt_noc',
+    name: '免責補償ワイド ＆ NOC（休業補償）免除安心パック',
+    price: 1100,
+    priceLabel: '+¥1,100 / 日',
+    desc: '万一の自走不能事故や車内汚損時も、ノンオペレーションチャージ（最大5万円）やレッカー代自己負担が全額0円免除となります。',
+    badge: '👑 80%が加入',
+    perDay: true,
+  },
+  {
+    id: 'opt_child_seat',
+    name: 'チャイルドシート / ジュニアシート貸出',
+    price: 550,
+    priceLabel: '+¥550 / 回',
+    desc: '6歳未満のお子様同乗に必須。事前に清潔除菌したシートを装着してお渡しします。',
+    badge: 'お子様連れ必須',
+  },
+  {
+    id: 'opt_bluetooth_holder',
+    name: 'スマホ車載ホルダー ＆ 高速USB充電器・Bluetooth',
+    price: 0,
+    priceLabel: '無料（¥0）',
+    desc: '島内の観光ナビや音楽再生に便利な車載ホルダーと充電ケーブルを標準セット。',
+    badge: '無料',
+  },
+  {
+    id: 'opt_marine_gear',
+    name: '島内マリンレジャーセット（ライフジャケット×2 ＆ 防水バッグ）',
+    price: 1500,
+    priceLabel: '+¥1,500 / 回',
+    desc: 'トランクにそのまま積載。急なビーチ立ち寄りや磯場観察も安全に楽しめます。',
+  }
+];
+
+const ACTIVITY_OPTIONS: BookingOptionItem[] = [
+  {
+    id: 'opt_gopro',
+    name: '水中4Kアクションカメラ（GoPro）レンタル ＆ MicroSD進呈',
+    price: 3000,
+    priceLabel: '+¥3,000 / 台',
+    desc: '高画質な水中動画やイルカ・マンタとの遊泳を撮影！撮影データが入ったMicroSDカードをそのままお持ち帰りいただけます。',
+    badge: '👑 1番人気',
+  },
+  {
+    id: 'opt_prescription_mask',
+    name: '度付き水中マスク（視力 -2.0 〜 -6.0 対応）',
+    price: 500,
+    priceLabel: '+¥500 / 個',
+    desc: '普段メガネやコンタクトをお使いの方も、水中のサンゴや魚がクリアに見える度付きレンズをご用意します。',
+  },
+  {
+    id: 'opt_wetsuit',
+    name: '保温＆浮力ウェットスーツ（5mm / サイズ指定可）',
+    price: 1500,
+    priceLabel: '+¥1,500 / 着',
+    desc: '日焼け防止・クラゲ対策・体の冷え防止に最適。泳力に自信がない方の浮力サポートにもなります。',
+    badge: '安心サポート',
+  },
+  {
+    id: 'opt_lunch_box',
+    name: '特製・島のごちそうランチ弁当 ＆ 保冷ドリンク付き',
+    price: 1200,
+    priceLabel: '+¥1,200 / 個',
+    desc: '地魚や島野菜を使った温もりある手作り弁当。船上やビーチ休憩で美味しくお召し上がりいただけます。',
+  },
+  {
+    id: 'opt_hotel_shuttle',
+    name: '宿泊先ホテル・民宿からの往復無料送迎',
+    price: 0,
+    priceLabel: '無料（¥0）',
+    desc: '集合時間に合わせて、島内ご宿泊先の玄関前までスタッフがお車でお迎えに伺います。',
+    badge: '無料送迎',
+  }
+];
+
 interface ServiceBookingModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -41,6 +127,11 @@ export default function ServiceBookingModal({
   const [guestPhone, setGuestPhone] = useState<string>('');
   const [guestEmail, setGuestEmail] = useState<string>('');
   const [pickupNotes, setPickupNotes] = useState<string>('');
+
+  // オプション選択ステート
+  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(['opt_bluetooth_holder', 'opt_noc']);
+  const [pickupPlaceChoice, setPickupPlaceChoice] = useState<string>('port');
+  const [wetsuitSizes, setWetsuitSizes] = useState<string>('Mサイズ');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -79,6 +170,57 @@ export default function ServiceBookingModal({
     return service.plans.find(p => p.id === chosenPlanId) || service.plans[0];
   }, [service, chosenPlanId]);
 
+  // プラン基本料金の数値抽出
+  const basePriceNum = useMemo(() => {
+    const raw = activePlan?.price || service.priceRange || '0';
+    const match = raw.replace(/,/g, '').match(/\d+/);
+    return match ? parseInt(match[0], 10) : 0;
+  }, [activePlan, service]);
+
+  // レンタカーの日数計算
+  const rentalDays = useMemo(() => {
+    if (!startDate || !endDate) return 1;
+    const d1 = new Date(startDate).getTime();
+    const d2 = new Date(endDate).getTime();
+    const diff = Math.ceil((d2 - d1) / (1000 * 60 * 60 * 24));
+    return Math.max(1, diff);
+  }, [startDate, endDate]);
+
+  // オプション一覧
+  const availableOptions = useMemo(() => {
+    return isRental ? RENTAL_CAR_OPTIONS : ACTIVITY_OPTIONS;
+  }, [isRental]);
+
+  // オプション小計
+  const optionsTotalPrice = useMemo(() => {
+    let sum = 0;
+    selectedOptionIds.forEach(id => {
+      const opt = availableOptions.find(o => o.id === id);
+      if (opt) {
+        if (opt.perDay) {
+          sum += opt.price * rentalDays;
+        } else if (opt.id === 'opt_lunch_box' || opt.id === 'opt_wetsuit') {
+          sum += opt.price * participantsCount;
+        } else {
+          sum += opt.price;
+        }
+      }
+    });
+    return sum;
+  }, [availableOptions, selectedOptionIds, rentalDays, participantsCount]);
+
+  // 合計概算料金
+  const estimatedTotalPrice = useMemo(() => {
+    const planTotal = isRental ? basePriceNum : basePriceNum * participantsCount;
+    return planTotal + optionsTotalPrice;
+  }, [isRental, basePriceNum, participantsCount, optionsTotalPrice]);
+
+  const toggleOption = (id: string) => {
+    setSelectedOptionIds(prev => 
+      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
+    );
+  };
+
   const handleStartDateChange = (val: string) => {
     setStartDate(val);
     if (isRental && val) {
@@ -115,11 +257,27 @@ export default function ServiceBookingModal({
     setIsSubmitting(true);
 
     try {
+      // 選択されたオプションの明細文字列
+      const selectedOptsList = selectedOptionIds.map(id => {
+        const opt = availableOptions.find(o => o.id === id);
+        return opt ? `・${opt.name} (${opt.priceLabel})` : null;
+      }).filter(Boolean);
+
+      const pickupLabel = isRental ? (
+        pickupPlaceChoice === 'port' ? '港（フェリーターミナル・三宝港・二見港等）で受取' :
+        pickupPlaceChoice === 'heliport' ? '空港 / ヘリポートで到着便に合わせて受取' :
+        pickupPlaceChoice === 'hotel' ? '宿泊先ホテル・民宿への無料配車' : '店舗窓口で直接受取'
+      ) : null;
+
       const notesHeader = [
         `【代表者様氏名】: ${guestName.trim()}`,
         `【お電話番号】: ${guestPhone.trim()}`,
         guestEmail.trim() ? `【メールアドレス】: ${guestEmail.trim()}` : '',
-        pickupNotes.trim() ? `【ご希望・配車場所等】:\n${pickupNotes.trim()}` : ''
+        pickupLabel ? `【配車・受取場所希望】: ${pickupLabel}` : '',
+        selectedOptsList.length > 0 ? `【選択オプション】:\n${selectedOptsList.join('\n')}` : '【選択オプション】: なし',
+        (!isRental && selectedOptionIds.includes('opt_wetsuit')) ? `【ウェットスーツ希望サイズ】: ${wetsuitSizes}` : '',
+        `【オプション込み概算合計】: ¥${estimatedTotalPrice.toLocaleString()} (税込)`,
+        pickupNotes.trim() ? `【その他ご要望・備考】:\n${pickupNotes.trim()}` : ''
       ].filter(Boolean).join('\n');
 
       const reservationPayload = {
@@ -135,7 +293,7 @@ export default function ServiceBookingModal({
         end_date: isRental ? endDate : startDate,
         end_time: isRental ? endTime : startTime,
         participants_count: participantsCount,
-        total_price: activePlan?.price || service.priceRange,
+        total_price: `¥${estimatedTotalPrice.toLocaleString()}`,
         status: 'pending',
         guest_notes: notesHeader,
         created_at: new Date().toISOString()
@@ -453,6 +611,145 @@ export default function ServiceBookingModal({
                           </button>
                         ))}
                       </div>
+                    </div>
+                  </div>
+
+                  {/* 追加オプション（OP選択） */}
+                  <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[0.65rem] font-bold text-slate-500 uppercase tracking-widest font-mono block">
+                        ADDITIONAL OPTIONS (オプション選択)
+                      </span>
+                      <span className="text-[0.65rem] text-slate-500">※ご希望の項目をチェック</span>
+                    </div>
+
+                    {/* 配車場所・送迎場所セレクト */}
+                    {isRental ? (
+                      <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <label className="block text-xs font-bold text-slate-800 flex items-center gap-1">
+                          <MapPin size={13} className="text-blue-500" />
+                          配車・受取希望場所 <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          value={pickupPlaceChoice}
+                          onChange={(e) => setPickupPlaceChoice(e.target.value)}
+                          className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 outline-none focus:border-blue-500"
+                        >
+                          <option value="port">港（フェリーターミナル・三宝港・二見港等）で配車受取</option>
+                          <option value="heliport">空港 / ヘリポートで到着便に合わせて受取</option>
+                          <option value="hotel">宿泊先ホテル・民宿への無料配車・お迎え</option>
+                          <option value="office">店舗（営業所）窓口で直接受取</option>
+                        </select>
+                      </div>
+                    ) : (
+                      <div className="bg-white p-3 rounded-xl border border-slate-200 space-y-1.5">
+                        <label className="block text-xs font-bold text-slate-800 flex items-center gap-1">
+                          <MapPin size={13} className="text-purple-500" />
+                          集合・送迎のご希望 <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                          value={pickupPlaceChoice}
+                          onChange={(e) => setPickupPlaceChoice(e.target.value)}
+                          className="w-full p-2 bg-slate-50 border border-slate-200 rounded-lg text-xs font-bold text-slate-800 outline-none focus:border-purple-500"
+                        >
+                          <option value="hotel">宿泊先ホテル・民宿からの無料送迎を希望</option>
+                          <option value="port">二見港・川平湾等の現地集合場所へ直接集合</option>
+                        </select>
+                      </div>
+                    )}
+
+                    {/* オプション一覧チェックリスト */}
+                    <div className="space-y-2">
+                      {availableOptions.map((opt) => {
+                        const isSelected = selectedOptionIds.includes(opt.id);
+
+                        return (
+                          <div
+                            key={opt.id}
+                            onClick={() => toggleOption(opt.id)}
+                            className={`p-3 rounded-xl border transition-all cursor-pointer flex items-start gap-3 ${
+                              isSelected
+                                ? isRental
+                                  ? 'bg-blue-50/60 border-blue-400 shadow-xs'
+                                  : 'bg-purple-50/60 border-purple-400 shadow-xs'
+                                : 'bg-white border-slate-200 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 mt-0.5 transition-colors ${
+                              isSelected
+                                ? isRental
+                                  ? 'bg-blue-600 border-blue-600 text-white'
+                                  : 'bg-purple-600 border-purple-600 text-white'
+                                : 'border-slate-300 bg-white'
+                            }`}>
+                              {isSelected && <Check size={13} strokeWidth={3} />}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-2">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="text-xs font-bold text-slate-900">{opt.name}</span>
+                                  {opt.badge && (
+                                    <span className="px-1.5 py-0.2 bg-amber-100 text-amber-800 font-bold text-[0.6rem] rounded border border-amber-200">
+                                      {opt.badge}
+                                    </span>
+                                  )}
+                                </div>
+                                <span className="font-mono text-xs font-bold text-slate-900 shrink-0">
+                                  {opt.priceLabel}
+                                </span>
+                              </div>
+                              <p className="text-[0.7rem] text-slate-500 mt-0.5 leading-relaxed font-serif">
+                                {opt.desc}
+                              </p>
+
+                              {/* ウェットスーツ選択時のサイズ指定 */}
+                              {opt.id === 'opt_wetsuit' && isSelected && (
+                                <div className="mt-2 pt-2 border-t border-purple-200 flex items-center gap-2" onClick={e => e.stopPropagation()}>
+                                  <span className="text-[0.7rem] font-bold text-purple-900">ご希望サイズ:</span>
+                                  {['S', 'M', 'L', 'XL'].map(sz => (
+                                    <button
+                                      key={sz}
+                                      type="button"
+                                      onClick={() => setWetsuitSizes(`${sz}サイズ`)}
+                                      className={`px-2 py-0.5 text-xs font-bold rounded border ${
+                                        wetsuitSizes === `${sz}サイズ`
+                                          ? 'bg-purple-600 text-white border-purple-600'
+                                          : 'bg-white text-slate-700 border-slate-200'
+                                      }`}
+                                    >
+                                      {sz}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* 概算お見積りバー */}
+                  <div className="p-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl shadow-sm space-y-2">
+                    <div className="flex items-center justify-between text-xs text-slate-300">
+                      <span>基本プラン料金 ({isRental ? `${rentalDays}日間` : `${participantsCount}名`}):</span>
+                      <span className="font-mono">¥{(isRental ? basePriceNum : basePriceNum * participantsCount).toLocaleString()}</span>
+                    </div>
+                    {optionsTotalPrice > 0 && (
+                      <div className="flex items-center justify-between text-xs text-amber-300">
+                        <span>選択オプション小計:</span>
+                        <span className="font-mono">+¥{optionsTotalPrice.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="pt-2 border-t border-slate-700 flex items-center justify-between">
+                      <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                        <Sparkles size={14} className="text-amber-400" />
+                        合計お見積額 (税込)
+                      </span>
+                      <span className="text-xl font-bold font-mono text-amber-400">
+                        ¥{estimatedTotalPrice.toLocaleString()}
+                      </span>
                     </div>
                   </div>
 
