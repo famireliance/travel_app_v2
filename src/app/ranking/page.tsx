@@ -20,9 +20,11 @@ interface RankingUser {
 
 export default function RankingPage() {
   const router = useRouter();
-  const { user, totalVisited, totalPoints } = useTravel();
+  const { user, totalVisited, totalPoints, travelerName, conquestTargetCount } = useTravel();
   const [rankingType, setRankingType] = useState<'visited' | 'points'>('visited');
   const [realRanking, setRealRanking] = useState<RankingUser[]>([]);
+
+  const ALL_ISLANDS_COUNT = conquestTargetCount || 506;
 
   React.useEffect(() => {
     async function fetchRanking() {
@@ -44,12 +46,13 @@ export default function RankingPage() {
   // 実データに自分がいない場合は自分を一時的に挿入して順位を見せる（0島でも参加しているように見せる）
   const isMeInRanking = fullRanking.some(r => r.id === user?.id);
   if (user && !isMeInRanking) {
+    const myLevel = getPlayerLevelInfo(totalPoints || 0);
     fullRanking.push({
       id: user.id,
-      username: user.email?.split('@')[0] || 'You',
+      username: travelerName || user.email?.split('@')[0] || '冒険者',
       visited: totalVisited,
       points: totalPoints,
-      title: totalVisited > 100 ? '伝説の旅人' : totalVisited > 50 ? '熟練の島巡り' : '冒険者の卵'
+      title: myLevel.title || '島旅ビギナー'
     });
   }
 
@@ -176,7 +179,7 @@ export default function RankingPage() {
                         <span className={rankingType === 'visited' ? 'text-blue-600 text-sm' : ''}>{p.visited} 島</span>
                       </div>
                       <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
-                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.visited / (fullRanking.length > 0 ? 432 : 432)) * 100)}%` }} />
+                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.visited / ALL_ISLANDS_COUNT) * 100)}%` }} />
                       </div>
                     </div>
                     

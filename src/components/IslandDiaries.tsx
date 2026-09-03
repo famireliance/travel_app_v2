@@ -9,6 +9,7 @@ import DiaryPostModal from './DiaryPostModal';
 interface IslandDiary {
   id: string;
   user_id: string;
+  author_name?: string;
   created_at: string;
   is_official?: boolean;
   overall_rating?: number;
@@ -43,15 +44,38 @@ export default function IslandDiaries({
   const fetchDiaries = async () => {
     setLoading(true);
     try {
-      // NOTE: 本来はuser_profilesとJOINして表示名を出すのが理想ですが、現状はuser_idをそのまま使っています
-      const { data, error } = await supabase
+      const { data: diaryList, error } = await supabase
         .from('island_diaries')
         .select('*')
         .eq('island_id', islandId)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
-      setDiaries(data || []);
+      
+      if (diaryList && diaryList.length > 0) {
+        // 投稿者のニックネームを取得
+        const userIds = Array.from(new Set(diaryList.map(d => d.user_id).filter(Boolean)));
+        let userMap: Record<string, string> = {};
+        if (userIds.length > 0) {
+          const { data: profiles } = await supabase
+            .from('user_profiles')
+            .select('id, nickname')
+            .in('id', userIds);
+          if (profiles) {
+            profiles.forEach(p => {
+              if (p.nickname) userMap[p.id] = p.nickname;
+            });
+          }
+        }
+
+        const enriched = diaryList.map(d => ({
+          ...d,
+          author_name: userMap[d.user_id] || (d.is_official ? '公式アンバサダー' : '島旅人')
+        }));
+        setDiaries(enriched);
+      } else {
+        setDiaries([]);
+      }
     } catch (err) {
       console.error('Failed to fetch diaries:', err);
     } finally {
@@ -114,13 +138,13 @@ export default function IslandDiaries({
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-3">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow-inner ${
-                    diary.is_official ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900 ring-2 ring-amber-300 ring-offset-1' : 'bg-gradient-to-br from-slate-200 to-slate-300 text-slate-600'
+                    diary.is_official ? 'bg-gradient-to-br from-amber-200 to-amber-400 text-amber-900 ring-2 ring-amber-300 ring-offset-1' : 'bg-gradient-to-br from-blue-100 to-indigo-200 text-indigo-700'
                   }`}>
-                    {diary.is_official ? <ShieldCheck className="w-4 h-4" /> : diary.user_id.substring(0, 2).toUpperCase()}
+                    {diary.is_official ? <ShieldCheck className="w-4 h-4" /> : (diary.author_name ? diary.author_name.substring(0, 1).toUpperCase() : '島')}
                   </div>
                   <div>
                     <div className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
-                      {diary.is_official ? '公式アンバサダー' : `User ${diary.user_id.substring(0, 5)}`}
+                      {diary.is_official ? '公式アンバサダー' : (diary.author_name || '島旅人')}
                       {diary.is_official && <span className="bg-amber-100 text-amber-600 text-[9px] px-1.5 py-0.5 rounded-full font-bold">公式</span>}
                     </div>
                     <div className="text-[10px] text-slate-400">{new Date(diary.created_at).toLocaleDateString('ja-JP')}</div>

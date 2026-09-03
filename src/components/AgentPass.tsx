@@ -6,9 +6,12 @@ interface AgentPassProps {
   userName: string;
   joinDate?: string;
   isOfficial?: boolean;
+  agentId?: string;
 }
 
-export default function AgentPass({ userName, joinDate = '2023.04.01', isOfficial = false }: AgentPassProps) {
+export default function AgentPass({ userName, joinDate = '2023.04.01', isOfficial = false, agentId }: AgentPassProps) {
+  // ユーザー名から一貫した識別番号を生成（XXXXモック排除）
+  const computedId = agentId || `KIRA-${Math.abs(userName.split('').reduce((acc, c) => acc + c.charCodeAt(0), 1000) % 9000 + 1000)}-${new Date().getFullYear()}`;
   return (
     <motion.div 
       initial={{ opacity: 0, y: 15 }} 
@@ -91,7 +94,7 @@ export default function AgentPass({ userName, joinDate = '2023.04.01', isOfficia
                  <div key={i} className="bg-slate-900 h-full" style={{ width: `${Math.random() * 4 + 1}px` }} />
                ))}
             </div>
-            <p className="text-[0.6rem] text-slate-500 font-mono mt-3 tracking-[0.3em]">ID: 8942-XXXX-XXXX</p>
+            <p className="text-[0.6rem] text-slate-500 font-mono mt-3 tracking-[0.2em]">ID: {computedId}</p>
           </div>
 
           {/* Background pattern */}

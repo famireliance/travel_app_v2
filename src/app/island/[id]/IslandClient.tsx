@@ -688,76 +688,94 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                       </div>
 
                       {/* 宿一覧 (無料枠 vs 有料枠) */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {accommodations.map((acc: any) => {
-                          const isPaid = acc.planTier === 'paid_standard' || acc.planTier === 'paid_premium';
-
-                          return (
-                            <div 
-                              key={acc.id} 
-                              className={`p-5 rounded-2xl border transition-all ${
-                                isPaid 
-                                  ? 'bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-900/5 border-amber-400 shadow-md' 
-                                  : 'bg-slate-50 border-slate-200'
-                              }`}
+                      {accommodations.length === 0 ? (
+                        <div className="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-2">
+                          <Building className="w-8 h-8 text-slate-400 mx-auto opacity-50" />
+                          <p className="text-sm font-bold text-slate-700">現在、掲載されている宿泊施設情報はありません</p>
+                          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                            島内の民宿・旅館・ゲストハウス事業者様からの情報掲載申請を随時受け付けております。
+                          </p>
+                          <div className="pt-2">
+                            <a
+                              href="/contact"
+                              className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-1.5 rounded-xl transition"
                             >
-                              <div className="space-y-3">
-                                <div className="flex items-start justify-between gap-2">
-                                  <div>
-                                    {isPaid ? (
-                                      <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
-                                        🌟 KIRATABI 公式特設掲載宿
-                                      </span>
-                                    ) : (
-                                      <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
-                                        ✅ 公的ディレクトリ確認済み
+                              宿情報の掲載申請・お問い合わせ ➔
+                            </a>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {accommodations.map((acc: any) => {
+                            const isPaid = acc.planTier === 'paid_standard' || acc.planTier === 'paid_premium';
+
+                            return (
+                              <div 
+                                key={acc.id} 
+                                className={`p-5 rounded-2xl border transition-all ${
+                                  isPaid 
+                                    ? 'bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-slate-900/5 border-amber-400 shadow-md' 
+                                    : 'bg-slate-50 border-slate-200'
+                                }`}
+                              >
+                                <div className="space-y-3">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div>
+                                      {isPaid ? (
+                                        <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
+                                          🌟 KIRATABI 公式特設掲載宿
+                                        </span>
+                                      ) : (
+                                        <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
+                                          ✅ 公的ディレクトリ確認済み
+                                        </span>
+                                      )}
+                                      <h4 className="font-serif font-bold text-slate-900 text-base">{acc.name}</h4>
+                                    </div>
+
+                                    {isPaid && acc.priceRange && (
+                                      <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-lg shrink-0">
+                                        {acc.priceRange}
                                       </span>
                                     )}
-                                    <h4 className="font-serif font-bold text-slate-900 text-base">{acc.name}</h4>
                                   </div>
 
-                                  {isPaid && acc.priceRange && (
-                                    <span className="font-mono text-xs font-bold text-amber-700 bg-amber-100 px-2 py-1 rounded-lg shrink-0">
-                                      {acc.priceRange}
-                                    </span>
-                                  )}
-                                </div>
-
-                                {/* 無料枠: 余計な推測情報は載せず電話番号のみ！ / 有料枠: 写真・詳細特徴 */}
-                                {isPaid && acc.features && (
-                                  <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                                    {acc.features}
-                                  </p>
-                                )}
-
-                                <div className="pt-2 flex items-center justify-between gap-2 border-t border-slate-200/60">
-                                  {acc.phone ? (
-                                    <a
-                                      href={`tel:${acc.phone}`}
-                                      onClick={() => trackFacilityEvent(acc.id, 'phone_call_click')}
-                                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
-                                    >
-                                      <Phone size={14} /> {acc.phone}
-                                    </a>
-                                  ) : (
-                                    <span className="text-xs text-slate-400">電話要確認</span>
+                                  {/* 無料枠: 余計な推測情報は載せず電話番号のみ！ / 有料枠: 写真・詳細特徴 */}
+                                  {isPaid && acc.features && (
+                                    <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                                      {acc.features}
+                                    </p>
                                   )}
 
-                                  {isPaid && acc.sponsoredId && (
-                                    <Link
-                                      href={`/stay/${acc.sponsoredId}`}
-                                      onClick={() => trackFacilityEvent(acc.id, 'lp_view')}
-                                      className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"
-                                    >
-                                      公式特設LPを見る <ArrowRight size={12} />
-                                    </Link>
-                                  )}
+                                  <div className="pt-2 flex items-center justify-between gap-2 border-t border-slate-200/60">
+                                    {acc.phone ? (
+                                      <a
+                                        href={`tel:${acc.phone}`}
+                                        onClick={() => trackFacilityEvent(acc.id, 'phone_call_click')}
+                                        className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
+                                      >
+                                        <Phone size={14} /> {acc.phone}
+                                      </a>
+                                    ) : (
+                                      <span className="text-xs text-slate-400">電話番号確認中</span>
+                                    )}
+
+                                    {isPaid && acc.sponsoredId && (
+                                      <Link
+                                        href={`/stay/${acc.sponsoredId}`}
+                                        onClick={() => trackFacilityEvent(acc.id, 'lp_view')}
+                                        className="px-3 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"
+                                      >
+                                        公式特設LPを見る <ArrowRight size={12} />
+                                      </Link>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
-                            </div>
-                          );
-                        })}
-                      </div>
+                            );
+                          })}
+                        </div>
+                      )}
 
                       {/* 補助的 大手検索リンク */}
                       <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-2">
@@ -811,36 +829,42 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {ferryBoats.map((boat) => (
-                          <div key={boat.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                            <div className="flex items-start justify-between gap-2">
-                              <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                                <Ship size={16} className="text-teal-600" />
-                                {boat.name}
-                              </h4>
-                              {boat.priceRange && (
-                                <span className="font-mono text-[0.7rem] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 shrink-0">
-                                  {boat.priceRange}
-                                </span>
-                              )}
-                            </div>
+                      {ferryBoats.length === 0 ? (
+                        <div className="p-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-xs text-slate-500 font-serif">
+                          定期便や渡船の最新の運航ダイヤ・乗り場情報は、出港地となる港湾または各自治体窓口にお問い合わせください。
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {ferryBoats.map((boat) => (
+                            <div key={boat.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                              <div className="flex items-start justify-between gap-2">
+                                <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                                  <Ship size={16} className="text-teal-600" />
+                                  {boat.name}
+                                </h4>
+                                {boat.priceRange && (
+                                  <span className="font-mono text-[0.7rem] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded-md border border-teal-200 shrink-0">
+                                    {boat.priceRange}
+                                  </span>
+                                )}
+                              </div>
 
-                            <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                              {boat.features}
-                            </p>
+                              <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                                {boat.features}
+                              </p>
 
-                            <div className="pt-1 flex items-center justify-between text-xs font-mono text-slate-500">
-                              <span>📍 {boat.departurePort}</span>
-                              {boat.phone && (
-                                <a href={`tel:${boat.phone}`} className="text-blue-600 font-bold hover:underline flex items-center gap-1">
-                                  <Phone size={12} /> {boat.phone}
-                                </a>
-                              )}
+                              <div className="pt-1 flex items-center justify-between text-xs font-mono text-slate-500">
+                                <span>📍 {boat.departurePort}</span>
+                                {boat.phone && (
+                                  <a href={`tel:${boat.phone}`} className="text-blue-600 font-bold hover:underline flex items-center gap-1">
+                                    <Phone size={12} /> {boat.phone}
+                                  </a>
+                                )}
+                              </div>
                             </div>
-                          </div>
-                        ))}
-                      </div>
+                          ))}
+                        </div>
+                      )}
 
                       {/* 本土・近隣島の宿検索ボタン */}
                       <div className="pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -888,6 +912,27 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                     const verifiedActivities = getIslandServicesByIslandId(island.id || islandId).filter(
                       s => s.type === 'activity' || s.type === 'guide_tour'
                     );
+
+                    if (verifiedActivities.length === 0 && activities.length === 0) {
+                      return (
+                        <div className="p-8 text-center bg-purple-50/40 rounded-2xl border border-dashed border-purple-200/80 space-y-2">
+                          <Ticket className="w-8 h-8 text-purple-400 mx-auto opacity-50" />
+                          <p className="text-sm font-bold text-purple-950">{island.name}のアクティビティ・ツアー情報</p>
+                          <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                            現在、公認ツアーの掲載準備を進めております。ダイビング・シュノーケリング・ネイチャーガイド等の事業者様からの情報掲載を受け付けております。
+                          </p>
+                          <div className="pt-2">
+                            <a
+                              href="/contact"
+                              className="inline-flex items-center gap-1 text-xs font-bold text-purple-700 bg-white hover:bg-purple-50 border border-purple-200 px-3.5 py-1.5 rounded-xl transition shadow-xs"
+                            >
+                              ツアー・体験の掲載について相談する ➔
+                            </a>
+                          </div>
+                        </div>
+                      );
+                    }
+
                     if (verifiedActivities.length === 0) return null;
 
                     return (
@@ -1097,41 +1142,59 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                   })()}
 
                   {/* General Transport List */}
-                  <div className="space-y-3">
-                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">
-                      島内のレンタカー・レンタルバイク・自転車・交通機関一覧
-                    </span>
+                  {facilityData.transports.length === 0 ? (
+                    <div className="p-8 text-center bg-blue-50/40 rounded-2xl border border-dashed border-blue-200/80 space-y-2">
+                      <Car className="w-8 h-8 text-blue-400 mx-auto opacity-50" />
+                      <p className="text-sm font-bold text-blue-950">{island.name}の島内交通・モビリティ情報</p>
+                      <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
+                        島内のレンタカー・レンタサイクル・タクシー事業者様からの情報掲載を受け付けております。
+                      </p>
+                      <div className="pt-2">
+                        <a
+                          href="/contact"
+                          className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 bg-white hover:bg-blue-50 border border-blue-200 px-3.5 py-1.5 rounded-xl transition shadow-xs"
+                        >
+                          交通事業者様の掲載ご相談 ➔
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="space-y-3">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">
+                        島内のレンタカー・レンタルバイク・自転車・交通機関一覧
+                      </span>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {facilityData.transports.map((trans) => (
-                        <div key={trans.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                              {trans.type === 'car' ? <Car size={16} className="text-blue-500" /> : <Bike size={16} className="text-emerald-500" />}
-                              {trans.name}
-                            </h4>
-                            {trans.priceRange && (
-                              <span className="font-mono text-[0.7rem] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
-                                {trans.priceRange}
-                              </span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {facilityData.transports.map((trans) => (
+                          <div key={trans.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                                {trans.type === 'car' ? <Car size={16} className="text-blue-500" /> : <Bike size={16} className="text-emerald-500" />}
+                                {trans.name}
+                              </h4>
+                              {trans.priceRange && (
+                                <span className="font-mono text-[0.7rem] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
+                                  {trans.priceRange}
+                                </span>
+                              )}
+                            </div>
+
+                            <p className="text-xs text-slate-600 leading-relaxed">
+                              {trans.features}
+                            </p>
+
+                            {trans.phone && (
+                              <div className="pt-1">
+                                <a href={`tel:${trans.phone}`} className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:underline font-mono">
+                                  <Phone size={12} /> {trans.phone}
+                                </a>
+                              </div>
                             )}
                           </div>
-
-                          <p className="text-xs text-slate-600 leading-relaxed">
-                            {trans.features}
-                          </p>
-
-                          {trans.phone && (
-                            <div className="pt-1">
-                              <a href={`tel:${trans.phone}`} className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:underline font-mono">
-                                <Phone size={12} /> {trans.phone}
-                              </a>
-                            </div>
-                          )}
-                        </div>
-                      ))}
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 

@@ -196,10 +196,10 @@ const DEFAULT_FALLBACK_INN: InnData = {
   }
 };
 
-export default function DedicatedInnPage() {
+export default function DedicatedInnPage({ demoMode = false }: { demoMode?: boolean } = {}) {
   const router = useRouter();
   const params = useParams();
-  const innParamId = (params?.id as string) || '';
+  const innParamId = (params?.id as string) || (demoMode ? 'demo' : '');
 
   const [loading, setLoading] = useState(true);
   const [inn, setInn] = useState<InnData>(DEFAULT_FALLBACK_INN);

@@ -143,6 +143,24 @@ export default function RegionMap() {
       {/* Map Area */}
       <div className="flex-1 relative w-full h-full z-0">
         <MapClient islands={regionIslands} bounds={bounds} />
+
+        {regionIslands.length === 0 && (
+          <div className="absolute inset-0 z-[1000] flex items-center justify-center p-6 bg-slate-900/30 backdrop-blur-xs pointer-events-none">
+            <div className="bg-white/95 rounded-2xl shadow-xl p-6 max-w-md text-center pointer-events-auto border border-slate-200 space-y-3">
+              <Compass className="w-10 h-10 text-blue-500 mx-auto opacity-80" />
+              <h3 className="font-serif font-bold text-slate-800 text-base">{region.name}の島データを準備中</h3>
+              <p className="text-xs text-slate-500 leading-relaxed">
+                現在、この諸島・エリアの島データを整備しています。全離島マップから他の島々をお探しいただけます。
+              </p>
+              <Link
+                href="/map"
+                className="inline-block px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow hover:bg-blue-700 transition"
+              >
+                全国離島マップへ戻る
+              </Link>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Affiliate Overlay */}

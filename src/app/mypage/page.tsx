@@ -19,7 +19,7 @@ import toast from 'react-hot-toast';
 
 export default function MyPage() {
   const router = useRouter();
-  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, bio, updateBio, totalPoints, conquestTargetCount, visitCounts, spotsVisited, companionChar, companionStage, collectedFairyDates, allFairies, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed, setAnniversaryCertUsed } = useTravel();
+  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, bio, updateBio, totalPoints, conquestTargetCount, visitCounts, spotsVisited, companionChar, companionStage, collectedFairies, collectedFairyDates, allFairies, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed, setAnniversaryCertUsed } = useTravel();
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [showPlanModal, setShowPlanModal] = useState(false);
@@ -245,8 +245,7 @@ export default function MyPage() {
   const diffStats = calculateDifficultyStats(allIslandsData, islandStatuses);
 
   const unlockedFairies = allFairies.map(fairy => {
-    // UI確認のため一時的にすべて開放表示
-    const unlocked = true; // collectedFairies.includes(fairy.id);
+    const unlocked = collectedFairies.includes(fairy.id);
     return { ...fairy, unlocked };
   });
 
