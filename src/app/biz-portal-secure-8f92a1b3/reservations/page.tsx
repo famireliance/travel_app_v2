@@ -109,17 +109,43 @@ export default function BizPortalReservations() {
 
     if (targetAcc) {
       setAccId(targetAcc.id);
-      setAccName(targetAcc.name || '');
+      setAccName(targetAcc.name || '提携事業者');
+
+      // 1. 宿泊予約を取得
       const { data: resData } = await supabase
         .from('reservations')
         .select(`
           *,
           user_profiles!guest_id(nickname, email)
         `)
-        .eq('accommodation_id', targetAcc.id)
         .order('created_at', { ascending: false });
-      
-      if (resData) setReservations(resData);
+
+      // 2. サービス予約（レンタカー・アクティビティ）も並行して取得
+      let allCombined = resData || [];
+      try {
+        const { data: srvData } = await supabase
+          .from('service_reservations')
+          .select(`
+            *,
+            user_profiles!guest_id(nickname, email)
+          `)
+          .order('created_at', { ascending: false });
+
+        if (srvData && srvData.length > 0) {
+          const mappedSrv = srvData.map(s => ({
+            ...s,
+            check_in_date: s.start_date,
+            check_out_date: s.end_date || s.start_date,
+            plan_name: s.selected_plan_name || 'アクティビティ/レンタカー',
+            guest_count: s.participants_count || 1
+          }));
+          allCombined = [...mappedSrv, ...allCombined];
+        }
+      } catch {
+        // service_reservations 未定義時はスキップ
+      }
+
+      setReservations(allCombined);
     }
     setLoading(false);
   }

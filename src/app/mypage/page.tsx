@@ -704,10 +704,21 @@ export default function MyPage() {
               ) : (
                 <div className="space-y-4">
                   {reservations.map((res) => {
-                    const accName = res.accommodations?.name || '宿泊施設';
-                    const checkIn = res.check_in_date || res.check_in || '未定';
-                    const checkOut = res.check_out_date || res.check_out || '未定';
-                    const isCheckinEligible = res.status === 'confirmed' || res.status === 'pending';
+                    const accName = res.accommodations?.name || res.plan_name || '予約サービス';
+                    const checkIn = res.check_in_date || res.start_date || res.check_in || '未定';
+                    const checkOut = res.check_out_date || res.end_date || res.check_out || '';
+                    const isStay = !!res.accommodation_id || (!res.plan_name?.includes('レンタカー') && !res.plan_name?.includes('アクティビティ'));
+                    const isCheckinEligible = isStay && (res.status === 'confirmed' || res.status === 'pending');
+
+                    const getCategoryBadge = () => {
+                      if (res.plan_name?.includes('レンタカー') || res.service_type === 'rental_car') {
+                        return <span className="px-2.5 py-0.5 bg-blue-100 text-blue-800 text-[0.65rem] font-bold rounded-md flex items-center gap-1 font-mono">🚗 レンタカー</span>;
+                      }
+                      if (res.plan_name?.includes('アクティビティ') || res.plan_name?.includes('ツアー') || res.service_type === 'activity') {
+                        return <span className="px-2.5 py-0.5 bg-purple-100 text-purple-800 text-[0.65rem] font-bold rounded-md flex items-center gap-1 font-mono">🤿 アクティビティ</span>;
+                      }
+                      return <span className="px-2.5 py-0.5 bg-amber-100 text-amber-900 text-[0.65rem] font-bold rounded-md flex items-center gap-1 font-mono">🏨 宿泊施設</span>;
+                    };
 
                     const getStatusBadge = (status: string) => {
                       switch (status) {
@@ -715,11 +726,12 @@ export default function MyPage() {
                           return <span className="px-3 py-1 bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold rounded-full">予約確定</span>;
                         case 'pending':
                           return <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold rounded-full">確認中</span>;
+                        case 'rejected':
                         case 'cancelled':
                           return <span className="px-3 py-1 bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold rounded-full">キャンセル済</span>;
                         case 'completed':
                         case 'checked_in':
-                          return <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-full">宿泊完了</span>;
+                          return <span className="px-3 py-1 bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold rounded-full">利用完了</span>;
                         default:
                           return <span className="px-3 py-1 bg-slate-100 text-slate-700 border border-slate-200 text-xs font-bold rounded-full">{status}</span>;
                       }
@@ -731,9 +743,9 @@ export default function MyPage() {
                         className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md transition-all flex flex-col md:flex-row md:items-center justify-between gap-6"
                       >
                         <div className="space-y-3 flex-1">
-                          <div className="flex flex-wrap items-center gap-3">
+                          <div className="flex flex-wrap items-center gap-2.5">
+                            {getCategoryBadge()}
                             <h4 className="font-serif font-bold text-lg text-slate-900 flex items-center gap-2">
-                              <MapPin className="w-5 h-5 text-amber-500 shrink-0" />
                               {accName}
                             </h4>
                             {getStatusBadge(res.status)}
@@ -743,13 +755,13 @@ export default function MyPage() {
                             <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
                               <Calendar className="w-4 h-4 text-blue-500 shrink-0" />
                               <span>
-                                宿泊日程: <strong className="text-slate-800 font-mono">{checkIn}</strong> 〜 <strong className="text-slate-800 font-mono">{checkOut}</strong>
+                                ご利用日程: <strong className="text-slate-800 font-mono">{checkIn}</strong> {checkOut && checkOut !== checkIn && <>〜 <strong className="text-slate-800 font-mono">{checkOut}</strong></>}
                               </span>
                             </div>
-                            {res.guest_count && (
+                            {(res.guest_count || res.participants_count) && (
                               <div className="flex items-center gap-2 bg-slate-50 px-3 py-2 rounded-xl border border-slate-100">
-                                <span className="text-slate-400 font-bold">人数:</span>
-                                <strong className="text-slate-800">{res.guest_count}名</strong>
+                                <span className="text-slate-400 font-bold">人数・台数:</span>
+                                <strong className="text-slate-800">{res.guest_count || res.participants_count}名/台</strong>
                               </div>
                             )}
                           </div>
@@ -773,7 +785,7 @@ export default function MyPage() {
                             </Link>
                           )}
 
-                          {res.status === 'confirmed' && (
+                          {isStay && res.status === 'confirmed' && (
                             <button
                               onClick={() => setSelectedCertRes(res)}
                               className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-amber-300 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 border border-amber-400/40"

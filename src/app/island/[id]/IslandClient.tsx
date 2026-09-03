@@ -20,9 +20,10 @@ import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
 import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl, getJalanRentacarSearchUrl } from '@/data/islandFacilitiesData';
 import { getIslandCategoryType, FERRY_BOATS_DICTIONARY, ACTIVITIES_DICTIONARY, getIslandGuideArticle } from '@/data/islandCategoryData';
+import { getIslandServicesByIslandId } from '@/data/islandServicesData';
 import { trackFacilityEvent } from '@/lib/supabase';
 import NearbyIslands from '@/components/NearbyIslands';
-import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building } from 'lucide-react';
+import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building, Key } from 'lucide-react';
 
 interface IslandDiarySSR {
   id: string;
@@ -861,53 +862,132 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
               )}
 
               {/* ========================================== */}
-              {/* COMMON 1: 🦺 アクティビティ・ツアー掲載枠 */}
+              {/* COMMON 1: 🦺 アクティビティ・体験ツアー掲載枠 */}
               {/* ========================================== */}
-              {activities.length > 0 && (
-                <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
-                  <div className="bg-gradient-to-r from-purple-500/10 via-pink-500/5 to-slate-900/5 border-b border-purple-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                      <span className="text-[0.65rem] font-bold text-purple-700 uppercase tracking-widest block mb-1">ISLAND ACTIVITIES & TOURS</span>
-                      <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
-                        <Ticket className="w-5 h-5 text-purple-600" /> {island.name}のアクティビティ・オプショナルツアーガイド
-                      </h3>
-                    </div>
+              <div className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-purple-500/10 via-pink-500/5 to-slate-900/5 border-b border-purple-500/20 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div>
+                    <span className="text-[0.65rem] font-bold text-purple-700 uppercase tracking-widest block mb-1">ISLAND ACTIVITIES & TOURS</span>
+                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                      <Ticket className="w-5 h-5 text-purple-600" /> {island.name}のアクティビティ・体験ツアー
+                    </h3>
                   </div>
-  
-                  <div className="p-6 space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {activities.map((act) => (
-                        <div key={act.id} className="p-4 rounded-2xl bg-purple-50/50 border border-purple-100 space-y-2">
-                          <div className="flex items-start justify-between gap-2">
-                            <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                              <Sparkles size={16} className="text-purple-600" />
-                              {act.name}
-                            </h4>
-                            {act.priceRange && (
-                              <span className="font-mono text-[0.7rem] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded-md shrink-0">
-                                {act.priceRange}
-                              </span>
-                            )}
-                          </div>
-  
-                          <p className="text-xs text-slate-600 leading-relaxed font-serif">
-                            {act.features}
-                          </p>
-  
-                          <div className="pt-2 flex items-center justify-between">
-                            <span className="text-[0.65rem] text-purple-700 font-bold bg-purple-100 px-2 py-0.5 rounded-full uppercase">
-                              {act.category}
-                            </span>
-                            <a href="/contact" className="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1">
-                              ツアーの相談・掲載問い合わせ ➔
-                            </a>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
+
+                  <a 
+                    href="/contact" 
+                    className="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs rounded-xl border border-purple-200 transition-colors flex items-center gap-1.5 self-start md:self-auto"
+                  >
+                    <span>事業者様: 掲載のご相談</span>
+                    <ExternalLink size={12} />
+                  </a>
                 </div>
-              )}
+
+                <div className="p-6 space-y-6">
+                  {/* Verified Partner Activities */}
+                  {(() => {
+                    const verifiedActivities = getIslandServicesByIslandId(island.id || islandId).filter(
+                      s => s.type === 'activity' || s.type === 'guide_tour'
+                    );
+                    if (verifiedActivities.length === 0) return null;
+
+                    return (
+                      <div className="space-y-3">
+                        <span className="text-xs font-bold text-purple-900 uppercase tracking-wider flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4 text-purple-600 fill-purple-400" />
+                          KIRATABI 公式認定・特選アクティビティ
+                        </span>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {verifiedActivities.map((srv) => (
+                            <div 
+                              key={srv.id}
+                              className="p-5 rounded-2xl bg-gradient-to-br from-purple-50/70 via-pink-50/40 to-white border-2 border-purple-200 shadow-sm space-y-3 hover:shadow-md transition-all group"
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div>
+                                  <span className="px-2 py-0.5 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold text-[0.6rem] rounded-md tracking-wider uppercase shadow-xs inline-block mb-1">
+                                    ★ 公式認定ツアー
+                                  </span>
+                                  <h4 className="font-serif font-bold text-slate-900 text-base group-hover:text-purple-700 transition-colors">
+                                    {srv.name}
+                                  </h4>
+                                </div>
+                                <span className="font-mono text-xs font-bold text-purple-900 bg-white px-2.5 py-1 rounded-lg border border-purple-200 shrink-0 shadow-xs">
+                                  {srv.priceRange}
+                                </span>
+                              </div>
+
+                              <p className="text-xs text-slate-600 font-serif line-clamp-2 leading-relaxed">
+                                {srv.catchphrase?.split('\n')[0] || srv.description}
+                              </p>
+
+                              <div className="flex flex-wrap gap-1.5 pt-1">
+                                {srv.features.slice(0, 3).map((feat, fi) => (
+                                  <span key={fi} className="text-[0.65rem] font-bold text-purple-800 bg-purple-100/80 px-2 py-0.5 rounded-md">
+                                    ✓ {feat}
+                                  </span>
+                                ))}
+                              </div>
+
+                              <div className="pt-2 border-t border-purple-100/80 flex items-center justify-between">
+                                <span className="text-[0.7rem] text-emerald-700 font-bold flex items-center gap-1">
+                                  🛡️ 船便欠航キャンセル無料
+                                </span>
+                                <Link
+                                  href={`/activity/${srv.id}`}
+                                  className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                                >
+                                  <span>詳細・空き枠予約</span>
+                                  <ArrowRight size={13} />
+                                </Link>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* General Guide Activities */}
+                  {activities.length > 0 && (
+                    <div className="space-y-3">
+                      <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">
+                        島内のアクティビティ・体験ガイド情報
+                      </span>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {activities.map((act) => (
+                          <div key={act.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                            <div className="flex items-start justify-between gap-2">
+                              <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                                <Sparkles size={15} className="text-purple-500" />
+                                {act.name}
+                              </h4>
+                              {act.priceRange && (
+                                <span className="font-mono text-[0.7rem] font-bold text-slate-700 bg-white px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
+                                  {act.priceRange}
+                                </span>
+                              )}
+                            </div>
+
+                            <p className="text-xs text-slate-600 leading-relaxed font-serif">
+                              {act.features}
+                            </p>
+
+                            <div className="pt-2 flex items-center justify-between">
+                              <span className="text-[0.65rem] text-slate-600 font-bold bg-slate-200/60 px-2 py-0.5 rounded-full uppercase">
+                                {act.category}
+                              </span>
+                              <a href="/contact" className="text-xs font-bold text-purple-600 hover:underline flex items-center gap-1">
+                                相談・掲載問い合わせ ➔
+                              </a>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
 
               {/* ========================================== */}
               {/* COMMON 2: 🚗 島内交通インフラ・レンタカーガイド */}
@@ -943,7 +1023,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                   </div>
                 </div>
 
-                <div className="p-6 space-y-4">
+                <div className="p-6 space-y-6">
                   {facilityData.transportNotes && (
                     <div className="bg-blue-50 border border-blue-100 p-4 rounded-2xl text-xs text-blue-800 font-serif leading-relaxed flex items-start gap-2.5">
                       <Compass className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
@@ -951,36 +1031,106 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                     </div>
                   )}
 
-                  <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">島内のレンタカー・レンタルバイク・自転車・交通機関</span>
+                  {/* Verified Partner Rentals */}
+                  {(() => {
+                    const verifiedRentals = getIslandServicesByIslandId(island.id || islandId).filter(
+                      s => s.type === 'rental_car' || s.type === 'bike_rental'
+                    );
+                    if (verifiedRentals.length === 0) return null;
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {facilityData.transports.map((trans) => (
-                      <div key={trans.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
-                        <div className="flex items-start justify-between gap-2">
-                          <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
-                            {trans.type === 'car' ? <Car size={16} className="text-blue-500" /> : <Bike size={16} className="text-emerald-500" />}
-                            {trans.name}
-                          </h4>
-                          {trans.priceRange && (
-                            <span className="font-mono text-[0.7rem] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
-                              {trans.priceRange}
-                            </span>
+                    return (
+                      <div className="space-y-3">
+                        <span className="text-xs font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
+                          <Sparkles className="w-4 h-4 text-blue-600 fill-blue-400" />
+                          KIRATABI 公式認定・特選レンタカー＆モビリティ
+                        </span>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          {verifiedRentals.map((srv) => (
+                            <div 
+                              key={srv.id}
+                              className="p-5 rounded-2xl bg-gradient-to-br from-blue-50/70 via-indigo-50/40 to-white border-2 border-blue-200 shadow-sm space-y-3 hover:shadow-md transition-all group"
+                            >
+                              <div className="flex items-start justify-between gap-2">
+                                <div>
+                                  <span className="px-2 py-0.5 bg-blue-600 text-white font-bold text-[0.6rem] rounded-md tracking-wider uppercase shadow-xs inline-block mb-1">
+                                    ★ 公式認定レンタカー
+                                  </span>
+                                  <h4 className="font-serif font-bold text-slate-900 text-base group-hover:text-blue-700 transition-colors">
+                                    {srv.name}
+                                  </h4>
+                                </div>
+                                <span className="font-mono text-xs font-bold text-blue-900 bg-white px-2.5 py-1 rounded-lg border border-blue-200 shrink-0 shadow-xs">
+                                  {srv.priceRange}
+                                </span>
+                              </div>
+
+                              <p className="text-xs text-slate-600 font-serif line-clamp-2 leading-relaxed">
+                                {srv.catchphrase?.split('\n')[0] || srv.description}
+                              </p>
+
+                              <div className="flex flex-wrap gap-1.5 pt-1">
+                                {srv.features.slice(0, 3).map((feat, fi) => (
+                                  <span key={fi} className="text-[0.65rem] font-bold text-blue-800 bg-blue-100/80 px-2 py-0.5 rounded-md">
+                                    ✓ {feat}
+                                  </span>
+                                ))}
+                              </div>
+
+                              <div className="pt-2 border-t border-blue-100/80 flex items-center justify-between">
+                                <span className="text-[0.7rem] text-emerald-700 font-bold flex items-center gap-1">
+                                  🛡️ 船・ヘリ欠航免除保証
+                                </span>
+                                <Link
+                                  href={`/rental/${srv.id}`}
+                                  className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                                >
+                                  <span>車両・空き状況予約</span>
+                                  <ArrowRight size={13} />
+                                </Link>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* General Transport List */}
+                  <div className="space-y-3">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block">
+                      島内のレンタカー・レンタルバイク・自転車・交通機関一覧
+                    </span>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {facilityData.transports.map((trans) => (
+                        <div key={trans.id} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                          <div className="flex items-start justify-between gap-2">
+                            <h4 className="font-serif font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                              {trans.type === 'car' ? <Car size={16} className="text-blue-500" /> : <Bike size={16} className="text-emerald-500" />}
+                              {trans.name}
+                            </h4>
+                            {trans.priceRange && (
+                              <span className="font-mono text-[0.7rem] font-bold text-slate-600 bg-white px-2 py-0.5 rounded-md border border-slate-200 shrink-0">
+                                {trans.priceRange}
+                              </span>
+                            )}
+                          </div>
+
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            {trans.features}
+                          </p>
+
+                          {trans.phone && (
+                            <div className="pt-1">
+                              <a href={`tel:${trans.phone}`} className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:underline font-mono">
+                                <Phone size={12} /> {trans.phone}
+                              </a>
+                            </div>
                           )}
                         </div>
-
-                        <p className="text-xs text-slate-600 leading-relaxed">
-                          {trans.features}
-                        </p>
-
-                        {trans.phone && (
-                          <div className="pt-1">
-                            <a href={`tel:${trans.phone}`} className="inline-flex items-center gap-1 text-xs font-bold text-blue-600 hover:underline font-mono">
-                              <Phone size={12} /> {trans.phone}
-                            </a>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
