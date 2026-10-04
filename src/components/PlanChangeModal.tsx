@@ -42,12 +42,11 @@ export function PlanChangeModal({ isOpen, onClose, currentTier, onPlanChanged }:
         return;
       }
 
-      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch('/api/subscription/change-plan', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${session?.access_token || ''}`
+          'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({ target_tier: confirmingPlan })
       });

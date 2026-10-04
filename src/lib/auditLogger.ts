@@ -39,8 +39,9 @@ export interface AuditLogEntry {
   diff?: AuditDiff;
 }
 
-// メモリ内フォールバックバッファ（最新200件を保持し、DB接続障害時でもログ欠損を防止）
-const memoryAuditBuffer: AuditLogEntry[] = [];
+// メモリ内フォールバックバッファ（route間で共有するため globalThis に保持）
+const g = globalThis as unknown as { __auditBuffer?: AuditLogEntry[] };
+const memoryAuditBuffer: AuditLogEntry[] = (g.__auditBuffer ??= []);
 
 /**
  * リクエストからクライアントIPおよびUserAgentを抽出

@@ -96,7 +96,7 @@ function findRelatedIsland(fairy: IslandFairy) {
       (isl: any) =>
         isl.name === fairy.island_id ||
         isl.slug === target ||
-        (isl.name && (isl.name.includes(fairy.island_id) || fairy.island_id.includes(isl.name)))
+        (isl.name && (isl.name.includes(fairy.island_id as string) || (fairy.island_id as string).includes(isl.name)))
     );
     if (found) {
       return { id: found.id, name: found.name, prefecture: found.prefecture, slug: found.slug };

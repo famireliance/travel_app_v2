@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Wifi, Signal, MapPin, Copy, Check, Info, ShieldAlert, 
   ExternalLink, ChevronDown, ChevronUp, Radio, HelpCircle

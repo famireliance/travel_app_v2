@@ -6,7 +6,7 @@ import {
   ShieldAlert, RefreshCw, Filter, Search, Clock, 
   User, Globe, ChevronDown, ChevronRight, FileCode, ArrowRight, ShieldCheck
 } from 'lucide-react';
-import { AuditLogEntry } from '@/lib/auditLogger';
+import type { AuditLogEntry } from '@/lib/auditLogger';
 
 interface AdminAuditLogsProps {
   password: string;

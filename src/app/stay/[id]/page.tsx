@@ -1167,6 +1167,8 @@ export default function DedicatedInnPage({ demoMode = false }: { demoMode?: bool
             </div>
           </div>
         </div>
+      )}
+
       {/* 📶 スマートWi-Fi接続モーダル */}
       {inn.wifiSsid && (
         <WifiConnectModal

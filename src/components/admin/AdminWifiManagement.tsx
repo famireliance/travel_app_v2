@@ -6,7 +6,7 @@ import {
   Wifi, Plus, Trash2, Edit3, Save, X, Signal, 
   MapPin, CheckCircle, ShieldCheck, RefreshCw, AlertCircle 
 } from 'lucide-react';
-import { PublicWifiSpot } from '@/app/api/admin/wifi-spots/route';
+import type { PublicWifiSpot } from '@/lib/wifiStore';
 
 interface AdminWifiManagementProps {
   password: string;

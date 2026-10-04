@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
     const client = extractClientInfo(req);
 
     const log = await logAuditEvent({
-      actor: body.actor || { role: 'super_admin', name: 'Master Operator' },
+      actor: { role: 'super_admin', name: 'Master Admin', org: 'プラットフォーム運営' },
       client,
       action: body.action || 'CUSTOM_ADMIN_ACTION',
       target: body.target,

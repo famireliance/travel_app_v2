@@ -778,7 +778,7 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
         )}
 
         {/* 🏡 Island Relocation & Family Living Gateway (子育て・移住特化ポータル連携口) */}
-        {!island.is_uninhabited && (
+        {!island.is_uninhabited && process.env.NEXT_PUBLIC_IJYU_URL && (
           <div className="mb-10 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-teal-950/60 via-slate-900/90 to-sky-950/60 border border-teal-500/30 shadow-2xl text-white flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-md">
             <div className="space-y-2">
               <div className="flex items-center gap-2">
@@ -797,7 +797,7 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
               </p>
             </div>
             <a
-              href={`https://ijyu.kira-tabi.com/island/${encodeURIComponent(island.id)}`}
+              href={`${process.env.NEXT_PUBLIC_IJYU_URL}/island/${encodeURIComponent(island.id)}`}
               target="_blank"
               rel="noopener noreferrer"
               className="px-6 py-3.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white rounded-2xl font-bold text-xs shadow-lg shadow-teal-500/25 hover:shadow-teal-500/35 transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer self-start md:self-auto group"
