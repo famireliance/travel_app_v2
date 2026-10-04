@@ -22,11 +22,17 @@ export function PlanChangeModal({ isOpen, onClose, currentTier, onPlanChanged }:
       const { supabase } = await import('@/lib/supabase');
       const { data: { user } } = await supabase.auth.getUser();
 
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token || '';
+
       if (currentTier === 'free') {
         const res = await fetch('/api/subscription/checkout', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ userId: user?.id, tier: confirmingPlan }),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify({ userId: session?.user?.id || user?.id, tier: confirmingPlan }),
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || '決済ページの開始に失敗しました');

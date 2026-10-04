@@ -133,9 +133,14 @@ export default function Home() {
       return;
     }
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token || '';
       const res = await fetch('/api/subscription/checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
         body: JSON.stringify({ userId: user.id, tier }),
       });
       const data = await res.json();
@@ -317,7 +322,10 @@ export default function Home() {
           <motion.button onClick={() => setIsSearchOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>探す</motion.button>
           <motion.button onClick={() => router.push('/map')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>マップ</motion.button>
           <motion.button onClick={() => router.push('/timeline')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>みんなの島ノート</motion.button>
-          <motion.button onClick={() => setIsCompanionModalOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>図鑑</motion.button>
+          <motion.button onClick={() => router.push('/fairy-gallery')} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors flex items-center gap-1" style={{ color: navColor }}>
+            <span>🧚</span> 妖精ずかん
+          </motion.button>
+          <motion.button onClick={() => setIsCompanionModalOpen(true)} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>相棒図鑑</motion.button>
           <motion.button onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }} className="text-sm font-medium tracking-widest text-slate-800 hover:text-blue-600 transition-colors" style={{ color: navColor }}>
             {user ? 'マイページ' : 'ログイン'}
           </motion.button>
@@ -365,10 +373,16 @@ export default function Home() {
               <MessageCircle size={18} /> みんなの島ノート
             </button>
             <button
+              onClick={() => { setIsMobileMenuOpen(false); router.push('/fairy-gallery'); }}
+              className="text-left font-serif text-base text-slate-800 py-2 border-b border-slate-100 flex items-center gap-3"
+            >
+              <span className="text-lg">🧚</span> ご当地妖精ずかん
+            </button>
+            <button
               onClick={() => { setIsMobileMenuOpen(false); setIsCompanionModalOpen(true); }}
               className="text-left font-serif text-base text-slate-800 py-2 border-b border-slate-100 flex items-center gap-3"
             >
-              <Sparkles size={18} /> 図鑑
+              <Sparkles size={18} /> 相棒図鑑
             </button>
             <button
               onClick={() => { setIsMobileMenuOpen(false); if (user) router.push('/mypage'); else setIsAuthOpen(true); }}

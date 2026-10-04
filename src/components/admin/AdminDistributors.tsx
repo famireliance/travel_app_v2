@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import {
   Store,
@@ -6,8 +6,10 @@ import {
   Plus,
   Copy,
   Check,
-  Download
+  Download,
+  Printer
 } from 'lucide-react';
+import StorePopModal from './StorePopModal';
 
 interface DistributorStore {
   id?: string;
@@ -38,6 +40,7 @@ export default function AdminDistributors({ password }: { password: string }) {
 
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
   const [qrModalStore, setQrModalStore] = useState<DistributorStore | null>(null);
+  const [popModalStore, setPopModalStore] = useState<DistributorStore | null>(null);
 
   const fetchStores = async () => {
     setLoading(true);
@@ -105,12 +108,22 @@ export default function AdminDistributors({ password }: { password: string }) {
     return `${origin}/island/${store.island_id}?ref_store=${store.referral_code}`;
   };
 
+  // コードごとのタイマー参照（複数アイテムを素早くコピーしたときのタイマー競合を防止）
+  const copyTimerRef = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
   const handleCopyLink = async (store: DistributorStore) => {
     try {
       await navigator.clipboard.writeText(getStoreUrl(store));
       setCopiedCode(store.referral_code);
       toast.success('店舗用専用注文URLをコピーしました');
-      setTimeout(() => setCopiedCode(null), 2500);
+      // 既存のタイマーをキャンセルしてから新規セット
+      if (copyTimerRef.current[store.referral_code]) {
+        clearTimeout(copyTimerRef.current[store.referral_code]);
+      }
+      copyTimerRef.current[store.referral_code] = setTimeout(() => {
+        setCopiedCode(prev => prev === store.referral_code ? null : prev);
+        delete copyTimerRef.current[store.referral_code];
+      }, 2500);
     } catch (err) {
       toast.error('クリップボードへのコピーに失敗しました');
     }
@@ -242,6 +255,14 @@ export default function AdminDistributors({ password }: { password: string }) {
 
                   <div className="flex items-center gap-2 shrink-0">
                     <button
+                      onClick={() => setPopModalStore(st)}
+                      className="bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 shadow-sm"
+                      title="A4店頭POPポスターを印刷"
+                    >
+                      <Printer className="w-3.5 h-3.5" /> 🖨️ A4店頭POP
+                    </button>
+
+                    <button
                       onClick={() => setQrModalStore(st)}
                       className="bg-gray-800 hover:bg-gray-700 text-amber-400 border border-gray-700 px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1"
                     >
@@ -313,6 +334,15 @@ export default function AdminDistributors({ password }: { password: string }) {
             </button>
           </div>
         </div>
+      )}
+
+      {/* Store A4 POP Print Modal */}
+      {popModalStore && (
+        <StorePopModal
+          isOpen={!!popModalStore}
+          onClose={() => setPopModalStore(null)}
+          store={popModalStore}
+        />
       )}
     </div>
   );

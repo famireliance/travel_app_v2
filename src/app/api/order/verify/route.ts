@@ -28,12 +28,21 @@ export async function GET(req: NextRequest) {
     const islandKey = (meta.island_id || meta.island_name || 'ISL').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6) || 'ISL';
     const finalSerial = meta.pending_serial || `KT-${new Date().getFullYear()}-${islandKey}-${Date.now().toString(36).toUpperCase().slice(-4)}`;
 
-    // DBのステータスを paid に更新
+    // DBのステータスを ordered に更新（physical_orders と orders の両方を更新）
     if (SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
       try {
         const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
           auth: { autoRefreshToken: false, persistSession: false }
         });
+        // 1. physical_orders テーブルの更新（メイン管理テーブル）
+        await adminClient.from('physical_orders')
+          .update({
+            status: 'ordered',
+            stripe_payment_intent: typeof session.payment_intent === 'string' ? session.payment_intent : '',
+          })
+          .eq('stripe_session_id', sessionId);
+
+        // 2. 旧 orders テーブル（存在する場合）の互換更新
         await adminClient.from('orders')
           .update({
             status: 'paid',
@@ -43,7 +52,7 @@ export async function GET(req: NextRequest) {
           })
           .eq('stripe_session_id', sessionId);
       } catch {
-        // orders テーブルが存在しない場合は無視
+        // テーブルが存在しない等のエラーは許容
       }
     }
 

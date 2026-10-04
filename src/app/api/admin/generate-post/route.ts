@@ -1,9 +1,18 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
+import { getAdminPassword } from '@/lib/adminAuth';
 
 export async function POST(request: Request) {
+  // Admin authentication required
+  const ADMIN_PASSWORD = await getAdminPassword();
+  const authHeader = request.headers.get('x-admin-password');
+  if (!authHeader || authHeader !== ADMIN_PASSWORD) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+
   try {
     const { islandName, keywords, vibe } = await request.json();
+
 
     if (!islandName) {
       return NextResponse.json({ error: '島名が必要です' }, { status: 400 });

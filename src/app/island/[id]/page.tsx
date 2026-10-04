@@ -37,6 +37,23 @@ function findMasterEntry(slugOrId: string) {
   return found;
 }
 
+async function withTimeout<T>(thenable: any, ms: number, fallback: T): Promise<T> {
+  try {
+    let timer: NodeJS.Timeout | undefined;
+    const timeoutPromise = new Promise<T>((resolve) => {
+      timer = setTimeout(() => resolve(fallback), ms);
+    });
+    const result = await Promise.race([
+      Promise.resolve(thenable).catch(() => fallback),
+      timeoutPromise
+    ]);
+    if (timer) clearTimeout(timer);
+    return result;
+  } catch {
+    return fallback;
+  }
+}
+
 // 動的メタデータ生成 (SEO強化)
 export async function generateMetadata(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -48,14 +65,22 @@ export async function generateMetadata(
   const masterEntry = findMasterEntry(slugOrId);
   const internalId = masterEntry ? masterEntry.id : slugOrId;
   
-  // 1. まずDBから最新の実用情報（人口、アクセス等）と最新の口コミを並行してフェッチ
-  let islandName = '未知の島';
-  let description = '魅力あふれる日本の離島の旅路。';
+  // 1. まずDBから最新の実用情報（人口、アクセス等）と最新の口コミを並行してフェッチ（タイムアウト300ms付き）
+  let islandName = masterEntry?.name || '未知の島';
+  let description = masterEntry?.description || '魅力あふれる日本の離島の旅路。';
   let population = '';
   
   const [islandResult, diariesResult] = await Promise.all([
-    supabase.from('islands').select('name, description, population').eq('id', internalId).single(),
-    supabase.from('island_diaries').select('content').eq('island_id', internalId).eq('is_hidden', false).order('created_at', { ascending: false }).limit(2)
+    withTimeout(
+      supabase.from('islands').select('name, description, population').eq('id', internalId).single(),
+      300,
+      { data: null, error: null } as any
+    ),
+    withTimeout(
+      supabase.from('island_diaries').select('content').eq('island_id', internalId).eq('is_hidden', false).order('created_at', { ascending: false }).limit(2),
+      300,
+      { data: null, error: null } as any
+    )
   ]);
   
   if (islandResult.data) {
@@ -115,24 +140,36 @@ export default async function Page({ params }: { params: any }) {
   const masterEntry = findMasterEntry(slugOrId);
   const internalId = masterEntry ? masterEntry.id : slugOrId;
 
-  // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR)
+  // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR - タイムアウト300ms付き)
   const [diariesResult, accommodationsResult, islandResult] = await Promise.all([
-    supabase
-      .from('island_diaries')
-      .select('*')
-      .eq('island_id', internalId)
-      .eq('is_hidden', false)
-      .order('created_at', { ascending: false })
-      .limit(5),
-    supabase
-      .from('accommodations')
-      .select('*')
-      .eq('island_id', internalId),
-    supabase
-      .from('islands')
-      .select('name, region_id')
-      .eq('id', internalId)
-      .single()
+    withTimeout(
+      supabase
+        .from('island_diaries')
+        .select('*')
+        .eq('island_id', internalId)
+        .eq('is_hidden', false)
+        .order('created_at', { ascending: false })
+        .limit(5),
+      300,
+      { data: [], error: null } as any
+    ),
+    withTimeout(
+      supabase
+        .from('accommodations')
+        .select('*')
+        .eq('island_id', internalId),
+      300,
+      { data: [], error: null } as any
+    ),
+    withTimeout(
+      supabase
+        .from('islands')
+        .select('name, region_id')
+        .eq('id', internalId)
+        .single(),
+      300,
+      { data: null, error: null } as any
+    )
   ]);
 
   const islandName = islandResult.data?.name || masterEntry?.name || '未知の島';
@@ -172,6 +209,7 @@ export default async function Page({ params }: { params: any }) {
       />
       <IslandClient 
         islandId={internalId} 
+        initialIsland={masterEntry}
         initialDiaries={diariesResult.data ?? []} 
         initialAccommodations={accommodationsResult.data ?? []} 
       />

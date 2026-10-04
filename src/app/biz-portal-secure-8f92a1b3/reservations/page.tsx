@@ -233,10 +233,14 @@ export default function BizPortalReservations() {
         return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
       }
       if (sortBy === 'checkin_asc') {
-        return new Date(a.check_in_date).getTime() - new Date(b.check_in_date).getTime();
+        const ta = a.check_in_date ? new Date(a.check_in_date).getTime() : 0;
+        const tb = b.check_in_date ? new Date(b.check_in_date).getTime() : 0;
+        return ta - tb;
       }
       if (sortBy === 'checkin_desc') {
-        return new Date(b.check_in_date).getTime() - new Date(a.check_in_date).getTime();
+        const ta = a.check_in_date ? new Date(a.check_in_date).getTime() : 0;
+        const tb = b.check_in_date ? new Date(b.check_in_date).getTime() : 0;
+        return tb - ta;
       }
       if (sortBy === 'guests_desc') {
         return (b.guest_count || 0) - (a.guest_count || 0);

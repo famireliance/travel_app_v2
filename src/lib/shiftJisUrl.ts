@@ -11,7 +11,7 @@ export function encodeShiftJisUrl(str: string): string {
     const buf = iconv.encode(str, 'Shift_JIS');
     let result = '';
     for (let i = 0; i < buf.length; i++) {
-      result += '%' + buf[i].toString(16).toUpperCase();
+      result += '%' + buf[i].toString(16).padStart(2, '0').toUpperCase();
     }
     return result;
   } catch (err) {

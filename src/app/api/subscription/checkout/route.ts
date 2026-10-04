@@ -17,11 +17,27 @@ const TIER_PRICES: Record<string, string> = {
 
 export async function POST(req: NextRequest) {
   try {
+    // 認証ヘッダーからJWTを取得してリクエスト元ユーザーを検証
+    const authHeader = req.headers.get('Authorization');
+    const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!token) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    const { createClient: createAnonClient } = await import('@supabase/supabase-js');
+    const anonClient = createAnonClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '', {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+    const { data: { user: callerUser }, error: authError } = await anonClient.auth.getUser(token);
+    if (authError || !callerUser) {
+      return NextResponse.json({ error: '認証トークンが無効です' }, { status: 401 });
+    }
+
     const body = await req.json();
     const { userId, tier } = body;
 
-    if (!userId) {
-      return NextResponse.json({ error: 'ユーザーIDが必要です' }, { status: 400 });
+    // bodyのuserIdが実際の呼び出し元と一致するか検証
+    if (!userId || userId !== callerUser.id) {
+      return NextResponse.json({ error: '不正なリクエストです' }, { status: 403 });
     }
 
     const priceId = TIER_PRICES[tier];

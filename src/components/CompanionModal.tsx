@@ -230,18 +230,24 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
             <span className="text-xs text-slate-500 flex-1 hidden lg:block">
               💡 離島訪問記録をつけて経験値(XP)を獲得すると、パートナーキャラクターがさらなる段階へ進化します！
             </span>
-            <div className="flex gap-3 w-full sm:w-auto">
+            <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => { onClose(); router.push('/fairy-gallery'); }}
+                className="px-3.5 py-2.5 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 font-bold text-xs transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none"
+              >
+                <span>🧚</span> ご当地妖精ずかん
+              </button>
               <button
                 onClick={() => { onClose(); router.push('/companion'); }}
-                className="px-4 py-2.5 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200 font-bold text-xs transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none"
+                className="px-3.5 py-2.5 rounded-xl bg-blue-100 hover:bg-blue-200 text-blue-700 border border-blue-200 font-bold text-xs transition-all flex items-center justify-center gap-1.5 flex-1 sm:flex-none"
               >
-                <BookOpen className="w-3.5 h-3.5" /> 大図鑑を開く
+                <BookOpen className="w-3.5 h-3.5" /> 大図鑑
               </button>
               <button
                 onClick={onClose}
-                className="px-6 py-2.5 rounded-xl bg-slate-900 hover:bg-blue-900 text-white font-bold text-xs transition-all shadow-sm flex-1 sm:flex-none"
+                className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-blue-900 text-white font-bold text-xs transition-all shadow-sm flex-1 sm:flex-none"
               >
-                決定して閉じる
+                閉じる
               </button>
             </div>
           </div>

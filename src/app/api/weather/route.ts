@@ -26,10 +26,10 @@ export async function GET(request: Request) {
 
     return NextResponse.json({ 
       current: data.current ? {
-        temp: Math.round(data.current.temp),
-        description: data.current.weather[0]?.description || '',
-        icon: data.current.weather[0]?.icon || '01d',
-        main: data.current.weather[0]?.main || 'Clear'
+        temp: typeof data.current.temp === 'number' ? Math.round(data.current.temp) : 0,
+        description: data.current.weather?.[0]?.description || '',
+        icon: data.current.weather?.[0]?.icon || '01d',
+        main: data.current.weather?.[0]?.main || 'Clear'
       } : null,
       alerts: data.alerts || [] 
     });

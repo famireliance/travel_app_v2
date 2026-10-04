@@ -181,7 +181,7 @@ export default function MyPage() {
         }
       })()
     ]).then(() => setIsDataLoaded(true));
-  }, [islandStatuses, user, subscriptionTier]);
+  }, [user, subscriptionTier]);
 
   const [selectedCertRes, setSelectedCertRes] = useState<any | null>(null);
 

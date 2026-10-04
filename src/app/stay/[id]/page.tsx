@@ -31,6 +31,7 @@ function TwitterIcon({ className = 'w-5 h-5' }: { className?: string }) {
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import BookingModal from '@/components/BookingModal';
+import WifiConnectModal from '@/components/WifiConnectModal';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 
@@ -89,6 +90,9 @@ interface InnData {
   pickupInfo?: string;
   enableCertificate?: boolean;
   certificateMessage?: string;
+  wifiSsid?: string;
+  wifiPassword?: string;
+  wifiNotes?: string;
 }
 
 // 青ヶ島アイランドロッジ等のデフォルト充実データ（DBに個別未登録時の高品質フォールバック）
@@ -115,6 +119,9 @@ const DEFAULT_FALLBACK_INN: InnData = {
   pickupInfo: 'ヘリポート・三宝港まで車で無料送迎（事前予約制）',
   enableCertificate: true,
   certificateMessage: '絶海の絶景島・青ヶ島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。',
+  wifiSsid: 'Aogashima_Lodge_Guest',
+  wifiPassword: 'aogashima2026',
+  wifiNotes: '全客室・食堂・ロビーでご利用いただけます。パスワードは大文字小文字を区別します。',
   features: [
     '🚁 ヘリポート・三宝港からの往復無料送迎付き',
     '🍱 自家製青酎と獲れたて地魚の島料理夕食 ＋ 島散策用お弁当付き（1泊3食）',
@@ -209,6 +216,7 @@ export default function DedicatedInnPage({ demoMode = false }: { demoMode?: bool
   const [activeSection, setActiveSection] = useState<'features' | 'review' | 'plans' | 'sns' | 'amenities' | 'info'>('features');
   const [showAllPlans, setShowAllPlans] = useState(false);
   const [showCertPreviewModal, setShowCertPreviewModal] = useState(false);
+  const [showWifiModal, setShowWifiModal] = useState(false);
 
   // Supabaseから該当宿の実データをロード
   useEffect(() => {
@@ -220,10 +228,16 @@ export default function DedicatedInnPage({ demoMode = false }: { demoMode?: bool
           return;
         }
 
+        const cleanId = innParamId.replace(/[^a-zA-Z0-9_\-]/g, '');
+        if (!cleanId) {
+          setLoading(false);
+          return;
+        }
+
         const { data: accData, error } = await supabase
           .from('accommodations')
           .select('*')
-          .or(`id.eq.${innParamId},owner_id.eq.${innParamId}`)
+          .or(`id.eq.${cleanId},owner_id.eq.${cleanId}`)
           .limit(1)
           .single();
 
@@ -263,7 +277,10 @@ export default function DedicatedInnPage({ demoMode = false }: { demoMode?: bool
             sameDayCutoff: accData.same_day_cutoff || DEFAULT_FALLBACK_INN.sameDayCutoff,
             pickupInfo: accData.has_pickup ? '無料送迎あり（事前予約制）' : DEFAULT_FALLBACK_INN.pickupInfo,
             enableCertificate: accData.enable_certificate ?? DEFAULT_FALLBACK_INN.enableCertificate,
-            certificateMessage: accData.certificate_message || DEFAULT_FALLBACK_INN.certificateMessage
+            certificateMessage: accData.certificate_message || DEFAULT_FALLBACK_INN.certificateMessage,
+            wifiSsid: accData.wifi_ssid || DEFAULT_FALLBACK_INN.wifiSsid,
+            wifiPassword: accData.wifi_password || DEFAULT_FALLBACK_INN.wifiPassword,
+            wifiNotes: accData.wifi_notes || DEFAULT_FALLBACK_INN.wifiNotes
           };
 
           setInn(mappedInn);
@@ -517,6 +534,37 @@ export default function DedicatedInnPage({ demoMode = false }: { demoMode?: bool
                     className="px-3.5 py-1.5 bg-white text-slate-800 border border-amber-300 hover:bg-amber-50 text-xs font-bold rounded-xl shadow-sm transition-colors whitespace-nowrap self-start sm:self-auto"
                   >
                     証明書サンプルを見る
+                  </button>
+                </div>
+              )}
+
+              {/* 📶 スマートWi-Fi接続バナー */}
+              {inn.wifiSsid && (
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-emerald-500/15 via-teal-500/10 to-cyan-500/5 border border-emerald-300/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-2xl bg-emerald-600 text-white font-bold flex items-center justify-center text-lg shadow-sm">
+                      <Wifi className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <strong className="text-xs md:text-sm text-slate-900 block font-serif">
+                          客室・館内フリーWi-Fi完備
+                        </strong>
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">
+                          ワンタップ接続対応
+                        </span>
+                      </div>
+                      <p className="text-[0.7rem] text-slate-600">
+                        SSID: <span className="font-mono font-bold text-slate-800 select-all">{inn.wifiSsid}</span> / スマホをかざすだけでパスワード手入力不要で接続できます。
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowWifiModal(true)}
+                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md transition-all whitespace-nowrap flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
+                  >
+                    <Wifi className="w-4 h-4" />
+                    <span>Wi-Fiに接続する</span>
                   </button>
                 </div>
               )}
@@ -1119,6 +1167,16 @@ export default function DedicatedInnPage({ demoMode = false }: { demoMode?: bool
             </div>
           </div>
         </div>
+      {/* 📶 スマートWi-Fi接続モーダル */}
+      {inn.wifiSsid && (
+        <WifiConnectModal
+          isOpen={showWifiModal}
+          onClose={() => setShowWifiModal(false)}
+          facilityName={inn.name}
+          ssid={inn.wifiSsid}
+          password={inn.wifiPassword}
+          notes={inn.wifiNotes}
+        />
       )}
 
     </main>

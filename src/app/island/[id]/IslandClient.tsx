@@ -10,6 +10,7 @@ import { toast } from 'react-hot-toast';
 import CertificateModal from '@/components/CertificateModal';
 import MiniMapClient from '@/components/Map/MiniMapClient';
 import CheckInModal from '@/components/CheckInModal';
+import ShareCardModal from '@/components/ShareCardModal';
 import { fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import regionsData from '@/data/regions.json';
@@ -20,10 +21,13 @@ import IslandDiaries from '@/components/IslandDiaries';
 import BannerCarousel from '@/components/BannerCarousel';
 import { getIslandFacilityDataOrDefault, getRakutenTravelSearchUrl, getRakutenRentacarSearchUrl, getJalanSearchUrl, getJalanRentacarSearchUrl } from '@/data/islandFacilitiesData';
 import { getIslandCategoryType, FERRY_BOATS_DICTIONARY, ACTIVITIES_DICTIONARY, getIslandGuideArticle } from '@/data/islandCategoryData';
+import { getFerryInfoForIsland } from '@/lib/ferryRoutes';
 import { getIslandServicesByIslandId } from '@/data/islandServicesData';
 import { trackFacilityEvent } from '@/lib/supabase';
 import NearbyIslands from '@/components/NearbyIslands';
-import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building, Key } from 'lucide-react';
+import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building, Key, Info, HelpCircle } from 'lucide-react';
+import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
+import IslandWifiGuide from '@/components/IslandWifiGuide';
 
 interface IslandDiarySSR {
   id: string;
@@ -42,29 +46,55 @@ interface IslandDiarySSR {
 
 interface Props {
   islandId?: string;
+  initialIsland?: any;
   initialDiaries?: IslandDiarySSR[];
   initialAccommodations?: any[];
 }
 
-export default function IslandDetail({ islandId: propIslandId, initialDiaries = [], initialAccommodations = [] }: Props) {
+export default function IslandDetail({ islandId: propIslandId, initialIsland, initialDiaries = [], initialAccommodations = [] }: Props) {
   const params = useParams();
   const router = useRouter();
   const rawId = propIslandId || (Array.isArray(params?.id) ? params.id[0] : params?.id);
   const islandId = rawId ? String(rawId) : '';
   
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [island, setIsland] = useState<any>(null);
+  const [island, setIsland] = useState<any>(initialIsland || null);
   const [siteSettings, setSiteSettings] = useState<any>(null);
   const [adCampaigns, setAdCampaigns] = useState<any[]>([]);
   const [weatherAlerts, setWeatherAlerts] = useState<any[]>([]);
   const [currentWeather, setCurrentWeather] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialIsland);
   const [notFound, setNotFound] = useState(false);
   const [isCertModalOpen, setIsCertModalOpen] = useState(false);
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
-  const { user, islandStatuses, visitCounts, updateStatus, decrementVisitCount, addIslandVisit } = useTravel();
+  const [isShareCardOpen, setIsShareCardOpen] = useState(false);
+  const { user, islandStatuses, visitCounts, updateStatus, decrementVisitCount, addIslandVisit, allFairies = [], collectedFairies = [] } = useTravel();
   const status = islandStatuses[islandId] || 'none';
   const visitCount = visitCounts[islandId] || 0;
+
+  // この島（または地域）に眠るご当地妖精を抽出
+  const localFairy = React.useMemo(() => {
+    if (!island || !allFairies || allFairies.length === 0) return null;
+    const prefectureMap: Record<string, string> = {
+      '北海道': 'hokkaido',
+      '青森県': 'tohoku', '岩手県': 'tohoku', '秋田県': 'tohoku', '宮城県': 'tohoku', '山形県': 'tohoku', '福島県': 'tohoku',
+      '茨城県': 'kanto', '栃木県': 'kanto', '群馬県': 'kanto', '埼玉県': 'kanto', '千葉県': 'kanto', '東京都': 'kanto', '神奈川県': 'kanto',
+      '新潟県': 'hokuriku', '富山県': 'hokuriku', '石川県': 'hokuriku', '福井県': 'hokuriku',
+      '山梨県': 'tokai', '長野県': 'tokai', '岐阜県': 'tokai', '静岡県': 'tokai', '愛知県': 'tokai', '三重県': 'tokai',
+      '滋賀県': 'kinki', '京都府': 'kinki', '大阪府': 'kinki', '兵庫県': 'kinki', '奈良県': 'kinki', '和歌山県': 'kinki',
+      '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
+      '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
+      '福岡県': 'kyushu', '佐賀県': 'kyushu', '長崎県': 'kyushu', '熊本県': 'kyushu', '大分県': 'kyushu', '宮崎県': 'kyushu', '鹿児島県': 'kyushu',
+    };
+    const rId = island.region_id || island.region || prefectureMap[island.prefecture] || 'unknown';
+    return (
+      allFairies.find(f => f.island_id && String(f.island_id) === String(island.id)) ||
+      allFairies.find(f => f.region_id === rId) ||
+      allFairies[0]
+    );
+  }, [island, allFairies]);
+
+  const isFairyCollected = localFairy ? collectedFairies.includes(localFairy.id) : false;
 
   const handleStatusChange = (newStatus: 'visited' | 'planning' | 'verified_visited') => {
     if (newStatus === 'visited') {
@@ -92,17 +122,37 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
   useEffect(() => {
     if (!islandId) return;
 
-    setLoading(true);
-    setNotFound(false);
+    let decodedId = islandId;
+    try {
+      decodedId = decodeURIComponent(islandId);
+    } catch {
+      decodedId = islandId;
+    }
+
+    // 1. ローカルマスター辞書から即時引当（0秒レンダリング）
+    const initialLocalFound: any = 
+      ALL_ISLANDS_MASTER_DICTIONARY[islandId] || 
+      ALL_ISLANDS_MASTER_DICTIONARY[decodedId] ||
+      Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+        (i: any) => 
+          String(i.id) === String(islandId) || 
+          String(i.id) === String(decodedId) ||
+          i.slug === islandId || 
+          i.slug === decodedId ||
+          i.name === islandId || 
+          i.name === decodedId
+      );
+
+    if (initialLocalFound) {
+      setIsland(initialLocalFound);
+      setLoading(false);
+      setNotFound(false);
+    } else {
+      setLoading(true);
+      setNotFound(false);
+    }
 
     fetchAllIslands().then(async (islands) => {
-      let decodedId = islandId;
-      try {
-        decodedId = decodeURIComponent(islandId);
-      } catch {
-        decodedId = islandId;
-      }
-
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let found: any = (islands || []).find((i: any) => 
         String(i.id) === String(islandId) || 
@@ -115,7 +165,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
 
       // Fallback to master dictionary by ID/slug/name
       if (!found) {
-        found = ALL_ISLANDS_MASTER_DICTIONARY[islandId] || ALL_ISLANDS_MASTER_DICTIONARY[decodedId];
+        found = initialLocalFound || ALL_ISLANDS_MASTER_DICTIONARY[islandId] || ALL_ISLANDS_MASTER_DICTIONARY[decodedId];
       }
 
       if (!found) {
@@ -412,68 +462,351 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
           </div>
         </div>
 
-        {/* Practical Info Section */}
-        <div className="mb-10 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-          <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
-            <h3 className="text-sm font-bold tracking-widest text-slate-800 flex items-center gap-2">
-              <CheckSquare className="w-4 h-4 text-slate-500" />
-              インフラ・実用情報
-            </h3>
-            <span className="text-[10px] md:text-xs text-slate-500 font-medium">データ出典: 国土交通省 国土数値情報 / 各自治体公開データ等</span>
-          </div>
-          <div className="p-6">
-            {island.is_uninhabited === true ? (
-              <div className="text-center py-6">
-                <span className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold tracking-widest mb-2">無人島</span>
-                <p className="text-sm text-slate-500 mt-3">この島は定住者がいない無人島のため、インフラ設備は基本的にありません。</p>
+        {/* 🌟 妖精の発見 & 到達証明書 ハイライトセクション */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-10">
+          {/* 1. ご当地妖精カード */}
+          <div className="bg-gradient-to-br from-indigo-950/90 via-slate-900 to-purple-950 text-white rounded-3xl p-5 shadow-lg border border-indigo-500/40 flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[11px] font-bold border border-indigo-500/30">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  ご当地妖精（Fairy）
+                </span>
+                {isFairyCollected ? (
+                  <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30 flex items-center gap-1">
+                    ✨ 発見済み
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px] font-medium border border-slate-700">
+                    🔒 到達で目覚める
+                  </span>
+                )}
               </div>
-            ) : (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <CreditCard className={`w-5 h-5 mb-2 ${island.has_atm === true ? 'text-blue-500' : island.has_atm === false ? 'text-rose-400' : 'text-slate-300'}`} />
-                  <span className="text-xs text-slate-500 font-medium mb-1">ATM/郵便局</span>
-                  <span className={`text-sm font-bold ${island.has_atm === true ? 'text-slate-800' : island.has_atm === false ? 'text-rose-500' : 'text-slate-400'}`}>
-                    {island.has_atm === true ? 'あり' : island.has_atm === false ? 'なし' : '不明'}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <Stethoscope className={`w-5 h-5 mb-2 ${island.has_clinic === true ? 'text-emerald-500' : island.has_clinic === false ? 'text-rose-400' : 'text-slate-300'}`} />
-                  <span className="text-xs text-slate-500 font-medium mb-1">診療所/病院</span>
-                  <span className={`text-sm font-bold ${island.has_clinic === true ? 'text-slate-800' : island.has_clinic === false ? 'text-rose-500' : 'text-slate-400'}`}>
-                    {island.has_clinic === true ? 'あり' : island.has_clinic === false ? 'なし' : '不明'}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <Store className={`w-5 h-5 mb-2 ${island.has_store === true ? 'text-amber-500' : island.has_store === false ? 'text-rose-400' : 'text-slate-300'}`} />
-                  <span className="text-xs text-slate-500 font-medium mb-1">商店/売店</span>
-                  <span className={`text-sm font-bold ${island.has_store === true ? 'text-slate-800' : island.has_store === false ? 'text-rose-500' : 'text-slate-400'}`}>
-                    {island.has_store === true ? 'あり' : island.has_store === false ? 'なし' : '不明'}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center justify-center text-center p-3 rounded-xl bg-slate-50 border border-slate-100">
-                  <Wifi className={`w-5 h-5 mb-2 ${island.signal_status ? 'text-indigo-500' : 'text-slate-300'}`} />
-                  <span className="text-xs text-slate-500 font-medium mb-1">携帯電波</span>
-                  <span className={`text-sm font-bold ${island.signal_status ? 'text-slate-800' : 'text-slate-400'} leading-tight`}>
-                    {island.signal_status || '不明'}
-                  </span>
-                </div>
-              </div>
-            )}
-            {island.is_uninhabited !== true && (
-              <div className="mt-4 pt-4 border-t border-slate-100">
-                <div className="flex items-center gap-3">
-                  <Sunrise className="w-5 h-5 text-orange-400 shrink-0" />
-                  <div className="flex-1">
-                    <span className="text-xs text-slate-500 font-medium block">日帰り訪問</span>
-                    <span className={`text-sm font-bold ${island.day_trip === true ? 'text-emerald-600' : island.day_trip === false ? 'text-rose-500' : 'text-slate-400'}`}>
-                      {island.day_trip === true ? '本土・主要島から可能' : island.day_trip === false ? '宿泊推奨（船便都合など）' : '不明'}
-                    </span>
+
+              {localFairy ? (
+                <div className="flex items-center gap-4 my-2">
+                  <div className={`w-16 h-16 rounded-2xl border-2 flex items-center justify-center shrink-0 shadow-lg ${
+                    isFairyCollected 
+                      ? 'bg-gradient-to-tr from-amber-500 to-yellow-300 border-amber-300 text-black shadow-amber-500/30' 
+                      : 'bg-slate-800/80 border-slate-700 text-slate-500'
+                  }`}>
+                    {localFairy.visual?.imageUrl ? (
+                      <img 
+                        src={localFairy.visual.imageUrl} 
+                        alt={localFairy.name} 
+                        className={`w-full h-full object-cover rounded-2xl ${isFairyCollected ? '' : 'filter grayscale brightness-50'}`}
+                      />
+                    ) : (
+                      <span className="text-3xl">{localFairy.visual?.icon || '🧚'}</span>
+                    )}
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-bold text-white text-base truncate flex items-center gap-2">
+                      {localFairy.name}
+                      <span className="text-[10px] font-normal text-indigo-300">({localFairy.theme})</span>
+                    </h4>
+                    <p className="text-xs text-slate-300 line-clamp-2 mt-1 leading-relaxed">
+                      {isFairyCollected 
+                        ? `到達チェックインにより発見！仲間になりました。` 
+                        : `現地で到達チェックインすると目覚めます。`}
+                    </p>
                   </div>
                 </div>
+              ) : (
+                <p className="text-xs text-slate-400 py-3">この地域に宿る妖精を探しています...</p>
+              )}
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+              <span className="text-[11px] text-indigo-200">
+                {isFairyCollected ? 'コレクション図鑑に登録済' : '現地到達で自動獲得'}
+              </span>
+              <Link 
+                href="/fairy-gallery" 
+                className="px-3.5 py-1.5 rounded-xl bg-indigo-600/80 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 transition shadow"
+              >
+                <span>妖精図鑑を見る</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* 2. 公式到達証明書カード */}
+          <div className="bg-gradient-to-br from-amber-950/80 via-slate-900 to-yellow-950/80 text-white rounded-3xl p-5 shadow-lg border border-amber-500/40 flex flex-col justify-between relative overflow-hidden group">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
+            <div>
+              <div className="flex items-center justify-between gap-2 mb-3">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-[11px] font-bold border border-amber-500/40">
+                  <Award className="w-3.5 h-3.5 text-amber-400" />
+                  公式到達証明書
+                </span>
+                {(status === 'visited' || status === 'verified_visited') ? (
+                  <span className="px-2.5 py-0.5 rounded-full bg-amber-500/30 text-amber-200 text-[10px] font-extrabold border border-amber-400/50">
+                    ★ 到達達成済
+                  </span>
+                ) : (
+                  <span className="px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 text-[10px] font-medium border border-slate-700">
+                    到達後に発行可
+                  </span>
+                )}
               </div>
-            )}
+
+              <div className="flex items-center gap-4 my-2">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-yellow-500/10 border-2 border-amber-400/60 flex items-center justify-center text-amber-400 shrink-0 shadow-inner">
+                  <Award className={`w-8 h-8 ${status === 'verified_visited' ? 'animate-bounce' : 'animate-pulse'}`} />
+                </div>
+                <div className="min-w-0">
+                  <h4 className="font-serif font-bold text-white text-base truncate">
+                    {island.name} 到達証明書
+                  </h4>
+                  <p className="text-xs text-slate-300 line-clamp-2 mt-1 leading-relaxed">
+                    {(status === 'visited' || status === 'verified_visited')
+                      ? '公式公認デジタル証明書の閲覧・画像保存、および限定紙版の郵送申請が可能です。'
+                      : '現地到達またはチェックインで、公認デジタル証明書を即座に発行できます。'}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between gap-3">
+              <span className="text-[11px] text-amber-200/80">
+                {(status === 'visited' || status === 'verified_visited') ? 'シリアル番号付与' : '見本プレビュー可能'}
+              </span>
+              <button
+                onClick={() => setIsCertModalOpen(true)}
+                className={`px-4 py-2 rounded-xl font-bold text-xs tracking-wider flex items-center gap-1.5 shadow-md transition-all hover:scale-102 ${
+                  (status === 'visited' || status === 'verified_visited')
+                    ? 'bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-extrabold shadow-amber-500/30'
+                    : 'bg-white/10 hover:bg-white/20 text-amber-300 border border-amber-400/40'
+                }`}
+              >
+                <Award className="w-3.5 h-3.5" />
+                <span>{(status === 'visited' || status === 'verified_visited') ? '公式証明書を見る・発行' : '証明書見本を見る'}</span>
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Practical Info Section (生活・インフラ・実用情報 高精度解決版) */}
+        {(() => {
+          const infra = getIslandInfrastructure(island);
+          return (
+            <div className="mb-10 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+              <div className="bg-slate-50 border-b border-slate-100 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-2">
+                <h3 className="text-sm font-bold tracking-widest text-slate-800 flex items-center gap-2">
+                  <CheckSquare className="w-4 h-4 text-emerald-600" />
+                  <span>インフラ・実用情報</span>
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold border border-emerald-200">
+                    実地・自治体データ実証済
+                  </span>
+                </h3>
+                <span className="text-[10px] md:text-xs text-slate-500 font-medium">データ出典: 国土交通省 離島振興法指定データ / 各自治体公式</span>
+              </div>
+
+              <div className="p-5 sm:p-6 space-y-5">
+                {infra.is_uninhabited ? (
+                  <div className="text-center py-6 bg-slate-50 rounded-xl border border-dashed border-slate-200 p-4">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-200 text-slate-700 rounded-full text-xs font-bold tracking-widest mb-2">
+                      🏝️ 無人島
+                    </span>
+                    <p className="text-sm font-bold text-slate-800 mt-1">定住者がいない無人島のため、インフラ設備はありません</p>
+                    <p className="text-xs text-slate-500 mt-2 max-w-lg mx-auto">
+                      飲料水・食料・救急キット・雨具などはすべて本土側から自前で携行してください。ゴミは必ずすべて持ち帰りましょう。
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    {/* 4大インフラグリッド */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+                      {/* 1. ATM / 金融機関 */}
+                      <div className={`p-4 rounded-xl border transition-all ${
+                        infra.has_atm === true ? 'bg-blue-50/50 border-blue-100' :
+                        infra.has_atm === 'limited' ? 'bg-amber-50/50 border-amber-100' :
+                        'bg-rose-50/50 border-rose-100'
+                      }`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <CreditCard className={`w-4 h-4 ${
+                              infra.has_atm === true ? 'text-blue-600' :
+                              infra.has_atm === 'limited' ? 'text-amber-600' : 'text-rose-500'
+                            }`} />
+                            <span className="text-xs font-bold text-slate-700">ATM / 郵便局</span>
+                          </div>
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                            infra.has_atm === true ? 'bg-blue-100 text-blue-800' :
+                            infra.has_atm === 'limited' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'
+                          }`}>
+                            {infra.atm_status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                          {infra.atm_desc}
+                        </p>
+                      </div>
+
+                      {/* 2. 診療所 / 病院 */}
+                      <div className={`p-4 rounded-xl border transition-all ${
+                        infra.has_clinic === true ? 'bg-emerald-50/50 border-emerald-100' :
+                        infra.has_clinic === 'limited' ? 'bg-emerald-50/50 border-emerald-100' :
+                        'bg-rose-50/50 border-rose-100'
+                      }`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Stethoscope className="w-4 h-4 text-emerald-600" />
+                            <span className="text-xs font-bold text-slate-700">診療所 / 病院</span>
+                          </div>
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                            infra.has_clinic === true ? 'bg-emerald-100 text-emerald-800' :
+                            infra.has_clinic === 'limited' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                          }`}>
+                            {infra.clinic_status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                          {infra.clinic_desc}
+                        </p>
+                      </div>
+
+                      {/* 3. 商店 / 売店 */}
+                      <div className={`p-4 rounded-xl border transition-all ${
+                        infra.has_store === true ? 'bg-amber-50/50 border-amber-100' :
+                        infra.has_store === 'limited' ? 'bg-amber-50/50 border-amber-100' :
+                        'bg-rose-50/50 border-rose-100'
+                      }`}>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Store className="w-4 h-4 text-amber-600" />
+                            <span className="text-xs font-bold text-slate-700">商店 / 売店</span>
+                          </div>
+                          <span className={`text-[11px] font-bold px-2 py-0.5 rounded-full ${
+                            infra.has_store === true ? 'bg-amber-100 text-amber-800' :
+                            infra.has_store === 'limited' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800'
+                          }`}>
+                            {infra.store_status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                          {infra.store_desc}
+                        </p>
+                      </div>
+
+                      {/* 4. 携帯電波 */}
+                      <div className="p-4 rounded-xl border border-indigo-100 bg-indigo-50/40">
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <Wifi className="w-4 h-4 text-indigo-600" />
+                            <span className="text-xs font-bold text-slate-700">携帯電波</span>
+                          </div>
+                          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                            {infra.signal_status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                          {infra.signal_desc}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* 下段: 日帰り/宿泊 ＆ 現金決済アドバイス */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
+                      {/* 日帰り訪問 / 宿泊推奨 */}
+                      <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex items-start gap-3">
+                        <Sunrise className={`w-5 h-5 shrink-0 mt-0.5 ${
+                          infra.day_trip === true ? 'text-emerald-500' : 'text-orange-500'
+                        }`} />
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-bold text-slate-800">訪問スタイル:</span>
+                            <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${
+                              infra.day_trip === true ? 'bg-emerald-100 text-emerald-800' : 'bg-orange-100 text-orange-800'
+                            }`}>
+                              {infra.day_trip_status}
+                            </span>
+                          </div>
+                          <p className="text-xs text-slate-600 leading-relaxed">
+                            {infra.day_trip_desc}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* 現金・キャッシュレス決済案内 */}
+                      <div className="p-4 rounded-xl bg-amber-50/60 border border-amber-200/80 flex items-start gap-3">
+                        <Info className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-bold text-amber-900">💵 現金のご用意アドバイス:</span>
+                          </div>
+                          <p className="text-xs text-amber-800 leading-relaxed">
+                            {infra.cash_advice_text}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* 来島前の必携Tips（存在する場合） */}
+                    {infra.tips.length > 0 && (
+                      <div className="mt-3 p-4 rounded-xl bg-blue-50/60 border border-blue-100 text-xs text-blue-950">
+                        <span className="font-bold flex items-center gap-1.5 text-blue-900 mb-1.5">
+                          <span>💡</span>
+                          <span>来島前の旅人アドバイス:</span>
+                        </span>
+                        <ul className="list-disc list-inside space-y-1 text-blue-900/90 pl-1">
+                          {infra.tips.map((tip, idx) => (
+                            <li key={idx} className="leading-relaxed">{tip}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* 📶 Island Public Wi-Fi & Mobile Connectivity Guide (オフライン対応) */}
+        {!island.is_uninhabited && (
+          <div className="mb-10">
+            <IslandWifiGuide
+              islandId={island.id}
+              islandName={island.name}
+              regionId={island.region_id}
+              prefecture={island.prefecture}
+            />
+          </div>
+        )}
+
+        {/* 🏡 Island Relocation & Family Living Gateway (子育て・移住特化ポータル連携口) */}
+        {!island.is_uninhabited && (
+          <div className="mb-10 p-6 sm:p-8 rounded-3xl bg-gradient-to-r from-teal-950/60 via-slate-900/90 to-sky-950/60 border border-teal-500/30 shadow-2xl text-white flex flex-col md:flex-row md:items-center justify-between gap-6 backdrop-blur-md">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full bg-teal-500/20 text-teal-300 text-[10px] font-bold tracking-wider uppercase border border-teal-500/30 flex items-center gap-1">
+                  <span>ISLAND LIVING & CHILDCARE</span>
+                </span>
+                <span className="text-[11px] text-teal-400 font-bold">
+                  {island.name}で暮らす・育てる
+                </span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-black text-white leading-tight">
+                海と星空の教室へ。{island.name}で家族と暮らしてみませんか？
+              </h3>
+              <p className="text-xs text-slate-300 max-w-xl leading-relaxed">
+                「子供に友達ができるか」「学校・小児科環境」「お試し移住住宅」「先輩パパママ座談会」。移住検討ファミリーのための特化ポータルへご案内します。
+              </p>
+            </div>
+            <a
+              href={`https://ijyu.kira-tabi.com/island/${encodeURIComponent(island.id)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-3.5 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white rounded-2xl font-bold text-xs shadow-lg shadow-teal-500/25 hover:shadow-teal-500/35 transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer self-start md:self-auto group"
+            >
+              <span>{island.name}の移住・子育て情報を見る</span>
+              <ExternalLink className="w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
+            </a>
+          </div>
+        )}
 
         {/* Smart Island Packing Checklist Banner (渡航・宿泊準備カード) */}
         {(() => {
@@ -554,7 +887,7 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
               }))
             : facilityData.accommodations;
 
-          const ferryBoats = FERRY_BOATS_DICTIONARY[island.id] || FERRY_BOATS_DICTIONARY[island.name] || FERRY_BOATS_DICTIONARY['zamami_uninhabited'] || [];
+          const ferryBoats = FERRY_BOATS_DICTIONARY[island.id] || FERRY_BOATS_DICTIONARY[island.name] || [];
           const activities = ACTIVITIES_DICTIONARY[island.id] || ACTIVITIES_DICTIONARY[island.name] || ACTIVITIES_DICTIONARY['392'] || [];
           const guideLink = getIslandGuideArticle(island.name);
 
@@ -638,14 +971,8 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
 
                       <div className="p-6 rounded-2xl bg-white border border-dashed border-slate-300 text-center space-y-2">
                         <p className="text-xs text-slate-500 font-serif">
-                          現在、{island.name}の直掲載おすすめ宿枠は空枠です。<br/>大手予約サイト（楽天トラベル・じゃらん）のダイレクト検索をご利用ください。
+                          現在、{island.name}の直契約おすすめ宿枠は空枠です。<br/>大手予約サイト（楽天トラベル・じゃらん）のダイレクト検索をご利用ください。
                         </p>
-                        <a 
-                          href="/contact" 
-                          className="inline-block text-[0.7rem] text-blue-600 font-bold hover:underline"
-                        >
-                          宿の直掲載・広告枠のお問い合わせはこちら ➔
-                        </a>
                       </div>
                     </div>
                   </div>
@@ -693,16 +1020,8 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                           <Building className="w-8 h-8 text-slate-400 mx-auto opacity-50" />
                           <p className="text-sm font-bold text-slate-700">現在、掲載されている宿泊施設情報はありません</p>
                           <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                            島内の民宿・旅館・ゲストハウス事業者様からの情報掲載申請を随時受け付けております。
+                            島内の民宿・旅館・ゲストハウス情報の確認を進めております。
                           </p>
-                          <div className="pt-2">
-                            <a
-                              href="/contact"
-                              className="inline-flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 px-3.5 py-1.5 rounded-xl transition"
-                            >
-                              宿情報の掲載申請・お問い合わせ ➔
-                            </a>
-                          </div>
                         </div>
                       ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -896,14 +1215,6 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                       <Ticket className="w-5 h-5 text-purple-600" /> {island.name}のアクティビティ・体験ツアー
                     </h3>
                   </div>
-
-                  <a 
-                    href="/contact" 
-                    className="px-4 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold text-xs rounded-xl border border-purple-200 transition-colors flex items-center gap-1.5 self-start md:self-auto"
-                  >
-                    <span>事業者様: 掲載のご相談</span>
-                    <ExternalLink size={12} />
-                  </a>
                 </div>
 
                 <div className="p-6 space-y-6">
@@ -919,16 +1230,8 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
                           <Ticket className="w-8 h-8 text-purple-400 mx-auto opacity-50" />
                           <p className="text-sm font-bold text-purple-950">{island.name}のアクティビティ・ツアー情報</p>
                           <p className="text-xs text-slate-500 max-w-md mx-auto leading-relaxed">
-                            現在、公認ツアーの掲載準備を進めております。ダイビング・シュノーケリング・ネイチャーガイド等の事業者様からの情報掲載を受け付けております。
+                            現在、ダイビング・シュノーケリング・ネイチャーガイド等の公認ツアー情報を準備中です。
                           </p>
-                          <div className="pt-2">
-                            <a
-                              href="/contact"
-                              className="inline-flex items-center gap-1 text-xs font-bold text-purple-700 bg-white hover:bg-purple-50 border border-purple-200 px-3.5 py-1.5 rounded-xl transition shadow-xs"
-                            >
-                              ツアー・体験の掲載について相談する ➔
-                            </a>
-                          </div>
                         </div>
                       );
                     }
@@ -1697,39 +2000,144 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
           )}
         </div>
 
+        {/* Ferry Routes & Live Status Section */}
+        {(() => {
+          const ferryCompanies = getFerryInfoForIsland(island.id, island.region_id, island.prefecture);
+          return (
+            <div className="bg-gradient-to-br from-slate-900 to-blue-950 rounded-3xl shadow-xl border border-blue-900/40 p-6 lg:p-8 mb-12 text-white relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+              
+              <div className="flex items-center justify-between mb-6 border-b border-white/10 pb-4 relative z-10">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-2xl bg-cyan-500/20 border border-cyan-400/30 flex items-center justify-center text-cyan-400">
+                    <Ship className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h2 className="text-base lg:text-lg font-bold tracking-wider text-white flex items-center gap-2">
+                      定期船・フェリー運行状況 & 航路アクセス
+                    </h2>
+                    <p className="text-xs text-slate-400">
+                      波浪や天候による欠航・ダイヤ変更に備え、現地の公式運航状況を事前にご確認ください。
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10">
+                {ferryCompanies.map((fc, idx) => (
+                  <div key={idx} className="bg-white/5 border border-white/10 rounded-2xl p-5 flex flex-col justify-between hover:border-cyan-500/40 transition-all">
+                    <div>
+                      <div className="flex items-start justify-between gap-2 mb-2">
+                        <h3 className="font-bold text-white text-sm">{fc.name}</h3>
+                        <span className="px-2 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold border border-cyan-500/30 shrink-0">
+                          公式運航情報
+                        </span>
+                      </div>
+                      
+                      <p className="text-xs text-slate-300 mb-1">
+                        <strong className="text-slate-400">発着:</strong> {fc.mainPorts}
+                      </p>
+                      
+                      {fc.notes && (
+                        <p className="text-[11px] text-amber-300/80 mb-3 leading-relaxed">
+                          ※ {fc.notes}
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-4 pt-3 border-t border-white/10">
+                      <a
+                        href={fc.statusUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md transition-colors"
+                      >
+                        <ExternalLink className="w-3.5 h-3.5" />
+                        <span>運行状況を見る</span>
+                      </a>
+
+                      {fc.phone && (
+                        <a
+                          href={`tel:${fc.phone.replace(/[^0-9]/g, '')}`}
+                          className="py-2.5 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 border border-white/15 transition-colors"
+                          title="運航確認の電話をかける"
+                        >
+                          <PhoneCall className="w-3.5 h-3.5 text-cyan-400" />
+                          <span>{fc.phone}</span>
+                        </a>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
+
         {/* Nearby Islands Carousel (周辺の島々) */}
         <NearbyIslands currentIsland={island} />
 
         {/* Island Diaries (島ログ) - SEOのために初期データを渡す */}
         <IslandDiaries islandId={islandId} islandName={island.name} initialDiaries={initialDiaries} />
 
-        {/* Action Buttons */}
-        <div className="fixed bottom-0 left-0 right-0 p-4 lg:p-6 bg-white/80 backdrop-blur-xl border-t border-slate-100 flex items-center justify-center gap-4 z-40">
+        {/* Action Buttons (画面下部固定アクションバー) */}
+        <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-6 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 flex items-center justify-center gap-2 sm:gap-3 z-40 max-w-lg mx-auto md:max-w-2xl lg:max-w-4xl shadow-2xl">
+          {/* 到達・チェックインボタン */}
           <button 
             onClick={() => setIsCheckInModalOpen(true)}
-            className={`flex-1 max-w-xs py-4 rounded-2xl font-bold tracking-widest text-sm transition-all shadow-lg flex items-center justify-center gap-2
-              ${(status === 'visited' || status === 'verified_visited') ? (status === 'verified_visited' ? 'bg-gradient-to-r from-yellow-500 to-yellow-600 text-slate-900 shadow-yellow-500/30 scale-[1.02]' : 'bg-blue-600 text-white shadow-blue-500/25 scale-[1.02]') : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+            className={`flex-1 max-w-[180px] sm:max-w-xs py-3.5 sm:py-4 rounded-2xl font-bold tracking-wider text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-1.5 sm:gap-2
+              ${(status === 'visited' || status === 'verified_visited') ? (status === 'verified_visited' ? 'bg-gradient-to-r from-yellow-500 to-amber-600 text-slate-950 font-extrabold shadow-yellow-500/30' : 'bg-blue-600 text-white shadow-blue-500/25') : 'bg-blue-600 hover:bg-blue-500 text-white shadow-blue-600/30'}`}
           >
-            <CheckSquare className="w-4 h-4" /> 
-            {status === 'verified_visited' ? '公式認定済！' : status === 'visited' ? '行った！(記録済)' : '行った！(到達登録)'}
+            <CheckSquare className="w-4 h-4 shrink-0" /> 
+            <span>{status === 'verified_visited' ? '公式認定済！' : status === 'visited' ? '到達済(記録)' : '行った！(到達)'}</span>
           </button>
           
+          {/* 到達証明書ボタン（常設：未到達時も見本閲覧、到達時は即時発行） */}
+          <button
+            onClick={() => setIsCertModalOpen(true)}
+            className={`px-3 sm:px-4 py-3.5 sm:py-4 rounded-2xl font-extrabold text-xs sm:text-sm tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0 ${
+              (status === 'visited' || status === 'verified_visited')
+                ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 text-slate-950 shadow-amber-500/30 hover:scale-105'
+                : 'bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-300 shadow-sm'
+            }`}
+            title="到達証明書を見る・発行"
+          >
+            <Award className="w-4 h-4 text-amber-500 shrink-0" />
+            <span>{(status === 'visited' || status === 'verified_visited') ? '公式証明書' : '証明書見本'}</span>
+          </button>
+
+          {/* 未到達時の行きたいボタン */}
           {status !== 'visited' && status !== 'verified_visited' && (
             <button 
               onClick={() => handleStatusChange('planning')}
-              className={`flex-1 max-w-xs py-4 rounded-2xl font-bold tracking-widest text-sm transition-all shadow-lg flex items-center justify-center gap-2
-                ${status === 'planning' ? 'bg-amber-500 text-white shadow-amber-500/25 scale-[1.02]' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              className={`flex-1 max-w-[140px] sm:max-w-xs py-3.5 sm:py-4 rounded-2xl font-bold tracking-wider text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-1.5
+                ${status === 'planning' ? 'bg-amber-500 text-white shadow-amber-500/25' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
             >
-              <Star className="w-4 h-4" /> 行きたい ({status === 'planning' ? '検討中' : '登録'})
+              <Star className="w-4 h-4 shrink-0" />
+              <span>{status === 'planning' ? '検討中' : '行きたい'}</span>
             </button>
           )}
 
+          {/* 到達済みの場合のSNSシェアカードボタン */}
+          {(status === 'visited' || status === 'verified_visited') && (
+            <button
+              onClick={() => setIsShareCardOpen(true)}
+              className="px-3 sm:px-4 py-3.5 sm:py-4 rounded-2xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs tracking-wider transition-all shadow-md flex items-center justify-center gap-1.5 shrink-0"
+              title="SNS到達カードを生成"
+            >
+              <Sparkles className="w-4 h-4 text-amber-300 shrink-0" />
+              <span className="hidden sm:inline">カード共有</span>
+            </button>
+          )}
+
+          {/* 到達記録の取消ボタン */}
           {status !== 'none' && (
             <button
               onClick={handleCancelRecord}
-              className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-600 font-bold text-xs tracking-wider transition-all shadow-sm bg-white hover:bg-slate-50"
+              className="px-2.5 sm:px-3 py-3.5 sm:py-4 rounded-2xl border border-slate-200 text-slate-400 hover:text-slate-700 font-bold text-xs transition-all bg-white hover:bg-slate-50 shrink-0"
+              title="到達ステータスを取り消す"
             >
-              記録を取り消す
+              取消
             </button>
           )}
         </div>
@@ -1749,6 +2157,12 @@ export default function IslandDetail({ islandId: propIslandId, initialDiaries = 
           setIsCheckInModalOpen(false);
           setIsCertModalOpen(true);
         }}
+        island={island}
+      />
+
+      <ShareCardModal
+        isOpen={isShareCardOpen}
+        onClose={() => setIsShareCardOpen(false)}
         island={island}
       />
     </main>

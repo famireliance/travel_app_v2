@@ -27,7 +27,10 @@ export async function GET(req: NextRequest) {
     let query = adminClient.from('fairies').select('*', { count: 'exact' }).order('created_at', { ascending: false });
 
     if (search) {
-      query = query.or(`name.ilike.%${search}%,theme.ilike.%${search}%,fairy_key.ilike.%${search}%`);
+      const cleanSearch = search.replace(/[^a-zA-Z0-9_\-\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\s]/g, '').trim();
+      if (cleanSearch) {
+        query = query.or(`name.ilike.%${cleanSearch}%,theme.ilike.%${cleanSearch}%,fairy_key.ilike.%${cleanSearch}%`);
+      }
     }
 
     const { data, count, error } = await query;

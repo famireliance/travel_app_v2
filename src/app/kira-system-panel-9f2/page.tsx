@@ -31,7 +31,10 @@ import {
   Clock,
   Save,
   Upload,
-  ClipboardList
+  ClipboardList,
+  BarChart3,
+  Wifi,
+  ShieldCheck
 } from 'lucide-react';
 
 import AdminDashboard from '@/components/admin/AdminDashboard';
@@ -45,6 +48,9 @@ import AdminNewsletter from '@/components/admin/AdminNewsletter';
 import AdminPartners from '@/components/admin/AdminPartners';
 import AdminDistributors from '@/components/admin/AdminDistributors';
 import AgentReviewForm from '@/components/admin/AgentReviewForm';
+import AdminAnalytics from '@/components/admin/AdminAnalytics';
+import AdminWifiManagement from '@/components/admin/AdminWifiManagement';
+import AdminAuditLogs from '@/components/admin/AdminAuditLogs';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -550,6 +556,7 @@ export default function AdminPage() {
 
   const NAV_ITEMS = [
     { id: 'dashboard', label: 'ダッシュボード', icon: LayoutDashboard },
+    { id: 'analytics', label: '自治体・動態レポート', icon: BarChart3 },
     { id: 'orders', label: '発送・注文管理', icon: Package },
     { id: 'user', label: 'ユーザー・権限管理', icon: Users },
     { id: 'official_certs', label: '公的証明書販売準備', icon: Award },
@@ -557,11 +564,13 @@ export default function AdminPage() {
     { id: 'distributors', label: '売店・加盟店パートナー', icon: Store },
     { id: 'moderation', label: '投稿モデレーション', icon: ShieldAlert },
     { id: 'islands', label: '島マスター管理', icon: Palmtree },
+    { id: 'wifi_infra', label: '公共Wi-Fi・電波インフラ', icon: Wifi },
     { id: 'fairies', label: 'ご当地妖精管理', icon: Sparkles },
     { id: 'agent_review', label: '島プロ評価・入稿', icon: ClipboardList },
     { id: 'contacts', label: 'お問い合わせ管理', icon: Mail },
     { id: 'newsletter', label: '一括メルマガ配信', icon: Mail },
     { id: 'coupons', label: 'プロモコード・クーポン', icon: Ticket },
+    { id: 'audit_logs', label: '操作監査ログ (Audit)', icon: ShieldCheck },
     { id: 'password', label: 'パスワード変更', icon: KeyRound },
   ];
 
@@ -649,6 +658,11 @@ export default function AdminPage() {
         {/* 1. Dashboard Tab */}
         {activeTab === 'dashboard' && (
           <AdminDashboard password={password} onNavigateTab={setActiveTab} />
+        )}
+
+        {/* Analytics Tab */}
+        {activeTab === 'analytics' && (
+          <AdminAnalytics password={password} />
         )}
 
         {/* 2. Orders Tab */}
@@ -1317,6 +1331,13 @@ export default function AdminPage() {
           <IslandManagement password={password} />
         )}
 
+        {/* Public Wi-Fi & Infrastructure Master Management */}
+        {activeTab === 'wifi_infra' && (
+          <div className="animate-in fade-in duration-300">
+            <AdminWifiManagement password={password} />
+          </div>
+        )}
+
         {/* 9. Fairies Tab */}
         {activeTab === 'fairies' && (
           <FairyManagement password={password} />
@@ -1337,6 +1358,13 @@ export default function AdminPage() {
           <div className="space-y-8 animate-in fade-in duration-300">
             <AdminPromoCodes />
             <AdminCoupons password={password} />
+          </div>
+        )}
+
+        {/* Audit Trail / Operation Logs Tab */}
+        {activeTab === 'audit_logs' && (
+          <div className="animate-in fade-in duration-300">
+            <AdminAuditLogs password={password} />
           </div>
         )}
 

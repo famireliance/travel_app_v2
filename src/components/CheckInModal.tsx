@@ -2,10 +2,11 @@
 
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Camera, CheckCircle2, ShieldCheck, Navigation2, AlertCircle } from 'lucide-react';
+import { X, Camera, CheckCircle2, ShieldCheck, Navigation2, AlertCircle, WifiOff } from 'lucide-react';
 import exifr from 'exifr';
 import { calculateDistanceKm } from '@/lib/geo';
 import { useTravel } from '@/context/TravelContext';
+import { saveOfflineCheckin } from '@/lib/offlineSync';
 import { Award } from 'lucide-react';
 
 interface CheckInModalProps {
@@ -19,7 +20,7 @@ interface CheckInModalProps {
 export default function CheckInModal({ isOpen, onClose, island, onOpenCertificate }: CheckInModalProps) {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isLocating, setIsLocating] = useState(false);
-  const [resultStatus, setResultStatus] = useState<'idle' | 'success' | 'error' | 'no_gps'>('idle');
+  const [resultStatus, setResultStatus] = useState<'idle' | 'success' | 'offline_saved' | 'error' | 'no_gps'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [distanceInfo, setDistanceInfo] = useState<number | null>(null);
   
@@ -66,13 +67,14 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
         }
       }
 
-      // Read file to data URL so we can pass it to the certificate modal
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const dataUrl = event.target?.result as string;
-        setTempCheckInPhotoUrl(dataUrl);
-      };
-      reader.readAsDataURL(file);
+      // Read file to data URL so we can pass it to the certificate modal (await promise to avoid race condition)
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+      setTempCheckInPhotoUrl(dataUrl);
 
       if (parsedDateStr) {
         setTempCheckInDate(parsedDateStr);
@@ -104,12 +106,29 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
 
       // 閾値: checkinRadiusKm以内なら公式認定到達
       if (distance <= checkinRadiusKm) {
-        const result = addIslandVisit(island.id, island, 0, true);
-        if (result.error === 'already_visited_today') {
-          setResultStatus('error');
-          setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+        // オフライン（圏外）判定
+        const isOffline = typeof window !== 'undefined' && !navigator.onLine;
+
+        if (isOffline) {
+          await saveOfflineCheckin({
+            islandId: island.id,
+            islandName: island.name,
+            latitude: photoLat,
+            longitude: photoLng,
+            photoDataUrl: dataUrl || undefined,
+            checkinDate: parsedDateStr || new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+          });
+          // ローカルのステータスも更新
+          addIslandVisit(island.id, island, 0, true);
+          setResultStatus('offline_saved');
         } else {
-          setResultStatus('success');
+          const result = addIslandVisit(island.id, island, 0, true);
+          if (result.error === 'already_visited_today') {
+            setResultStatus('error');
+            setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+          } else {
+            setResultStatus('success');
+          }
         }
       } else {
         setResultStatus('error');
@@ -143,7 +162,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
     setDistanceInfo(null);
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         setIsLocating(false);
         const { latitude: userLat, longitude: userLng } = position.coords;
 
@@ -164,12 +183,26 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
         const baseRadiusKm = (island.checkin_radius_m || 3000) / 1000;
         const checkinRadiusKm = Math.max(baseRadiusKm * 2.0, 5.0); // 最小でも5kmを保証
         if (distance <= checkinRadiusKm) {
-          const result = addIslandVisit(island.id, island, 0, true);
-          if (result.error === 'already_visited_today') {
-            setResultStatus('error');
-            setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+          const isOffline = typeof window !== 'undefined' && !navigator.onLine;
+
+          if (isOffline) {
+            await saveOfflineCheckin({
+              islandId: island.id,
+              islandName: island.name,
+              latitude: userLat,
+              longitude: userLng,
+              checkinDate: new Date().toISOString().split('T')[0].replace(/-/g, '.'),
+            });
+            addIslandVisit(island.id, island, 0, true);
+            setResultStatus('offline_saved');
           } else {
-            setResultStatus('success');
+            const result = addIslandVisit(island.id, island, 0, true);
+            if (result.error === 'already_visited_today') {
+              setResultStatus('error');
+              setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+            } else {
+              setResultStatus('success');
+            }
           }
         } else {
           setResultStatus('error');
@@ -315,6 +348,22 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
                 </motion.div>
               )}
 
+              {resultStatus === 'offline_saved' && (
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-gradient-to-br from-sky-50 to-blue-100 border border-blue-200 rounded-2xl p-6 mb-6 text-center">
+                  <div className="w-16 h-16 rounded-full bg-blue-500 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30">
+                    <WifiOff className="w-8 h-8" />
+                  </div>
+                  <h4 className="text-xl font-bold text-blue-900 mb-2">📶 圏外到達記録を端末に保存！</h4>
+                  <p className="text-sm text-blue-700 mb-3 leading-relaxed">
+                    電波が届かない環境のため、<strong>「{island.name}」の到達証明データを端末内に安全に一時保存</strong>しました。<br/>
+                    電波（Wi-Fi / 4G / 5G）が復帰した際に自動的にクラウドと同期されます。
+                  </p>
+                  <p className="text-xs font-bold px-3 py-1 bg-blue-200/60 text-blue-800 rounded-full inline-block">
+                    OFFLINE PENDING RECORD 保持中
+                  </p>
+                </motion.div>
+              )}
+
               {(resultStatus === 'error' || resultStatus === 'no_gps') && (
                 <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="bg-rose-50 border border-rose-200 rounded-2xl p-6 mb-6">
                   <div className="flex items-center gap-3 mb-3">
@@ -336,7 +385,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
               )}
 
               <div className="flex flex-col gap-3 mt-4">
-                {resultStatus === 'success' && onOpenCertificate && (
+                {(resultStatus === 'success' || resultStatus === 'offline_saved') && onOpenCertificate && (
                   <button 
                     onClick={handleOpenCertificate}
                     className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-900 font-bold text-sm transition-all shadow-xl flex items-center justify-center gap-2 animate-pulse"
@@ -347,7 +396,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
                 )}
                 <button 
                   onClick={handleClose}
-                  className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all shadow-md ${resultStatus === 'success' ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}
+                  className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all shadow-md ${resultStatus === 'success' || resultStatus === 'offline_saved' ? 'bg-slate-100 text-slate-600 hover:bg-slate-200' : 'bg-slate-900 text-white hover:bg-slate-800'}`}
                 >
                   閉じる
                 </button>

@@ -5,7 +5,8 @@ import { supabase } from '@/lib/supabase';
 import { 
   Loader2, Save, Image as ImageIcon, MapPin, CheckCircle, Info, 
   ExternalLink, Sparkles, BedDouble, ShieldCheck, Plus, Trash2, Eye,
-  MessageCircle, Globe, Mail, Clock, Award, ArrowUp, ArrowDown, Tag
+  MessageCircle, Globe, Mail, Clock, Award, ArrowUp, ArrowDown, Tag,
+  Printer, Wifi, QrCode, Smartphone, Copy, Check
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -102,7 +103,9 @@ export default function BizPortalFacility() {
     photo_room: '',
     photo_food: '',
     photo_facility: '',
-    features_text: ''
+    features_text: '',
+    wifi_ssid: '',
+    wifi_password: ''
   });
 
   useEffect(() => {
@@ -194,9 +197,11 @@ export default function BizPortalFacility() {
           photo_room: targetAcc.photo_room?.[0] || targetAcc.photo_urls?.[1] || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
           photo_food: targetAcc.photo_food?.[0] || targetAcc.photo_urls?.[2] || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
           photo_facility: targetAcc.photo_facility?.[0] || targetAcc.photo_urls?.[3] || 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80',
-          features_text: (targetAcc.features && targetAcc.features.length > 0)
+            features_text: (targetAcc.features && targetAcc.features.length > 0)
             ? targetAcc.features.join('\n')
-            : 'ヘリポート・港からの往復無料送迎付き\n自家製青酎と獲れたて地魚の島料理夕食 ＋ 島散策用お弁当付き\n全室コンセント多数・高速Wi-Fi完備\n島内レンタカー・ガイド手配サポート'
+            : 'ヘリポート・港からの往復無料送迎付き\n自家製青酎と獲れたて地魚の島料理夕食 ＋ 島散策用お弁当付き\n全室コンセント多数・高速Wi-Fi完備\n島内レンタカー・ガイド手配サポート',
+          wifi_ssid: targetAcc.wifi_ssid || 'Aogashima_Lodge_Guest',
+          wifi_password: targetAcc.wifi_password || 'aogashima2026'
         });
       }
       setLoading(false);
@@ -319,7 +324,9 @@ export default function BizPortalFacility() {
       ].filter(Boolean),
       catchphrase: formattedCatchphrase,
       plans: formattedPlans,
-      features: featuresArray
+      features: featuresArray,
+      wifi_ssid: formData.wifi_ssid,
+      wifi_password: formData.wifi_password
     };
 
     if (formData.name) updateData.name = formData.name;
@@ -513,7 +520,151 @@ export default function BizPortalFacility() {
         </div>
       </div>
 
-      {/* 2. SNS ＆ 連絡先連携 */}
+      {/* 📶 2. 客室Wi-Fi設定 ＆ A4卓上POP自動作成（超カンタン・入力2項目のみ） */}
+      <div className="bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-slate-900/5 p-6 md:p-8 rounded-3xl border border-emerald-300 shadow-sm space-y-6">
+        <div className="border-b border-emerald-200/80 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="px-2.5 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
+                <Wifi className="w-3 h-3" />
+                超カンタン客室DX・無料機能
+              </span>
+            </div>
+            <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+              <span>客室Wi-Fi設定 ＆ A4卓上POP自動作成</span>
+            </h3>
+            <p className="text-xs text-slate-600 mt-1 leading-relaxed">
+              ルーターの裏のシールを見て<strong>「ネットワーク名（SSID）」</strong>と<strong>「パスワード」</strong>を入れるだけで完了！<br />
+              下の印刷ボタンを押せば、客室用の『スマホをかざすだけで即接続できるA4卓上POP』がそのまま完成します。毎回お客様にパスワードを聞かれる手間がゼロになります。
+            </p>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => window.print()}
+            className="px-5 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-bold text-xs shadow-md hover:shadow-lg transition-all flex items-center gap-2 shrink-0 cursor-pointer self-start sm:self-auto"
+          >
+            <Printer className="w-4 h-4" />
+            <span>🖨️ A4卓上POPを印刷する</span>
+          </button>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* 入力フォーム（たったの2項目！） */}
+          <div className="space-y-4 bg-white p-5 rounded-2xl border border-emerald-100 shadow-sm">
+            <div className="p-3 bg-emerald-50/80 rounded-xl border border-emerald-200 text-xs text-emerald-900 flex items-start gap-2">
+              <Info className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <p className="leading-relaxed">
+                <strong>設定はたったの2つだけ！</strong> 難しい専門知識は一切不要です。ルーター本体の裏側または底面のシールに記載されている文字をそのまま入力してください。
+              </p>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                <span>① ネットワーク名（SSID）</span>
+                <span className="text-[10px] text-emerald-600 font-normal">※ルーターのSSID欄の文字</span>
+              </label>
+              <input
+                type="text"
+                name="wifi_ssid"
+                value={formData.wifi_ssid}
+                onChange={handleChange}
+                placeholder="例: Aogashima_Lodge_Guest"
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 text-sm font-mono outline-none transition-all"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-800 mb-1 flex items-center gap-1.5">
+                <span>② パスワード（暗号化キー）</span>
+                <span className="text-[10px] text-emerald-600 font-normal">※ルーターのKEY・暗号化キー欄</span>
+              </label>
+              <input
+                type="text"
+                name="wifi_password"
+                value={formData.wifi_password}
+                onChange={handleChange}
+                placeholder="例: aogashima2026"
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-4 focus:ring-emerald-100 focus:border-emerald-500 text-sm font-mono outline-none transition-all"
+              />
+            </div>
+
+            <div className="pt-2 text-[11px] text-slate-500 space-y-1">
+              <p>💡 パスワードなしのWi-Fiの場合は、パスワード欄を空欄のままでOKです。</p>
+              <p>💡 入力すると右側のプレビューに即座に反映され、保存ボタンを押すと宿泊者向け画面にも反映されます。</p>
+            </div>
+          </div>
+
+          {/* 卓上POP リアルタイムプレビュー */}
+          <div className="bg-slate-50 p-5 rounded-2xl border border-slate-200 flex flex-col items-center justify-between text-center relative overflow-hidden">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-2">
+              🖨️ A4客室POPプレビュー（このまま印刷されます）
+            </span>
+
+            {/* ミニチュアPOPシート */}
+            <div className="w-full max-w-[280px] bg-white border border-slate-300 rounded-xl p-4 shadow-sm space-y-3 text-slate-900">
+              <div className="space-y-0.5 border-b border-slate-100 pb-2">
+                <span className="text-[9px] font-bold text-slate-400 block uppercase tracking-wider">WELCOME TO</span>
+                <h4 className="font-bold text-xs text-slate-900 truncate">
+                  {formData.name || '宿泊施設名'}
+                </h4>
+              </div>
+
+              <div className="space-y-1">
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[9px] font-bold">
+                  <Wifi className="w-2.5 h-2.5" />
+                  <span>客室フリーWi-Fi</span>
+                </div>
+                <h5 className="text-[11px] font-black text-slate-800">
+                  スマホをかざすだけで接続！
+                </h5>
+              </div>
+
+              {/* QRコード画像 */}
+              <div className="p-2 bg-slate-50 rounded-lg border border-slate-200 inline-block">
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=8&data=${encodeURIComponent(
+                    `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password || ''};;`
+                  )}`}
+                  alt="Wi-Fi接続用QRコードプレビュー"
+                  className="w-28 h-28 object-contain mx-auto"
+                />
+              </div>
+
+              {/* SSID & パスワード */}
+              <div className="p-2 bg-slate-100 rounded-lg text-[9px] font-mono space-y-0.5 text-left">
+                <div>
+                  <span className="text-slate-400 font-bold block">SSID:</span>
+                  <span className="font-bold text-slate-800 truncate block">
+                    {formData.wifi_ssid || '（未設定）'}
+                  </span>
+                </div>
+                <div>
+                  <span className="text-slate-400 font-bold block">PASSWORD:</span>
+                  <span className="font-bold text-slate-800 truncate block">
+                    {formData.wifi_password || '（パスワードなし）'}
+                  </span>
+                </div>
+              </div>
+
+              <p className="text-[8px] text-slate-400 leading-tight">
+                iPhone / Android標準カメラをかざすと接続通知が出ます
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={() => window.print()}
+              className="mt-3 text-xs text-emerald-700 hover:text-emerald-800 font-bold flex items-center gap-1 underline"
+            >
+              <Printer className="w-3.5 h-3.5" />
+              このPOPをA4用紙で今すぐ印刷する
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. SNS ＆ 連絡先連携 */}
       <div className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-5">
         <h3 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
           <InstagramIcon className="w-4 h-4 text-pink-500" />
@@ -993,6 +1144,115 @@ export default function BizPortalFacility() {
             placeholder="例: 天候不良による船・ヘリの欠航時はキャンセル料は一切いただきません。"
             rows={2}
           />
+        </div>
+      </div>
+
+      {/* 🖨️ A4縦 卓上Wi-Fi案内シート（印刷時のみ表示） */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        @media print {
+          body * {
+            visibility: hidden !important;
+          }
+          #wifi-printable-pop, #wifi-printable-pop * {
+            visibility: visible !important;
+          }
+          #wifi-printable-pop {
+            position: fixed !important;
+            left: 0 !important;
+            top: 0 !important;
+            width: 210mm !important;
+            height: 297mm !important;
+            margin: 0 !important;
+            padding: 16mm 18mm !important;
+            background: #ffffff !important;
+            color: #0f172a !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            box-sizing: border-box !important;
+          }
+        }
+      `}} />
+
+      <div id="wifi-printable-pop" className="hidden print:flex">
+        {/* POP Header */}
+        <div className="text-center space-y-2 border-b-2 border-emerald-600 pb-5">
+          <div className="flex items-center justify-center gap-2">
+            <span className="px-3 py-1 bg-emerald-600 text-white text-xs font-bold tracking-widest uppercase rounded-full">
+              GUEST ROOM FREE WI-FI
+            </span>
+          </div>
+          <span className="text-xs font-bold text-slate-400 block tracking-widest uppercase">WELCOME TO</span>
+          <h1 className="text-2xl font-black text-slate-900 tracking-tight">
+            {formData.name || '宿泊施設名'}
+          </h1>
+          <p className="text-xs text-slate-500 font-medium">
+            当館では全客室にて高速フリーWi-Fiをご利用いただけます。
+          </p>
+        </div>
+
+        {/* POP Center QR & Guide */}
+        <div className="my-auto py-6 flex flex-col items-center justify-center text-center space-y-5">
+          <div className="space-y-1">
+            <span className="text-sm font-bold text-emerald-700 tracking-wider">スマホをかざすだけ！手入力不要</span>
+            <h2 className="text-3xl font-black text-slate-900">
+              かんたんWi-Fi接続
+            </h2>
+          </div>
+
+          {/* 超特大QRコード */}
+          <div className="p-4 bg-white rounded-3xl border-4 border-emerald-600 shadow-xl inline-block relative">
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=${encodeURIComponent(
+                `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password || ''};;`
+              )}`}
+              alt="Wi-Fi接続用QRコード"
+              className="w-64 h-64 object-contain"
+            />
+          </div>
+
+          <div className="max-w-md space-y-2">
+            <p className="text-sm font-bold text-slate-800">
+              📷 スマートフォンの標準カメラをかざしてください
+            </p>
+            <p className="text-xs text-slate-600 leading-relaxed">
+              iPhone・Androidともにカメラを向けると「ネットワークに接続」と通知が出ます。<br />
+              通知をタップして「接続」を押すだけで、パスワードの入力なしで即座に接続されます。
+            </p>
+          </div>
+
+          {/* 手動接続用SSID・パスワード */}
+          <div className="w-full max-w-md p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-left space-y-2 font-mono">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block font-sans">
+              手動で接続される場合（PC・ゲーム機等）
+            </span>
+            <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
+              <span className="text-xs text-slate-500 font-bold font-sans">SSID（ネットワーク名）:</span>
+              <span className="text-sm font-black text-slate-900 select-all">
+                {formData.wifi_ssid || '（未設定）'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between pt-0.5">
+              <span className="text-xs text-slate-500 font-bold font-sans">パスワード（暗証キー）:</span>
+              <span className="text-base font-black text-emerald-800 select-all">
+                {formData.wifi_password || '（パスワードなし）'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* POP Footer */}
+        <div className="border-t border-slate-200 pt-4 text-center space-y-1 text-slate-400 text-xs">
+          <p className="font-medium">
+            ご滞在中に何かご不明な点がございましたら、フロントまたはお電話にてお気軽にお申し付けください。
+          </p>
+          <div className="flex items-center justify-center gap-2 text-[10px] text-slate-400">
+            <span>Powered by KIRATABI 輝旅 島専科</span>
+            <span>•</span>
+            <span>客室スマートDXシステム</span>
+          </div>
         </div>
       </div>
 

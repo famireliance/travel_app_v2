@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Search, MapPin, Users, Navigation, Star, ArrowRightLeft, CreditCard, Stethoscope, Store, Wifi, Sunrise, CheckSquare, Plus, Trash2 } from 'lucide-react';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { supabase } from '@/lib/supabase';
+import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
 
 interface IslandCompareModalProps {
   isOpen: boolean;
@@ -201,53 +202,60 @@ function IslandSpecs({ island }: { island: any }) {
           <p className="text-sm text-slate-700 leading-relaxed font-medium">{island.access}</p>
         </div>
 
-        {/* Practical Info (Phase 1 Enriched) */}
-        <div>
-          <h4 className="text-xs font-bold tracking-widest text-slate-400 mb-3 flex items-center gap-2">
-            <CheckSquare className="w-3 h-3" /> 実用・インフラ環境
-          </h4>
-          
-          {island.is_uninhabited === true ? (
-            <div className="bg-slate-100 text-slate-500 text-xs p-3 rounded-lg text-center font-medium">
-              無人島のためインフラ設備なし
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
-                <CreditCard className={`w-3.5 h-3.5 ${island.has_atm === true ? 'text-blue-500' : island.has_atm === false ? 'text-rose-400' : 'text-slate-300'}`} />
-                <span className="text-slate-600 w-12">ATM等</span>
-                <span className="font-bold text-slate-800">{island.has_atm === true ? 'あり' : island.has_atm === false ? 'なし' : '不明'}</span>
+        {/* Practical Info (Phase 1 Enriched - 高精度インフラ解決版) */}
+        {(() => {
+          const infra = getIslandInfrastructure(island);
+          return (
+            <>
+              <div>
+                <h4 className="text-xs font-bold tracking-widest text-slate-400 mb-3 flex items-center gap-2">
+                  <CheckSquare className="w-3 h-3 text-emerald-600" /> 実用・インフラ環境
+                </h4>
+                
+                {infra.is_uninhabited ? (
+                  <div className="bg-slate-100 text-slate-500 text-xs p-3 rounded-lg text-center font-medium">
+                    無人島のためインフラ設備なし
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
+                      <CreditCard className={`w-3.5 h-3.5 ${infra.has_atm === true ? 'text-blue-500' : infra.has_atm === 'limited' ? 'text-amber-500' : 'text-rose-400'}`} />
+                      <span className="text-slate-600 w-12">ATM等</span>
+                      <span className="font-bold text-slate-800" title={infra.atm_desc}>{infra.atm_status}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
+                      <Stethoscope className={`w-3.5 h-3.5 ${infra.has_clinic ? 'text-emerald-500' : 'text-rose-400'}`} />
+                      <span className="text-slate-600 w-12">診療所</span>
+                      <span className="font-bold text-slate-800" title={infra.clinic_desc}>{infra.clinic_status}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
+                      <Store className={`w-3.5 h-3.5 ${infra.has_store ? 'text-amber-500' : 'text-rose-400'}`} />
+                      <span className="text-slate-600 w-12">商店等</span>
+                      <span className="font-bold text-slate-800" title={infra.store_desc}>{infra.store_status}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
+                      <Wifi className="w-3.5 h-3.5 text-indigo-500" />
+                      <span className="text-slate-600 w-12">電波</span>
+                      <span className="font-bold text-slate-800 truncate" title={infra.signal_desc}>{infra.signal_status}</span>
+                    </div>
+                  </div>
+                )}
               </div>
-              <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
-                <Stethoscope className={`w-3.5 h-3.5 ${island.has_clinic === true ? 'text-emerald-500' : island.has_clinic === false ? 'text-rose-400' : 'text-slate-300'}`} />
-                <span className="text-slate-600 w-12">診療所</span>
-                <span className="font-bold text-slate-800">{island.has_clinic === true ? 'あり' : island.has_clinic === false ? 'なし' : '不明'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
-                <Store className={`w-3.5 h-3.5 ${island.has_store === true ? 'text-amber-500' : island.has_store === false ? 'text-rose-400' : 'text-slate-300'}`} />
-                <span className="text-slate-600 w-12">商店等</span>
-                <span className="font-bold text-slate-800">{island.has_store === true ? 'あり' : island.has_store === false ? 'なし' : '不明'}</span>
-              </div>
-              <div className="flex items-center gap-2 text-xs p-2 bg-slate-50 rounded-lg">
-                <Wifi className={`w-3.5 h-3.5 ${island.signal_status ? 'text-indigo-500' : 'text-slate-300'}`} />
-                <span className="text-slate-600 w-12">電波</span>
-                <span className="font-bold text-slate-800 truncate" title={island.signal_status || '不明'}>{island.signal_status || '不明'}</span>
-              </div>
-            </div>
-          )}
-        </div>
-        
-        {island.is_uninhabited !== true && (
-          <div className="flex items-center gap-3 bg-orange-50/50 p-3 rounded-xl border border-orange-100">
-            <Sunrise className="w-4 h-4 text-orange-500 shrink-0" />
-            <div>
-              <span className="text-[10px] text-orange-800 font-bold tracking-widest block mb-0.5">日帰り訪問</span>
-              <span className={`text-xs font-bold ${island.day_trip === true ? 'text-emerald-600' : island.day_trip === false ? 'text-rose-600' : 'text-slate-500'}`}>
-                {island.day_trip === true ? '可能' : island.day_trip === false ? '宿泊推奨' : '不明'}
-              </span>
-            </div>
-          </div>
-        )}
+              
+              {!infra.is_uninhabited && (
+                <div className="flex items-center gap-3 bg-orange-50/50 p-3 rounded-xl border border-orange-100">
+                  <Sunrise className="w-4 h-4 text-orange-500 shrink-0" />
+                  <div>
+                    <span className="text-[10px] text-orange-800 font-bold tracking-widest block mb-0.5">日帰り訪問</span>
+                    <span className={`text-xs font-bold ${infra.day_trip === true ? 'text-emerald-600' : 'text-orange-600'}`}>
+                      {infra.day_trip_status}
+                    </span>
+                  </div>
+                </div>
+              )}
+            </>
+          );
+        })()}
 
       </div>
     </div>

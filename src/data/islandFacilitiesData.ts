@@ -326,27 +326,12 @@ export function getIslandFacilityDataOrDefault(islandId: string, islandName: str
     return ISLAND_FACILITIES_DICTIONARY[cleanName];
   }
 
-  // フォールバック（未登録の島）
+  // フォールバック（未登録の島）— 架空施設は生成しない。空の配列を返してUIの空状態（じゃらん・楽天リンク）を表示
   return {
     islandId,
     islandName: cleanName || islandName,
-    transportNotes: `${cleanName || islandName}の島内移動は、港周辺のレンタルショップやタクシー、路線バス等をご利用ください。事前に営業状況の電話確認をお勧めします。`,
-    accommodations: [
-      {
-        id: `${islandId}_default_minshuku`,
-        name: `${cleanName || islandName} 島内民宿・素泊まり宿`,
-        type: 'minshuku',
-        planTier: 'free',
-      }
-    ],
-    transports: [
-      {
-        id: `${islandId}_default_transport`,
-        name: `${cleanName || islandName} レンタカー・レンタサイクル・タクシー`,
-        type: 'car',
-        features: '港周辺での受け渡しまたは事前電話予約推奨',
-        priceRange: '時価',
-      }
-    ]
+    transportNotes: `${cleanName || islandName}の島内移動は、港周辺のレンタルショップやタクシー、路線バス等をご利用ください。事前に現地観光協会や役場への問い合わせをお勧めします。`,
+    accommodations: [],
+    transports: []
   };
 }

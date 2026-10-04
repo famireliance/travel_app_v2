@@ -1,7 +1,13 @@
 export const dynamic = 'force-dynamic';
 import fs from 'fs';
 import path from 'path';
+import { Metadata } from 'next';
 import FairyGalleryClient from './components/FairyGalleryClient';
+
+export const metadata: Metadata = {
+  title: 'ご当地妖精ずかん | キラ旅 KIRATABI',
+  description: '全国の離島に生息する全172体の守護妖精コレクション図鑑。旅の記録とともに妖精たちを発見しよう。',
+};
 
 export default function FairyGallery() {
   const fairiesDir = path.join(process.cwd(), 'public', 'fairies');
@@ -19,7 +25,7 @@ export default function FairyGallery() {
   const discoveredImages = files.filter(f => f.endsWith('.jpg') || f.endsWith('.png') || f.endsWith('.webp'));
 
   return (
-    <div className="min-h-screen bg-slate-900 text-white p-4 md:p-8">
+    <div className="min-h-screen bg-slate-950 text-white p-4 md:p-8">
       <FairyGalleryClient discoveredImages={discoveredImages} />
     </div>
   );

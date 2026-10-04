@@ -9,6 +9,7 @@ import { IslandFairy, FAIRIES_MASTER } from '@/lib/fairies';
 import { COLLAB_SPOTS } from '@/lib/spots';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import toast from 'react-hot-toast';
+import { syncOfflineQueue } from '@/lib/offlineSync';
 
 export type IslandStatus = 'visited' | 'planning' | 'none' | 'verified_visited';
 
@@ -260,6 +261,40 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
     localStorage.setItem(`travel_app_statuses_${user.id}`, JSON.stringify(islandStatuses));
   }, [islandStatuses, user, isDataLoaded]);
+
+  // オフライン（圏外）キューの自動同期ハンドラー（ログインユーザーのみDB同期）
+  useEffect(() => {
+    if (!isDataLoaded || !user) return;
+
+    const triggerSync = async () => {
+      if (typeof window === 'undefined' || !navigator.onLine || !user) return;
+
+      const { syncedCount } = await syncOfflineQueue(async (item) => {
+        const island = ALL_ISLANDS_MASTER_DICTIONARY[item.islandId] || { id: item.islandId, name: item.islandName };
+        const result = addIslandVisit(item.islandId, island, 0, true);
+        // 重複エラーは同期済み扱いとし、それ以外の成功時に削除を許可
+        return result?.error !== 'failed';
+      });
+
+      if (syncedCount > 0) {
+        toast.success(`📶 圏外で記録した ${syncedCount}件の島到達記録を自動同期しました！`, {
+          duration: 5000,
+          icon: '✨',
+        });
+      }
+    };
+
+    triggerSync();
+
+    const handleOnline = () => {
+      triggerSync();
+    };
+
+    window.addEventListener('online', handleOnline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+    };
+  }, [isDataLoaded, user]);
 
   const loadLocalData = async (userId?: string, isMounted: boolean = true) => {
     if (!isMounted) return;

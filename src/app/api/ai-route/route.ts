@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { GoogleGenAI, Type, Schema } from '@google/genai';
+import { createClient } from '@supabase/supabase-js';
 
 // Helper to initialize Gemini conditionally so the app doesn't crash if API key is missing
 const getGeminiClient = () => {
@@ -14,8 +15,25 @@ const getGeminiClient = () => {
 
 export async function POST(request: Request) {
   try {
+    // Require Supabase login — prevents unauthenticated bot abuse
+    const authHeader = request.headers.get('authorization');
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
+    }
+    const token = authHeader.split(' ')[1];
+    const adminClient = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { autoRefreshToken: false, persistSession: false } }
+    );
+    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+    if (authError || !user) {
+      return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { startLocation, durationDays, preferences, maxIslands, excludedIslands = [] } = body;
+
 
     const ai = getGeminiClient();
 

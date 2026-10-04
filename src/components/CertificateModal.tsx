@@ -195,8 +195,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       setErrorMessage(null);
       setUploadError(null);
       setAssignedSerial(getFormattedSerial(island.id || island.name));
-      // In a real app, check if user already paid for this island's certificate
-      setIssuedTypes([]);
+      // issuedTypes は localStorage確認エフェクト（上記）が更新するため、ここでは初期化しない
     }
   }, [isOpen, island, user, contextTravelerName, tempCheckInDate, tempCheckInPhotoUrl]);
 

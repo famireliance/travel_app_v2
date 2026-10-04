@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import toast from 'react-hot-toast';
 import {
   Palmtree,
@@ -45,10 +45,10 @@ export default function IslandManagement({ password }: { password: string }) {
   // Uploading state
   const [uploading, setUploading] = useState(false);
 
-  const fetchIslands = async () => {
+  const fetchIslands = useCallback(async (searchVal: string) => {
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/admin/islands?search=${encodeURIComponent(search)}`, {
+      const res = await fetch(`/api/admin/islands?search=${encodeURIComponent(searchVal)}`, {
         headers: { 'x-admin-password': password }
       });
       const data = await res.json();
@@ -59,11 +59,15 @@ export default function IslandManagement({ password }: { password: string }) {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [password]);
 
+  // 検索入力の400msデバウンス（APIへのリクエスト過多を防止）
   useEffect(() => {
-    fetchIslands();
-  }, [search]);
+    const timer = setTimeout(() => {
+      fetchIslands(search);
+    }, 400);
+    return () => clearTimeout(timer);
+  }, [search, fetchIslands]);
 
   const handleEdit = (island: IslandData) => {
     setSelectedIsland(island);
@@ -97,7 +101,7 @@ export default function IslandManagement({ password }: { password: string }) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
       toast.success(data.message || '島データを保存しました');
-      fetchIslands();
+      fetchIslands(search);
       setSelectedIsland(null);
     } catch (err: any) {
       toast.error(`保存エラー: ${err.message}`);
@@ -117,7 +121,7 @@ export default function IslandManagement({ password }: { password: string }) {
       if (!res.ok) throw new Error(data.error);
       toast.success(data.message || '削除しました');
       if (selectedIsland?.id === island.id) setSelectedIsland(null);
-      fetchIslands();
+      fetchIslands(search);
     } catch (err: any) {
       toast.error(`削除エラー: ${err.message}`);
     }

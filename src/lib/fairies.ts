@@ -30,6 +30,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "name": "ルリ (Ruri)",
     "theme": "琉球の波の妖精",
     "region_id": "okinawa_main",
+    "island_id": "沖縄本島",
     "rarity": "NORMAL",
     "attribute": "WATER",
     "visual": {
@@ -47,6 +48,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "name": "ティダ (Tida)",
     "theme": "八重山の太陽精霊",
     "region_id": "yaeyama",
+    "island_id": "石垣島",
     "rarity": "RARE",
     "attribute": "FIRE",
     "visual": {
@@ -64,6 +66,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "name": "シダ (Shida)",
     "theme": "奄美の深緑の妖精",
     "region_id": "amami",
+    "island_id": "奄美大島",
     "rarity": "NORMAL",
     "attribute": "NATURE",
     "visual": {
@@ -81,6 +84,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "name": "ブルー (Blue)",
     "theme": "宮古ブルーの化身",
     "region_id": "miyako",
+    "island_id": "宮古島",
     "rarity": "EPIC",
     "attribute": "WATER",
     "visual": {
@@ -98,6 +102,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "name": "ホシ (Hoshi)",
     "theme": "ボニンブルーの星妖精",
     "region_id": "ogasawara",
+    "island_id": "父島",
     "rarity": "EPIC",
     "attribute": "LIGHT",
     "visual": {
@@ -115,6 +120,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "name": "ツバキ (Tsubaki)",
     "theme": "伊豆の火の精霊",
     "region_id": "izu",
+    "island_id": "伊豆大島",
     "rarity": "NORMAL",
     "attribute": "FIRE",
     "visual": {
@@ -131,7 +137,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_okinawa_manza",
     "name": "ゾウ (Zou)",
     "theme": "万座毛の崖精霊",
-    "island_id": "okinawa_main",
+    "island_id": "沖縄本島",
     "rarity": "SPOT_EXCLUSIVE",
     "attribute": "EARTH",
     "visual": {
@@ -148,7 +154,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_ishigaki_kabira",
     "name": "カビラ (Kabira)",
     "theme": "川平湾の透明な妖精",
-    "island_id": "ishigaki",
+    "island_id": "石垣島",
     "rarity": "SPOT_EXCLUSIVE",
     "attribute": "WATER",
     "visual": {
@@ -165,7 +171,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_miyako_yonaha",
     "name": "マイ (Mai)",
     "theme": "与那覇前浜の砂妖精",
-    "island_id": "miyako",
+    "island_id": "宮古島",
     "rarity": "SPOT_EXCLUSIVE",
     "attribute": "EARTH",
     "visual": {
@@ -182,7 +188,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_amami_mangrove",
     "name": "グル (Guru)",
     "theme": "黒潮マングローブの主",
-    "island_id": "amami",
+    "island_id": "奄美大島",
     "rarity": "SPOT_EXCLUSIVE",
     "attribute": "NATURE",
     "visual": {
@@ -352,7 +358,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_niigata_sado",
     "name": "朱鷺音 (Tokine)",
     "theme": "佐渡のトキと金山",
-    "island_id": "sado",
+    "island_id": "佐渡島",
     "rarity": "RARE",
     "attribute": "EARTH",
     "visual": {
@@ -369,7 +375,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_hyogo_awaji",
     "name": "タマ (Tama)",
     "theme": "淡路の神話たまねぎ",
-    "island_id": "awajishima",
+    "island_id": "淡路島",
     "rarity": "RARE",
     "attribute": "EARTH",
     "visual": {
@@ -386,7 +392,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_kagawa_shodo",
     "name": "オリビ (Oribi)",
     "theme": "小豆島のオリーブの風",
-    "island_id": "shodoshima",
+    "island_id": "小豆島",
     "rarity": "RARE",
     "attribute": "WIND",
     "visual": {
@@ -403,7 +409,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_hiroshima_miyajima",
     "name": "イツク (Itsuku)",
     "theme": "宮島の神鹿と鳥居",
-    "island_id": "itsukushima",
+    "island_id": "厳島（宮島）",
     "rarity": "EPIC",
     "attribute": "LIGHT",
     "visual": {
@@ -420,7 +426,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_kanagawa_enoshima",
     "name": "リュウ (Ryu)",
     "theme": "江の島の海龍",
-    "island_id": "enoshima",
+    "island_id": "江の島",
     "rarity": "RARE",
     "attribute": "WATER",
     "visual": {
@@ -437,7 +443,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_nagasaki_tsushima",
     "name": "ヤマ (Yama)",
     "theme": "対馬のヤマネコ",
-    "island_id": "tsushima",
+    "island_id": "対馬",
     "rarity": "RARE",
     "attribute": "NATURE",
     "visual": {
@@ -454,7 +460,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_kagoshima_yakushima",
     "name": "コダマ (Kodama)",
     "theme": "屋久杉と苔の精",
-    "island_id": "yakushima",
+    "island_id": "屋久島",
     "rarity": "EPIC",
     "attribute": "NATURE",
     "visual": {
@@ -471,7 +477,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_kagawa_naoshima",
     "name": "アート (Art)",
     "theme": "直島の現代アート",
-    "island_id": "naoshima",
+    "island_id": "直島",
     "rarity": "RARE",
     "attribute": "LIGHT",
     "visual": {
@@ -488,7 +494,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_shimane_oki",
     "name": "ウシマ (Ushima)",
     "theme": "隠岐の島の潮風と牛",
-    "island_id": "dogo",
+    "island_id": "島後（隠岐）",
     "rarity": "RARE",
     "attribute": "EARTH",
     "visual": {
@@ -505,7 +511,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_kagoshima_sakurajima",
     "name": "イグニ (Igni)",
     "theme": "桜島の燃える火山弾",
-    "island_id": "sakurajima",
+    "island_id": "桜島",
     "rarity": "RARE",
     "attribute": "FIRE",
     "visual": {
@@ -522,7 +528,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_okinawa_shisa",
     "name": "シサ (Shisa)",
     "theme": "沖縄の守り神シーサー",
-    "island_id": "okinawa_main",
+    "island_id": "沖縄本島",
     "rarity": "RARE",
     "attribute": "FIRE",
     "visual": {
@@ -539,7 +545,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_yonaguni_horse",
     "name": "ヨナ (Yona)",
     "theme": "与那国馬と最西端の風",
-    "island_id": "yonaguni",
+    "island_id": "与那国島",
     "rarity": "RARE",
     "attribute": "WIND",
     "visual": {
@@ -556,7 +562,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_miyako_horse",
     "name": "ミヤ (Miya)",
     "theme": "宮古馬とサトウキビ畑",
-    "island_id": "miyako",
+    "island_id": "宮古島",
     "rarity": "RARE",
     "attribute": "EARTH",
     "visual": {
@@ -574,6 +580,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "name": "エナ (Ena)",
     "theme": "雪の妖精シマエナガ",
     "region_id": "hokkaido",
+    "island_id": "北海道",
     "rarity": "EPIC",
     "attribute": "ICE",
     "visual": {
@@ -590,7 +597,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_hateruma_cross",
     "name": "クロス (Cross)",
     "theme": "波照間の南十字星",
-    "island_id": "hateruma",
+    "island_id": "波照間島",
     "rarity": "EPIC",
     "attribute": "LIGHT",
     "visual": {
@@ -607,7 +614,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "id": "fairy_ogasawara_chichijima",
     "name": "ホエ（Hoe）",
     "theme": "小笠原のザトウクジラ",
-    "island_id": "ogasawara",
+    "island_id": "父島",
     "rarity": "EPIC",
     "attribute": "WATER",
     "visual": {
@@ -625,7 +632,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "baseFairyId": "fairy_okinawa_main",
     "name": "ルリ (キラキラホテルVer)",
     "theme": "特別ホテルリゾート衣装",
-    "island_id": "okinawa_main",
+    "island_id": "沖縄本島",
     "collabSponsor": "キラキラホテルリゾート",
     "rarity": "SPOT_EXCLUSIVE",
     "attribute": "LIGHT",

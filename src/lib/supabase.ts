@@ -79,11 +79,13 @@ export const fetchAdCampaigns = async (islandId?: string, regionId?: string, pre
       .neq('banner_url', ''); // 安全対策: バナーURLが空のものをシステムレベルでブロック
     
     if (islandId || regionId || prefecture || area) {
+      // 記号や制御文字を除去してPostgREST構文破綻を完全に防止
+      const clean = (s: string) => s.replace(/[^a-zA-Z0-9_\-\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff]/g, '');
       let orString = 'target_type.eq.global';
-      if (regionId) orString += `,and(target_type.eq.region,target_id.eq.${regionId})`;
-      if (prefecture) orString += `,and(target_type.eq.prefecture,target_id.eq.${prefecture})`;
-      if (area) orString += `,and(target_type.eq.area,target_id.eq.${area})`;
-      if (islandId) orString += `,and(target_type.eq.island,target_id.ilike.*${islandId}*)`; // JSON配列文字列の部分一致検索
+      if (regionId) orString += `,and(target_type.eq.region,target_id.eq.${clean(regionId)})`;
+      if (prefecture) orString += `,and(target_type.eq.prefecture,target_id.eq.${clean(prefecture)})`;
+      if (area) orString += `,and(target_type.eq.area,target_id.eq.${clean(area)})`;
+      if (islandId) orString += `,and(target_type.eq.island,target_id.ilike.*${clean(islandId)}*)`; // JSON配列文字列の部分一致検索
       
       query = query.or(orString);
     } else {
