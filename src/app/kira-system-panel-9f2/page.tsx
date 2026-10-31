@@ -43,6 +43,7 @@ import IslandManagement from '@/components/admin/IslandManagement';
 import FairyManagement from '@/components/admin/FairyManagement';
 import AdminContacts from '@/components/admin/AdminContacts';
 import AdminCoupons from '@/components/admin/AdminCoupons';
+import AdminUserManagement from '@/components/admin/AdminUserManagement';
 import AdminPromoCodes from '@/components/admin/AdminPromoCodes';
 import AdminNewsletter from '@/components/admin/AdminNewsletter';
 import AdminPartners from '@/components/admin/AdminPartners';
@@ -56,6 +57,7 @@ export default function AdminPage() {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loginInput, setLoginInput] = useState('');
+  const [loginEmail, setLoginEmail] = useState('');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Active Navigation Tab
@@ -156,7 +158,7 @@ export default function AdminPage() {
       const res = await fetch('/api/admin/verify-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password: loginInput })
+        body: JSON.stringify({ email: loginEmail, password: loginInput })
       });
       const data = await res.json();
 
@@ -166,8 +168,9 @@ export default function AdminPage() {
         return;
       }
 
-      sessionStorage.setItem('admin_password', loginInput);
-      setPassword(loginInput);
+      sessionStorage.setItem('admin_password', data.token || loginInput);
+      if (data.user) sessionStorage.setItem('admin_user', JSON.stringify(data.user));
+      setPassword(data.token || loginInput);
       setIsAuthenticated(true);
       toast.success('管理者としてログインしました');
     } catch {
@@ -526,6 +529,16 @@ export default function AdminPage() {
             <h1 className="text-2xl font-black text-white tracking-wide">KIRATABI CMS ログイン</h1>
             <p className="text-xs text-gray-400 mt-1">管理者システム専用ログインパネル</p>
           </div>
+          <div className="mb-4">
+            <label className="block text-xs font-bold text-gray-400 uppercase mb-1">メールアドレス</label>
+            <input
+              type="email"
+              className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-blue-500 transition"
+              value={loginEmail}
+              onChange={(e) => setLoginEmail(e.target.value)}
+              placeholder="admin@kira-tabi.com"
+            />
+          </div>
           <div className="mb-5">
             <label className="block text-xs font-bold text-gray-400 uppercase mb-1">管理者パスワード</label>
             <input
@@ -564,6 +577,7 @@ export default function AdminPage() {
     { id: 'distributors', label: '売店・加盟店パートナー', icon: Store },
     { id: 'moderation', label: '投稿モデレーション', icon: ShieldAlert },
     { id: 'islands', label: '島マスター管理', icon: Palmtree },
+    { id: 'users', label: '組織・スタッフ管理', icon: Users },
     { id: 'wifi_infra', label: '公共Wi-Fi・電波インフラ', icon: Wifi },
     { id: 'fairies', label: 'ご当地妖精管理', icon: Sparkles },
     { id: 'agent_review', label: '島プロ評価・入稿', icon: ClipboardList },
@@ -634,8 +648,32 @@ export default function AdminPage() {
           </nav>
         </div>
 
-        {/* Footer Logout */}
-        <div className="pt-4 border-t border-gray-800">
+        {/* Footer Logout & Manuals */}
+        <div className="pt-4 border-t border-gray-800 space-y-1.5">
+          <a
+            href="/operation-manual.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-between text-xs font-bold text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/40 px-3.5 py-2.5 rounded-xl transition border border-emerald-900/40"
+          >
+            <span className="flex items-center gap-2">
+              <ClipboardList className="w-4 h-4" />
+              実践・操作マニュアル
+            </span>
+            <span className="text-[10px] bg-emerald-500/20 px-1.5 py-0.5 rounded text-emerald-300 font-normal">PDF印刷</span>
+          </a>
+          <a
+            href="/manual.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-between text-xs font-bold text-blue-400 hover:text-blue-300 hover:bg-blue-950/40 px-3.5 py-2.5 rounded-xl transition border border-blue-900/30"
+          >
+            <span className="flex items-center gap-2">
+              <BookOpen className="w-4 h-4" />
+              全機能仕様マニュアル
+            </span>
+            <span className="text-[10px] bg-blue-500/20 px-1.5 py-0.5 rounded text-blue-300 font-normal">PDF印刷</span>
+          </a>
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-400 hover:bg-red-950/30 px-3.5 py-2.5 rounded-xl transition"
@@ -1329,6 +1367,11 @@ export default function AdminPage() {
         {/* 8. Islands Tab */}
         {activeTab === 'islands' && (
           <IslandManagement password={password} />
+        )}
+
+        {/* Users Tab */}
+        {activeTab === 'users' && (
+          <AdminUserManagement password={password} />
         )}
 
         {/* Public Wi-Fi & Infrastructure Master Management */}

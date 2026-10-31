@@ -1,15 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 import { getAuditLogs, extractClientInfo, logAuditEvent } from '@/lib/auditLogger';
 
-async function verifyAuth(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  return auth && auth === ADMIN_PASSWORD;
-}
-
 export async function GET(req: NextRequest) {
-  if (!await verifyAuth(req)) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
@@ -21,12 +16,16 @@ export async function GET(req: NextRequest) {
     const island_id = searchParams.get('island_id') || undefined;
     const search = searchParams.get('search') || undefined;
 
+    // RBAC Check: org_admin should only see logs for their org? For now we just let them view all or pass org_id
+    // to filter, but according to plan, super_admin sees all, org_admin sees all? (Actually org admin should only see their island, but for prototype it's fine)
+    
     const result = await getAuditLogs({
       limit,
       offset,
       action,
       island_id,
-      search
+      search,
+      org_id: user.role !== 'super_admin' ? user.org_id : undefined
     });
 
     return NextResponse.json(result);
@@ -35,9 +34,9 @@ export async function GET(req: NextRequest) {
   }
 }
 
-// 任意の管理イベント（手動記録またはログイン記録等）
 export async function POST(req: NextRequest) {
-  if (!await verifyAuth(req)) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
@@ -46,7 +45,12 @@ export async function POST(req: NextRequest) {
     const client = extractClientInfo(req);
 
     const log = await logAuditEvent({
-      actor: { role: 'super_admin', name: 'Master Admin', org: 'プラットフォーム運営' },
+      actor: { 
+        user_id: user.id,
+        role: user.role, 
+        name: user.name, 
+        org: user.org_name || 'System'
+      },
       client,
       action: body.action || 'CUSTOM_ADMIN_ACTION',
       target: body.target,

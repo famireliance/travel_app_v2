@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>輝旅 島専科 実践・操作ステップバイステップ完全ガイドブック</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
+      body {
+        background-color: white !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-break-inside-avoid {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      a {
+        text-decoration: none !important;
+        color: inherit !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased p-0 sm:p-6 print:p-0 print:bg-white print:text-black">
+
+  <!-- Floating Sticky Action Header (Screen Only) -->
+  <header class="no-print sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-md max-w-4xl mx-auto rounded-b-2xl mb-6">
+    <div class="flex items-center gap-3">
+      <span class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl shadow-inner">
+        📱
+      </span>
+      <div>
+        <h2 class="text-sm font-bold text-slate-900">KIRATABI 実践・操作マニュアル（A4印刷・PDF保存用）</h2>
+        <p class="text-xs text-slate-500">旅行者のスマホ操作 ＆ 管理者の実務クリック手順を網羅しています。</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button onclick="window.print()" class="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-md transition active:scale-95 cursor-pointer">
+        <span>🖨️</span>
+        <span>PDFとして保存 / 印刷</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Document Body (Formatted for A4) -->
+  <main class="max-w-4xl mx-auto bg-white p-8 md:p-14 shadow-lg rounded-3xl print:shadow-none print:p-0 print:max-w-none text-slate-800 leading-relaxed border border-slate-200 print:border-none">
+
+    <!-- Header / Cover -->
+    <section class="border-b-2 border-slate-900 pb-8 mb-10 print:mb-8">
+      <div class="flex items-center gap-2 text-emerald-600 font-extrabold text-xs uppercase tracking-widest mb-2">
+        <span>✨ KIRATABI PRACTICAL OPERATION GUIDE</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-black text-slate-950 tracking-tight mb-4">
+        輝旅 島専科（KIRATABI）<br>実践・操作ステップバイステップ完全ガイド
+      </h1>
+      <p class="text-sm text-slate-600 leading-relaxed mb-6">
+        本書は、旅行者側のスマートフォン操作（GPSチェックイン・オフライン同期・認定証発行）および、運営・自治体側の管理CMSにおける実務クリック手順をステップバイステップで解説した実務操作マニュアルです。
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs">
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">ドキュメント種別</span>
+          <span class="font-extrabold text-slate-900">実践・操作手順書</span>
+        </div>
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">対象端末</span>
+          <span class="font-extrabold text-slate-900">スマホ(iOS/Android) ＆ PC</span>
+        </div>
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">準拠バージョン</span>
+          <span class="font-mono text-slate-900 font-bold">KIRATABI v2.4 (本番対応)</span>
+        </div>
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">出力フォーマット</span>
+          <span class="font-extrabold text-emerald-600">📄 A4縦プリント準拠</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Part 1: 旅行者・現地観光編 -->
+    <section class="mb-12">
+      <div class="flex items-center gap-2 border-b-2 border-emerald-600 pb-2 mb-6">
+        <span class="text-xl">🏝️</span>
+        <h2 class="text-2xl font-black text-slate-900">第1部：旅行者・現地観光 操作マニュアル（スマホ画面）</h2>
+      </div>
+
+      <div class="space-y-6 text-xs text-slate-700">
+
+        <!-- 1-1. GPSチェックイン -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span>📍</span> 1-1. 島到着時の「GPSチェックイン」操作手順
+            </h3>
+            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">現地基本操作</span>
+          </div>
+          <p class="mb-3">港や空港に到着した旅行者が、現在地GPSを取得して島への到達を公式認定させる操作です。</p>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>スマホで対象の島ページ（例: <code class="font-mono text-blue-600">/island/aogashima</code>）を開きます。</li>
+              <li>画面上部の大きな青色ボタン <strong>「📍 現在地で到達チェックイン」</strong> をタップ。</li>
+              <li>ブラウザの「位置情報の使用を許可しますか？」ダイアログで必ず <strong>「許可」</strong> を選択。</li>
+              <li>数秒で島内GPSが認証され、<strong>「🎉 到達おめでとうございます！」</strong> と紙吹雪演出が表示。</li>
+              <li>同時に島固有の「ご当地妖精」の図鑑登録モーダルが開き、コレクションに追加されます。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 1-2. オフライン（圏外）同期 -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span>📶</span> 1-2. 圏外（電波なし）での「自動一時保存＆復帰同期」
+            </h3>
+            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 font-bold rounded text-[10px]">自動フェイルセーフ</span>
+          </div>
+          <p class="mb-3">携帯電波が届かない秘境や山間部でも、GPS衛星情報だけで到達を記録できる自動同期機能です。</p>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ul class="list-disc pl-5 space-y-1.5 leading-normal">
+              <li><strong>圏外での操作:</strong> 通常通り「📍 現在地で到達チェックイン」をタップすると、スマホ内に暗号化一時保存されます（「📶 圏外のため端末内に一時保存しました」と表示）。</li>
+              <li><strong>電波復帰時:</strong> 宿や港に戻って電波（4G/5G/Wi-Fi）が繋がると、アプリが自動検知して「📶 圏外で記録した島到達記録をサーバーへ自動同期しました！」と通知し、サーバー側へ完全反映されます。</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 1-3. 写真チェックイン -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span>📷</span> 1-3. 写真データを使った「写真チェックイン」操作
+            </h3>
+            <span class="px-2 py-0.5 bg-purple-100 text-purple-700 font-bold rounded text-[10px]">後から認定</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>島ページ中段の <strong>「📷 現地撮影写真でチェックイン」</strong> をタップ。</li>
+              <li>スマホのアルバムから、現地で撮影した風景や人物の写真を選択。</li>
+              <li>写真データ内に埋め込まれた撮影日時・GPS位置情報（Exif情報）を自動解析。</li>
+              <li>島内での撮影が合致すれば、写真撮影日時の到達記録として公式認定されます。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 1-4. 認定証発行と物理カード -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span>💳</span> 1-4. 「公式到達認定証」の発行・物理カード注文手順
+            </h3>
+            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 font-bold rounded text-[10px]">証明・物販</span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div class="p-3 bg-slate-50 rounded-xl border border-slate-200">
+              <strong class="text-slate-900 block mb-1">A. デジタル証明書（即時無料）</strong>
+              <p class="leading-normal">到達後に「公式到達証明書」をタップすると、日付・旅人名・シリアルナンバー入りの証書が生成されます。「💾 画像保存」でスマホのアルバムに保存可能。</p>
+            </div>
+            <div class="p-3 bg-amber-50/50 rounded-xl border border-amber-200">
+              <strong class="text-amber-900 block mb-1">B. 物理プラスチックカード注文（有料）</strong>
+              <p class="leading-normal">「💳 公式認定カードを取り寄せる」をタップし、受取人名・配送先住所を入力してStripeクレジットカード決済。後日追跡番号付きで自宅に届きます。</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1-5. SNS動的カード -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-1.5">
+              <span>📸</span> 1-5. SNS用「動的到達証明カード（X / Instagram）」生成手順
+            </h3>
+            <span class="px-2 py-0.5 bg-pink-100 text-pink-700 font-bold rounded text-[10px]">SNS拡散</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>島ページの <strong>「📸 カード共有」</strong> ボタンをタップ。</li>
+              <li><strong>「X (Twitter) 向け」</strong>（1200×630px横型）または <strong>「Instagram 向け」</strong>（1080×1920px縦型）を選択。</li>
+              <li>公認角印・島名・到達日が自動描画されたカードが生成されます。</li>
+              <li>「Xでシェア」を押すと、ハッシュタグ（<code class="font-mono">#輝旅 #島専科 #島名</code>）が自動入力された状態でX投稿画面が開きます。</li>
+            </ol>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Part 2: 管理者・実務操作編 -->
+    <section class="mb-12">
+      <div class="flex items-center gap-2 border-b-2 border-blue-600 pb-2 mb-6">
+        <span class="text-xl">🛡️</span>
+        <h2 class="text-2xl font-black text-slate-900">第2部：管理CMS 実務操作マニュアル（PC画面）</h2>
+      </div>
+
+      <div class="space-y-6 text-xs text-slate-700">
+
+        <!-- 2-1. Wi-Fi追加 -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">2-1. 【公共Wi-Fi】新しいスポットを追加・編集する手順</h3>
+            <span class="px-2 py-0.5 bg-cyan-100 text-cyan-700 font-bold rounded text-[10px]">画面: 公共Wi-Fiタブ</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>左サイドバーから <strong>「公共Wi-Fi・電波インフラ」</strong> をクリック。</li>
+              <li>画面上部のセレクトボックスで対象の島（例: `八丈島`）を選択。</li>
+              <li>右上の <strong>「+ Wi-Fiスポットを追加」</strong> をクリック。</li>
+              <li>施設名、SSID、設置場所、パスワードの有無、開庁時間などの補足を入力。</li>
+              <li><strong>「保存する」</strong> をクリック ➔ Supabase DBに永続保存され、監査ログに即時記録されます。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 2-2. 物理カード発送 -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">2-2. 【物理カード発送】注文確認から追跡番号登録・完了までの手順</h3>
+            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 font-bold rounded text-[10px]">画面: 発送・注文管理タブ</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>左サイドバーから <strong>「発送・注文管理」</strong> をクリック。</li>
+              <li>ステータスが「未発送」（黄色バッジ）の行をクリックして詳細モーダルを開く。</li>
+              <li>注文者氏名、お届け先住所、島名、印字シリアルを確認してカードを封筒に梱包。</li>
+              <li>配送伝票の番号を「追跡番号」に入力し、<strong>「発送完了にする」</strong> をクリック。</li>
+              <li>ステータスが「発送済み」に切り替わり、注文者へ発送完了通知が自動送信されます。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 2-3. 店頭POP印刷 -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">2-3. 【店頭POP発行】島内店舗用のA4チラシを自動生成・印刷する手順</h3>
+            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 font-bold rounded text-[10px]">画面: 売店・加盟店タブ</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>左サイドバーから <strong>「売店・加盟店パートナー」</strong> をクリック。</li>
+              <li>対象店舗の右端にある <strong>「🖨️ A4店頭POP」</strong> ボタンをクリック。</li>
+              <li>店舗名、特大チェックインQRコード、店舗特典がA4縦でレイアウトされたプレビューを確認。</li>
+              <li><strong>「A4印刷 / PDF保存」</strong> をクリックして印刷またはPDF出力し、現地店舗へ提供。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 2-4. 動態レポート -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">2-4. 【動態レポート】議会・自治体提出用A4レポートとCSVの出力手順</h3>
+            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">画面: 動態レポートタブ</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>左サイドバーから <strong>「自治体・動態レポート」</strong> をクリック。</li>
+              <li>地域セレクターから「東京都」「沖縄県」などを選択。</li>
+              <li><strong>「CSVダウンロード」</strong>: 文字化け防止（BOM付き）Excel対応データをダウンロード。</li>
+              <li><strong>「A4レポート印刷」</strong>: 議会・幹部提出用のジャストサイズPDFを出力。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 2-5. スタッフID発行 -->
+        <div class="border border-slate-200 rounded-2xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">2-5. 【スタッフID発行】役場職員・観光協会へのアカウント付与手順</h3>
+            <span class="px-2 py-0.5 bg-purple-100 text-purple-700 font-bold rounded text-[10px]">画面: 組織・スタッフ管理タブ</span>
+          </div>
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 space-y-2">
+            <ol class="list-decimal pl-5 space-y-1.5 leading-normal">
+              <li>左サイドバーから <strong>「組織・スタッフ管理」</strong> をクリック。</li>
+              <li>右上の <strong>「+ スタッフを追加」</strong> をクリック。</li>
+              <li>氏名、メールアドレス、初期パスワード（8文字以上）、組織（例: 八丈町役場）、ロールを選択。</li>
+              <li>「スタッフを作成」を押すと、即座にログイン可能な暗号化ハッシュ付きアカウントが発行されます。</li>
+            </ol>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Part 3: トラブルシューティング -->
+    <section class="mb-10 page-break-inside-avoid">
+      <div class="flex items-center gap-2 border-b-2 border-amber-600 pb-2 mb-6">
+        <span class="text-xl">🔧</span>
+        <h2 class="text-2xl font-black text-slate-900">第3部：トラブルシューティング・例外対応</h2>
+      </div>
+
+      <div class="space-y-4 text-xs text-slate-700">
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <h4 class="font-bold text-slate-900">Q. 旅行者のiPhoneで「位置情報が利用できません」と出る場合の解除方法</h4>
+          <p>
+            iPhoneの「設定」➔「プライバシーとセキュリティ」➔「位置情報サービス」を「オン」にし、さらに「SafariのWebサイト」の「正確な位置情報」をオンにしてください。Safari画面内の「ぁあ」➔「Webサイトの設定」➔「位置情報」を「許可」にすることで解消します。
+          </p>
+        </div>
+
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <h4 class="font-bold text-slate-900">Q. 注文者から住所変更やキャンセルの連絡が来た場合</h4>
+          <p>
+            「発送・注文管理」で注文が「未発送」の場合、画面上でお届け先住所を手動編集できます。キャンセルの場合は「キャンセル（返金）」を押すとStripeを通じて全額自動返金されます。既に「発送済み」の場合は追跡番号をお客様にお伝えし、郵便局での転送をご案内します。
+          </p>
+        </div>
+
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl space-y-2">
+          <h4 class="font-bold text-slate-900">Q. 職員がパスワードを忘れた場合</h4>
+          <p>
+            組織管理者（Org Admin）またはマスター管理者がCMSにログインし、「組織・スタッフ管理」タブから対象スタッフの「パスワード再設定」を実行して新しいパスワードを伝達してください。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-300 pt-6 mt-12 text-center text-[10px] text-slate-400 print:mt-8">
+      <p>© 2026 輝旅 島専科（KIRATABI SHIMASENKA）運営事務局. All rights reserved.</p>
+      <p class="mt-1 font-mono">Document Hash: 9f2-action-manual-v2.4 | A4 Print Certified</p>
+    </footer>
+
+  </main>
+
+</body>
+</html>

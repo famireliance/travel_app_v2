@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>輝旅 島専科 管理CMS 完全操作マニュアル</title>
+  <script src="https://www.gstatic.com/antigravity/web/dev/tailwindcss.min.js"></script>
+  <style>
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
+      body {
+        background-color: white !important;
+        color: black !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .page-break-inside-avoid {
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+      a {
+        text-decoration: none !important;
+        color: inherit !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased p-0 sm:p-6 print:p-0 print:bg-white print:text-black">
+
+  <!-- Floating Sticky Action Header (Screen Only) -->
+  <header class="no-print sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex items-center justify-between shadow-md max-w-4xl mx-auto rounded-b-2xl mb-6">
+    <div class="flex items-center gap-3">
+      <span class="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl shadow-inner">
+        📖
+      </span>
+      <div>
+        <h2 class="text-sm font-bold text-slate-900">KIRATABI CMS 管理マニュアル（A4印刷・PDF保存用）</h2>
+        <p class="text-xs text-slate-500">ワンクリックでブラウザの印刷ダイアログからPDFとして保存できます。</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <button onclick="window.print()" class="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-extrabold text-xs px-5 py-2.5 rounded-xl shadow-md transition active:scale-95 cursor-pointer">
+        <span>🖨️</span>
+        <span>PDFとして保存 / 印刷</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Document Body (Formatted for A4) -->
+  <main class="max-w-4xl mx-auto bg-white p-8 md:p-14 shadow-lg rounded-3xl print:shadow-none print:p-0 print:max-w-none text-slate-800 leading-relaxed border border-slate-200 print:border-none">
+
+    <!-- Document Header / Cover -->
+    <section class="border-b-2 border-slate-900 pb-8 mb-10 print:mb-8">
+      <div class="flex items-center gap-2 text-blue-600 font-extrabold text-xs uppercase tracking-widest mb-2">
+        <span>✨ KIRATABI SHIMASENKA OPERATION STANDARD</span>
+      </div>
+      <h1 class="text-3xl md:text-4xl font-black text-slate-950 tracking-tight mb-4">
+        輝旅 島専科（KIRATABI）管理CMS<br>完全操作マニュアル
+      </h1>
+      <p className="text-sm text-slate-600 leading-relaxed mb-6">
+        本書は、離島周遊・到達認定プラットフォーム「輝旅 島専科」の管理システム（CMS）における、全機能の詳細な操作手順書および運用ガイドラインです。新任スタッフや自治体・観光協会の担当者が読んでも、迷わずすべての業務を行えるよう設計されています。
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-slate-50 border border-slate-200 rounded-2xl text-xs print:bg-slate-50">
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">ドキュメント版数</span>
+          <span class="font-extrabold text-slate-900">Ver 2.4 (本番対応版)</span>
+        </div>
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">対象読者</span>
+          <span class="font-extrabold text-slate-900">全自治体・運営スタッフ</span>
+        </div>
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">システムURL</span>
+          <span class="font-mono text-slate-900 font-bold">/kira-system-panel-9f2</span>
+        </div>
+        <div>
+          <span class="block text-slate-400 text-[10px] font-bold">セキュリティ等級</span>
+          <span class="font-extrabold text-rose-600">🛡️ 社外秘（要認証）</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 1 -->
+    <section class="mb-10 page-break-inside-avoid">
+      <h2 class="text-xl font-black text-slate-900 border-l-4 border-blue-600 pl-3 mb-4">
+        第1章 システム概要とアクセス方法
+      </h2>
+      <div class="space-y-4 text-xs text-slate-700">
+        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50/50">
+          <h3 class="font-bold text-slate-900 mb-2">1-1. アクセスURLと環境</h3>
+          <ul class="list-disc pl-5 space-y-1.5">
+            <li><strong class="text-slate-900">本番公開環境:</strong> <code class="bg-white border border-slate-200 px-2 py-0.5 rounded font-mono text-blue-600">https://island.kira-tabi.com/kira-system-panel-9f2</code></li>
+            <li><strong class="text-slate-900">開発・検証環境:</strong> <code class="bg-white border border-slate-200 px-2 py-0.5 rounded font-mono text-blue-600">http://localhost:3001/kira-system-panel-9f2</code></li>
+            <li><strong class="text-slate-900">推奨ブラウザ:</strong> Google Chrome / Apple Safari / Microsoft Edge（最新版）</li>
+            <li><strong class="text-slate-900">セキュリティ配慮:</strong> URLの <code class="font-mono">/kira-system-panel-9f2</code> は推測困難な難読化パスです。検索エンジンへのインデックスは拒否（noindex）されています。</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 2 -->
+    <section class="mb-10 page-break-inside-avoid">
+      <h2 class="text-xl font-black text-slate-900 border-l-4 border-blue-600 pl-3 mb-4">
+        第2章 権限体系とログイン手順
+      </h2>
+      <div class="space-y-4 text-xs text-slate-700">
+        <p>情報漏洩の防止と組織分離のため、<strong>階層型ロールベースアクセス制御（RBAC）</strong>を採用しています。</p>
+
+        <div class="overflow-x-auto border border-slate-200 rounded-xl">
+          <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-100 text-[11px] font-bold text-slate-700 border-b border-slate-200">
+              <tr>
+                <th class="p-3">ロール名</th>
+                <th class="p-3">対象者</th>
+                <th class="p-3">権限範囲</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-200 text-[11px]">
+              <tr>
+                <td class="p-3 font-bold text-blue-700">Super Admin (特権管理者)</td>
+                <td class="p-3">輝旅運営事務局</td>
+                <td class="p-3">全島・全自治体の全データ閲覧、更新、スタッフ発行、マスタ変更</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-emerald-700">Org Admin (組織管理者)</td>
+                <td class="p-3">都庁・県庁、各島役場（課長・係長級）</td>
+                <td class="p-3">自組織および管轄地域のデータ閲覧・編集、所属スタッフの発行</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-amber-700">Editor (編集スタッフ)</td>
+                <td class="p-3">自治体職員、観光協会スタッフ</td>
+                <td class="p-3">管轄エリア内のWi-Fi、店舗、島情報の編集・追加</td>
+              </tr>
+              <tr>
+                <td class="p-3 font-bold text-slate-600">Viewer (閲覧専用)</td>
+                <td class="p-3">議会関係者、集計アナリスト</td>
+                <td class="p-3">動態レポート・監査ログの閲覧、CSVダウンロードのみ</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="p-4 bg-blue-50/50 border border-blue-100 rounded-xl">
+            <h4 class="font-bold text-blue-900 mb-1.5">A. スタッフ個別ログイン手順</h4>
+            <ol class="list-decimal pl-4 space-y-1 text-slate-700">
+              <li>メールアドレス（例: <code class="font-mono">admin@hachijo.tokyo.jp</code>）を入力</li>
+              <li>発行されたパスワード（例: <code class="font-mono">hachijo123</code>）を入力</li>
+              <li>「ログイン」をクリックすると権限に応じた画面が開きます。</li>
+            </ol>
+          </div>
+          <div class="p-4 bg-amber-50/50 border border-amber-100 rounded-xl">
+            <h4 class="font-bold text-amber-900 mb-1.5">B. マスター管理者ログイン手順</h4>
+            <ol class="list-decimal pl-4 space-y-1 text-slate-700">
+              <li>メールアドレス欄は空欄（または任意）</li>
+              <li>パスワード欄に <code class="font-mono font-bold">Masa8000@</code> を入力</li>
+              <li>「ログイン」をクリックすると全機能が解放されます。</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 3 -->
+    <section class="mb-10">
+      <h2 class="text-xl font-black text-slate-900 border-l-4 border-blue-600 pl-3 mb-6">
+        第3章 主要機能 詳細操作マニュアル（全18機能）
+      </h2>
+
+      <div class="space-y-6 text-xs text-slate-700">
+        <!-- 3-1. 動態レポート -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">1. 自治体・動態レポート（議会・自治体提出用）</h3>
+            <span class="px-2 py-0.5 bg-blue-100 text-blue-700 font-bold rounded text-[10px]">分析・出力</span>
+          </div>
+          <p class="mb-3">観光客のGPS到達実績、経済波及効果推計を集計し、自治体・議会提出用の公式資料として出力します。</p>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+            <p><strong>【操作手順】</strong></p>
+            <ol class="list-decimal pl-5 space-y-1">
+              <li>地域セレクターから「全国（全離島）」または「東京都」「沖縄県」などを選択。</li>
+              <li><strong>CSV出力:</strong> 「CSVダウンロード」をクリック（文字化け防止BOM付きExcel対応CSV）。</li>
+              <li><strong>A4議会提出レポート:</strong> 「A4レポート印刷」をクリック（ジャストサイズでPDF出力可能）。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 3-2. 発送・注文管理 -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">2. 発送・注文管理（物理プラスチックカード）</h3>
+            <span class="px-2 py-0.5 bg-amber-100 text-amber-700 font-bold rounded text-[10px]">物販業務</span>
+          </div>
+          <p class="mb-3">旅行者が購入した「公認プラスチック到達証明カード」の発送業務を管理します。</p>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+            <p><strong>【操作手順】</strong></p>
+            <ol class="list-decimal pl-5 space-y-1">
+              <li>ステータスが「未発送（準備中）」の注文を確認。</li>
+              <li>お届け先住所、受取人名、島名、印字シリアルを確認してカードを梱包。</li>
+              <li>追跡番号（ヤマト/日本郵便等）を入力し、<strong>「発送完了にする」</strong>をクリック。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 3-3. 売店・加盟店パートナー -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">3. 売店・加盟店パートナー（A4店頭POPチラシ印刷）</h3>
+            <span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 font-bold rounded text-[10px]">店頭支援</span>
+          </div>
+          <p class="mb-3">島内の売店、土産店、カフェに掲示するQRコード付きPOPチラシを1クリックで自動生成・印刷します。</p>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+            <p><strong>【操作手順】</strong></p>
+            <ol class="list-decimal pl-5 space-y-1">
+              <li>対象店舗の右側にある <strong>「🖨️ A4店頭POP」</strong> ボタンをクリック。</li>
+              <li>店舗固有のチェックインQRコード・特典内容がレイアウトされたプレビューを確認。</li>
+              <li><strong>「A4印刷 / PDF保存」</strong> を押して印刷またはPDF出力し、店舗へ配布。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 3-4. 公共Wi-Fi・電波インフラ -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">4. 公共Wi-Fi・電波インフラ管理（Supabase DB連動）</h3>
+            <span class="px-2 py-0.5 bg-cyan-100 text-cyan-700 font-bold rounded text-[10px]">インフラ管理</span>
+          </div>
+          <p class="mb-3">役場施設や待合所のWi-Fiスポット情報を登録・更新し、旅行者向け島詳細ページに即時反映します。</p>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+            <p><strong>【操作手順】</strong></p>
+            <ol class="list-decimal pl-5 space-y-1">
+              <li>画面上で対象の島（例: 八丈島）を選択。</li>
+              <li><strong>「+ Wi-Fiスポットを追加」</strong> を押し、スポット名、SSID、認証方式、補足を入力して保存。</li>
+              <li>登録内容はSupabaseの <code class="font-mono">island_public_wifi</code> テーブルに永続保存され、同時に監査ログが自動記録されます。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 3-5. 組織・スタッフ管理 -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">5. 組織・スタッフ管理（RBAC個別ID発行）</h3>
+            <span class="px-2 py-0.5 bg-purple-100 text-purple-700 font-bold rounded text-[10px]">組織・権限</span>
+          </div>
+          <p class="mb-3">都庁・役場・観光協会の職員に対して個別のログインID（メールアドレス）を発行し、権限を制限します。</p>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+            <p><strong>【操作手順】</strong></p>
+            <ol class="list-decimal pl-5 space-y-1">
+              <li><strong>「+ スタッフを追加」</strong> をクリック。</li>
+              <li>職員の氏名、メールアドレス、初期パスワード、所属組織、ロールを選択して作成。</li>
+              <li>パスワードはPostgreSQLの暗号化拡張（pgcrypto）によりハッシュ化されて安全に保管されます。</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- 3-6. 操作監査ログ -->
+        <div class="border border-slate-200 rounded-xl p-5 bg-white page-break-inside-avoid shadow-sm">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
+            <h3 class="text-sm font-bold text-slate-900">6. 操作監査ログ（改ざん防止・追記専用RLS）</h3>
+            <span class="px-2 py-0.5 bg-rose-100 text-rose-700 font-bold rounded text-[10px]">セキュリティ</span>
+          </div>
+          <p class="mb-3">誰がいつ何を変更したかを証跡として完全記録します。DB側のRow Level Securityにより削除・更新は不可です。</p>
+          <div class="bg-slate-50 p-3 rounded-lg border border-slate-100 space-y-2">
+            <p><strong>【記録内容】</strong></p>
+            <ul class="list-disc pl-5 space-y-1">
+              <li><strong>実行者:</strong> 職員氏名、組織名（例: 八丈町管理者 / 八丈町役場）</li>
+              <li><strong>操作種別:</strong> WIFI_SPOT_CREATE / WIFI_SPOT_UPDATE / PARTNER_APPROVE 等</li>
+              <li><strong>クライアント情報:</strong> IPアドレス、ブラウザのUser-Agent</li>
+              <li><strong>差分（Diff）:</strong> 変更前と変更後のデータ内容（パスワードは自動マスク）</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Chapter 4 -->
+    <section class="mb-10 page-break-inside-avoid">
+      <h2 class="text-xl font-black text-slate-900 border-l-4 border-blue-600 pl-3 mb-4">
+        第4章 トラブルシューティング（よくある質問）
+      </h2>
+      <div class="space-y-3 text-xs text-slate-700">
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+          <h4 class="font-bold text-slate-900 mb-1">Q. ログイン時に「認証中にエラーが発生しました」と表示される</h4>
+          <p class="text-slate-600">
+            A. 一般旅行者用のログイン画面（トップページ右上）に管理者アカウントを入力している可能性があります。必ずURLが <code class="font-mono text-blue-600">/kira-system-panel-9f2</code> であることを確認し、パスワード欄に <code class="font-mono font-bold">Masa8000@</code> を入力してください。
+          </p>
+        </div>
+        <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+          <h4 class="font-bold text-slate-900 mb-1">Q. Supabaseが一時停止（Paused）になった場合の復旧方法は？</h4>
+          <p class="text-slate-600">
+            A. 無料プランでは7日間アクセスがないと休止状態になります。Supabaseダッシュボード（supabase.com）を開き、「Resume project」ボタンを押すと約1〜2分で自動復旧します。
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-300 pt-6 mt-12 text-center text-[10px] text-slate-400 print:mt-8">
+      <p>© 2026 輝旅 島専科（KIRATABI SHIMASENKA）運営事務局. All rights reserved.</p>
+      <p class="mt-1 font-mono">Document Hash: 9f2-cms-manual-prod-v2.4 | A4 Print Certified</p>
+    </footer>
+
+  </main>
+
+</body>
+</html>

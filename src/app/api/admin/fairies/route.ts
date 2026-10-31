@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 async function verifyAuth(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  return auth && auth === ADMIN_PASSWORD;
+  const user = await getAuthUser(req);
+  return !!user;
 }
 
 export async function GET(req: NextRequest) {
@@ -16,14 +15,14 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
+  const { searchParams } = new URL(req.url);
+  const search = searchParams.get('search') || '';
+
   const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
     auth: { autoRefreshToken: false, persistSession: false }
   });
 
   try {
-    const { searchParams } = new URL(req.url);
-    const search = searchParams.get('search') || '';
-
     let query = adminClient.from('fairies').select('*', { count: 'exact' }).order('created_at', { ascending: false });
 
     if (search) {
@@ -34,12 +33,39 @@ export async function GET(req: NextRequest) {
     }
 
     const { data, count, error } = await query;
+    if (!error && data && data.length > 0) {
+      return NextResponse.json({ data, count });
+    }
+  } catch {}
 
-    if (error) throw error;
-
-    return NextResponse.json({ data, count });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+  // DBテーブル未作成時は FAIRIES_MASTER にフォールバック
+  try {
+    const { FAIRIES_MASTER } = await import('@/lib/fairies');
+    let filtered = FAIRIES_MASTER;
+    if (search) {
+      const q = search.toLowerCase();
+      filtered = filtered.filter(f => 
+        f.name.toLowerCase().includes(q) || 
+        f.theme.toLowerCase().includes(q) || 
+        (f.island_id && f.island_id.includes(q))
+      );
+    }
+    const formatted = filtered.map(f => ({
+      id: f.id,
+      fairy_key: f.id,
+      name: f.name,
+      theme: f.theme,
+      island_id: f.island_id || '',
+      region_id: f.region_id || '',
+      rarity: f.rarity,
+      attribute: f.attribute,
+      icon: f.visual.icon,
+      image_url: f.visual.imageUrl || '',
+      description: f.description
+    }));
+    return NextResponse.json({ data: formatted, count: formatted.length });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }
 

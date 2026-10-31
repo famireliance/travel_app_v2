@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWifiStore } from '@/lib/wifiStore';
+import { getWifiSpots } from '@/lib/wifiStore';
 
 export async function GET(
   _req: NextRequest,
@@ -8,12 +8,9 @@ export async function GET(
   try {
     const { id } = await params;
     const islandId = id.toLowerCase();
-    const store = getWifiStore();
-    // 管理画面で編集した内容（共通ストア）を単一の真実として返す。
-    // 該当なしの島はクライアント側の地域プリセットにフォールバックさせる。
-    const spots = store.spots
-      .filter(s => s.island_id === islandId)
-      .map(s => ({
+    const allSpots = await getWifiSpots(islandId);
+    
+    const spots = allSpots.map(s => ({
         name: s.name,
         location: s.location,
         ssid: s.ssid,
@@ -22,8 +19,9 @@ export async function GET(
         authMethod: s.auth_method,
         note: s.notes,
       }));
+      
     return NextResponse.json(
-      { island_id: islandId, spots, cellNote: store.cellNotes[islandId] || null },
+      { island_id: islandId, spots, cellNote: null },
       { headers: { 'Cache-Control': 'no-store' } }
     );
   } catch (err: any) {

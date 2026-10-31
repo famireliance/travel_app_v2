@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 export async function GET(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  if (!auth || auth !== ADMIN_PASSWORD) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
@@ -17,20 +16,19 @@ export async function GET(req: NextRequest) {
   });
 
   const { data: orders, error } = await adminClient
-    .from('physical_orders')
+    .from('orders')
     .select('*')
-    .order('ordered_at', { ascending: false });
+    .order('created_at', { ascending: false });
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  return NextResponse.json({ orders });
+  return NextResponse.json({ orders: orders || [] });
 }
 
 export async function PUT(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  if (!auth || auth !== ADMIN_PASSWORD) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
@@ -49,7 +47,7 @@ export async function PUT(req: NextRequest) {
     if (carrier) updateData.carrier = carrier;
 
     const { error } = await adminClient
-      .from('physical_orders')
+      .from('orders')
       .update(updateData)
       .in('id', ids);
 
@@ -73,7 +71,7 @@ export async function PUT(req: NextRequest) {
   if (notes !== undefined) updateData.notes = notes;
 
   const { error } = await adminClient
-    .from('physical_orders')
+    .from('orders')
     .update(updateData)
     .eq('id', id);
 

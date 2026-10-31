@@ -1,15 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
   apiVersion: '2026-07-29.dahlia' as any,
 });
 
 export async function GET(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  if (!auth || auth !== ADMIN_PASSWORD) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
@@ -22,9 +21,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  if (!auth || auth !== ADMIN_PASSWORD) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 

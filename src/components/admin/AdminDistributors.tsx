@@ -63,7 +63,7 @@ export default function AdminDistributors({ password }: { password: string }) {
 
   useEffect(() => {
     fetchStores();
-  }, []);
+  }, [password]);
 
   const handleCreateStore = async (e: React.FormEvent) => {
     e.preventDefault();

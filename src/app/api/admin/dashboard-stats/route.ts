@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 export async function GET(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  if (!auth || auth !== ADMIN_PASSWORD) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
@@ -36,15 +35,21 @@ export async function GET(req: NextRequest) {
     const paidPlanRatio = totalUsers > 0 ? ((paidUsers / totalUsers) * 100).toFixed(1) : '0';
 
     // 2. 物理証明書オーダー集計
-    const { data: orders } = await adminClient
-      .from('physical_orders')
-      .select('*')
-      .order('ordered_at', { ascending: false });
+    let orders: any[] = [];
+    try {
+      const { data: dbOrders } = await adminClient
+        .from('orders')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (dbOrders) orders = dbOrders;
+    } catch {
+      orders = [];
+    }
 
-    const totalOrders = orders?.length || 0;
-    const unshippedOrders = orders?.filter(o => o.status === 'ordered' || o.status === 'processing').length || 0;
-    const pendingPaymentOrders = orders?.filter(o => o.status === 'pending_payment').length || 0;
-    const shippedOrders = orders?.filter(o => o.status === 'shipped' || o.status === 'delivered').length || 0;
+    const totalOrders = orders.length;
+    const unshippedOrders = orders.filter(o => o.status === 'ordered' || o.status === 'processing').length;
+    const pendingPaymentOrders = orders.filter(o => o.status === 'pending_payment').length;
+    const shippedOrders = orders.filter(o => o.status === 'shipped' || o.status === 'delivered').length;
 
     // 価格定義マップ（概算用）
     const planPrices: Record<string, number> = {
@@ -55,7 +60,7 @@ export async function GET(req: NextRequest) {
     };
 
     let physicalOrderRevenue = 0;
-    orders?.forEach(o => {
+    orders.forEach(o => {
       if (o.status !== 'cancelled' && o.status !== 'pending_payment') {
         physicalOrderRevenue += planPrices[o.type] || 1500;
       }
@@ -73,10 +78,16 @@ export async function GET(req: NextRequest) {
       .from('island_diaries')
       .select('*', { count: 'exact', head: true });
 
-    const { count: unhandledContacts } = await adminClient
-      .from('contacts')
-      .select('*', { count: 'exact', head: true })
-      .neq('status', 'replied');
+    let unhandledContacts = 0;
+    try {
+      const { count } = await adminClient
+        .from('contacts')
+        .select('*', { count: 'exact', head: true })
+        .neq('status', 'replied');
+      unhandledContacts = count || 0;
+    } catch {
+      unhandledContacts = 0;
+    }
 
     // 直近5件の注文
     const recentOrders = (orders || []).slice(0, 5);
