@@ -97,7 +97,7 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
         const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
           auth: { autoRefreshToken: false, persistSession: false }
         });
-        await adminClient.from('physical_orders').insert([{
+        const orderRecord = {
           user_id: userId || 'anonymous',
           island_id: islandId || 'unknown',
           type: plan || 'standard',
@@ -108,7 +108,21 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
           status: 'pending_payment',
           stripe_session_id: session.id,
           ordered_at: new Date().toISOString(),
-        }]);
+        };
+        const { error: physErr } = await adminClient.from('physical_orders').insert([orderRecord]);
+        if (physErr) {
+          await adminClient.from('orders').insert([{
+            user_id: userId || 'anonymous',
+            island_id: islandId || 'unknown',
+            type: plan || 'standard',
+            shipping_name: recipientName,
+            shipping_postal_code: postalCode,
+            shipping_address: address,
+            shipping_phone: phone || null,
+            status: 'pending_payment',
+            stripe_session_id: session.id,
+          }]);
+        }
       } catch {
         // テーブルが存在しない場合は無視
       }

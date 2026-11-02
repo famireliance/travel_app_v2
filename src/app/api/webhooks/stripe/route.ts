@@ -74,12 +74,21 @@ export async function POST(req: NextRequest) {
           // Physical order payment completed
           const sessionId = session.id;
           
-          await adminClient
-            .from('physical_orders')
-            .update({ status: 'ordered' })
-            .eq('stripe_session_id', sessionId);
+          try {
+            await adminClient
+              .from('physical_orders')
+              .update({ status: 'ordered' })
+              .eq('stripe_session_id', sessionId);
+          } catch {}
+
+          try {
+            await adminClient
+              .from('orders')
+              .update({ status: 'ordered' })
+              .eq('stripe_session_id', sessionId);
+          } catch {}
             
-          console.log(`Updated physical order for session ${sessionId} to ordered`);
+          console.log(`Updated order for session ${sessionId} to ordered`);
         }
         break;
       }

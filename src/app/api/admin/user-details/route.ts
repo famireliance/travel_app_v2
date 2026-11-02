@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 async function verifyAuth(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  return auth && auth === ADMIN_PASSWORD;
+  const user = await getAuthUser(req);
+  return !!user;
 }
 
 export async function GET(req: NextRequest) {
@@ -33,7 +32,7 @@ export async function GET(req: NextRequest) {
       adminClient.from('user_profiles').select('*').eq('id', userId).maybeSingle(),
       adminClient.from('island_visits').select('*').eq('user_id', userId).order('visited_at', { ascending: false, nullsFirst: false }),
       adminClient.from('certificates').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
-      adminClient.from('physical_orders').select('*').eq('user_id', userId).order('ordered_at', { ascending: false }),
+      adminClient.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
       adminClient.from('island_diaries').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
     ]);
 

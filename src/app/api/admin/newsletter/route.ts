@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -8,14 +8,13 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const RESEND_API_KEY = process.env.RESEND_API_KEY!;
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'KIRATABI Admin <onboarding@resend.dev>';
 
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
-    // 1. Verify admin password
-    const adminPassword = request.headers.get('x-admin-password');
-    const ADMIN_PASSWORD = await getAdminPassword();
-    if (!adminPassword || adminPassword !== ADMIN_PASSWORD) {
+    // 1. Verify admin session / password
+    const user = await getAuthUser(request);
+    if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 

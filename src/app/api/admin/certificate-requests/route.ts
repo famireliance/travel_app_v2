@@ -3,7 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
 function getAdminClient() {
   return createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
@@ -12,9 +12,8 @@ function getAdminClient() {
 }
 
 async function checkAdmin(req: NextRequest) {
-  const pw = req.headers.get('x-admin-password');
-  const ADMIN_PASSWORD = await getAdminPassword();
-  return pw && pw === ADMIN_PASSWORD;
+  const user = await getAuthUser(req);
+  return !!user;
 }
 
 // GET: 申請一覧の取得
@@ -30,10 +29,11 @@ export async function GET(req: NextRequest) {
     .order('requested_at', { ascending: false });
 
   if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    // テーブル未作成時は空配列を返却
+    return NextResponse.json({ requests: [] });
   }
 
-  return NextResponse.json({ requests: data });
+  return NextResponse.json({ requests: data || [] });
 }
 
 // PATCH: ステータス・メモの更新

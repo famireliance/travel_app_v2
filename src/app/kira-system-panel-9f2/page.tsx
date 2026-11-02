@@ -428,6 +428,7 @@ export default function AdminPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'x-admin-password': password,
         },
         body: JSON.stringify({
           currentPassword: password,
@@ -439,7 +440,7 @@ export default function AdminPage() {
         setChangePasswordMessage(`エラー: ${data.error}`);
         return;
       }
-      setChangePasswordMessage(`${data.message}\n新しいパスワード: ${data.newPassword}`);
+      setChangePasswordMessage(data.message || 'パスワードを変更しました');
       setNewPassword('');
     } catch (err: any) {
       setChangePasswordMessage(`エラー: ${err.message}`);

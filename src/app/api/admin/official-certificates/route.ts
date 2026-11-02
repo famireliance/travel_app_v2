@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 async function verifyAuth(req: NextRequest) {
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const auth = req.headers.get('x-admin-password');
-  return auth && auth === ADMIN_PASSWORD;
+  const user = await getAuthUser(req);
+  return !!user;
 }
 
 // 公的証明書の設定を取得・更新・販売期間延長を行うAPI
@@ -25,16 +24,29 @@ export async function GET(req: NextRequest) {
   const islandId = searchParams.get('islandId');
 
   try {
-    let query = adminClient.from('islands').select('id, name, prefecture, official_cert_enabled, official_org_name, official_seal_url, official_cert_price, official_sales_start_at, official_sales_end_at, official_template_id');
+    let query = adminClient.from('islands').select('*');
 
     if (islandId) {
       query = query.eq('id', islandId);
     }
 
-    const { data: islands, error } = await query;
+    const { data: rawIslands, error } = await query;
     if (error) throw error;
 
-    return NextResponse.json({ islands: islands || [] });
+    const islands = (rawIslands || []).map((i: any) => ({
+      id: i.id,
+      name: i.name,
+      prefecture: i.prefecture,
+      official_cert_enabled: i.official_cert_enabled ?? false,
+      official_org_name: i.official_org_name ?? null,
+      official_seal_url: i.official_seal_url ?? null,
+      official_cert_price: i.official_cert_price ?? 3000,
+      official_sales_start_at: i.official_sales_start_at ?? null,
+      official_sales_end_at: i.official_sales_end_at ?? null,
+      official_template_id: i.official_template_id ?? 'standard',
+    }));
+
+    return NextResponse.json({ islands });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || '取得に失敗しました' }, { status: 500 });
   }

@@ -13,12 +13,30 @@ export interface AdminUser {
   org_name?: string;
 }
 
-export async function getAuthUser(req: NextRequest): Promise<AdminUser | null> {
-  const token = req.headers.get('x-admin-password');
+export async function getAdminPassword(): Promise<string> {
+  if (SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
+    try {
+      const client = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+        auth: { autoRefreshToken: false, persistSession: false }
+      });
+      const { data } = await client
+        .from('admin_config')
+        .select('value')
+        .eq('key', 'admin_password')
+        .maybeSingle();
+      if (data?.value) return data.value;
+    } catch {
+      // ignore and fallback to env
+    }
+  }
+  return process.env.ADMIN_PASSWORD || '';
+}
+
+export async function validateTokenString(token: string): Promise<AdminUser | null> {
   if (!token) return null;
 
-  const masterPw = process.env.ADMIN_PASSWORD || '';
-  if (token === masterPw) {
+  const envPw = process.env.ADMIN_PASSWORD || '';
+  if (envPw && token === envPw) {
     return {
       id: 'master-admin-id',
       email: 'admin@kira-tabi.com',
@@ -51,6 +69,16 @@ export async function getAuthUser(req: NextRequest): Promise<AdminUser | null> {
         
       if (!error && data && new Date(data.expires_at) > new Date()) {
         const u = data.admin_users as any;
+        if (!u) {
+          // Master Admin session (user_id is null)
+          return {
+            id: 'master-admin-id',
+            email: 'admin@kira-tabi.com',
+            name: 'Master Admin',
+            role: 'super_admin',
+            org_name: 'システム管理'
+          };
+        }
         const orgName = u?.admin_organizations?.name || (u.org_id ? '自治体組織' : 'システム管理');
         return {
           id: u.id,
@@ -64,15 +92,30 @@ export async function getAuthUser(req: NextRequest): Promise<AdminUser | null> {
     } catch (err) {
       console.error('[adminAuth] DB session check failed:', err);
     }
+    return null;
+  }
+
+  // Check if token matches custom admin_password in admin_config
+  const dbMasterPw = await getAdminPassword();
+  if (dbMasterPw && token === dbMasterPw) {
+    return {
+      id: 'master-admin-id',
+      email: 'admin@kira-tabi.com',
+      name: 'Master Admin',
+      role: 'super_admin',
+      org_name: 'システム管理'
+    };
   }
 
   return null;
 }
 
-export async function verifyAdmin(req: NextRequest): Promise<AdminUser | null> {
-  return await getAuthUser(req);
+export async function getAuthUser(req: NextRequest): Promise<AdminUser | null> {
+  const token = req.headers.get('x-admin-password');
+  if (!token) return null;
+  return await validateTokenString(token);
 }
 
-export async function getAdminPassword(): Promise<string> {
-  return process.env.ADMIN_PASSWORD || '';
+export async function verifyAdmin(req: NextRequest): Promise<AdminUser | null> {
+  return await getAuthUser(req);
 }

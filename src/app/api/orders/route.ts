@@ -25,10 +25,18 @@ export async function GET(req: NextRequest) {
       .order('ordered_at', { ascending: false });
 
     if (error) {
-      return NextResponse.json({ error: '注文の取得に失敗しました' }, { status: 500 });
+      const { data: fallbackOrders, error: fbError } = await adminClient
+        .from('orders')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+      if (fbError) {
+        return NextResponse.json({ orders: [] });
+      }
+      return NextResponse.json({ orders: fallbackOrders || [] });
     }
 
-    return NextResponse.json({ orders });
+    return NextResponse.json({ orders: orders || [] });
   } catch (err) {
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
   }

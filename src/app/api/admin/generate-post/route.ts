@@ -1,12 +1,11 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
-import { getAdminPassword } from '@/lib/adminAuth';
+import { getAuthUser } from '@/lib/adminAuth';
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   // Admin authentication required
-  const ADMIN_PASSWORD = await getAdminPassword();
-  const authHeader = request.headers.get('x-admin-password');
-  if (!authHeader || authHeader !== ADMIN_PASSWORD) {
+  const user = await getAuthUser(request);
+  if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
 
