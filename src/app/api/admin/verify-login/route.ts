@@ -65,10 +65,9 @@ export async function POST(req: NextRequest) {
     }
 
     const ADMIN_PASSWORD = await getAdminPassword();
-    const envMasterPw = process.env.ADMIN_PASSWORD || '';
 
     // 1. Master password login (works whether email is empty or entered)
-    if (password && (password === ADMIN_PASSWORD || (envMasterPw && password === envMasterPw))) {
+    if (password && ADMIN_PASSWORD && password === ADMIN_PASSWORD) {
       clearFailedAttempts(clientIp);
       const masterUser = {
         id: 'master-admin-id',

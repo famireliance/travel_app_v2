@@ -35,8 +35,8 @@ export async function getAdminPassword(): Promise<string> {
 export async function validateTokenString(token: string): Promise<AdminUser | null> {
   if (!token) return null;
 
-  const envPw = process.env.ADMIN_PASSWORD || '';
-  if (envPw && token === envPw) {
+  const masterPw = await getAdminPassword();
+  if (masterPw && token === masterPw) {
     return {
       id: 'master-admin-id',
       email: 'admin@kira-tabi.com',
