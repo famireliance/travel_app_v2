@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-07-29.dahlia',
-});
+import { getStripeConfig } from '@/lib/stripeConfig';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -35,6 +31,7 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
 
   export async function POST(req: NextRequest) {
   try {
+    const { stripe } = await getStripeConfig();
     const body = await req.json();
     const { plan, travelerName, recipientName, postalCode, address, phone, islandId, islandName, visitDate, userId } = body;
 

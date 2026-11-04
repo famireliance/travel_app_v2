@@ -1,10 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-07-29.dahlia' as any,
-});
+import { getStripeConfig } from '@/lib/stripeConfig';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -14,6 +10,7 @@ const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 
 export async function POST(req: NextRequest) {
   try {
+    const { stripe, priceIdPremium, priceIdUltimate } = await getStripeConfig();
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return NextResponse.json({ error: '認証エラー' }, { status: 401 });
@@ -42,8 +39,8 @@ export async function POST(req: NextRequest) {
     }
 
     const targetPriceId = target_tier === 'ultimate' 
-      ? process.env.STRIPE_PRICE_ID_ULTIMATE 
-      : process.env.STRIPE_PRICE_ID_PREMIUM;
+      ? priceIdUltimate 
+      : priceIdPremium;
 
     if (!targetPriceId) {
       return NextResponse.json({ error: '価格設定が正しくありません' }, { status: 500 });

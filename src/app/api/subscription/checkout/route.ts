@@ -1,22 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-07-29.dahlia' as any, // fallback for newest types if needed
-});
+import { getStripeConfig } from '@/lib/stripeConfig';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
-// ダミーのPrice ID。本番ではStripe管理画面で作った実際のPrice IDに置き換えます
-const TIER_PRICES: Record<string, string> = {
-  premium: process.env.STRIPE_PRICE_ID_PREMIUM || 'price_premium_dummy',
-  ultimate: process.env.STRIPE_PRICE_ID_ULTIMATE || 'price_ultimate_dummy',
-};
-
 export async function POST(req: NextRequest) {
   try {
+    const { stripe, priceIdPremium, priceIdUltimate } = await getStripeConfig();
+    const TIER_PRICES: Record<string, string> = {
+      premium: priceIdPremium,
+      ultimate: priceIdUltimate,
+    };
     // 認証ヘッダーからJWTを取得してリクエスト元ユーザーを検証
     const authHeader = req.headers.get('Authorization');
     const token = authHeader?.startsWith('Bearer ') ? authHeader.slice(7) : null;

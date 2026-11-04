@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-07-29.dahlia' as any,
-});
+import { getStripeConfig } from '@/lib/stripeConfig';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 export async function POST(req: NextRequest) {
   try {
+    const { stripe } = await getStripeConfig();
     // 認証チェック
     const anonClient = createClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
     const { data: { user }, error: authError } = await anonClient.auth.getUser(

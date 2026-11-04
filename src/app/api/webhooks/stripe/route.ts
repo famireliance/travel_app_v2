@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import { getStripeConfig } from '@/lib/stripeConfig';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-07-29.dahlia' as any,
-});
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 export async function POST(req: NextRequest) {
+  const { stripe, webhookSecret, priceIdUltimate } = await getStripeConfig();
   if (!webhookSecret || !SERVICE_ROLE_KEY || SERVICE_ROLE_KEY.startsWith('REPLACE')) {
     console.error('Webhook secret or Supabase Service Key is not configured');
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
@@ -49,7 +46,7 @@ export async function POST(req: NextRequest) {
             const subscription = await stripe.subscriptions.retrieve(subscriptionId) as Stripe.Subscription;
             const priceId = subscription.items?.data?.[0]?.price?.id;
             let tier = 'premium';
-            if (priceId === process.env.STRIPE_PRICE_ID_ULTIMATE) {
+            if (priceId === priceIdUltimate) {
               tier = 'ultimate';
             }
 

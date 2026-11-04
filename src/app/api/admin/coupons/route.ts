@@ -1,10 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { getAuthUser } from '@/lib/adminAuth';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2026-07-29.dahlia' as any,
-});
+import { getStripeConfig } from '@/lib/stripeConfig';
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -13,6 +10,7 @@ export async function GET(req: NextRequest) {
   }
 
   try {
+    const { stripe } = await getStripeConfig();
     const promotionCodes = await stripe.promotionCodes.list({ limit: 100, active: true });
     return NextResponse.json({ coupons: promotionCodes.data });
   } catch (err: any) {
@@ -27,6 +25,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    const { stripe } = await getStripeConfig();
     const { code, percent_off, amount_off } = await req.json();
     
     if (!code) {
