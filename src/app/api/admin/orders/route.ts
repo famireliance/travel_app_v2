@@ -77,6 +77,9 @@ export async function PUT(req: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
 
   const body = await req.json();
 

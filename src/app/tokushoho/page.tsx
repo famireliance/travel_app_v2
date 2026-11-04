@@ -4,7 +4,15 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: '特定商取引法に基づく表記',
   description: '輝旅 島専科（KIRATABI SHIMASENKA）の特定商取引法に基づく表記についてのご案内です。',
+  alternates: { canonical: 'https://island.kira-tabi.com/tokushoho' },
   openGraph: {
+    title: '特定商取引法に基づく表記 | 輝旅 島専科',
+    description: '輝旅 島専科（KIRATABI SHIMASENKA）の特定商取引法に基づく表記についてのご案内です。',
+    url: 'https://island.kira-tabi.com/tokushoho',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
     title: '特定商取引法に基づく表記 | 輝旅 島専科',
     description: '輝旅 島専科（KIRATABI SHIMASENKA）の特定商取引法に基づく表記についてのご案内です。',
     images: ['/og-image.png'],

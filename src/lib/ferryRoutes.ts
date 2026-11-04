@@ -26,8 +26,8 @@ export const REGION_FERRY_MAP: Record<string, FerryCompanyInfo[]> = {
     },
     {
       name: '神新汽船（下田航路）',
-      officialUrl: 'http://shinshin-kisen.jp/',
-      statusUrl: 'http://shinshin-kisen.jp/',
+      officialUrl: 'https://shinshin-kisen.jp/',
+      statusUrl: 'https://shinshin-kisen.jp/',
       phone: '0558-22-2621',
       mainPorts: '下田 ⇔ 利島・新島・式根島・神津島',
     },
@@ -108,10 +108,20 @@ export const REGION_FERRY_MAP: Record<string, FerryCompanyInfo[]> = {
     },
     {
       name: '十島村営船（フェリーとしま2）',
-      officialUrl: 'http://www.tokara.jp/',
-      statusUrl: 'http://www.tokara.jp/',
+      officialUrl: 'https://www.tokara.jp/',
+      statusUrl: 'https://www.tokara.jp/',
       phone: '099-222-2101',
       mainPorts: '鹿児島本港 ⇔ トカラ列島各島 ⇔ 名瀬',
+    },
+  ],
+  // 大東諸島（南北大東島）
+  daito: [
+    {
+      name: '大東海運（だいとう）',
+      officialUrl: 'https://www.daitokaiun.co.jp/',
+      statusUrl: 'https://www.daitokaiun.co.jp/',
+      phone: '098-861-0515',
+      mainPorts: '那覇港（新港・泊港） ⇔ 南大東島・北大東島',
     },
   ],
   // 八重山諸島（石垣・西表・竹富・波照間等）
@@ -137,8 +147,8 @@ export const REGION_FERRY_MAP: Record<string, FerryCompanyInfo[]> = {
   miyako: [
     {
       name: '多良間海運（フェリーたらまゆう）',
-      officialUrl: 'http://taramakaiun.com/',
-      statusUrl: 'http://taramakaiun.com/',
+      officialUrl: 'https://taramakaiun.com/',
+      statusUrl: 'https://taramakaiun.com/',
       phone: '0980-72-9209',
       mainPorts: '宮古島平良港 ⇔ 多良間島普天間港',
     },
@@ -187,8 +197,9 @@ export function getFerryInfoForIsland(islandId: string | number, regionId?: stri
     if (prefecture.includes('鹿児島')) return REGION_FERRY_MAP.amami;
     if (prefecture.includes('沖縄')) {
       const idNum = parseInt(sId, 10);
-      if (idNum >= 385 && idNum <= 394) return REGION_FERRY_MAP.miyako;
-      if (idNum >= 395 || sId.includes('ishigaki') || sId.includes('iriomote') || sId.includes('taketomi') || sId.includes('hateruma')) {
+      if (idNum === 384 || idNum === 385) return REGION_FERRY_MAP.daito;
+      if (idNum >= 386 && idNum <= 391) return REGION_FERRY_MAP.miyako;
+      if ((idNum >= 392 && idNum <= 401) || sId.includes('ishigaki') || sId.includes('iriomote') || sId.includes('taketomi') || sId.includes('hateruma')) {
         return REGION_FERRY_MAP.yaeyama;
       }
     }

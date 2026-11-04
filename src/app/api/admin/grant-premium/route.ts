@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getAuthUser } from '@/lib/adminAuth';
+import { getAuthUser, isSuperAdmin } from '@/lib/adminAuth';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -9,6 +9,12 @@ export async function POST(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
+  if (!isSuperAdmin(user)) {
+    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
   }
   if (!SERVICE_ROLE_KEY || SERVICE_ROLE_KEY === 'REPLACE_WITH_YOUR_SERVICE_ROLE_KEY') {
     return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です' }, { status: 503 });

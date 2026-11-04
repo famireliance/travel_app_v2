@@ -1,16 +1,34 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { verifyUserAuth } from '@/lib/userAuth';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
+const ALLOWED_CERTIFICATE_TYPES = ['standard', 'high_quality'] as const;
+
 export async function POST(request: Request) {
   try {
-    const { islandId, userId, type = 'high_quality', imageUrl } = await request.json();
+    const auth = await verifyUserAuth(request);
+    if (!auth.user) {
+      return NextResponse.json({ error: auth.error || '認証が必要です' }, { status: 401 });
+    }
 
-    if (!islandId || !userId) {
-      return NextResponse.json({ error: 'Missing islandId or userId' }, { status: 400 });
+    const body = await request.json();
+    const { islandId, type = 'high_quality', imageUrl } = body;
+    const userId = auth.user.id;
+
+    if (body.userId && body.userId !== userId) {
+      return NextResponse.json({ error: '不正なユーザーIDです' }, { status: 403 });
+    }
+
+    if (!islandId || typeof islandId !== 'string') {
+      return NextResponse.json({ error: 'Missing islandId' }, { status: 400 });
+    }
+
+    if (!ALLOWED_CERTIFICATE_TYPES.includes(type)) {
+      return NextResponse.json({ error: '無効な証明書タイプです' }, { status: 400 });
     }
 
     // Check user tier and tickets

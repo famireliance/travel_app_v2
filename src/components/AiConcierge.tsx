@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Sparkles, Send, MapPin, X, Loader2, ArrowRight, Star } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 
  
@@ -45,9 +46,13 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
     setPlans(null);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch('/api/ai-recommend', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
         body: JSON.stringify({
           userInput: query,
           visitedIslandIds: visitedIds,
@@ -59,7 +64,11 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
 
       // Map AI returned IDs to real local DB objects to prevent hallucination
       const verifiedPlans = data.plans.map((p: AiPlan) => {
-        const localData = ALL_ISLANDS_MASTER_DICTIONARY[p.id];
+        const localData =
+          ALL_ISLANDS_MASTER_DICTIONARY[p.id] ||
+          Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+            (isl) => isl.name === p.name || isl.slug === p.id
+          );
         if (localData) {
           return { ...p, ...localData };
         }

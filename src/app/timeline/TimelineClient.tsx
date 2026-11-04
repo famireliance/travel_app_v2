@@ -55,10 +55,11 @@ export default function TimelineClient() {
   const fetchTimeline = async () => {
     setLoading(true);
     try {
-      // Fetch latest 50 diaries globally
+      // Fetch latest 50 diaries globally (excluding hidden/moderated posts)
       const { data: diariesData, error: diariesError } = await supabase
         .from('island_diaries')
         .select('*')
+        .eq('is_hidden', false)
         .order('created_at', { ascending: false })
         .limit(50);
 

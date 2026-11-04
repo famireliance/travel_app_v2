@@ -50,9 +50,16 @@ export function getGuideUrl(islandName: string, dbGuideUrl?: string | null): str
   }
 
   if (!islandName) return ECOSYSTEM_CONFIG.guideBaseUrl;
-  
+
+  // 括弧（...）の除去と「・」の前の諸島プレフィックス除去（例: 父島（小笠原諸島） -> 父島、慶良間諸島・座間味島 -> 座間味島）
+  const normalizedName = islandName
+    .replace(/（.*）|\(.*?\)/g, '')
+    .split('・')
+    .pop()!
+    .trim();
+
   // 2. フォールバック辞書に存在すれば親島を使用
-  const targetIsland = GUIDE_FALLBACK_MAP[islandName] || islandName;
+  const targetIsland = GUIDE_FALLBACK_MAP[normalizedName] || GUIDE_FALLBACK_MAP[islandName] || normalizedName || islandName;
   
   // 3. 404を避けるため、安全なクエリパラメータ方式（/?s=島名 または /?island=島名）を使用
   // これにより、ガイド側にまだ専用ページがなくてもトップページが表示され404になりません。

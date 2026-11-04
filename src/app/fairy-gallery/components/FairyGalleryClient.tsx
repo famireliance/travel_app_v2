@@ -24,6 +24,9 @@ import {
   Globe
 } from 'lucide-react';
 import { FAIRIES_MASTER, IslandFairy, FairyRarity, FairyAttribute } from '@/lib/fairies';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import regionsData from '@/data/regions.json';
+import { toHiragana, romajiToHiragana } from '@/components/SearchModal';
 import FairyCard from './FairyCard';
 import FairyDetailModal from './FairyDetailModal';
 import FairyCardViewerModal from './FairyCardViewerModal';
@@ -187,12 +190,18 @@ export default function FairyGalleryClient({ discoveredImages = [] }: FairyGalle
       // 4. フリーワード検索（妖精名・テーマ・生息島名・説明文・ID）
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
-        const nameMatch = fairy.name.toLowerCase().includes(q);
-        const themeMatch = fairy.theme.toLowerCase().includes(q);
-        const descMatch = fairy.description.toLowerCase().includes(q);
-        const islandMatch = (fairy.island_id || '').toLowerCase().includes(q);
-        const regionMatch = (fairy.region_id || '').toLowerCase().includes(q);
-        if (!nameMatch && !themeMatch && !descMatch && !islandMatch && !regionMatch) {
+        const qHira = toHiragana(q);
+        const masterIsland = fairy.island_id ? ALL_ISLANDS_MASTER_DICTIONARY[fairy.island_id] : undefined;
+        const resolvedIslandName = masterIsland?.name || fairy.island_id || '';
+        const resolvedIslandSlug = masterIsland?.slug || '';
+        const resolvedPrefecture = masterIsland?.prefecture || '';
+        const regionEntry = fairy.region_id ? regionsData.find(r => r.id === fairy.region_id) : undefined;
+        const resolvedRegionName = regionEntry?.name || fairy.region_id || '';
+
+        const combinedText = `${fairy.name} ${fairy.theme} ${fairy.description} ${fairy.island_id || ''} ${resolvedIslandName} ${resolvedIslandSlug} ${resolvedPrefecture} ${fairy.region_id || ''} ${resolvedRegionName}`.toLowerCase();
+        const combinedHira = toHiragana(combinedText) + ` ${romajiToHiragana(resolvedIslandSlug)}`;
+
+        if (!combinedText.includes(q) && !combinedHira.includes(qHira)) {
           return false;
         }
       }

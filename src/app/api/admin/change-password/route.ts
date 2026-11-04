@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { validateTokenString } from '@/lib/adminAuth';
+import { getAuthUser, getAdminPassword } from '@/lib/adminAuth';
 import bcrypt from 'bcryptjs';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -10,23 +10,27 @@ export async function POST(req: NextRequest) {
   if (!SERVICE_ROLE_KEY || SERVICE_ROLE_KEY.startsWith('REPLACE')) {
     return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です' }, { status: 503 });
   }
-  
+
+  const user = await getAuthUser(req);
+  if (!user || user.role !== 'super_admin') {
+    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
+  }
+
   const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
     auth: { autoRefreshToken: false, persistSession: false }
   });
-  
-  const { currentPassword, newPassword } = await req.json();
-  const token = req.headers.get('x-admin-password') || currentPassword || '';
 
-  const user = await validateTokenString(token);
-  if (!user) {
-    return NextResponse.json({ error: '現在のパスワードまたはセッションが正しくありません' }, { status: 401 });
+  const { currentPassword, newPassword } = await req.json();
+
+  const masterPw = await getAdminPassword();
+  if (!currentPassword || !masterPw || currentPassword !== masterPw) {
+    return NextResponse.json({ error: '現在のパスワードが正しくありません' }, { status: 401 });
   }
-  
+
   if (!newPassword || newPassword.length < 8) {
     return NextResponse.json({ error: 'パスワードは8文字以上で設定してください' }, { status: 400 });
   }
-  
+
   // 個別スタッフアカウントの場合は admin_users のハッシュを更新
   if (user.id && user.id !== 'master-admin-id') {
     const password_hash = bcrypt.hashSync(newPassword, 10);
@@ -45,10 +49,10 @@ export async function POST(req: NextRequest) {
   const { error } = await adminClient
     .from('admin_config')
     .upsert({ key: 'admin_password', value: newPassword, updated_at: new Date().toISOString() });
-  
+
   if (error) {
     return NextResponse.json({ error: 'パスワードの更新に失敗しました: ' + error.message }, { status: 500 });
   }
-  
+
   return NextResponse.json({ success: true, message: 'マスターパスワードを変更しました。次回ログインから新しいパスワードをご使用ください。' });
 }

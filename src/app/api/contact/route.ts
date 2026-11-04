@@ -9,6 +9,15 @@ const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
+function escapeHtml(str: string): string {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { name, email, category, message } = await req.json();
@@ -63,6 +72,11 @@ export async function POST(req: NextRequest) {
         toEmails = ADMIN_EMAILS.split(',').map(e => e.trim()).filter(e => e.length > 0);
       }
 
+      const safeName = escapeHtml(name);
+      const safeEmail = escapeHtml(email);
+      const safeCategoryLabel = escapeHtml(categoryLabel);
+      const safeMessage = escapeHtml(message);
+
       const emailBody = {
         from: 'KIRATABI <noreply@kira-tabi.com>',
         to: toEmails,
@@ -74,19 +88,19 @@ export async function POST(req: NextRequest) {
             <table style="width: 100%; border-collapse: collapse; margin-top: 16px;">
               <tr style="background: #f1f5f9;">
                 <td style="padding: 10px; font-weight: bold; width: 30%;">お名前</td>
-                <td style="padding: 10px;">${name}</td>
+                <td style="padding: 10px;">${safeName}</td>
               </tr>
               <tr>
                 <td style="padding: 10px; font-weight: bold;">メールアドレス</td>
-                <td style="padding: 10px;"><a href="mailto:${email}">${email}</a></td>
+                <td style="padding: 10px;"><a href="mailto:${safeEmail}">${safeEmail}</a></td>
               </tr>
               <tr style="background: #f1f5f9;">
                 <td style="padding: 10px; font-weight: bold;">種類</td>
-                <td style="padding: 10px;">${categoryLabel}</td>
+                <td style="padding: 10px;">${safeCategoryLabel}</td>
               </tr>
               <tr>
                 <td style="padding: 10px; font-weight: bold;">内容</td>
-                <td style="padding: 10px; white-space: pre-wrap;">${message}</td>
+                <td style="padding: 10px; white-space: pre-wrap;">${safeMessage}</td>
               </tr>
             </table>
             <p style="color: #94a3b8; font-size: 12px; margin-top: 24px;">このメールはKIRATABIのお問い合わせフォームより自動送信されました。</p>
@@ -107,8 +121,6 @@ export async function POST(req: NextRequest) {
         const err = await resendRes.json();
         console.error('Resend error:', err);
       }
-    } else {
-      console.log('[CONTACT FORM SUBMISSION (No Resend API Key)]', { name, email, category: categoryLabel, message });
     }
 
     return NextResponse.json({ success: true });

@@ -90,23 +90,6 @@ export default function BizPortalReservations() {
       targetAcc = acc;
     }
 
-    // ユーザーに紐付く宿が未登録またはテスト環境の場合、DB内のメイン宿泊施設をフォールバック取得
-    if (!targetAcc) {
-      const { data: fallbackAccs } = await supabase
-        .from('accommodations')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(1);
-      
-      if (fallbackAccs && fallbackAccs.length > 0) {
-        targetAcc = fallbackAccs[0];
-        // ログイン中のユーザーがいれば、この宿に自動リンク
-        if (user && !targetAcc.owner_id) {
-          await supabase.from('accommodations').update({ owner_id: user.id }).eq('id', targetAcc.id);
-        }
-      }
-    }
-
     if (targetAcc) {
       setAccId(targetAcc.id);
       setAccName(targetAcc.name || '提携事業者');
@@ -118,6 +101,7 @@ export default function BizPortalReservations() {
           *,
           user_profiles!guest_id(nickname, email)
         `)
+        .eq('accommodation_id', targetAcc.id)
         .order('created_at', { ascending: false });
 
       // 2. サービス予約（レンタカー・アクティビティ）も並行して取得

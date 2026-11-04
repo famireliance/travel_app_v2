@@ -69,7 +69,13 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const user = await getAuthUser(req);
-  if (!user || !['super_admin', 'org_admin'].includes(user.role)) {
+  if (!user) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
+  if (!['super_admin', 'org_admin'].includes(user.role)) {
     return NextResponse.json({ error: 'スタッフ追加の権限がありません' }, { status: 403 });
   }
 
@@ -141,7 +147,13 @@ export async function POST(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   const user = await getAuthUser(req);
-  if (!user || !['super_admin', 'org_admin'].includes(user.role)) {
+  if (!user) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
+  if (!['super_admin', 'org_admin'].includes(user.role)) {
     return NextResponse.json({ error: 'スタッフ更新の権限がありません' }, { status: 403 });
   }
 
@@ -208,7 +220,13 @@ export async function PUT(req: NextRequest) {
 
 export async function DELETE(req: NextRequest) {
   const user = await getAuthUser(req);
-  if (!user || !['super_admin', 'org_admin'].includes(user.role)) {
+  if (!user) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
+  if (!['super_admin', 'org_admin'].includes(user.role)) {
     return NextResponse.json({ error: 'スタッフ削除の権限がありません' }, { status: 403 });
   }
 

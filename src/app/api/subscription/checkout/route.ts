@@ -40,7 +40,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '無効なプランが選択されました' }, { status: 400 });
     }
 
-    const origin = req.headers.get('origin') || 'https://island.kira-tabi.com';
+    const ALLOWED_ORIGINS = ['https://island.kira-tabi.com', 'http://localhost:3000', 'http://localhost:3001'];
+    const rawOrigin = req.headers.get('origin') || '';
+    const origin = ALLOWED_ORIGINS.includes(rawOrigin) ? rawOrigin : 'https://island.kira-tabi.com';
 
     // 1. Supabaseから既存のStripe Customer IDを取得する（存在する場合）
     let customerId = undefined;

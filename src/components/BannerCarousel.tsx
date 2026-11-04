@@ -36,7 +36,7 @@ export default function BannerCarousel({ campaigns, marginTop = 'mt-0' }: Banner
   const activeCampaign = campaigns[currentIndex];
 
   return (
-    <div className={`w-full bg-slate-950 cursor-pointer overflow-hidden ${marginTop} shadow-xl`} onClick={() => { if (activeCampaign.target_url) window.open(activeCampaign.target_url, '_blank'); }}>
+    <div className={`w-full bg-slate-950 cursor-pointer overflow-hidden ${marginTop} shadow-xl`} onClick={() => { if (activeCampaign.target_url) window.open(activeCampaign.target_url, '_blank', 'noopener,noreferrer'); }}>
       <div className="max-w-7xl mx-auto h-32 sm:h-36 lg:h-40 relative group">
         <AnimatePresence mode="wait">
           <motion.div

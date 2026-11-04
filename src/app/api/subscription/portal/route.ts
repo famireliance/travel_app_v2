@@ -35,7 +35,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'サブスクリプション情報が見つかりません。一度ご契約後にお試しください。' }, { status: 404 });
     }
 
-    const origin = req.headers.get('origin') || 'https://island.kira-tabi.com';
+    const ALLOWED_ORIGINS = ['https://island.kira-tabi.com', 'http://localhost:3000', 'http://localhost:3001'];
+    const rawOrigin = req.headers.get('origin') || '';
+    const origin = ALLOWED_ORIGINS.includes(rawOrigin) ? rawOrigin : 'https://island.kira-tabi.com';
 
     // Stripe カスタマーポータルセッション作成
     const portalSession = await stripe.billingPortal.sessions.create({

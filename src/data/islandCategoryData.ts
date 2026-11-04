@@ -1,3 +1,5 @@
+import { getGuideUrl } from '@/lib/ecosystem';
+
 export type IslandCategoryType = 'major' | 'remote' | 'ferry_daytrip';
 
 export interface FerryBoatItem {
@@ -43,11 +45,11 @@ export function getIslandCategoryType(islandId: string, islandName: string): Isl
     '安室島', '嘉比島', 'コマカ島', '津堅島', 'ナガンヌ島'
   ];
 
-  if (majorIslands.some(m => cleanName.includes(m) || m.includes(cleanName))) {
+  if (majorIslands.some(m => cleanName === m || cleanName.endsWith('・' + m))) {
     return 'major';
   }
 
-  if (daytripIslands.some(d => cleanName.includes(d) || d.includes(cleanName))) {
+  if (daytripIslands.some(d => cleanName === d || cleanName.endsWith('・' + d) || cleanName.includes('無人島'))) {
     return 'ferry_daytrip';
   }
 
@@ -91,7 +93,7 @@ export function getIslandGuideArticle(islandName: string): IslandGuideLink {
   return {
     islandName: cleanName,
     articleTitle: `【完全攻略】${cleanName}の観光・アクセス・おすすめスポットガイド`,
-    articleUrl: `https://guide.kira-tabi.com/island/${encodeURIComponent(cleanName)}`,
+    articleUrl: getGuideUrl(islandName),
     snippet: `${cleanName}のベストシーズン、絶景撮影ポイント、現地のローカルルールやおすすめルートをKIRATABI公式ガイド記事で詳しく解説中！`,
   };
 }

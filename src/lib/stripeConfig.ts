@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
+import crypto from 'crypto';
 
 export interface StripeRuntimeConfig {
   stripe: Stripe;
@@ -11,11 +12,47 @@ export interface StripeRuntimeConfig {
 
 let cachedConfig: { data: StripeRuntimeConfig; expiresAt: number } | null = null;
 
+function encryptPayload(plainJson: string, serviceRoleKey: string): string {
+  const key = crypto.createHash('sha256').update(serviceRoleKey).digest();
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', key, iv);
+  const encrypted = Buffer.concat([cipher.update(plainJson, 'utf8'), cipher.final()]);
+  const tag = cipher.getAuthTag();
+  return JSON.stringify({
+    v: 1,
+    iv: iv.toString('base64'),
+    tag: tag.toString('base64'),
+    ct: encrypted.toString('base64'),
+  });
+}
+
+function decryptOrParsePayload(rawVal: unknown, serviceRoleKey: string): Record<string, any> | null {
+  if (!rawVal) return null;
+  try {
+    const obj = typeof rawVal === 'string' ? JSON.parse(rawVal) : rawVal;
+    if (obj && obj.v === 1 && obj.iv && obj.tag && obj.ct) {
+      const key = crypto.createHash('sha256').update(serviceRoleKey).digest();
+      const decipher = crypto.createDecipheriv(
+        'aes-256-gcm',
+        key,
+        Buffer.from(obj.iv, 'base64')
+      );
+      decipher.setAuthTag(Buffer.from(obj.tag, 'base64'));
+      const decrypted = Buffer.concat([
+        decipher.update(Buffer.from(obj.ct, 'base64')),
+        decipher.final(),
+      ]).toString('utf8');
+      return JSON.parse(decrypted);
+    }
+    return obj;
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Loads Stripe configuration from Supabase `admin_config` (`key = 'stripe_live_config'`)
+ * Loads Stripe configuration from Supabase `admin_config` (`key = 'stripe_live_config'`, AES-256-GCM encrypted)
  * with a 60-second in-memory cache and seamless fallback/sync with environment variables.
- * - If local/server env has a live key (`sk_live_...`), it uses it and auto-syncs to `admin_config`.
- * - If server env still has a test key (`sk_test_...`) or is unset, it uses the live config from `admin_config`.
  */
 export async function getStripeConfig(): Promise<StripeRuntimeConfig> {
   const now = Date.now();
@@ -24,8 +61,8 @@ export async function getStripeConfig(): Promise<StripeRuntimeConfig> {
   }
 
   let secretKey = process.env.STRIPE_SECRET_KEY || '';
-  let priceIdPremium = process.env.STRIPE_PRICE_ID_PREMIUM || 'price_premium_dummy';
-  let priceIdUltimate = process.env.STRIPE_PRICE_ID_ULTIMATE || 'price_ultimate_dummy';
+  let priceIdPremium = process.env.STRIPE_PRICE_ID_PREMIUM || '';
+  let priceIdUltimate = process.env.STRIPE_PRICE_ID_ULTIMATE || '';
   let webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || '';
 
   const envIsLive = secretKey.startsWith('sk_live_');
@@ -44,37 +81,42 @@ export async function getStripeConfig(): Promise<StripeRuntimeConfig> {
         .eq('key', 'stripe_live_config')
         .maybeSingle();
 
-      const parsed = data?.value
+      const rawObj = data?.value
         ? typeof data.value === 'string'
           ? JSON.parse(data.value)
           : data.value
         : null;
+      const isAlreadyEncrypted = Boolean(rawObj && rawObj.v === 1 && rawObj.ct);
+      const parsed = decryptOrParsePayload(data?.value, serviceRoleKey);
 
       if (envIsLive) {
-        // Auto-sync live env config to Supabase admin_config if needed
         if (
           !parsed ||
+          !isAlreadyEncrypted ||
           parsed.secretKey !== secretKey ||
           parsed.priceIdPremium !== priceIdPremium ||
           parsed.priceIdUltimate !== priceIdUltimate ||
           parsed.webhookSecret !== webhookSecret
         ) {
+          const encryptedValue = encryptPayload(
+            JSON.stringify({
+              secretKey,
+              priceIdPremium,
+              priceIdUltimate,
+              webhookSecret,
+              updatedAt: new Date().toISOString(),
+            }),
+            serviceRoleKey
+          );
           await adminClient.from('admin_config').upsert(
             {
               key: 'stripe_live_config',
-              value: JSON.stringify({
-                secretKey,
-                priceIdPremium,
-                priceIdUltimate,
-                webhookSecret,
-                updatedAt: new Date().toISOString(),
-              }),
+              value: encryptedValue,
             },
             { onConflict: 'key' }
           );
         }
       } else if (parsed?.secretKey) {
-        // Use live config stored in Supabase admin_config
         secretKey = parsed.secretKey;
         if (parsed.priceIdPremium) priceIdPremium = parsed.priceIdPremium;
         if (parsed.priceIdUltimate) priceIdUltimate = parsed.priceIdUltimate;

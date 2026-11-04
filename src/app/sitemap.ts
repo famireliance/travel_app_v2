@@ -85,23 +85,23 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  // 島の個別ページ（全506島）
-  const islandPages: MetadataRoute.Sitemap = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).map((island) => ({
-    url: `${BASE_URL}/island/${island.slug || island.id}`,
-    lastModified: now,
-    changeFrequency: 'weekly' as const,
-    priority: island.is_conquest_target ? 0.8 : 0.6,
-  }));
+  // 島の個別ページ（渡航対象のみ・重複slug除外）
+  const seenSlugs = new Set<string>();
+  const islandPages: MetadataRoute.Sitemap = Object.values(ALL_ISLANDS_MASTER_DICTIONARY)
+    .filter((island) => {
+      if (island.is_conquest_target === false) return false;
+      const slug = String(island.slug || island.id);
+      if (!slug || seenSlugs.has(slug)) return false;
+      seenSlugs.add(slug);
+      return true;
+    })
+    .map((island) => ({
+      url: `${BASE_URL}/island/${island.slug || island.id}`,
+      lastModified: now,
+      changeFrequency: 'weekly' as const,
+      priority: 0.8,
+    }));
 
-  // 宿泊施設の個別ページ
-  const stayPages: MetadataRoute.Sitemap = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).map((island) => ({
-    url: `${BASE_URL}/stay/${island.slug || island.id}`,
-    lastModified: now,
-    changeFrequency: 'weekly' as const,
-    priority: 0.7,
-  }));
-
-  // アフィリエイト用レンタカー・アクティビティは動的に増えるため今回は代表的なものを静的パスとして追加するか、または一旦除外しますが、
   // 最低限システムで対応した静的ページ群を追加
   const newStaticPages: MetadataRoute.Sitemap = [
     { url: `${BASE_URL}/globe`, lastModified: now, changeFrequency: 'monthly', priority: 0.8 },
@@ -109,5 +109,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${BASE_URL}/fairy-gallery`, lastModified: now, changeFrequency: 'weekly', priority: 0.8 }
   ];
 
-  return [...staticPages, ...newStaticPages, ...regionPages, ...islandPages, ...stayPages];
+  return [...staticPages, ...newStaticPages, ...regionPages, ...islandPages];
 }

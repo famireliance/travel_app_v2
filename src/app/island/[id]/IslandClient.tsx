@@ -1187,10 +1187,21 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
 
                       {/* 本土・近隣島の宿検索ボタン */}
                       <div className="pt-4 border-t border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-3">
-                        <span className="text-xs font-bold text-slate-700">隣接する本島・母島の宿を探す:</span>
+                        <span className="text-xs font-bold text-slate-700">隣接する本島・出港地周辺の宿を探す:</span>
                         <div className="flex flex-wrap gap-2">
                           <a
-                            href={getRakutenTravelSearchUrl(island.name, island.prefecture)}
+                            href={(() => {
+                              const portSource = ferryBoats[0]?.departurePort || island.access || '';
+                              const portMatch = portSource.match(/([一-龠ぁ-んァ-ヶー]{2,6}?)(?:港|桟橋)/);
+                              const portArea = portMatch ? portMatch[1].replace(/^(発|着|より)/, '') : '';
+                              const validPort =
+                                portArea && !['沿岸各', '主要', '本土', '近隣', '各', '定期'].includes(portArea)
+                                  ? portArea
+                                  : '';
+                              return validPort
+                                ? getRakutenTravelSearchUrl(validPort, island.prefecture)
+                                : getRakutenTravelSearchUrl(island.prefecture || island.name);
+                            })()}
                             target="_blank"
                             rel="noopener noreferrer sponsored"
                             className="px-4 py-2 bg-[#BF0000] text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1"

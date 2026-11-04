@@ -78,25 +78,23 @@ export async function POST(req: NextRequest) {
       };
 
       // マスターパスワード自体をブラウザに保持させないため、DBセッション(UUID)を発行する
-      if (SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
-        try {
-          const client = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
-            auth: { autoRefreshToken: false, persistSession: false }
-          });
-          const { data: session } = await client
-            .from('admin_sessions')
-            .insert([{ user_id: null }])
-            .select('id')
-            .single();
-          if (session?.id) {
-            return NextResponse.json({ success: true, token: session.id, user: masterUser });
-          }
-        } catch {
-          // DB未接続時はフォールバック
-        }
+      if (!SERVICE_ROLE_KEY || SERVICE_ROLE_KEY.startsWith('REPLACE')) {
+        return NextResponse.json({ error: 'データベース接続エラー' }, { status: 500 });
       }
 
-      return NextResponse.json({ success: true, token: password, user: masterUser });
+      const client = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+        auth: { autoRefreshToken: false, persistSession: false }
+      });
+      const { data: session, error: sessionErr } = await client
+        .from('admin_sessions')
+        .insert([{ user_id: null }])
+        .select('id')
+        .single();
+      if (sessionErr || !session?.id) {
+        return NextResponse.json({ error: 'セッション作成に失敗しました' }, { status: 500 });
+      }
+
+      return NextResponse.json({ success: true, token: session.id, user: masterUser });
     }
 
     if (!email || !password) {

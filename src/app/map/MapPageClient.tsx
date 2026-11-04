@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowLeft, Search, Compass, Bot, ArrowRightLeft } from 'lucide-react';
 import MapClient from '@/components/Map/MapClient';
-import SearchModal from '@/components/SearchModal';
+import SearchModal, { matchesIslandSearch } from '@/components/SearchModal';
 import AiConcierge from '@/components/AiConcierge';
 import IslandCompareModal from '@/components/IslandCompareModal';
 import { useTravel } from '@/context/TravelContext';
@@ -34,6 +34,32 @@ const ARCHIPELAGOS = [
   { name: '三陸・東北', bounds: [[38.0, 140.5], [39.5, 142.2]] as [[number, number], [number, number]] },
   { name: '北海道離島', bounds: [[42.0, 139.0], [45.6, 141.5]] as [[number, number], [number, number]] },
 ];
+const VERIFIED_CATEGORY_MAP: Record<string, string[]> = {
+  transparency: ['座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '伊良部島', '下地島', '池間島', '来間島'],
+  stars: ['波照間島', '神津島', '石垣島', '西表島', '竹富島', '小浜島', '黒島'],
+  retreat: ['直島', '豊島（香川）', '小豆島', '古宇利島', '瀬底島', '生口島', '竹富島', '与論島'],
+  family: ['石垣島', '宮古島', '淡路島', '伊豆大島', '佐渡島', '小豆島', '初島'],
+  onsen_sauna: ['式根島', '屋久島', '硫黄島（鹿児島）', '八丈島', '直島', '桜島'],
+  luxury: ['宮古島', '伊良部島', '石垣島', '小浜島', '屋久島', '奄美大島', '淡路島'],
+  remote: ['青ヶ島', '南大東島', '北大東島', '悪石島', '宝島', '与那国島', '波照間島'],
+  nature: ['西表島', '屋久島', '父島', '母島', '奄美大島', '徳之島', '御蔵島'],
+  gourmet: ['淡路島', '小豆島', '壱岐島', '福江島', '利尻島', '礼文島', '佐渡島', '隠岐'],
+  daytrip: ['江の島', '猿島', '友ヶ島', '能古島', '日間賀島', '佐久島', '相島', '水納島', '伊江島'],
+};
+
+const THEME_LABELS: Record<string, string> = {
+  transparency: '海の透明度No.1',
+  stars: '満天の星空',
+  retreat: '女子・ひとり旅',
+  family: '家族・子連れ旅',
+  onsen_sauna: '秘湯・サウナ',
+  luxury: '高級リゾート',
+  remote: '秘境・無人島',
+  nature: '野生動物・自然',
+  gourmet: '島グルメ・食',
+  daytrip: '日帰り島',
+};
+
 function GlobalMapContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -81,12 +107,18 @@ function GlobalMapContent() {
     if (typeof difficultyFilter === 'number' && level !== difficultyFilter) return false;
     if (regionParam && isl.region_id !== regionParam) return false;
     if (filterParam) {
-      const lowerFilter = filterParam.toLowerCase();
-      const matchTag = isl.tags && isl.tags.some((t: string) => t.toLowerCase().includes(lowerFilter));
-      const matchCat = isl.category && isl.category.toLowerCase().includes(lowerFilter);
-      const matchName = isl.name && isl.name.toLowerCase().includes(lowerFilter);
-      const matchDesc = isl.description && isl.description.toLowerCase().includes(lowerFilter);
-      if (!matchTag && !matchCat && !matchName && !matchDesc) return false;
+      const lowerFilter = filterParam.toLowerCase().trim();
+      const targetNames = VERIFIED_CATEGORY_MAP[lowerFilter];
+      if (targetNames) {
+        const name = String(isl.name || '');
+        const matchedTheme = targetNames.some((verifiedName: string) => {
+          const cleanName = verifiedName.split('（')[0];
+          return name === cleanName || name.includes(cleanName) || cleanName.includes(name);
+        });
+        if (!matchedTheme) return false;
+      } else {
+        if (!matchesIslandSearch(isl, filterParam)) return false;
+      }
     }
     return true;
   });
@@ -228,7 +260,7 @@ function GlobalMapContent() {
             className="bg-blue-600/90 hover:bg-blue-700 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max transition-all cursor-pointer group"
             title="クリックで解除"
           >
-            <span>🔍 「{filterParam}」でフィルター中</span>
+            <span>🔍 「{THEME_LABELS[filterParam.toLowerCase()] || filterParam}」でフィルター中 ({filteredIslands.length}島)</span>
             <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full group-hover:bg-white group-hover:text-blue-600 transition-colors">
               解除 ✕
             </span>

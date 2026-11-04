@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { getAuthUser } from '@/lib/adminAuth';
+import { getAuthUser, isSuperAdmin } from '@/lib/adminAuth';
 import { getStripeConfig } from '@/lib/stripeConfig';
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (!isSuperAdmin(user)) {
+    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
   }
 
   try {
@@ -22,6 +25,12 @@ export async function POST(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
+  if (!isSuperAdmin(user)) {
+    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
   }
 
   try {

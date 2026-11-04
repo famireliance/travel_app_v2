@@ -66,7 +66,7 @@ export default function Home() {
 
   // サーバーサイドとクライアントサイドでhydreation不一致を防ぐための空配列またはデフォルトを保証する
   const slides = heroSlides.length > 0 ? heroSlides : [
-    { type: 'image', src: "/hero/slide1.webp", title: ["まだ見ぬ青を、", "探す旅へ。"], location: "宮古島 (沖縄県)" }
+    { type: 'image', src: "/hero/slide2.webp", title: ["まだ見ぬ青を、", "探す旅へ。"], location: "宮古島 (沖縄県)" }
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -182,7 +182,7 @@ export default function Home() {
       'onsen_sauna': ['式根島', '屋久島', '硫黄島（鹿児島）', '八丈島', '直島', '桜島'],
       'luxury': ['宮古島', '伊良部島', '石垣島', '小浜島', '屋久島', '奄美大島', '淡路島'],
       'remote': ['青ヶ島', '南大東島', '北大東島', '悪石島', '宝島', '与那国島', '波照間島'],
-      'nature': ['西表島', '屋久島', '知床', '父島', '母島', '奄美大島', '徳之島', '御蔵島'],
+      'nature': ['西表島', '屋久島', '父島', '母島', '奄美大島', '徳之島', '御蔵島'],
       'gourmet': ['淡路島', '小豆島', '壱岐島', '福江島', '利尻島', '礼文島', '佐渡島', '隠岐'],
       'daytrip': ['江の島', '猿島', '友ヶ島', '能古島', '日間賀島', '佐久島', '相島', '水納島', '伊江島']
     };
@@ -274,8 +274,6 @@ export default function Home() {
 
   return (
     <div className="bg-[#F8FAFC] min-h-screen pb-[120px] relative font-sans text-slate-800 selection:bg-blue-900 selection:text-white">
-      <SearchModal isOpen={isSearchOpen} onClose={() => setIsSearchOpen(false)} />
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
       {/* メール認証完了/エラー通知トースト */}
       <AnimatePresence>
@@ -848,7 +846,7 @@ export default function Home() {
           </div>
           <div className="mt-6 flex justify-center max-w-7xl mx-auto px-4 lg:px-0">
             <button 
-              onClick={() => router.push('/search')}
+              onClick={() => router.push('/islands')}
               className="text-sm font-bold text-slate-500 hover:text-amber-600 flex items-center gap-1 transition-colors bg-slate-100 hover:bg-amber-50 px-6 py-2.5 rounded-full shadow-sm"
             >
               続きをみる <ChevronRight className="w-4 h-4" />
@@ -898,7 +896,7 @@ export default function Home() {
           </div>
           <div className="mt-6 flex justify-center max-w-7xl mx-auto px-4 lg:px-0">
             <button 
-              onClick={() => router.push('/search')}
+              onClick={() => router.push('/islands')}
               className="text-sm font-bold text-slate-500 hover:text-rose-600 flex items-center gap-1 transition-colors bg-slate-100 hover:bg-rose-50 px-6 py-2.5 rounded-full shadow-sm"
             >
               続きをみる <ChevronRight className="w-4 h-4" />
@@ -1173,7 +1171,7 @@ export default function Home() {
                       {selectedCategory === 'onsen_sauna' && '屋久島海中温泉など野湯実在確認地および絶景テントサウナ等実稼働施設より厳選'}
                       {selectedCategory === 'luxury' && '1泊数万〜数十万クラスの最高峰5つ星級リゾートホテル・高級プライベートヴィラ実在島より厳選'}
                       {selectedCategory === 'remote' && 'フェリー就航率の低さや上陸難易度が高い絶海孤島、および無人島ツアー開催地より厳選'}
-                      {selectedCategory === 'nature' && '世界自然遺産登録地やホエールウォッチング、固有種（ヤンバルクイナ等）生息地より厳選'}
+                      {selectedCategory === 'nature' && '世界自然遺産登録地やホエールウォッチング、アマミノクロウサギ・イリオモテヤマネコ等の希少固有種生息地より厳選'}
                       {selectedCategory === 'gourmet' && '特産品（黒毛和牛、新鮮な海鮮）や独自の島料理が有名な美食の島より厳選'}
                       {selectedCategory === 'daytrip' && '本土から片道1時間以内でアクセス可能、かつ日帰り観光ルートが確立している島より厳選'}
                     </span>

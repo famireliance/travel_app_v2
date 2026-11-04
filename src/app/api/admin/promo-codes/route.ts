@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-import { getAuthUser } from '@/lib/adminAuth';
+import { getAuthUser, isSuperAdmin } from '@/lib/adminAuth';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
@@ -15,6 +15,9 @@ export async function GET(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (!isSuperAdmin(user)) {
+    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
   }
 
   const client = getAdminClient();
@@ -34,6 +37,12 @@ export async function POST(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
+  if (!isSuperAdmin(user)) {
+    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
   }
 
   try {

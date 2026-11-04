@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Sparkles, Map, Calendar, Ship, ArrowLeft, ArrowRight, Loader2, Compass, RefreshCw } from 'lucide-react';
 import Breadcrumb from '@/components/Breadcrumb';
 import { useTravel } from '@/context/TravelContext';
+import { supabase } from '@/lib/supabase';
 
 interface RoutePlan {
   planType: string;
@@ -43,9 +44,13 @@ export default function RoutePlannerPage() {
         );
       }
 
+      const { data: { session } } = await supabase.auth.getSession();
       const res = await fetch('/api/ai-route', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+        },
         body: JSON.stringify({
           startLocation,
           durationDays,

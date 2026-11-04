@@ -38,8 +38,12 @@ export async function GET(req: NextRequest) {
 
 // PATCH: ステータス・メモの更新
 export async function PATCH(req: NextRequest) {
-  if (!(await checkAdmin(req))) {
+  const user = await getAuthUser(req);
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
   }
 
   const body = await req.json();

@@ -37,13 +37,16 @@ export default function ActivityLandingPage() {
   const [showAllPlans, setShowAllPlans] = useState(false);
 
   useEffect(() => {
-    if (!serviceId) return;
-    const found = getServiceById(String(serviceId)) || ISLAND_SERVICES_DICTIONARY['ogasawara-blue-dolphin-tour'];
+    if (!serviceId) {
+      setLoading(false);
+      return;
+    }
+    const found = getServiceById(String(serviceId));
     setService(found);
     setLoading(false);
   }, [serviceId]);
 
-  if (loading || !service) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center space-y-3">
@@ -51,6 +54,35 @@ export default function ActivityLandingPage() {
           <p className="text-xs text-slate-500 font-mono tracking-widest uppercase font-bold">Loading Activity Tour LP...</p>
         </div>
       </div>
+    );
+  }
+
+  if (!service) {
+    return (
+      <main className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center px-4 py-12 font-sans text-slate-800">
+        <div className="max-w-lg w-full bg-white rounded-3xl p-8 shadow-sm border border-slate-200 text-center space-y-6">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+            <Compass className="w-7 h-7" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="font-serif font-bold text-xl text-slate-900">
+              指定された施設・ツアー情報は現在準備中です
+            </h1>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              お探しのアクティビティ・体験ツアーは現在掲載準備中か、公開が終了しております。各離島の詳細ページより現地の最新情報をご確認ください。
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              href="/islands"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold shadow-sm transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>全国離島一覧へ戻る</span>
+            </Link>
+          </div>
+        </div>
+      </main>
     );
   }
 

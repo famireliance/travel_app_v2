@@ -42,27 +42,11 @@ const BADGE_PRESETS = ['1番人気', '定番', 'おすすめ', '連泊お得', '
 const DEFAULT_PLANS: PlanItem[] = [
   {
     id: 'plan-1',
-    name: '【1泊3食付】名物地魚・島料理＆島散策お弁当付き 青ヶ島満喫スタンダードプラン',
-    price: '¥11,500〜 / 人',
-    desc: '港・ヘリポート送迎付き。旬の島魚会席と特製お弁当で絶海の孤島を心ゆくまで満喫。',
-    badge: '1番人気',
-    features_text: '朝夕食付き\nお弁当付き\n送迎無料\nWi-Fi完備'
-  },
-  {
-    id: 'plan-2',
-    name: '【1泊2食付】島魚と自家製青酎晩酌プラン',
-    price: '¥9,800〜 / 人',
-    desc: '日中はご自身で巡り、夜は宿自慢の島料理と青酎で語り合うゆったりステイ。',
+    name: '【1泊2食付】スタンダードプラン',
+    price: '¥10,000〜 / 人',
+    desc: '旬の島料理とゆったりとした時間をお楽しみいただける基本プランです。',
     badge: '定番',
-    features_text: '朝夕食付き\n送迎無料\n個室確約'
-  },
-  {
-    id: 'plan-3',
-    name: '【素泊まり】ビジネス・ワーケーション＆自由旅プラン',
-    price: '¥7,500〜 / 人',
-    desc: 'お仕事や自由なスケジュールで過ごしたい方向け。全室デスク＆高速Wi-Fi完備。',
-    badge: '自由旅',
-    features_text: '素泊まり\n高速Wi-Fi\nデスク完備'
+    features_text: '朝夕食付き\nWi-Fi完備'
   }
 ];
 
@@ -72,11 +56,7 @@ export default function BizPortalFacility() {
   const [success, setSuccess] = useState(false);
   
   const [accId, setAccId] = useState<string | null>(null);
-  const [catchphrases, setCatchphrases] = useState<string[]>([
-    '絶海の孤島・青ヶ島で味わう、島魚会席と温もりのおもてなし。',
-    '港・ヘリポート往復送迎無料 ＆ 自家製青酎と獲れたて地魚の晩酌。',
-    '満天の星空と二重カルデラの絶景に抱かれる、静寂のオアシス。'
-  ]);
+  const [catchphrases, setCatchphrases] = useState<string[]>(['']);
   const [plans, setPlans] = useState<PlanItem[]>(DEFAULT_PLANS);
 
   const [formData, setFormData] = useState({
@@ -124,21 +104,6 @@ export default function BizPortalFacility() {
           .maybeSingle();
         targetAcc = acc;
       }
-
-      // フォールバック: メイン宿泊施設を取得
-      if (!targetAcc) {
-        const { data: fallbackAccs } = await supabase
-          .from('accommodations')
-          .select('*')
-          .order('created_at', { ascending: false })
-          .limit(1);
-        if (fallbackAccs && fallbackAccs.length > 0) {
-          targetAcc = fallbackAccs[0];
-          if (user && !targetAcc.owner_id) {
-            await supabase.from('accommodations').update({ owner_id: user.id }).eq('id', targetAcc.id);
-          }
-        }
-      }
       
       if (targetAcc) {
         setAccId(targetAcc.id);
@@ -152,11 +117,7 @@ export default function BizPortalFacility() {
             .filter(Boolean);
         }
         if (parsedCatchphrases.length === 0) {
-          parsedCatchphrases = [
-            '絶海の孤島・青ヶ島で味わう、島魚会席と温もりのおもてなし。',
-            '港・ヘリポート往復送迎無料 ＆ 自家製青酎と獲れたて地魚の晩酌。',
-            '満天の星空と二重カルデラの絶景に抱かれる、静寂のオアシス。'
-          ];
+          parsedCatchphrases = [''];
         }
         setCatchphrases(parsedCatchphrases.slice(0, 4));
 
@@ -174,16 +135,16 @@ export default function BizPortalFacility() {
         }
 
         setFormData({
-          name: targetAcc.name || '青ヶ島 アイランドロッジ',
-          description: targetAcc.description || '青ヶ島集落の中心に位置し、港やヘリポートへの送迎も完備。島のお母さんが腕を振るう島魚尽くしの夕食と、島散策用の手作りお弁当が旅人に親しまれています。全室エアコン・Wi-Fi完備で快適にお過ごしいただけます。',
-          price_range: targetAcc.price_range || '¥11,000〜 / 1泊3食',
-          phone: targetAcc.phone_number || targetAcc.phone || '04996-9-0123',
-          email: targetAcc.email || 'aogashima-lodge@example.com',
-          line_url: targetAcc.line_url || 'https://line.me/R/ti/p/@aogashima_lodge',
-          instagram_url: targetAcc.instagram_url || 'https://instagram.com/aogashima_island_lodge',
-          instagram_account: targetAcc.instagram_account || '@aogashima_island_lodge',
-          twitter_url: targetAcc.twitter_url || 'https://x.com/aogashima_lodge',
-          website_url: targetAcc.website_url || 'https://island.kira-tabi.com/stay/aogashimaya',
+          name: targetAcc.name || '',
+          description: targetAcc.description || '',
+          price_range: targetAcc.price_range || '',
+          phone: targetAcc.phone_number || targetAcc.phone || '',
+          email: targetAcc.email || '',
+          line_url: targetAcc.line_url || '',
+          instagram_url: targetAcc.instagram_url || '',
+          instagram_account: targetAcc.instagram_account || '',
+          twitter_url: targetAcc.twitter_url || '',
+          website_url: targetAcc.website_url || '',
           check_in_time: targetAcc.check_in_time || '15:00 〜 19:00',
           check_out_time: targetAcc.check_out_time || '10:00',
           same_day_cutoff: targetAcc.same_day_cutoff || '当日受付: 12:00まで',
@@ -193,15 +154,15 @@ export default function BizPortalFacility() {
           booking_mode: targetAcc.booking_mode || 'request_based',
           deposit_policy: targetAcc.deposit_policy || '',
           enable_pre_checkin: targetAcc.enable_pre_checkin ?? true,
-          photo_exterior: targetAcc.photo_exterior?.[0] || targetAcc.photo_urls?.[0] || 'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
-          photo_room: targetAcc.photo_room?.[0] || targetAcc.photo_urls?.[1] || 'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
-          photo_food: targetAcc.photo_food?.[0] || targetAcc.photo_urls?.[2] || 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
-          photo_facility: targetAcc.photo_facility?.[0] || targetAcc.photo_urls?.[3] || 'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80',
-            features_text: (targetAcc.features && targetAcc.features.length > 0)
+          photo_exterior: targetAcc.photo_exterior?.[0] || targetAcc.photo_urls?.[0] || '',
+          photo_room: targetAcc.photo_room?.[0] || targetAcc.photo_urls?.[1] || '',
+          photo_food: targetAcc.photo_food?.[0] || targetAcc.photo_urls?.[2] || '',
+          photo_facility: targetAcc.photo_facility?.[0] || targetAcc.photo_urls?.[3] || '',
+          features_text: (targetAcc.features && targetAcc.features.length > 0)
             ? targetAcc.features.join('\n')
-            : 'ヘリポート・港からの往復無料送迎付き\n自家製青酎と獲れたて地魚の島料理夕食 ＋ 島散策用お弁当付き\n全室コンセント多数・高速Wi-Fi完備\n島内レンタカー・ガイド手配サポート',
-          wifi_ssid: targetAcc.wifi_ssid || 'Aogashima_Lodge_Guest',
-          wifi_password: targetAcc.wifi_password || 'aogashima2026'
+            : '',
+          wifi_ssid: targetAcc.wifi_ssid || '',
+          wifi_password: targetAcc.wifi_password || ''
         });
       }
       setLoading(false);

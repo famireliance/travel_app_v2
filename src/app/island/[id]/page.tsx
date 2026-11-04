@@ -65,20 +65,21 @@ export async function generateMetadata(
   const masterEntry = findMasterEntry(slugOrId);
   const internalId = masterEntry ? masterEntry.id : slugOrId;
   
-  // 1. まずDBから最新の実用情報（人口、アクセス等）と最新の口コミを並行してフェッチ（タイムアウト300ms付き）
+  // 1. まずDBから最新の実用情報（人口、アクセス等）と最新の口コミを並行してフェッチ（タイムアウト1500ms付き）
   let islandName = masterEntry?.name || '未知の島';
   let description = masterEntry?.description || '魅力あふれる日本の離島の旅路。';
   let population = '';
+  let heroImageUrl = masterEntry?.hero_image_url || masterEntry?.image_url || '';
   
   const [islandResult, diariesResult] = await Promise.all([
     withTimeout(
-      supabase.from('islands').select('name, description, population').eq('id', internalId).single(),
-      300,
+      supabase.from('islands').select('name, description, population, hero_image_url, image_url').eq('id', internalId).single(),
+      1500,
       { data: null, error: null } as any
     ),
     withTimeout(
       supabase.from('island_diaries').select('content').eq('island_id', internalId).eq('is_hidden', false).order('created_at', { ascending: false }).limit(2),
-      300,
+      1500,
       { data: null, error: null } as any
     )
   ]);
@@ -87,6 +88,7 @@ export async function generateMetadata(
     islandName = islandResult.data.name;
     description = islandResult.data.description || description;
     population = islandResult.data.population ? `人口: ${islandResult.data.population}` : '';
+    heroImageUrl = islandResult.data.hero_image_url || islandResult.data.image_url || heroImageUrl;
   } else if (masterEntry) {
     islandName = masterEntry.name;
     description = masterEntry.description || description;
@@ -95,8 +97,11 @@ export async function generateMetadata(
   // 最新の口コミテキストをメタディスクリプションに反映
   const diarySnippet = diariesResult.data?.[0]?.content?.substring(0, 40);
 
-  // SEOに最適化されたタイトル・説明
-  const title = `${islandName}の観光・アクセス情報 | キラ旅`;
+  // SEOに最適化されたタイトル・説明（layout.tsxのテンプレートにより「| 輝旅 島専科（KIRATABI SHIMASENKA）」が自動付与されるため重複サフィックスを除去）
+  const title = `${islandName}の観光・アクセス情報`;
+  const ogTitle = `${islandName}の観光・アクセス情報 | 輝旅 島専科（KIRATABI SHIMASENKA）`;
+  const canonicalUrl = `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`;
+  const ogImageUrl = heroImageUrl || '/og-image.png';
   
   // descriptionsを適度に切り詰める (最大120字程度)
   let metaDesc = `${islandName}${population ? `（${population}）` : ''}。${description.replace(/\\n/g, '').substring(0, 100)}。`;
@@ -110,23 +115,23 @@ export async function generateMetadata(
     title,
     description: metaDesc,
     alternates: {
-      canonical: `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`,
+      canonical: canonicalUrl,
     },
-    keywords: [islandName, '離島', '観光', 'アクセス', '旅行', 'キラ旅'],
+    keywords: [islandName, masterEntry?.prefecture || '', '離島', '観光', 'アクセス', 'フェリー', '旅行', 'キラ旅', '輝旅 島専科'].filter(Boolean),
     openGraph: {
-      title,
+      title: ogTitle,
       description: metaDesc,
-      url: `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`,
-      siteName: 'キラ旅',
-      images: [{ url: '/og-image.png', width: 1200, height: 630, alt: `${islandName} | キラ旅` }],
+      url: canonicalUrl,
+      siteName: '輝旅 島専科（KIRATABI SHIMASENKA）',
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: `${islandName} | 輝旅 島専科` }],
       type: 'website',
       locale: 'ja_JP',
     },
     twitter: {
       card: 'summary_large_image',
-      title,
+      title: ogTitle,
       description: metaDesc,
-      images: ['/og-image.png'],
+      images: [ogImageUrl],
     }
   };
 }
@@ -140,7 +145,7 @@ export default async function Page({ params }: { params: any }) {
   const masterEntry = findMasterEntry(slugOrId);
   const internalId = masterEntry ? masterEntry.id : slugOrId;
 
-  // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR - タイムアウト300ms付き)
+  // サーバーサイドで最新の島ノートと宿泊施設情報を並行取得 (SSR - タイムアウト1500ms付き)
   const [diariesResult, accommodationsResult, islandResult] = await Promise.all([
     withTimeout(
       supabase
@@ -150,7 +155,7 @@ export default async function Page({ params }: { params: any }) {
         .eq('is_hidden', false)
         .order('created_at', { ascending: false })
         .limit(5),
-      300,
+      1500,
       { data: [], error: null } as any
     ),
     withTimeout(
@@ -158,45 +163,79 @@ export default async function Page({ params }: { params: any }) {
         .from('accommodations')
         .select('*')
         .eq('island_id', internalId),
-      300,
+      1500,
       { data: [], error: null } as any
     ),
     withTimeout(
       supabase
         .from('islands')
-        .select('name, region_id')
+        .select('name, region_id, description, hero_image_url, image_url')
         .eq('id', internalId)
         .single(),
-      300,
+      1500,
       { data: null, error: null } as any
     )
   ]);
 
   const islandName = islandResult.data?.name || masterEntry?.name || '未知の島';
-  const regionId = islandResult.data?.region_id || masterEntry?.region_id || '';
+  const islandDesc = islandResult.data?.description || masterEntry?.description || '魅力あふれる日本の離島の旅路。';
+  const heroImageUrl = islandResult.data?.hero_image_url || islandResult.data?.image_url || masterEntry?.hero_image_url || masterEntry?.image_url || 'https://island.kira-tabi.com/og-image.png';
+  const canonicalUrl = `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`;
 
-  // JSON-LD 構造化データ (BreadcrumbList)
+  let geoCoords: { '@type': string; latitude: number; longitude: number } | undefined;
+  if (masterEntry?.coordinates) {
+    const [latStr, lngStr] = String(masterEntry.coordinates).split(',').map((s: string) => s.trim());
+    const lat = parseFloat(latStr);
+    const lng = parseFloat(lngStr);
+    if (!isNaN(lat) && !isNaN(lng)) {
+      geoCoords = {
+        '@type': 'GeoCoordinates',
+        latitude: lat,
+        longitude: lng,
+      };
+    }
+  }
+
+  // JSON-LD 構造化データ (BreadcrumbList + TouristDestination)
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
+    "@graph": [
       {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "ホーム",
-        "item": "https://island.kira-tabi.com/"
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "ホーム",
+            "item": "https://island.kira-tabi.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": "日本全国離島一覧",
+            "item": "https://island.kira-tabi.com/islands"
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": islandName,
+            "item": canonicalUrl
+          }
+        ]
       },
       {
-        "@type": "ListItem",
-        "position": 2,
-        "name": "日本全国離島一覧",
-        "item": "https://island.kira-tabi.com/islands"
-      },
-      {
-        "@type": "ListItem",
-        "position": 3,
+        "@type": "TouristDestination",
         "name": islandName,
-        "item": `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`
+        "description": islandDesc,
+        "url": canonicalUrl,
+        "image": heroImageUrl.startsWith('http') ? heroImageUrl : `https://island.kira-tabi.com${heroImageUrl}`,
+        ...(masterEntry?.prefecture ? {
+          "containedInPlace": {
+            "@type": "AdministrativeArea",
+            "name": masterEntry.prefecture
+          }
+        } : {}),
+        ...(geoCoords ? { "geo": geoCoords } : {})
       }
     ]
   };

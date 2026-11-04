@@ -4,6 +4,8 @@ import { Search, X, MapPin, Star } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { fetchAllIslands } from '@/lib/supabase';
 import { getIslandDifficulty } from '@/lib/difficulty';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import regionsData from '@/data/regions.json';
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -11,11 +13,161 @@ interface SearchModalProps {
   onSelectIsland?: (islandId: string) => void;
 }
 
+const SETOUCHI_REGION_IDS = new Set([
+  'ieshima',
+  'pseudo_awaji',
+  'kasaoka',
+  'suo_oshima',
+  'kutsuna',
+  'kamijima',
+  'naoshima',
+  'shiwaku',
+]);
+
+const REGION_SEARCH_MAP: Record<string, string> = {};
+regionsData.forEach((r) => {
+  const extra = SETOUCHI_REGION_IDS.has(r.id) ? '瀬戸内 瀬戸内海 Setouchi せとうち' : '';
+  REGION_SEARCH_MAP[r.id] = `${r.name} ${r.enName} ${r.area} ${r.id} ${extra}`;
+});
+
+export function toHiragana(str: string): string {
+  if (!str) return '';
+  return str.replace(/[\u30a1-\u30f6]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x60)
+  );
+}
+
+const ROMAJI_TABLE: [string, string][] = [
+  ['kya', 'きゃ'], ['kyu', 'きゅ'], ['kyo', 'きょ'],
+  ['sha', 'しゃ'], ['shu', 'しゅ'], ['sho', 'しょ'],
+  ['sya', 'しゃ'], ['syu', 'しゅ'], ['syo', 'しょ'],
+  ['cha', 'ちゃ'], ['chu', 'ちゅ'], ['cho', 'ちょ'],
+  ['tya', 'ちゃ'], ['tyu', 'ちゅ'], ['tyo', 'ちょ'],
+  ['nya', 'にゃ'], ['nyu', 'にゅ'], ['nyo', 'にょ'],
+  ['hya', 'ひゃ'], ['hyu', 'ひゅ'], ['hyo', 'ひょ'],
+  ['mya', 'みゃ'], ['myu', 'みゅ'], ['myo', 'みょ'],
+  ['rya', 'りゃ'], ['ryu', 'りゅ'], ['ryo', 'りょ'],
+  ['gya', 'ぎゃ'], ['gyu', 'ぎゅ'], ['gyo', 'ぎょ'],
+  ['ja', 'じゃ'], ['ju', 'じゅ'], ['jo', 'じょ'],
+  ['jya', 'じゃ'], ['jyu', 'じゅ'], ['jyo', 'じょ'],
+  ['zya', 'じゃ'], ['zyu', 'じゅ'], ['zyo', 'じょ'],
+  ['bya', 'びゃ'], ['byu', 'びゅ'], ['byo', 'びょ'],
+  ['pya', 'ぴゃ'], ['pyu', 'ぴゅ'], ['pyo', 'ぴょ'],
+  ['shi', 'し'], ['chi', 'ち'], ['tsu', 'つ'],
+  ['fu', 'ふ'], ['ji', 'じ'],
+  ['ka', 'か'], ['ki', 'き'], ['ku', 'く'], ['ke', 'け'], ['ko', 'こ'],
+  ['sa', 'さ'], ['si', 'し'], ['su', 'す'], ['se', 'せ'], ['so', 'そ'],
+  ['ta', 'た'], ['ti', 'ち'], ['tu', 'つ'], ['te', 'て'], ['to', 'と'],
+  ['na', 'な'], ['ni', 'に'], ['nu', 'ぬ'], ['ne', 'ね'], ['no', 'の'],
+  ['ha', 'は'], ['hi', 'ひ'], ['hu', 'ふ'], ['he', 'へ'], ['ho', 'ほ'],
+  ['ma', 'ま'], ['mi', 'み'], ['mu', 'む'], ['me', 'め'], ['mo', 'も'],
+  ['ya', 'や'], ['yu', 'ゆ'], ['yo', 'よ'],
+  ['ra', 'ら'], ['ri', 'り'], ['ru', 'る'], ['re', 'れ'], ['ro', 'ろ'],
+  ['wa', 'わ'], ['wo', 'を'],
+  ['ga', 'が'], ['gi', 'ぎ'], ['gu', 'ぐ'], ['ge', 'げ'], ['go', 'ご'],
+  ['za', 'ざ'], ['zi', 'じ'], ['zu', 'ず'], ['ze', 'ぜ'], ['zo', 'ぞ'],
+  ['da', 'だ'], ['di', 'ぢ'], ['du', 'づ'], ['de', 'で'], ['do', 'ど'],
+  ['ba', 'ば'], ['bi', 'び'], ['bu', 'ぶ'], ['be', 'べ'], ['bo', 'ぼ'],
+  ['pa', 'ぱ'], ['pi', 'ぴ'], ['pu', 'ぷ'], ['pe', 'ぺ'], ['po', 'ぽ'],
+  ['a', 'あ'], ['i', 'い'], ['u', 'う'], ['e', 'え'], ['o', 'お'],
+];
+
+export function romajiToHiragana(str: string): string {
+  if (!str) return '';
+  let s = str.toLowerCase().replace(/[^a-z]/g, '');
+  s = s.replace(/([bcdfghjklmpqrstvwxyz])\1/g, 'っ$1');
+  let out = '';
+  let i = 0;
+  while (i < s.length) {
+    if (s[i] === 'っ') {
+      out += 'っ';
+      i++;
+      continue;
+    }
+    if (s[i] === 'n' && s[i + 1] === 'n' && (i + 2 === s.length || !'aiueoy'.includes(s[i + 2]))) {
+      out += 'ん';
+      i += 2;
+      continue;
+    }
+    if (s[i] === 'n' && (i + 1 === s.length || !'aiueoy'.includes(s[i + 1]))) {
+      out += 'ん';
+      i++;
+      continue;
+    }
+    if (s[i] === 'm' && i + 1 < s.length && 'bmp'.includes(s[i + 1])) {
+      out += 'ん';
+      i++;
+      continue;
+    }
+    let matched = false;
+    for (const [rom, hira] of ROMAJI_TABLE) {
+      if (s.startsWith(rom, i)) {
+        out += hira;
+        i += rom.length;
+        matched = true;
+        break;
+      }
+    }
+    if (!matched) {
+      out += s[i];
+      i++;
+    }
+  }
+  return out;
+}
+
+export function simplifyKana(str: string): string {
+  return toHiragana(str)
+    .replace(/づ/g, 'ず')
+    .replace(/ぢ/g, 'じ')
+    .replace(/([おこそとのほもよろをごぞどぼぽょうくすつぬふむゆるぐずぶぷゅ])[うお]/g, '$1')
+    .replace(/ー/g, '');
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function matchesIslandSearch(i: any, rawQuery: string): boolean {
+  const q = rawQuery.trim().toLowerCase();
+  if (!q) return true;
+
+  const master = ALL_ISLANDS_MASTER_DICTIONARY[String(i.id)] || {};
+  const name = String(i.name || master.name || '');
+  const prefecture = String(i.prefecture || master.prefecture || '');
+  const slug = String(i.slug || master.slug || '').toLowerCase();
+  const yomi = String(i.yomi || master.yomi || '');
+  const description = String(i.description || master.description || '');
+  const access = String(i.access || master.access || '');
+  const category = String(i.category || master.category || '');
+  const tagsArr = Array.isArray(i.tags) ? i.tags : Array.isArray(master.tags) ? master.tags : [];
+  const tags = tagsArr.join(' ');
+  const regionId = String(i.region_id || master.region_id || '');
+  const regionText = REGION_SEARCH_MAP[regionId] || regionId;
+
+  // 1. Direct substring match (kanji, romaji slug, description, access, tags, region)
+  const combinedRaw = `${name} ${prefecture} ${slug} ${yomi} ${description} ${access} ${category} ${tags} ${regionText}`.toLowerCase();
+  if (combinedRaw.includes(q)) return true;
+
+  // 2. Hiragana normalized match (handles katakana queries like イシガキ and hiragana queries like いしがき against romaji slug)
+  const qHira = toHiragana(q);
+  const slugHira = romajiToHiragana(slug);
+  const regionHira = romajiToHiragana(regionId);
+  const combinedHira = toHiragana(`${name} ${prefecture} ${yomi} ${description} ${access} ${tags} ${regionText}`) + ` ${slugHira} ${regionHira}`;
+  if (combinedHira.includes(qHira)) return true;
+
+  // 3. Phonetic long-vowel simplified kana match (e.g. ごとう -> ごと, しょうどしま -> しょどしま, こうづ -> こず)
+  const qSimp = simplifyKana(qHira);
+  if (qSimp.length >= 2) {
+    const combinedSimp = `${simplifyKana(slugHira)} ${simplifyKana(yomi)} ${simplifyKana(regionHira)} ${simplifyKana(regionText)}`;
+    if (combinedSimp.includes(qSimp)) return true;
+  }
+
+  return false;
+}
+
 export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchModalProps) {
   const router = useRouter();
   const [query, setQuery] = useState('');
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [allIslands, setAllIslands] = useState<any[]>([]);
+  const [allIslands, setAllIslands] = useState<any[]>(() => Object.values(ALL_ISLANDS_MASTER_DICTIONARY));
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
@@ -30,7 +182,7 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
       setLoading(true);
       fetchAllIslands()
         .then(data => {
-          setAllIslands(data || []);
+          if (data && data.length > 0) setAllIslands(data);
           setLoading(false);
         })
         .catch(() => setLoading(false));
@@ -42,14 +194,38 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
       setResults([]);
       return;
     }
-    const q = query.toLowerCase();
+    const q = query.trim();
+    const seenKeys = new Set<string>();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const filtered = allIslands.filter((i: any) => {
-      const matchQuery = !q || (i.name && i.name.toLowerCase().includes(q)) || (i.prefecture && i.prefecture.toLowerCase().includes(q));
+    const filtered: any[] = [];
+
+    // Sort so conquest targets and exact/prefix matches come first before deduplication
+    const candidates = [...allIslands].sort((a, b) => {
+      const aTarget = a.is_conquest_target !== false ? 1 : 0;
+      const bTarget = b.is_conquest_target !== false ? 1 : 0;
+      if (aTarget !== bTarget) return bTarget - aTarget;
+      if (q) {
+        const aNameMatch = String(a.name || '').includes(q) ? 1 : 0;
+        const bNameMatch = String(b.name || '').includes(q) ? 1 : 0;
+        if (aNameMatch !== bNameMatch) return bNameMatch - aNameMatch;
+      }
+      return 0;
+    });
+
+    for (const i of candidates) {
+      const matchQuery = !q || matchesIslandSearch(i, q);
+      if (!matchQuery) continue;
       const diff = getIslandDifficulty(i);
       const matchDiff = selectedDifficulty === null || diff.level === selectedDifficulty;
-      return matchQuery && matchDiff;
-    }).slice(0, 30);
+      if (!matchDiff) continue;
+
+      const dedupKey = `${i.name || ''}__${i.prefecture || ''}`;
+      if (seenKeys.has(dedupKey)) continue;
+      seenKeys.add(dedupKey);
+      filtered.push(i);
+      if (filtered.length >= 30) break;
+    }
+
     setResults(filtered);
   }, [query, selectedDifficulty, allIslands]);
 

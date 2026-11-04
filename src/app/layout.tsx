@@ -29,6 +29,9 @@ export const metadata: Metadata = {
   },
   description: '日本全国の離島を訪れてスタンプを集めよう。GPS・写真チェックインで公式到達認定。ご当地妖精の図鑑や3D地球儀フライトトラッカーで旅の記録を彩ります。',
   keywords: ['離島', '日本の島', '旅行', 'GPS', 'チェックイン', '沖縄', '八重山', '小笠原', '離島制覇', 'キラ旅', '輝旅', '島旅', 'KIRATABI SHIMASENKA'],
+  alternates: {
+    canonical: 'https://island.kira-tabi.com',
+  },
   openGraph: {
     title: '輝旅 島専科（KIRATABI SHIMASENKA）| 日本の全離島を制覇しよう',
     description: '日本全国の離島をGPSチェックインで制覇。守護精霊を集めて、旅の記録を彩ろう。',
@@ -55,6 +58,36 @@ export const viewport: Viewport = {
   themeColor: '#0a0a1a',
 };
 
+const siteJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': 'https://island.kira-tabi.com/#website',
+      url: 'https://island.kira-tabi.com',
+      name: '輝旅 島専科（KIRATABI SHIMASENKA）',
+      alternateName: ['キラ旅', 'KIRATABI'],
+      description: '日本全国の離島を訪れてスタンプを集めよう。GPS・写真チェックインで公式到達認定。ご当地妖精の図鑑や3D地球儀フライトトラッカーで旅の記録を彩ります。',
+      inLanguage: 'ja-JP',
+      potentialAction: {
+        '@type': 'SearchAction',
+        target: 'https://island.kira-tabi.com/map?filter={search_term_string}',
+        'query-input': 'required name=search_term_string',
+      },
+    },
+    {
+      '@type': 'Organization',
+      '@id': 'https://island.kira-tabi.com/#organization',
+      name: '輝旅 島専科（KIRATABI SHIMASENKA）',
+      url: 'https://island.kira-tabi.com',
+      logo: {
+        '@type': 'ImageObject',
+        url: 'https://island.kira-tabi.com/icons/icon-512x512.png',
+      },
+    },
+  ],
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -70,6 +103,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#F8FAFC]`}
       >
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(siteJsonLd) }}
+        />
         <GoogleAnalytics />
         <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
         <TravelProvider>

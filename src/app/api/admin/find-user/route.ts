@@ -10,6 +10,9 @@ export async function POST(req: NextRequest) {
   if (!adminUser) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
+  if (adminUser.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
   if (!SERVICE_ROLE_KEY || SERVICE_ROLE_KEY === 'REPLACE_WITH_YOUR_SERVICE_ROLE_KEY') {
     return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です。.env.local に設定してください。' }, { status: 503 });
   }

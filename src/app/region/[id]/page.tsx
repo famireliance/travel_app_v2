@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { ArrowLeft, Search, Compass, ExternalLink, Hotel } from 'lucide-react';
 import regionsData from '../../../data/regions.json';
@@ -9,6 +9,7 @@ import { getRakutenTravelSearchUrl } from '@/data/islandFacilitiesData';
 import MapClient from '@/components/Map/MapClient';
 import SearchModal from '@/components/SearchModal';
 import { fetchAllIslands } from '@/lib/supabase';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import Breadcrumb from '@/components/Breadcrumb';
 
 interface IslandData {
@@ -27,24 +28,30 @@ export default function RegionMap() {
   let decodedRegionId = rawRegionId;
   try { decodedRegionId = decodeURIComponent(rawRegionId); } catch {}
 
-  const region = regionsData.find(r => 
+  const region = useMemo(() => regionsData.find(r => 
     r.id === rawRegionId || 
     r.id === decodedRegionId || 
     r.name === rawRegionId || 
     r.name === decodedRegionId ||
     r.area === rawRegionId ||
     r.area === decodedRegionId
-  );
+  ), [rawRegionId, decodedRegionId]);
 
-  const [regionIslands, setRegionIslands] = useState<IslandData[]>([]);
-  const [loading, setLoading] = useState(true);
+  const initialRegionIslands = useMemo(() => {
+    if (!region) return [];
+    return Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter((i: any) => 
+      i.region_id === region.id || 
+      i.region_id === region.name || 
+      i.prefecture?.includes(region.name)
+    ) as unknown as IslandData[];
+  }, [region]);
+
+  const [regionIslands, setRegionIslands] = useState<IslandData[]>(initialRegionIslands);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   useEffect(() => {
-    if (!region) {
-      setLoading(false);
-      return;
-    }
+    setRegionIslands(initialRegionIslands);
+    if (!region) return;
     fetchAllIslands()
       .then(islands => {
         const filtered = (islands || []).filter((i: any) => 
@@ -52,14 +59,14 @@ export default function RegionMap() {
           i.region_id === region.name || 
           i.prefecture?.includes(region.name)
         );
-        setRegionIslands(filtered as unknown as IslandData[]);
-        setLoading(false);
+        if (filtered.length > 0) {
+          setRegionIslands(filtered as unknown as IslandData[]);
+        }
       })
       .catch(err => {
         console.error("Failed to load map data", err);
-        setLoading(false);
       });
-  }, [rawRegionId, region]);
+  }, [rawRegionId, region, initialRegionIslands]);
 
   // Compute bounding box based on islands
   let bounds: [[number, number], [number, number]] | undefined;
@@ -88,13 +95,6 @@ export default function RegionMap() {
 
   if (!region) return (
     <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-600 font-serif gap-4"><p>指定されたエリアは見つかりませんでした。</p><button onClick={() => router.push('/')} className="px-6 py-2 bg-blue-600 text-white rounded-xl">トップへ戻る</button></div>
-  );
-
-  if (loading) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-400 font-serif tracking-[0.2em] text-sm gap-4">
-      <Compass className="w-8 h-8 animate-spin-slow opacity-50" strokeWidth={1} />
-      <span>地図を展開中...</span>
-    </div>
   );
 
   return (
@@ -183,7 +183,8 @@ export default function RegionMap() {
       </div>
 
       {/* SEO & Accessibility Island Links */}
-      <div className="absolute top-auto bottom-0 left-0 right-0 z-0 h-0 overflow-hidden opacity-0 pointer-events-none">
+      <div className="sr-only">
+        <p>{region.name}（{region.area}）に属する離島（全{regionIslands.length}島）のマップ・アクセス・観光ガイド。</p>
         <nav aria-label={`${region.name}の島一覧`}>
           <ul>
             {regionIslands.map((island) => (

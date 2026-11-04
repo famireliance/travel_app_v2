@@ -33,6 +33,7 @@ import toast from 'react-hot-toast';
 import BookingModal from '@/components/BookingModal';
 import WifiConnectModal from '@/components/WifiConnectModal';
 import { supabase } from '@/lib/supabase';
+import { getRakutenTravelSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
 import Link from 'next/link';
 
 interface PlanItem {
@@ -211,6 +212,7 @@ export default function DedicatedInnPage() {
   const innParamId = (params?.id as string) || (demoMode ? 'demo' : '');
 
   const [loading, setLoading] = useState(true);
+  const [notFoundState, setNotFoundState] = useState(false);
   const [inn, setInn] = useState<InnData>(DEFAULT_FALLBACK_INN);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -224,19 +226,22 @@ export default function DedicatedInnPage() {
   useEffect(() => {
     async function loadInnData() {
       setLoading(true);
+      setNotFoundState(false);
       try {
         if (!innParamId) {
+          if (!demoMode) setNotFoundState(true);
           setLoading(false);
           return;
         }
 
         const cleanId = innParamId.replace(/[^a-zA-Z0-9_\-]/g, '');
         if (!cleanId) {
+          if (!demoMode) setNotFoundState(true);
           setLoading(false);
           return;
         }
 
-        const { data: accData, error } = await supabase
+        const { data: accData } = await supabase
           .from('accommodations')
           .select('*')
           .or(`id.eq.${cleanId},owner_id.eq.${cleanId}`)
@@ -286,19 +291,25 @@ export default function DedicatedInnPage() {
           };
 
           setInn(mappedInn);
-        } else {
+        } else if (demoMode) {
           setInn(DEFAULT_FALLBACK_INN);
+        } else {
+          setNotFoundState(true);
         }
       } catch (err) {
         console.error('Error fetching accommodation:', err);
-        setInn(DEFAULT_FALLBACK_INN);
+        if (demoMode) {
+          setInn(DEFAULT_FALLBACK_INN);
+        } else {
+          setNotFoundState(true);
+        }
       } finally {
         setLoading(false);
       }
     }
 
     loadInnData();
-  }, [innParamId]);
+  }, [innParamId, demoMode]);
 
   const handleCall = () => {
     toast.success('お電話口で「キラ旅を見た」とお伝えいただくと案内がスムーズです！', { icon: '📞', duration: 4000 });
@@ -328,6 +339,66 @@ export default function DedicatedInnPage() {
 
   // 表示するプラン（3件超える場合は折りたたみ）
   const visiblePlans = showAllPlans ? inn.plans : inn.plans.slice(0, 3);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <div className="text-center space-y-3">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+          <p className="text-xs text-slate-500 font-mono tracking-widest uppercase font-bold">Loading Accommodation...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (notFoundState && !demoMode) {
+    return (
+      <main className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center px-4 py-12 font-sans text-slate-800">
+        <div className="max-w-lg w-full bg-white rounded-3xl p-8 shadow-sm border border-slate-200 text-center space-y-6">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+            <BedDouble className="w-7 h-7" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="font-serif font-bold text-xl text-slate-900">
+              指定された宿泊施設ページは現在準備中、または掲載が終了しています
+            </h1>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              お探しの宿泊施設は現在詳細ページを準備中か、掲載期間が終了しております。各離島ページまたは大手宿泊予約サイトより最新の宿情報をご確認ください。
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+            <a
+              href={getRakutenTravelSearchUrl('離島')}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="px-4 py-3 rounded-xl bg-[#BF0000] hover:bg-[#a30000] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+            >
+              <span>楽天トラベルで宿を探す</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+            <a
+              href={getJalanSearchUrl('離島')}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="px-4 py-3 rounded-xl bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-sm transition-colors"
+            >
+              <span>じゃらんで宿を探す</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+          <div className="pt-2 border-t border-slate-100">
+            <Link
+              href="/islands"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>全国離島一覧へ戻る</span>
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans text-slate-800 relative">

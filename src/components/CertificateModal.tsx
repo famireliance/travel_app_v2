@@ -811,11 +811,11 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       } catch (err) {
         // Fallback to X if user cancels or share API fails
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
-        window.open(twitterUrl, '_blank');
+        window.open(twitterUrl, '_blank', 'noopener,noreferrer');
       }
     } else {
       const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
-      window.open(twitterUrl, '_blank');
+      window.open(twitterUrl, '_blank', 'noopener,noreferrer');
     }
   };
 
@@ -1299,39 +1299,44 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
         )}
       </AnimatePresence>
 
-      {/* Mock Video Ad Overlay */}
+      {/* Official Sponsor / PR Issuance Overlay */}
       <AnimatePresence>
         {isPlayingAd && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[11000] bg-black flex flex-col items-center justify-center"
+            className="fixed inset-0 z-[11000] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6"
           >
-            <div className="absolute top-8 right-8 text-white font-mono text-xl bg-black/50 px-4 py-2 rounded-xl border border-white/20">
-              {adTimeLeft > 0 ? `広告終了まで ${adTimeLeft}秒` : '広告終了！証明書を発行します...'}
+            <div className="absolute top-8 right-8 text-white font-mono text-sm bg-slate-900/80 px-4 py-2 rounded-xl border border-amber-500/30 shadow-lg">
+              {adTimeLeft > 0 ? `証明書を生成中... 残り ${adTimeLeft}秒` : '生成完了！証明書を発行します...'}
             </div>
             
-            {/* Dummy Ad Content */}
-            <div className="w-full max-w-lg aspect-video bg-slate-900 rounded-xl overflow-hidden border border-slate-700 relative shadow-2xl">
-              <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-500">
-                <Sparkles className="w-16 h-16 mb-4 opacity-50 animate-pulse" />
-                <h2 className="text-2xl font-bold font-serif mb-2">KIRATABI プレミアム</h2>
-                <p className="text-sm">〜 旅の思い出を一生の宝物に 〜</p>
-                <div className="mt-8 flex gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping"></div>
-                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping" style={{ animationDelay: '0.2s' }}></div>
-                  <div className="w-2 h-2 rounded-full bg-amber-500 animate-ping" style={{ animationDelay: '0.4s' }}></div>
-                </div>
+            {/* Official Sponsor & Premium PR Card */}
+            <div className="w-full max-w-lg aspect-video bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl overflow-hidden border border-amber-500/40 relative shadow-2xl p-6 flex flex-col items-center justify-center text-center">
+              <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold tracking-widest uppercase mb-3">
+                KIRATABI OFFICIAL SPONSOR PR
+              </span>
+              <Sparkles className="w-12 h-12 mb-3 text-amber-400 animate-pulse" />
+              <h2 className="text-xl sm:text-2xl font-bold font-serif text-white mb-2 tracking-wide">
+                輝旅 島専科 プレミアムパスポート
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 max-w-md leading-relaxed">
+                プレミアム会員なら待ち時間ゼロで高画質デジタル認定書を無制限発行。さらに特製の金箔調・公式紙証明書の郵送オーダーも承っております。
+              </p>
+              <div className="mt-6 flex items-center gap-2">
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" style={{ animationDelay: '0.2s' }}></div>
+                <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" style={{ animationDelay: '0.4s' }}></div>
               </div>
             </div>
             
             {adTimeLeft === 0 && (
               <button 
                 onClick={() => { setIsPlayingAd(false); issueDigital(certificateType); }}
-                className="mt-8 px-6 py-2 bg-white text-black font-bold rounded-full hover:bg-slate-200 transition-colors"
+                className="mt-8 px-6 py-2.5 bg-amber-500 text-slate-950 font-bold rounded-full hover:bg-amber-400 transition-colors shadow-lg"
               >
-                スキップして証明書を受け取る
+                公認到達証明書を受け取る
               </button>
             )}
           </motion.div>

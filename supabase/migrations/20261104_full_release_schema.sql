@@ -154,3 +154,44 @@ CREATE TABLE IF NOT EXISTS public.tracking_events (
   created_at            TIMESTAMPTZ   NOT NULL DEFAULT now()
 );
 ALTER TABLE public.tracking_events ENABLE ROW LEVEL SECURITY;
+
+-- 12. 管理系・内部テーブルのRLS強制有効化と過剰公開ポリシーの除去
+ALTER TABLE IF EXISTS public.admin_users ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.admin_sessions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.admin_organizations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.admin_config ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.app_promo_codes ENABLE ROW LEVEL SECURITY;
+ALTER TABLE IF EXISTS public.newsletters ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "Contacts are viewable by service role only" ON public.contacts;
+DROP POLICY IF EXISTS "Contacts are updatable by service role only" ON public.contacts;
+DROP POLICY IF EXISTS "Service role can manage promo codes" ON public.app_promo_codes;
+DROP POLICY IF EXISTS "Enable read access for all users" ON public.newsletters;
+
+-- 13. user_profiles 自己更新時の特権昇格防止トリガー（service_role 以外の特権カラム書き換えを拒否）
+CREATE OR REPLACE FUNCTION public.prevent_user_profile_privilege_escalation()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  IF COALESCE(current_setting('request.jwt.claim.role', true), '') <> 'service_role' THEN
+    NEW.role := OLD.role;
+    NEW.subscription_tier := OLD.subscription_tier;
+    NEW.stripe_customer_id := OLD.stripe_customer_id;
+    NEW.stripe_subscription_id := OLD.stripe_subscription_id;
+    NEW.high_quality_tickets := OLD.high_quality_tickets;
+    NEW.ultimate_started_at := OLD.ultimate_started_at;
+    NEW.anniversary_cert_used := OLD.anniversary_cert_used;
+    NEW.is_banned := OLD.is_banned;
+  END IF;
+  RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trg_prevent_user_profile_privilege_escalation ON public.user_profiles;
+CREATE TRIGGER trg_prevent_user_profile_privilege_escalation
+  BEFORE UPDATE ON public.user_profiles
+  FOR EACH ROW
+  EXECUTE FUNCTION public.prevent_user_profile_privilege_escalation();
+

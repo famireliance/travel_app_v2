@@ -6,6 +6,7 @@ import { X, Search, MapPin, Users, Navigation, Star, ArrowRightLeft, CreditCard,
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { supabase } from '@/lib/supabase';
 import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
+import { matchesIslandSearch } from '@/components/SearchModal';
 
 interface IslandCompareModalProps {
   isOpen: boolean;
@@ -38,11 +39,27 @@ export default function IslandCompareModal({ isOpen, onClose, initialSelected }:
   }, [isOpen, initialSelected]);
 
   useEffect(() => {
-    if (searchQuery.length > 0) {
-      const q = searchQuery.toLowerCase();
-      const results = Object.values(ALL_ISLANDS_MASTER_DICTIONARY)
-        .filter(i => i.name.toLowerCase().includes(q) || (i.prefecture && i.prefecture.includes(q)))
-        .slice(0, 8);
+    const q = searchQuery.trim();
+    if (q.length > 0) {
+      const seenKeys = new Set<string>();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const results: any[] = [];
+      const candidates = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).sort((a, b) => {
+        const aTarget = a.is_conquest_target !== false ? 1 : 0;
+        const bTarget = b.is_conquest_target !== false ? 1 : 0;
+        if (aTarget !== bTarget) return bTarget - aTarget;
+        const aNameMatch = String(a.name || '').includes(q) ? 1 : 0;
+        const bNameMatch = String(b.name || '').includes(q) ? 1 : 0;
+        return bNameMatch - aNameMatch;
+      });
+      for (const i of candidates) {
+        if (!matchesIslandSearch(i, q)) continue;
+        const dedupKey = `${i.name || ''}__${i.prefecture || ''}`;
+        if (seenKeys.has(dedupKey)) continue;
+        seenKeys.add(dedupKey);
+        results.push(i);
+        if (results.length >= 8) break;
+      }
       setSearchResults(results);
     } else {
       setSearchResults([]);

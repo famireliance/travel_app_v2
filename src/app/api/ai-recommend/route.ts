@@ -6,22 +6,65 @@ import { createClient } from '@supabase/supabase-js';
 // Vercel config
 export const maxDuration = 30; // max execution time
 
+// In-memory rate limit for unauthenticated guest visitors (15 requests per 10 minutes per IP)
+const guestRateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const GUEST_WINDOW_MS = 10 * 60 * 1000;
+const GUEST_MAX_REQUESTS = 15;
+
+function checkGuestRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = guestRateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    guestRateLimitMap.set(ip, { count: 1, resetAt: now + GUEST_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= GUEST_MAX_REQUESTS) {
+    return false;
+  }
+  entry.count += 1;
+  return true;
+}
+
 export async function POST(req: NextRequest) {
   try {
-    // Require Supabase login — prevents unauthenticated bot abuse
+    // Allow both authenticated users and rate-limited public visitors
+    let isAuthenticated = false;
     const authHeader = req.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
+    if (
+      authHeader &&
+      authHeader.startsWith('Bearer ') &&
+      process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.SUPABASE_SERVICE_ROLE_KEY
+    ) {
+      const token = authHeader.split(' ')[1];
+      if (token) {
+        try {
+          const adminClient = createClient(
+            process.env.NEXT_PUBLIC_SUPABASE_URL,
+            process.env.SUPABASE_SERVICE_ROLE_KEY,
+            { auth: { autoRefreshToken: false, persistSession: false } }
+          );
+          const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
+          if (!authError && user) {
+            isAuthenticated = true;
+          }
+        } catch {
+          // Fallback to guest rate limiting if token verification fails
+        }
+      }
     }
-    const token = authHeader.split(' ')[1];
-    const adminClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!,
-      { auth: { autoRefreshToken: false, persistSession: false } }
-    );
-    const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
-    if (authError || !user) {
-      return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
+
+    if (!isAuthenticated) {
+      const clientIp =
+        req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+        req.headers.get('x-real-ip') ||
+        'anonymous';
+      if (!checkGuestRateLimit(clientIp)) {
+        return NextResponse.json(
+          { error: 'ゲスト利用の回数制限に達しました。しばらく時間を置くか、ログインしてご利用ください。' },
+          { status: 429 }
+        );
+      }
     }
 
     const apiKey = process.env.GEMINI_API_KEY;
@@ -31,7 +74,7 @@ export async function POST(req: NextRequest) {
     }
 
     const ai = new GoogleGenAI({ apiKey });
-    
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let body: any;
     try {
@@ -42,20 +85,36 @@ export async function POST(req: NextRequest) {
 
     const { userInput, visitedIslandIds } = body;
 
-    // Filter available islands
+    // Filter available islands: exclude visited, non-conquest/landing-prohibited islands, and deduplicate by name + prefecture
+    const seenKeys = new Set<string>();
     const availableIslands = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter((island) => {
-      // Exclude visited
       if (visitedIslandIds && visitedIslandIds.includes(String(island.id))) return false;
-      // Option: Exclude non-conquest targets if we only want real inhabited islands?
-      // For now, let's include all but give the AI the is_uninhabited flag.
+      if (island.is_conquest_target === false) return false;
+      if (island.difficulty === '到達不可') return false;
+      const accessStr = String(island.access || '');
+      const descStr = String(island.description || '');
+      if (
+        accessStr.includes('上陸禁止') ||
+        accessStr.includes('上陸不可') ||
+        accessStr.includes('立入禁止') ||
+        descStr.includes('一般人の上陸は禁止') ||
+        descStr.includes('上陸禁止')
+      ) {
+        return false;
+      }
+      const dedupKey = `${island.name || ''}__${island.prefecture || ''}`;
+      if (seenKeys.has(dedupKey)) return false;
+      seenKeys.add(dedupKey);
       return true;
     });
 
-    // Create a mini dictionary for AI to select from (to save tokens)
-    // Send ID, Name, Prefecture, IsUninhabited, Access, Points
-    const islandListString = availableIslands.map(i => 
-      `ID:${i.id} | Name:${i.name} (${i.prefecture}) | Uninhabited:${!!i.is_uninhabited} | Access:${i.access} | Pts:${i.points}`
-    ).join('\n');
+    // Create a concise dictionary for AI to select from (including description snippet so AI never fabricates facilities)
+    const islandListString = availableIslands
+      .map((i) => {
+        const descSnippet = String(i.description || '').replace(/\n/g, ' ').slice(0, 75);
+        return `ID:${i.id} | Name:${i.name} (${i.prefecture}) | Region:${i.region_id || ''} | Access:${i.access || ''} | Desc:${descSnippet}`;
+      })
+      .join('\n');
 
     const prompt = `
 あなたは日本の離島専門のプロ旅行コンシェルジュです。
@@ -63,9 +122,13 @@ export async function POST(req: NextRequest) {
 
 ユーザーの要望: "${userInput || 'おすすめの島'}"
 
-以下の島リストから、ユーザーの要望に最も合致する島を3つ選んでください。
+以下の島リストから、ユーザーの要望に最も合致する実在の有人・観光可能な離島を3つ選んでください。
 選ぶ際、必ず3つの異なるテーマ（例：「王道リゾート」「秘境」「日帰り手軽」など）でバラエティを持たせてください。
-ユーザーが既に訪れた島はリストから除外されていますので、このリスト内から選ぶだけで大丈夫です。
+
+【厳格な注意事項（絶対遵守）】
+1. 候補島リストに記載されている「Desc（説明）」および「Access（アクセス）」の事実情報に厳密に基づいて推薦理由を作成してください。
+2. 島のデータに記載されていない施設や特徴（存在しないサウナ、温泉、空港、定期船など）を絶対に捏造（ハルシネーション）しないでください。ユーザーが特定の設備（例：サウナ）を求めた場合、実際にその設備で知られる島（例：青ヶ島のひんぎゃサウナ、直島、屋久島、八丈島など）を選ぶか、記載されている自然・体験の魅力を正直に紹介してください。
+3. 必ず候補島リスト内の正確な「ID」と「Name」を返してください。
 
 ### 候補島リスト
 ${islandListString}
@@ -84,12 +147,12 @@ ${islandListString}
               id: { type: Type.STRING, description: '選んだ島のID' },
               name: { type: Type.STRING, description: '選んだ島の名前' },
               theme: { type: Type.STRING, description: 'この提案のテーマ（例: リラックス、アクティブ、穴場など）' },
-              reason: { type: Type.STRING, description: 'ユーザーの要望を踏まえ、なぜこの島をおすすめするのかの熱のこもった理由（100字程度）' },
+              reason: { type: Type.STRING, description: '候補島リストの事実データに基づき、なぜこの島をおすすめするのかの理由（100字程度）' },
             },
             required: ['id', 'name', 'theme', 'reason'],
           },
         },
-        temperature: 0.7,
+        temperature: 0.5,
       },
     });
 
@@ -98,8 +161,28 @@ ${islandListString}
       throw new Error('AI returned empty response');
     }
 
-    const plans = JSON.parse(textResult);
-    return NextResponse.json({ plans });
+    const rawPlans = JSON.parse(textResult);
+    const validatedPlans = (Array.isArray(rawPlans) ? rawPlans : [])
+      .map((p) => {
+        const directMatch = ALL_ISLANDS_MASTER_DICTIONARY[String(p.id)];
+        const validDirect =
+          directMatch && directMatch.is_conquest_target !== false && directMatch.difficulty !== '到達不可'
+            ? directMatch
+            : undefined;
+        const nameMatch = availableIslands.find(
+          (isl) => isl.name === p.name || String(isl.name).includes(String(p.name || ''))
+        );
+        const matched = validDirect || nameMatch;
+        if (!matched) return null;
+        return {
+          ...p,
+          id: String(matched.id),
+          name: matched.name,
+        };
+      })
+      .filter(Boolean);
+
+    return NextResponse.json({ plans: validatedPlans });
   } catch (error: any) {
     console.error('AI Recommendation Error:', error);
     return NextResponse.json(

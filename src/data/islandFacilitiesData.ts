@@ -39,20 +39,96 @@ export interface IslandFacilityData {
 
 export const RAKUTEN_AFFILIATE_ID = '56ebd0d5.3e11f68e.56ebd0d6.3ff60376';
 
+// 詩的なエリア名・諸島名を実在の宿泊検索キーワードへ変換するマップ
+export const REGION_SEARCH_KEYWORD_MAP: Record<string, string> = {
+  '北の大地の島々': '北海道 利尻島 礼文島',
+  '三陸海岸の離島': '宮城県 気仙沼 大島',
+  '奥州・牡鹿の島々': '宮城県 石巻',
+  '奥州 牡鹿の島々': '宮城県 石巻',
+  '首都圏近海の離島': '神奈川県 横須賀 三浦',
+  '日本海・北陸の島々': '新潟県 佐渡島',
+  '日本海 北陸の島々': '新潟県 佐渡島',
+  '三河湾の島々': '愛知県 日間賀島 篠島',
+  '家島群島': '兵庫県 姫路 家島',
+  '播磨灘の島々': '兵庫県 姫路 家島',
+  '琵琶湖に浮かぶ島々': '滋賀県 長浜 竹生島',
+  '備讃瀬戸の島々': '香川県 小豆島 丸亀',
+  '響灘・長門の島々': '山口県 下関 萩',
+  '響灘 長門の島々': '山口県 下関 萩',
+  '隠岐諸島': '島根県 隠岐',
+  '山陰海岸の島々': '島根県 隠岐',
+  '防予諸島の島々': '山口県 周防大島',
+  '忽那諸島': '愛媛県 松山 興居島',
+  '上島諸島': '愛媛県 上島 弓削島',
+  '直島・小豆島（瀬戸内アート）': '香川県 小豆島 直島',
+  '直島・小豆島': '香川県 小豆島 直島',
+  '直島 小豆島': '香川県 小豆島 直島',
+  '塩飽諸島': '香川県 丸亀 多度津',
+  '宇和海周辺': '愛媛県 宇和島',
+  '阿波の島々': '徳島県 鳴門 阿南',
+  '土佐湾の島々': '高知県 宿毛 須崎',
+  '天草諸島': '熊本県 天草',
+  '天草灘の島々': '熊本県 天草',
+  '奄美群島（世界自然遺産）': '鹿児島県 奄美大島',
+  '奄美群島': '鹿児島県 奄美大島',
+  '豊後水道の島々': '大分県 佐伯 津久見',
+  '博多湾・筑前の島々': '福岡県 福岡 糸島',
+  '博多湾 筑前の島々': '福岡県 福岡 糸島',
+  '玄界灘の島々': '福岡県 宗像 玄界灘',
+  '五島列島（祈りの島々）': '長崎県 五島 福江',
+  '五島列島': '長崎県 五島 福江',
+  '平戸・松浦の島々': '長崎県 平戸 松浦',
+  '平戸 松浦の島々': '長崎県 平戸 松浦',
+  '壱岐諸島': '長崎県 壱岐',
+  '日向灘の島々': '宮崎県 日南 延岡',
+  'トカラ列島': '鹿児島県 十島村 奄美',
+  '大隅群島': '鹿児島県 屋久島 種子島',
+  '甑島列島': '鹿児島県 薩摩川内 甑島',
+  '西海国立公園の島々': '長崎県 佐世保 九十九島',
+  '薩摩半島の島々': '鹿児島県 薩摩川内 甑島',
+  '大東諸島': '沖縄県 南大東島',
+  '慶良間諸島': '沖縄県 座間味 渡嘉敷',
+  '慶良間ブルーの島々': '沖縄県 座間味 渡嘉敷',
+  '宮古列島': '沖縄県 宮古島',
+  '宮古諸島': '沖縄県 宮古島',
+  '宮古諸島（宮古ブルー）': '沖縄県 宮古島',
+  '琉球弧の島々': '沖縄県 那覇 本島周辺',
+  '八重山諸島': '沖縄県 石垣島 竹富島',
+  '八重山諸島（美ら海）': '沖縄県 石垣島 竹富島',
+  '久米島周辺の島々': '沖縄県 久米島',
+};
+
+function resolveHotelSearchQuery(islandName: string, prefecture?: string): string {
+  const trimmed = (islandName || '').trim();
+  if (REGION_SEARCH_KEYWORD_MAP[trimmed]) {
+    return REGION_SEARCH_KEYWORD_MAP[trimmed];
+  }
+  const withoutParens = trimmed.replace(/（.*）|\(.*?\)/g, '').trim();
+  if (REGION_SEARCH_KEYWORD_MAP[withoutParens]) {
+    return REGION_SEARCH_KEYWORD_MAP[withoutParens];
+  }
+  const cleanName = withoutParens.replace(/・/g, ' ').replace(/\s+/g, ' ').trim();
+  if (REGION_SEARCH_KEYWORD_MAP[cleanName]) {
+    return REGION_SEARCH_KEYWORD_MAP[cleanName];
+  }
+  return prefecture ? `${prefecture} ${cleanName}` : cleanName;
+}
+
 // 楽天トラベル・公式宿検索URL (都道府県＋島名で地域絞り込み ＋ Shift-JIS URLエンコード)
 export function getRakutenTravelSearchUrl(islandName: string, prefecture?: string): string {
-  const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const fullQuery = prefecture ? `${prefecture} ${cleanName}` : cleanName;
+  const fullQuery = resolveHotelSearchQuery(islandName, prefecture);
   const sjisKeyword = encodeShiftJisUrl(fullQuery);
   const targetUrl = `https://kw.travel.rakuten.co.jp/keyword/Search.do?f_query=${sjisKeyword}`;
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
+  const encodedTarget = encodeURIComponent(targetUrl);
+  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodedTarget}&m=${encodedTarget}`;
 }
 
 // 楽天レンタカー検索URL
 export function getRakutenRentacarSearchUrl(islandName: string, prefecture?: string): string {
   // 楽天レンタカーには単純なキーワード検索URLがないため、レンタカートップページへ遷移させます
   const targetUrl = `https://travel.rakuten.co.jp/cars/`;
-  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodeURIComponent(targetUrl)}`;
+  const encodedTarget = encodeURIComponent(targetUrl);
+  return `https://hb.afl.rakuten.co.jp/hgc/${RAKUTEN_AFFILIATE_ID}/?pc=${encodedTarget}&m=${encodedTarget}`;
 }
 
 // バリューコマース（じゃらん）のアフィリエイト情報
@@ -62,21 +138,15 @@ export const JALAN_AFFILIATE_BASE_URL = `https://ck.jp.ap.valuecommerce.com/serv
 
 // じゃらんレンタカー検索URL (バリューコマースのアフィリエイトリンク)
 export function getJalanRentacarSearchUrl(islandName: string, prefecture?: string): string {
-  // ユーザー様から提供されたバリューコマースのアフィリエイト用トラッキングURLを使用します。
-  // MyLink用の場合は &vc_url= を付与しますが、今回は通常のバナーIDのためベースURLをそのまま返します。
-  return JALAN_AFFILIATE_BASE_URL;
+  return `${JALAN_AFFILIATE_BASE_URL}&vc_url=${encodeURIComponent('https://www.jalan.net/rentacar/')}`;
 }
 
 // じゃらん・公式宿検索URL (バリューコマースのアフィリエイトリンク ＋ カスタム遷移)
 export function getJalanSearchUrl(islandName: string, prefecture?: string): string {
-  // 宿検索用に任意のキーワード検索結果へ飛ばす場合（MyLink対応PIDの場合）
-  const cleanName = islandName.replace(/（.*）|\(.*?\)/g, '').trim();
-  const fullQuery = prefecture ? `${prefecture} ${cleanName}` : cleanName;
+  const fullQuery = resolveHotelSearchQuery(islandName, prefecture);
   const sjisKeyword = encodeShiftJisUrl(fullQuery);
   const targetUrl = `https://www.jalan.net/uw/uwp2011/uww2011init.do?keyword=${sjisKeyword}`;
   
-  // MyLink非対応のバナーPIDの場合はvc_urlが無視され、通常のじゃらんトップに飛びますが、
-  // アフィリエイトクッキーは正常に付与されます。
   return `${JALAN_AFFILIATE_BASE_URL}&vc_url=${encodeURIComponent(targetUrl)}`;
 }
 
@@ -140,9 +210,9 @@ const AOGASHIMA_FACILITY_DATA: IslandFacilityData = {
   transports: [
     {
       id: 'aogashima_rentacar',
-      name: '青ヶ島レンタカー（青ヶ島レンタカーサービス）',
+      name: '青ヶ島レンタカー（青ヶ島整備工場）',
       type: 'car',
-      phone: '04996-9-0088',
+      phone: '04996-9-0022',
       features: '軽自動車・軽トラック完備 / ヘリポート・港での受渡対応',
       priceRange: '¥4,500〜 / 24時間',
     }
@@ -154,21 +224,21 @@ const CHICHIJIMA_FACILITY_DATA: IslandFacilityData = {
   islandId: '63',
   islandName: '父島（小笠原諸島）',
   townHallName: '小笠原村観光協会',
-  townHallPhone: '04996-2-2585',
+  townHallPhone: '04998-2-2587',
   transportNotes: '集落内は徒歩・レンタル自転車で回れますが、島内観光やビーチ巡りにはレンタルバイク（原付）やレンタカーが絶大にお勧めです。村営バスも運行中。',
   accommodations: [
     {
       id: 'chichijima_view',
       name: 'ホテルアザレア / パパスダイビング＆ゲストハウス',
       type: 'guesthouse',
-      phone: '04996-2-2345',
+      phone: '04998-2-2345',
       planTier: 'free',
     },
     {
       id: 'tetsuya',
       name: 'ペンション てつ家',
       type: 'minshuku',
-      phone: '04996-2-3300',
+      phone: '04998-2-3300',
       planTier: 'free',
     }
   ],
@@ -177,7 +247,7 @@ const CHICHIJIMA_FACILITY_DATA: IslandFacilityData = {
       id: 'ogasawara_rentacar',
       name: '小笠原レンタカー',
       type: 'car',
-      phone: '04996-2-2580',
+      phone: '04998-2-2580',
       features: '普通車・軽自動車・オープンカー / 二見港近く',
       priceRange: '¥6,000〜 / 日',
     },
@@ -185,7 +255,7 @@ const CHICHIJIMA_FACILITY_DATA: IslandFacilityData = {
       id: 'chichijima_bike',
       name: '小笠原観光 レンタルバイク・E-Bike',
       type: 'bike',
-      phone: '04996-2-2051',
+      phone: '04998-2-2051',
       features: '50cc原付・電動アシスト自転車 / 坂道楽々',
       priceRange: '¥2,500〜 / 日',
     }

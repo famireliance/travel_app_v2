@@ -5,13 +5,13 @@
 
 export interface IslandInfrastructureInfo {
   has_atm: boolean | 'limited';
-  atm_status: 'あり' | 'なし' | '限定的';
+  atm_status: 'あり' | 'なし' | '限定的' | '要確認（事前準備推奨）';
   atm_desc: string;
   has_clinic: boolean | 'limited';
-  clinic_status: 'あり' | 'なし' | '限定的';
+  clinic_status: 'あり' | 'なし' | '限定的' | '要確認（事前準備推奨）';
   clinic_desc: string;
   has_store: boolean | 'limited';
-  store_status: 'あり' | 'なし' | '限定的';
+  store_status: 'あり' | 'なし' | '限定的' | '要確認（事前準備推奨）';
   store_desc: string;
   signal_status: string;
   signal_desc: string;
@@ -597,7 +597,7 @@ export function getIslandInfrastructure(island: any): IslandInfrastructureInfo {
   const difficulty = typeof island.difficulty === 'number' ? island.difficulty : 2;
   const isLargeIsland = 
     islandName.includes('島') && 
-    (island.area > 50 || difficulty <= 1 || islandName.includes('市') || (island.population && Number(island.population) > 5000));
+    (island.area > 50 || (island.population && Number(island.population) > 5000));
 
   if (isLargeIsland) {
     // 中〜大規模な有人離島（五島・壱岐・対馬・隠岐・天草・種子島など）
@@ -625,17 +625,17 @@ export function getIslandInfrastructure(island: any): IslandInfrastructureInfo {
     };
   }
 
-  // 小規模有人離島（離島振興指定の標準的な有人島：全国数百島に対応）
+  // 小規模有人離島（未検証の小規模島では断定を避け、事前準備を案内）
   return {
     has_atm: 'limited',
-    atm_status: 'あり',
-    atm_desc: `島内郵便局（または簡易郵便局・JA）にゆうちょATMあり。平日日中稼働（土日祝休止にご注意ください）。`,
+    atm_status: '要確認（事前準備推奨）',
+    atm_desc: `島内にATMがない場合や、平日日中のみ稼働の簡易郵便局・農協のみの場合があります。乗船前に本土側で現金をご用意ください。`,
     has_clinic: 'limited',
-    clinic_status: 'あり',
-    clinic_desc: `町村営診療所または巡回診療所あり（医師常駐または定期診療）。急患時はドクターヘリ対応。`,
+    clinic_status: '要確認（事前準備推奨）',
+    clinic_desc: `常駐医師が不在または巡回診療のみの場合があります。常備薬や救急セットは必ず事前にご持参ください。`,
     has_store: 'limited',
-    store_status: 'あり',
-    store_desc: `集落内に個人商店・共同売店（農協/生協）あり。食料・日用品の購入可能（コンビニなし）。`,
+    store_status: '要確認（事前準備推奨）',
+    store_desc: `個人商店や売店が限られる（または営業時間が短い・不定休）場合があります。必要な飲料・軽食の事前準備を推奨します。`,
     signal_status: '主要キャリア対応',
     signal_desc: `集落・港周辺では主要キャリア（docomo / au / SoftBank）の通話が可能。山間部等は一部微弱。`,
     day_trip: difficulty <= 2 ? true : 'difficult',
@@ -655,15 +655,15 @@ export function getIslandInfrastructure(island: any): IslandInfrastructureInfo {
 
 function createDefaultFallback(isUninhabited: boolean): IslandInfrastructureInfo {
   return {
-    has_atm: !isUninhabited,
-    atm_status: isUninhabited ? 'なし' : 'あり',
-    atm_desc: isUninhabited ? 'ATMなし' : '島内郵便局・ATMあり',
-    has_clinic: !isUninhabited,
-    clinic_status: isUninhabited ? 'なし' : 'あり',
-    clinic_desc: isUninhabited ? '医療施設なし' : '公立診療所あり',
-    has_store: !isUninhabited,
-    store_status: isUninhabited ? 'なし' : 'あり',
-    store_desc: isUninhabited ? '商店なし' : '地元商店あり',
+    has_atm: isUninhabited ? false : 'limited',
+    atm_status: isUninhabited ? 'なし' : '要確認（事前準備推奨）',
+    atm_desc: isUninhabited ? 'ATMなし' : '乗船前の現金準備を推奨',
+    has_clinic: isUninhabited ? false : 'limited',
+    clinic_status: isUninhabited ? 'なし' : '要確認（事前準備推奨）',
+    clinic_desc: isUninhabited ? '医療施設なし' : '常備薬の持参を推奨',
+    has_store: isUninhabited ? false : 'limited',
+    store_status: isUninhabited ? 'なし' : '要確認（事前準備推奨）',
+    store_desc: isUninhabited ? '商店なし' : '事前の飲料・食料確認を推奨',
     signal_status: '主要キャリア対応',
     signal_desc: '集落周辺で通話可能',
     day_trip: true,

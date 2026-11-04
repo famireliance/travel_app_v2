@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId) as Stripe.Subscription;
           const priceId = subscription.items?.data?.[0]?.price?.id;
           let tier = 'premium';
-          if (priceId === process.env.STRIPE_PRICE_ID_ULTIMATE) {
+          if (priceId === priceIdUltimate) {
             tier = 'ultimate';
           }
           const periodEndUnix = (subscription as any).current_period_end || (subscription as any).trial_end || (subscription.items?.data?.[0] as any)?.current_period_end || (Date.now()/1000 + 30*24*60*60);

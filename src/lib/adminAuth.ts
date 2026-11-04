@@ -119,3 +119,11 @@ export async function getAuthUser(req: NextRequest): Promise<AdminUser | null> {
 export async function verifyAdmin(req: NextRequest): Promise<AdminUser | null> {
   return await getAuthUser(req);
 }
+
+export function canMutateAdmin(user: AdminUser | null): boolean {
+  return Boolean(user && user.role !== 'viewer');
+}
+
+export function isSuperAdmin(user: AdminUser | null): boolean {
+  return Boolean(user && user.role === 'super_admin');
+}

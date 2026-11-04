@@ -44,7 +44,9 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
     }
 
     const planInfo = PLANS[plan] || PLANS.standard;
-    const origin = req.headers.get('origin') || 'https://island.kira-tabi.com';
+    const ALLOWED_ORIGINS = ['https://island.kira-tabi.com', 'http://localhost:3000', 'http://localhost:3001'];
+    const rawOrigin = req.headers.get('origin') || '';
+    const origin = ALLOWED_ORIGINS.includes(rawOrigin) ? rawOrigin : 'https://island.kira-tabi.com';
 
     // シリアルナンバー生成
     const islandKey = (islandId || islandName || 'ISL').toString().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6) || 'ISL';

@@ -10,6 +10,9 @@ export async function POST(req: NextRequest) {
   if (!user) {
     return NextResponse.json({ error: '認証エラー' }, { status: 401 });
   }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
   if (!SERVICE_ROLE_KEY || SERVICE_ROLE_KEY.startsWith('REPLACE')) {
     return NextResponse.json({ error: 'SERVICE_ROLE_KEY未設定' }, { status: 503 });
   }

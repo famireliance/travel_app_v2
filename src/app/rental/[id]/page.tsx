@@ -45,13 +45,16 @@ export default function RentalCarLandingPage() {
   const [showAllPlans, setShowAllPlans] = useState(false);
 
   useEffect(() => {
-    if (!serviceId) return;
-    const found = getServiceById(String(serviceId)) || ISLAND_SERVICES_DICTIONARY['aogashima-yamada-rentacar'];
+    if (!serviceId) {
+      setLoading(false);
+      return;
+    }
+    const found = getServiceById(String(serviceId));
     setService(found);
     setLoading(false);
   }, [serviceId]);
 
-  if (loading || !service) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-slate-50">
         <div className="text-center space-y-3">
@@ -59,6 +62,35 @@ export default function RentalCarLandingPage() {
           <p className="text-xs text-slate-500 font-mono tracking-widest uppercase font-bold">Loading Rental Car LP...</p>
         </div>
       </div>
+    );
+  }
+
+  if (!service) {
+    return (
+      <main className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center px-4 py-12 font-sans text-slate-800">
+        <div className="max-w-lg w-full bg-white rounded-3xl p-8 shadow-sm border border-slate-200 text-center space-y-6">
+          <div className="w-14 h-14 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+            <Car className="w-7 h-7" />
+          </div>
+          <div className="space-y-2">
+            <h1 className="font-serif font-bold text-xl text-slate-900">
+              指定された施設・ツアー情報は現在準備中です
+            </h1>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              お探しのレンタカー・モビリティ施設は現在掲載準備中か、公開が終了しております。各離島の詳細ページより島内の交通案内をご確認ください。
+            </p>
+          </div>
+          <div className="pt-2">
+            <Link
+              href="/islands"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold shadow-sm transition-colors"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>全国離島一覧へ戻る</span>
+            </Link>
+          </div>
+        </div>
+      </main>
     );
   }
 

@@ -1,11 +1,11 @@
 {
-  "name": "KIRATABI（キラ旅）- 日本全国離島制覇アプリ",
-  "short_name": "キラ旅",
+  "name": "輝旅 島専科（KIRATABI SHIMASENKA）",
+  "short_name": "輝旅 島専科",
   "description": "日本の有人・無人島を巡る旅を記録し、守護精霊を育成するデジタル航海記",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
-  "theme_color": "#0ea5e9",
+  "theme_color": "#0a0a1a",
   "orientation": "portrait",
   "icons": [
     {

@@ -5,10 +5,17 @@ import { getAuthUser } from '@/lib/adminAuth';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
+const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_BUCKETS = ['islands', 'fairies', 'avatars', 'diary-photos', 'public-assets', 'accommodations'];
+
 export async function POST(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
   }
 
   try {
@@ -20,11 +27,29 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'ファイルが見つかりません' }, { status: 400 });
     }
 
+    if (!ALLOWED_BUCKETS.includes(bucket)) {
+      return NextResponse.json({ error: '無効な保存先バケットです' }, { status: 400 });
+    }
+
+    if (!ALLOWED_MIME_TYPES.includes(file.type)) {
+      return NextResponse.json({ error: '対応していないファイル形式です（JPEG, PNG, WebP, GIFのみ対応）' }, { status: 400 });
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      return NextResponse.json({ error: 'ファイルサイズは10MB以下にしてください' }, { status: 400 });
+    }
+
     const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    const fileExt = file.name.split('.').pop() || 'png';
+    const mimeExtMap: Record<string, string> = {
+      'image/jpeg': 'jpg',
+      'image/png': 'png',
+      'image/webp': 'webp',
+      'image/gif': 'gif',
+    };
+    const fileExt = mimeExtMap[file.type] || 'png';
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
     const filePath = `cms-uploads/${fileName}`;
 
@@ -33,14 +58,13 @@ export async function POST(req: NextRequest) {
     const { error: uploadError } = await adminClient.storage
       .from(bucket)
       .upload(filePath, buffer, {
-        contentType: file.type || 'image/jpeg',
+        contentType: file.type,
         upsert: true
       });
 
     if (uploadError) {
-      // ストレージバケットが存在しないなどの場合はデータURLとして返却フォールバック
       const base64 = buffer.toString('base64');
-      const dataUrl = `data:${file.type || 'image/jpeg'};base64,${base64}`;
+      const dataUrl = `data:${file.type};base64,${base64}`;
       return NextResponse.json({
         url: dataUrl,
         warning: 'Supabase Storageへの保存に失敗したためDataURL形式で返却しました'

@@ -8,12 +8,15 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 const RESEND_API_KEY = process.env.RESEND_API_KEY!;
 const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'KIRATABI Admin <onboarding@resend.dev>';
 
-import { getAuthUser } from '@/lib/adminAuth';
+import { getAuthUser, isSuperAdmin } from '@/lib/adminAuth';
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser(request);
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+  if (!isSuperAdmin(user)) {
+    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
   }
 
   const [{ data: codes }, { data: history }] = await Promise.all([
@@ -33,6 +36,12 @@ export async function POST(request: NextRequest) {
     const user = await getAuthUser(request);
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+    if (!isSuperAdmin(user)) {
+      return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
     }
 
     const { subject, body, targetTier, promoCodeId } = await request.json();

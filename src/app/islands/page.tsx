@@ -7,11 +7,23 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { Compass, Navigation } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: '日本全国離島一覧ディレクトリ | キラ旅',
+  title: '日本全国離島一覧ディレクトリ',
   description: '日本全国の全離島一覧です。エリアや地方ごとに島を探すことができます。KIRATABI（輝旅 島専科）の島ディレクトリ。',
   alternates: {
     canonical: 'https://island.kira-tabi.com/islands',
-  }
+  },
+  openGraph: {
+    title: '日本全国離島一覧ディレクトリ | 輝旅 島専科',
+    description: '日本全国の全離島一覧です。エリアや地方ごとに島を探すことができます。',
+    url: 'https://island.kira-tabi.com/islands',
+    images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: '日本全国離島一覧ディレクトリ | 輝旅 島専科',
+    description: '日本全国の全離島一覧です。エリアや地方ごとに島を探すことができます。',
+    images: ['/og-image.png'],
+  },
 };
 
 export default function AllIslandsDirectory() {
