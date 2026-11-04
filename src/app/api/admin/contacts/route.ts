@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -28,8 +29,8 @@ export async function GET(req: NextRequest) {
       .order('created_at', { ascending: false });
 
     if (error) {
-      // テーブル未作成時は空配列で正常復帰
-      return NextResponse.json({ contacts: [] });
+      const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
+      return NextResponse.json({ contacts: fbContacts });
     }
     return NextResponse.json({ contacts: contacts || [] });
   } catch (err: any) {
@@ -69,8 +70,14 @@ export async function PUT(req: NextRequest) {
       .eq('id', id);
 
     if (error) {
-      console.error('[contacts PUT]', error);
-      return NextResponse.json({ error: 'お問い合わせの更新に失敗しました' }, { status: 500 });
+      // Fallback to admin_config storage
+      const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
+      const idx = fbContacts.findIndex((c: any) => c.id === id);
+      if (idx === -1) {
+        return NextResponse.json({ error: '対象のお問い合わせが見つかりません' }, { status: 404 });
+      }
+      fbContacts[idx] = { ...fbContacts[idx], ...updateData };
+      await setFallbackJson('fallback_contacts', fbContacts);
     }
 
     return NextResponse.json({ success: true, message: 'お問い合わせ対応状況を更新しました' });

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -26,15 +27,14 @@ export async function GET(req: NextRequest) {
       .order('created_at', { ascending: false });
 
     if (error) {
-      // マイグレーション未適用の場合は空配列を返却（本番環境ではエラーを返却）
-      console.error('[distributors GET]', error);
-      return NextResponse.json({ stores: [] });
+      const fbStores = await getFallbackJson<any[]>('fallback_distributor_stores', []);
+      return NextResponse.json({ stores: fbStores });
     }
 
     return NextResponse.json({ stores: stores || [] });
   } catch (err: any) {
-    console.error('[distributors GET]', err);
-    return NextResponse.json({ error: err.message || '加盟店データの取得に失敗しました' }, { status: 500 });
+    const fbStores = await getFallbackJson<any[]>('fallback_distributor_stores', []);
+    return NextResponse.json({ stores: fbStores });
   }
 }
 
@@ -68,7 +68,6 @@ export async function POST(req: NextRequest) {
     }
 
     const islandSlug = island_id.toLowerCase().replace(/[^a-z0-9]/g, '');
-    // crypto で充分なランダム性を持たせる
     const randomSuffix = Array.from(crypto.getRandomValues(new Uint8Array(3)))
       .map(b => b.toString(16).padStart(2, '0'))
       .join('')
@@ -86,6 +85,7 @@ export async function POST(req: NextRequest) {
       total_sales_count: 0,
       total_revenue: 0,
       accumulated_commission: 0,
+      is_active: true,
       created_at: new Date().toISOString()
     };
 
@@ -95,7 +95,17 @@ export async function POST(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      const fbStores = await getFallbackJson<any[]>('fallback_distributor_stores', []);
+      const created = { id: crypto.randomUUID(), ...storeData, updated_at: new Date().toISOString() };
+      fbStores.unshift(created);
+      await setFallbackJson('fallback_distributor_stores', fbStores);
+      return NextResponse.json({
+        success: true,
+        message: `販売協力店「${shop_name}」を登録しました（店舗専用紹介コード: ${referral_code}）`,
+        store: created
+      });
+    }
 
     return NextResponse.json({
       success: true,
@@ -142,7 +152,16 @@ export async function PUT(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      const fbStores = await getFallbackJson<any[]>('fallback_distributor_stores', []);
+      const idx = fbStores.findIndex((s: any) => s.id === id);
+      if (idx === -1) {
+        return NextResponse.json({ error: '指定された店舗が見つかりません' }, { status: 404 });
+      }
+      fbStores[idx] = { ...fbStores[idx], ...updates };
+      await setFallbackJson('fallback_distributor_stores', fbStores);
+      return NextResponse.json({ success: true, message: '店舗情報を更新しました', store: fbStores[idx] });
+    }
     return NextResponse.json({ success: true, message: '店舗情報を更新しました', store: data });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || '更新に失敗しました' }, { status: 500 });
@@ -168,7 +187,11 @@ export async function DELETE(req: NextRequest) {
       .delete()
       .eq('id', id);
 
-    if (error) throw error;
+    if (error) {
+      const fbStores = await getFallbackJson<any[]>('fallback_distributor_stores', []);
+      const filtered = fbStores.filter((s: any) => s.id !== id);
+      await setFallbackJson('fallback_distributor_stores', filtered);
+    }
     return NextResponse.json({ success: true, message: '店舗を削除しました' });
   } catch (err: any) {
     return NextResponse.json({ error: err.message || '削除に失敗しました' }, { status: 500 });

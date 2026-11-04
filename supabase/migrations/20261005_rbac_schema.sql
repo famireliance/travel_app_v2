@@ -28,9 +28,9 @@ DO $$
 DECLARE
     tokyo_org_id UUID;
     hachijo_org_id UUID;
-    super_admin_pass TEXT := crypt('superadmin123', gen_salt('bf'));
-    tokyo_admin_pass TEXT := crypt('tokyo123', gen_salt('bf'));
-    hachijo_admin_pass TEXT := crypt('hachijo123', gen_salt('bf'));
+    super_admin_pass TEXT := crypt(gen_random_uuid()::text, gen_salt('bf'));
+    tokyo_admin_pass TEXT := crypt(gen_random_uuid()::text, gen_salt('bf'));
+    hachijo_admin_pass TEXT := crypt(gen_random_uuid()::text, gen_salt('bf'));
 BEGIN
     -- 組織の作成
     INSERT INTO admin_organizations (name, parent_id)
@@ -41,7 +41,7 @@ BEGIN
     VALUES ('八丈町役場', tokyo_org_id)
     RETURNING id INTO hachijo_org_id;
 
-    -- ユーザーの作成
+    -- ユーザーの作成（初期パスワードは管理画面より再設定）
     -- 1. 弊社（Super Admin）
     INSERT INTO admin_users (email, password_hash, name, role, org_id)
     VALUES ('admin@kira-tabi.com', super_admin_pass, 'Master Admin', 'super_admin', NULL);
@@ -56,7 +56,7 @@ BEGIN
 
     -- 4. 八丈町役場（一般スタッフ）
     INSERT INTO admin_users (email, password_hash, name, role, org_id)
-    VALUES ('staff@hachijo.tokyo.jp', crypt('staff123', gen_salt('bf')), '八丈町スタッフA', 'editor', hachijo_org_id);
+    VALUES ('staff@hachijo.tokyo.jp', crypt(gen_random_uuid()::text, gen_salt('bf')), '八丈町スタッフA', 'editor', hachijo_org_id);
 END $$;
 
 -- 認証用RPC

@@ -25,7 +25,7 @@ export async function GET(request: Request) {
     // Fetch profile bypassing RLS
     const { data, error } = await adminClient
       .from('user_profiles')
-      .select('nickname, subscription_tier, premium_until, anniversary_cert_used')
+      .select('*')
       .eq('id', user.id)
       .single();
 
@@ -34,7 +34,16 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ profile: data || {} });
+    const profile = data ? {
+      nickname: data.nickname ?? null,
+      subscription_tier: data.subscription_tier ?? 'free',
+      premium_until: data.premium_until ?? null,
+      ultimate_started_at: data.ultimate_started_at ?? null,
+      anniversary_cert_used: data.anniversary_cert_used ?? false,
+      high_quality_tickets: data.high_quality_tickets ?? 0,
+    } : {};
+
+    return NextResponse.json({ profile });
   } catch (err: any) {
     console.error("API Route Error:", err);
     return NextResponse.json({ error: err.message }, { status: 500 });

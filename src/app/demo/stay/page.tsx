@@ -33,7 +33,7 @@ export default function DemoStayPage() {
       </div>
 
       {/* 実際の宿LPコンポーネントをデモ用モードでマウント */}
-      <StayDetailPage demoMode={true} />
+      <StayDetailPage />
     </div>
   );
 }

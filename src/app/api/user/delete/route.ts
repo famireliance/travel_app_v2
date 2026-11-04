@@ -34,8 +34,7 @@ export async function POST(req: NextRequest) {
       .from('user_profiles')
       .update({
         deleted_at: new Date().toISOString(),
-        nickname: '退会済みユーザー',
-        bio: null
+        nickname: '退会済みユーザー'
       })
       .eq('id', user.id);
 

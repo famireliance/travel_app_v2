@@ -123,6 +123,34 @@ export default function AdminUserManagement({ password }: { password: string }) 
     }
   };
 
+  const handleResetPassword = async (u: User) => {
+    const newPassword = window.prompt(`スタッフ「${u.name}」(${u.email}) の新しいパスワードを入力してください（6文字以上）:`);
+    if (newPassword === null) return;
+    if (newPassword.length < 6) {
+      toast.error('パスワードは6文字以上で設定してください');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/admin/users', {
+        method: 'PUT',
+        headers: {
+          'x-admin-password': password,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ id: u.id, password: newPassword })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || 'パスワードの再設定に失敗しました');
+        return;
+      }
+      toast.success(`「${u.name}」のパスワードを再設定しました`);
+    } catch (err: any) {
+      toast.error(err.message || '通信エラーが発生しました');
+    }
+  };
+
   const handleDelete = async (u: User) => {
     if (!window.confirm(`スタッフ「${u.name}」(${u.email}) を削除しますか？\nこの操作は元に戻せません。`)) {
       return;
@@ -211,13 +239,22 @@ export default function AdminUserManagement({ password }: { password: string }) 
                     </span>
                   </td>
                   <td className="p-3.5 text-right">
-                    <button
-                      onClick={() => handleDelete(u)}
-                      className="p-1.5 text-gray-500 hover:text-rose-400 hover:bg-rose-950/40 rounded-lg transition cursor-pointer"
-                      title="スタッフを削除"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center justify-end gap-1.5">
+                      <button
+                        onClick={() => handleResetPassword(u)}
+                        className="p-1.5 text-gray-400 hover:text-amber-400 hover:bg-amber-950/40 rounded-lg transition cursor-pointer"
+                        title="パスワード再設定"
+                      >
+                        <Key className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(u)}
+                        className="p-1.5 text-gray-500 hover:text-rose-400 hover:bg-rose-950/40 rounded-lg transition cursor-pointer"
+                        title="スタッフを削除"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

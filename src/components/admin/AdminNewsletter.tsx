@@ -1,6 +1,5 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Mail, Send, AlertCircle, History } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -17,19 +16,24 @@ export default function AdminNewsletter({ adminPassword }: { adminPassword: stri
 
   useEffect(() => {
     fetchInitialData();
-  }, []);
+  }, [adminPassword]);
 
   const fetchInitialData = async () => {
     setIsLoading(true);
-    // Fetch promo codes
-    const { data: codes } = await supabase.from('app_promo_codes').select('id, code, reward_amount').order('created_at', { ascending: false });
-    if (codes) setPromoCodes(codes);
-
-    // Fetch history
-    const { data: hist } = await supabase.from('newsletters').select('*, app_promo_codes(code)').order('sent_at', { ascending: false }).limit(10);
-    if (hist) setHistory(hist);
-    
-    setIsLoading(false);
+    try {
+      const res = await fetch('/api/admin/newsletter', {
+        headers: { 'x-admin-password': adminPassword }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setPromoCodes(data.promoCodes || []);
+        setHistory(data.history || []);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInsertCode = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -105,7 +109,7 @@ export default function AdminNewsletter({ adminPassword }: { adminPassword: stri
             <select
               value={targetTier}
               onChange={e => setTargetTier(e.target.value)}
-              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-slate-800"
             >
               <option value="all">すべてのユーザー</option>
               <option value="free">Freeプランのみ (無料ユーザー)</option>
@@ -121,7 +125,7 @@ export default function AdminNewsletter({ adminPassword }: { adminPassword: stri
               value={subject}
               onChange={e => setSubject(e.target.value)}
               placeholder="例: 【KIRATABI】夏のお出かけ応援クーポンプレゼント！"
-              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-slate-800"
               required
             />
           </div>
@@ -131,7 +135,7 @@ export default function AdminNewsletter({ adminPassword }: { adminPassword: stri
             <select
               value={promoCodeId}
               onChange={handleInsertCode}
-              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-slate-800"
             >
               <option value="">-- コードを添付しない --</option>
               {promoCodes.map(c => (
@@ -147,7 +151,7 @@ export default function AdminNewsletter({ adminPassword }: { adminPassword: stri
               onChange={e => setBody(e.target.value)}
               placeholder="メール本文を入力..."
               rows={8}
-              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm"
+              className="w-full p-3 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm text-slate-800"
               required
             />
           </div>

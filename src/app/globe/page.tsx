@@ -31,7 +31,7 @@ const GlobeSatelliteMap = dynamic(() => import('./GlobeSatelliteMap'), {
 
 // 座標パース補助関数
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function getIslandCoords(island: any): { lat: number; lng: number } {
+function getIslandCoords(island: any): { lat: number; lng: number } {
   if (island?.coordinates) {
     const matchDecimal = island.coordinates.match(/([0-9.]+)[^0-9.]+([0-9.]+)/);
     if (matchDecimal) {

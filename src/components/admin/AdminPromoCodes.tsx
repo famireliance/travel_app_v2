@@ -1,10 +1,9 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { supabase } from '@/lib/supabase';
 import { Gift, Copy, CheckCircle, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function AdminPromoCodes() {
+export default function AdminPromoCodes({ password = '' }: { password?: string }) {
   const [codes, setCodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -12,35 +11,59 @@ export default function AdminPromoCodes() {
 
   const fetchCodes = async () => {
     setLoading(true);
-    const { data, error } = await supabase.from('app_promo_codes').select('*').order('created_at', { ascending: false });
-    if (!error && data) {
-      setCodes(data);
+    try {
+      const token = password || (typeof window !== 'undefined' ? sessionStorage.getItem('admin_password') || '' : '');
+      const res = await fetch('/api/admin/promo-codes', {
+        headers: { 'x-admin-password': token }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setCodes(data.codes || []);
+      }
+    } catch {
+      // ignore
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   useEffect(() => {
     fetchCodes();
-  }, []);
+  }, [password]);
 
   const handleGenerate = async () => {
     const customCode = window.prompt("発行するクーポンコードを入力してください（例: SUMMER2026）。\n空欄の場合は自動生成されます。");
+    if (customCode === null) return;
     const amountStr = window.prompt("プレゼントする高画質チケットの枚数を入力してください（デフォルト: 1）", "1");
+    if (amountStr === null) return;
     const amount = parseInt(amountStr || '1', 10);
     const codeStr = customCode?.trim() || `TICKET-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
 
     setGenerating(true);
-    const { error } = await supabase.from('app_promo_codes').insert({
-      code: codeStr,
-      reward_amount: amount
-    });
-    setGenerating(false);
-
-    if (error) {
-      toast.error('発行に失敗しました。既に存在するコードの可能性があります。');
-    } else {
-      toast.success('コードを発行しました！');
-      fetchCodes();
+    try {
+      const token = password || (typeof window !== 'undefined' ? sessionStorage.getItem('admin_password') || '' : '');
+      const res = await fetch('/api/admin/promo-codes', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-admin-password': token
+        },
+        body: JSON.stringify({
+          code: codeStr,
+          reward_amount: amount
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        toast.error(data.error || '発行に失敗しました。既に存在するコードの可能性があります。');
+      } else {
+        toast.success('コードを発行しました！');
+        fetchCodes();
+      }
+    } catch {
+      toast.error('通信エラーが発生しました');
+    } finally {
+      setGenerating(false);
     }
   };
 
@@ -79,7 +102,7 @@ export default function AdminPromoCodes() {
             </thead>
             <tbody>
               {codes.map(c => (
-                <tr key={c.id} className="hover:bg-slate-50">
+                <tr key={c.id} className="hover:bg-slate-50 text-slate-700">
                   <td className="p-3 border-b border-slate-100 font-mono text-sm font-bold text-slate-700 flex items-center gap-2">
                     {c.code}
                     <button onClick={() => copyToClipboard(c.code, c.id)} className="text-slate-400 hover:text-blue-500">
@@ -87,7 +110,7 @@ export default function AdminPromoCodes() {
                     </button>
                   </td>
                   <td className="p-3 border-b border-slate-100 text-sm">{c.reward_amount} 枚</td>
-                  <td className="p-3 border-b border-slate-100 text-sm">{c.current_uses} / {c.max_uses || '∞'}</td>
+                  <td className="p-3 border-b border-slate-100 text-sm">{c.current_uses ?? 0} / {c.max_uses || '∞'}</td>
                   <td className="p-3 border-b border-slate-100 text-xs text-slate-500">{new Date(c.created_at).toLocaleDateString('ja-JP')}</td>
                 </tr>
               ))}

@@ -112,15 +112,19 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
         const { error: physErr } = await adminClient.from('physical_orders').insert([orderRecord]);
         if (physErr) {
           await adminClient.from('orders').insert([{
+            order_number: `ORD-${Date.now().toString(36).toUpperCase()}`,
+            serial_number: pendingSerial,
+            stripe_session_id: session.id,
             user_id: userId || 'anonymous',
             island_id: islandId || 'unknown',
-            type: plan || 'standard',
-            shipping_name: recipientName,
-            shipping_postal_code: postalCode,
-            shipping_address: address,
-            shipping_phone: phone || null,
+            island_name: islandName || islandId || 'unknown',
+            plan: plan || 'standard',
+            traveler_name: travelerName,
+            recipient_name: recipientName,
+            address: `〒${postalCode} ${address}${phone ? ` (TEL: ${phone})` : ''}`,
+            visit_date: visitDate || new Date().toISOString().slice(0, 10),
             status: 'pending_payment',
-            stripe_session_id: session.id,
+            created_at: new Date().toISOString(),
           }]);
         }
       } catch {

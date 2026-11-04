@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -38,32 +39,51 @@ export async function GET(req: NextRequest) {
     }
   } catch {}
 
-  // DBテーブル未作成時は FAIRIES_MASTER にフォールバック
+  // DBテーブル未作成時は FAIRIES_MASTER + fallback_fairies にフォールバック
   try {
-    const { FAIRIES_MASTER } = await import('@/lib/fairies');
-    let filtered = FAIRIES_MASTER;
+    const [{ FAIRIES_MASTER }, customState] = await Promise.all([
+      import('@/lib/fairies'),
+      getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] })
+    ]);
+
+    const deletedSet = new Set(customState.deleted || []);
+    const baseFormatted = FAIRIES_MASTER
+      .filter(f => !deletedSet.has(f.id))
+      .map(f => {
+        const ov = customState.updated?.[f.id] || {};
+        return {
+          id: f.id,
+          fairy_key: f.id,
+          name: ov.name ?? f.name,
+          theme: ov.theme ?? f.theme,
+          island_id: ov.island_id ?? (f.island_id || ''),
+          region_id: ov.region_id ?? (f.region_id || ''),
+          rarity: ov.rarity ?? f.rarity,
+          attribute: ov.attribute ?? f.attribute,
+          icon: ov.icon ?? f.visual.icon,
+          image_url: ov.image_url ?? ov.custom_photo_url ?? (f.visual.imageUrl || ''),
+          custom_photo_url: ov.custom_photo_url ?? ov.image_url ?? (f.visual.imageUrl || ''),
+          description: ov.description ?? f.description,
+          color_from: ov.color_from ?? f.visual.colorFrom,
+          color_to: ov.color_to ?? f.visual.colorTo,
+          shadow_color: ov.shadow_color ?? f.visual.shadowColor,
+          sparkle_color: ov.sparkle_color ?? f.visual.sparkleColor,
+        };
+      });
+
+    const addedList = (customState.added || []).filter((f: any) => !deletedSet.has(f.id));
+    let combined = [...addedList, ...baseFormatted];
+
     if (search) {
       const q = search.toLowerCase();
-      filtered = filtered.filter(f => 
-        f.name.toLowerCase().includes(q) || 
-        f.theme.toLowerCase().includes(q) || 
-        (f.island_id && f.island_id.includes(q))
+      combined = combined.filter(f =>
+        (f.name || '').toLowerCase().includes(q) ||
+        (f.theme || '').toLowerCase().includes(q) ||
+        (f.island_id && f.island_id.toLowerCase().includes(q))
       );
     }
-    const formatted = filtered.map(f => ({
-      id: f.id,
-      fairy_key: f.id,
-      name: f.name,
-      theme: f.theme,
-      island_id: f.island_id || '',
-      region_id: f.region_id || '',
-      rarity: f.rarity,
-      attribute: f.attribute,
-      icon: f.visual.icon,
-      image_url: f.visual.imageUrl || '',
-      description: f.description
-    }));
-    return NextResponse.json({ data: formatted, count: formatted.length });
+
+    return NextResponse.json({ data: combined, count: combined.length });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -86,7 +106,18 @@ export async function POST(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      const customState = await getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] });
+      const newFairy = {
+        id: body.id || body.fairy_key || `fairy_${Date.now()}`,
+        fairy_key: body.fairy_key || body.id || `fairy_${Date.now()}`,
+        ...body,
+        created_at: new Date().toISOString()
+      };
+      customState.added = [newFairy, ...(customState.added || [])];
+      await setFallbackJson('fallback_fairies', customState);
+      return NextResponse.json({ message: '妖精データを追加しました', data: newFairy });
+    }
 
     return NextResponse.json({ message: '妖精データを追加しました', data });
   } catch (error: any) {
@@ -118,7 +149,18 @@ export async function PUT(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      const customState = await getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] });
+      const addedIdx = (customState.added || []).findIndex((f: any) => f.id === id);
+      if (addedIdx !== -1) {
+        customState.added[addedIdx] = { ...customState.added[addedIdx], ...updates };
+      } else {
+        customState.updated = customState.updated || {};
+        customState.updated[id] = { ...(customState.updated[id] || {}), ...updates };
+      }
+      await setFallbackJson('fallback_fairies', customState);
+      return NextResponse.json({ message: '妖精データを更新しました', data: { id, ...updates } });
+    }
 
     return NextResponse.json({ message: '妖精データを更新しました', data });
   } catch (error: any) {
@@ -148,7 +190,13 @@ export async function DELETE(req: NextRequest) {
       .delete()
       .eq('id', id);
 
-    if (error) throw error;
+    if (error) {
+      const customState = await getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] });
+      customState.added = (customState.added || []).filter((f: any) => f.id !== id);
+      customState.deleted = Array.from(new Set([...(customState.deleted || []), id]));
+      await setFallbackJson('fallback_fairies', customState);
+      return NextResponse.json({ message: '妖精データを削除しました' });
+    }
 
     return NextResponse.json({ message: '妖精データを削除しました' });
   } catch (error: any) {

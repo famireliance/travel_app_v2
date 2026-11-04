@@ -10,6 +10,23 @@ const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'KIRATABI Admin <onboarding@
 
 import { getAuthUser } from '@/lib/adminAuth';
 
+export async function GET(request: NextRequest) {
+  const user = await getAuthUser(request);
+  if (!user) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const [{ data: codes }, { data: history }] = await Promise.all([
+    supabase.from('app_promo_codes').select('id, code, reward_amount').order('created_at', { ascending: false }),
+    supabase.from('newsletters').select('*, app_promo_codes(code)').order('sent_at', { ascending: false }).limit(10),
+  ]);
+
+  return NextResponse.json({
+    promoCodes: codes || [],
+    history: history || [],
+  });
+}
+
 export async function POST(request: NextRequest) {
   try {
     // 1. Verify admin session / password

@@ -75,11 +75,11 @@ export async function POST(req: NextRequest) {
     if (target_tier === 'ultimate') {
       const { data: existingProfile } = await adminClient
         .from('user_profiles')
-        .select('ultimate_started_at')
+        .select('*')
         .eq('id', user.id)
         .single();
       
-      if (existingProfile && existingProfile.ultimate_started_at === null) {
+      if (existingProfile && 'ultimate_started_at' in existingProfile && existingProfile.ultimate_started_at === null) {
         updatePayload.ultimate_started_at = new Date().toISOString();
       }
     }

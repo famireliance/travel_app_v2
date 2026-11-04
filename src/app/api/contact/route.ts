@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 const CONTACT_EMAIL = process.env.CONTACT_EMAIL || 'support@kira-tabi.com';
 const ADMIN_EMAILS = process.env.ADMIN_EMAILS;
@@ -26,7 +27,7 @@ export async function POST(req: NextRequest) {
     };
     const categoryLabel = categoryLabels[category] || category;
 
-    // 1. Save to Supabase DB
+    // 1. Save to Supabase DB (or fallback_contacts in admin_config if table not created yet)
     if (SUPABASE_URL && SUPABASE_SERVICE_KEY && SUPABASE_SERVICE_KEY !== 'REPLACE_WITH_YOUR_SERVICE_ROLE_KEY') {
       const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
       const { error: dbError } = await supabase.from('contacts').insert({
@@ -37,7 +38,20 @@ export async function POST(req: NextRequest) {
         status: 'unread'
       });
       if (dbError) {
-        console.error('Failed to save contact to DB:', dbError);
+        const list = await getFallbackJson<any[]>('fallback_contacts', []);
+        list.unshift({
+          id: crypto.randomUUID(),
+          name,
+          email,
+          category,
+          message,
+          status: 'unread',
+          admin_note: '',
+          reply_text: '',
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        });
+        await setFallbackJson('fallback_contacts', list);
       }
     }
 

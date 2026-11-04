@@ -90,14 +90,17 @@ export default function TokushohoPage() {
             <div className="flex flex-col md:flex-row p-6">
               <div className="md:w-1/3 font-bold text-slate-900 mb-2 md:mb-0">商品引渡しまたはサービス提供の時期</div>
               <div className="md:w-2/3 text-slate-600">
-                購入に関する決済手続き完了後、直ちにご利用いただけます。
+                <ul className="list-disc pl-5 space-y-1">
+                  <li><strong>デジタルコンテンツ・サブスクリプション：</strong>決済手続き完了後、直ちにご利用いただけます。</li>
+                  <li><strong>実物到達証明書（台紙付き・額装版）：</strong>決済完了後、通常3〜7営業日以内に発送いたします（離島・遠隔地の場合は配送にお時間をいただく場合がございます）。</li>
+                </ul>
               </div>
             </div>
 
             <div className="flex flex-col md:flex-row p-6">
               <div className="md:w-1/3 font-bold text-slate-900 mb-2 md:mb-0">返品・キャンセルに関する特約</div>
               <div className="md:w-2/3 text-slate-600">
-                <p className="mb-2">デジタルコンテンツの性質上、購入後のキャンセルや返金は原則としてお受けできません。</p>
+                <p className="mb-2">デジタルコンテンツおよびオーダーメイド印字商品の性質上、購入・決済完了後の返品・交換・キャンセルは原則としてお受けできません。ただし、配送中の破損や印字不良がある場合は、商品到着後7日以内にサポート窓口までご連絡いただければ無償で再発送または返金いたします。</p>
                 <p><strong>定期課金（サブスクリプション）の解約について：</strong><br />
                 マイページの「サブスクリプション管理」よりいつでも解約手続きが可能です。解約手続きが完了した場合、次回の更新日から課金が停止され、現在の有効期限までは引き続きサービスをご利用いただけます。日割りでの返金は行っておりません。</p>
               </div>

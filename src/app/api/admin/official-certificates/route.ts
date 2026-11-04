@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -30,21 +31,27 @@ export async function GET(req: NextRequest) {
       query = query.eq('id', islandId);
     }
 
-    const { data: rawIslands, error } = await query;
+    const [{ data: rawIslands, error }, fbOverrides] = await Promise.all([
+      query,
+      getFallbackJson<Record<string, any>>('fallback_official_certs', {})
+    ]);
     if (error) throw error;
 
-    const islands = (rawIslands || []).map((i: any) => ({
-      id: i.id,
-      name: i.name,
-      prefecture: i.prefecture,
-      official_cert_enabled: i.official_cert_enabled ?? false,
-      official_org_name: i.official_org_name ?? null,
-      official_seal_url: i.official_seal_url ?? null,
-      official_cert_price: i.official_cert_price ?? 3000,
-      official_sales_start_at: i.official_sales_start_at ?? null,
-      official_sales_end_at: i.official_sales_end_at ?? null,
-      official_template_id: i.official_template_id ?? 'standard',
-    }));
+    const islands = (rawIslands || []).map((i: any) => {
+      const ov = fbOverrides[i.id] || {};
+      return {
+        id: i.id,
+        name: i.name,
+        prefecture: i.prefecture,
+        official_cert_enabled: ov.official_cert_enabled ?? i.official_cert_enabled ?? false,
+        official_org_name: ov.official_org_name ?? i.official_org_name ?? null,
+        official_seal_url: ov.official_seal_url ?? i.official_seal_url ?? null,
+        official_cert_price: ov.official_cert_price ?? i.official_cert_price ?? 3000,
+        official_sales_start_at: ov.official_sales_start_at ?? i.official_sales_start_at ?? null,
+        official_sales_end_at: ov.official_sales_end_at ?? i.official_sales_end_at ?? null,
+        official_template_id: ov.official_template_id ?? i.official_template_id ?? 'standard',
+      };
+    });
 
     return NextResponse.json({ islands });
   } catch (err: any) {
@@ -72,12 +79,25 @@ export async function PUT(req: NextRequest) {
       official_sales_start_at,
       official_sales_end_at,
       official_template_id,
-      extendDays // 30, 90, 180, 365, or custom number
+      extendDays
     } = body;
 
     if (!islandId) {
       return NextResponse.json({ error: 'islandId が必要です' }, { status: 400 });
     }
+
+    const { data: currentIsland, error: findErr } = await adminClient
+      .from('islands')
+      .select('*')
+      .eq('id', islandId)
+      .single();
+
+    if (findErr || !currentIsland) {
+      return NextResponse.json({ error: '指定された島が見つかりません' }, { status: 404 });
+    }
+
+    const fbOverrides = await getFallbackJson<Record<string, any>>('fallback_official_certs', {});
+    const existingOv = fbOverrides[islandId] || {};
 
     const updateData: Record<string, any> = {};
 
@@ -94,14 +114,10 @@ export async function PUT(req: NextRequest) {
     if (official_sales_start_at !== undefined) updateData.official_sales_start_at = official_sales_start_at;
     if (official_template_id !== undefined) updateData.official_template_id = official_template_id;
 
-    // 期間延長処理: 必ずDBの現在値を読んで計算する (30日, 90日, 180日, 365日, または任意日数)
+    // 期間延長処理
     if (extendDays && typeof extendDays === 'number' && extendDays > 0) {
-      const { data: currentIsland } = await adminClient
-        .from('islands')
-        .select('official_sales_end_at')
-        .eq('id', islandId)
-        .single();
-      const existingEnd = currentIsland?.official_sales_end_at ? new Date(currentIsland.official_sales_end_at) : null;
+      const rawEnd = existingOv.official_sales_end_at ?? currentIsland?.official_sales_end_at;
+      const existingEnd = rawEnd ? new Date(rawEnd) : null;
       const baseDate = existingEnd && existingEnd.getTime() > Date.now() ? existingEnd : new Date();
       baseDate.setDate(baseDate.getDate() + extendDays);
       updateData.official_sales_end_at = baseDate.toISOString();
@@ -116,17 +132,28 @@ export async function PUT(req: NextRequest) {
       .select()
       .single();
 
+    let finalIsland = updatedIsland;
     if (error) {
-      if (error.code === 'PGRST116') {
-        return NextResponse.json({ error: '指定された島が見つかりません' }, { status: 404 });
-      }
-      throw error;
+      // Fallback: save in admin_config when official_* columns haven't been added to islands yet
+      const mergedOv = { ...existingOv, ...updateData };
+      fbOverrides[islandId] = mergedOv;
+      await setFallbackJson('fallback_official_certs', fbOverrides);
+      finalIsland = {
+        ...currentIsland,
+        official_cert_enabled: mergedOv.official_cert_enabled ?? false,
+        official_org_name: mergedOv.official_org_name ?? null,
+        official_seal_url: mergedOv.official_seal_url ?? null,
+        official_cert_price: mergedOv.official_cert_price ?? 3000,
+        official_sales_start_at: mergedOv.official_sales_start_at ?? null,
+        official_sales_end_at: mergedOv.official_sales_end_at ?? null,
+        official_template_id: mergedOv.official_template_id ?? 'standard',
+      };
     }
 
     return NextResponse.json({
       success: true,
-      message: `「${updatedIsland.name}」の公的証明書設定を更新しました（販売終了: ${updatedIsland.official_sales_end_at ? new Date(updatedIsland.official_sales_end_at).toLocaleDateString('ja-JP') : '無制限'}）`,
-      island: updatedIsland
+      message: `「${finalIsland.name}」の公的証明書設定を更新しました（販売終了: ${finalIsland.official_sales_end_at ? new Date(finalIsland.official_sales_end_at).toLocaleDateString('ja-JP') : '無制限'}）`,
+      island: finalIsland
     });
   } catch (err: any) {
     console.error('[official-certificates PUT]', err);

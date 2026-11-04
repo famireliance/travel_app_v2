@@ -1400,7 +1400,7 @@ export default function AdminPage() {
         {/* 12. Promo Codes / Coupons Tab */}
         {activeTab === 'coupons' && (
           <div className="space-y-8 animate-in fade-in duration-300">
-            <AdminPromoCodes />
+            <AdminPromoCodes password={password} />
             <AdminCoupons password={password} />
           </div>
         )}

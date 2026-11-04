@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import Breadcrumb from '@/components/Breadcrumb';
 import { 
   ArrowLeft, Phone, Calendar, MapPin, Wifi, Coffee, Utensils, 
@@ -203,9 +203,11 @@ const DEFAULT_FALLBACK_INN: InnData = {
   }
 };
 
-export default function DedicatedInnPage({ demoMode = false }: { demoMode?: boolean } = {}) {
+export default function DedicatedInnPage() {
   const router = useRouter();
   const params = useParams();
+  const pathname = usePathname();
+  const demoMode = pathname?.startsWith('/demo') ?? false;
   const innParamId = (params?.id as string) || (demoMode ? 'demo' : '');
 
   const [loading, setLoading] = useState(true);

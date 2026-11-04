@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { getFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -26,10 +27,10 @@ export async function GET(req: NextRequest) {
 
     const { data: profiles } = await adminClient
       .from('user_profiles')
-      .select('id, subscription_tier, high_quality_tickets, total_points, nickname');
+      .select('*');
 
-    const premiumUsers = profiles?.filter(p => p.subscription_tier === 'premium').length || 0;
-    const ultimateUsers = profiles?.filter(p => p.subscription_tier === 'ultimate').length || 0;
+    const premiumUsers = profiles?.filter((p: any) => p.subscription_tier === 'premium').length || 0;
+    const ultimateUsers = profiles?.filter((p: any) => p.subscription_tier === 'ultimate').length || 0;
     const paidUsers = premiumUsers + ultimateUsers;
     const freeUsers = Math.max(0, totalUsers - paidUsers);
     const paidPlanRatio = totalUsers > 0 ? ((paidUsers / totalUsers) * 100).toFixed(1) : '0';
@@ -37,11 +38,28 @@ export async function GET(req: NextRequest) {
     // 2. 物理証明書オーダー集計
     let orders: any[] = [];
     try {
-      const { data: dbOrders } = await adminClient
-        .from('orders')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (dbOrders) orders = dbOrders;
+      const [{ data: physOrders }, { data: dbOrders }, shippingOv] = await Promise.all([
+        adminClient.from('physical_orders').select('*').order('ordered_at', { ascending: false }),
+        adminClient.from('orders').select('*').order('created_at', { ascending: false }),
+        getFallbackJson<Record<string, any>>('fallback_order_shipping', {})
+      ]);
+      const combined = [...(physOrders || []), ...(dbOrders || [])];
+      const seen = new Set<string>();
+      orders = combined.filter(o => {
+        if (seen.has(o.id)) return false;
+        seen.add(o.id);
+        return true;
+      }).map(o => {
+        const ov = shippingOv[o.id] || {};
+        const rawStatus = ov.status ?? o.status ?? 'ordered';
+        return {
+          ...o,
+          type: o.type || o.plan || 'standard',
+          shipping_name: ov.shipping_name ?? o.shipping_name ?? o.recipient_name ?? o.traveler_name ?? '',
+          ordered_at: o.ordered_at || o.created_at,
+          status: (rawStatus === 'paid' || rawStatus === 'received') ? 'ordered' : rawStatus,
+        };
+      });
     } catch {
       orders = [];
     }
@@ -62,7 +80,8 @@ export async function GET(req: NextRequest) {
     let physicalOrderRevenue = 0;
     orders.forEach(o => {
       if (o.status !== 'cancelled' && o.status !== 'pending_payment') {
-        physicalOrderRevenue += planPrices[o.type] || 1500;
+        const planKey = o.type || o.plan || 'standard';
+        physicalOrderRevenue += planPrices[planKey] || 1500;
       }
     });
 
@@ -80,11 +99,16 @@ export async function GET(req: NextRequest) {
 
     let unhandledContacts = 0;
     try {
-      const { count } = await adminClient
+      const { count, error: contactErr } = await adminClient
         .from('contacts')
         .select('*', { count: 'exact', head: true })
-        .neq('status', 'replied');
-      unhandledContacts = count || 0;
+        .neq('status', 'resolved');
+      if (contactErr) {
+        const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
+        unhandledContacts = fbContacts.filter((c: any) => c.status !== 'resolved').length;
+      } else {
+        unhandledContacts = count || 0;
+      }
     } catch {
       unhandledContacts = 0;
     }
@@ -97,7 +121,7 @@ export async function GET(req: NextRequest) {
       .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
       .slice(0, 5)
       .map(u => {
-        const prof = profiles?.find(p => p.id === u.id);
+        const prof: any = profiles?.find((p: any) => p.id === u.id);
         return {
           id: u.id,
           email: u.email,

@@ -22,7 +22,7 @@ export async function POST(req: NextRequest) {
     // プロフィール取得（サーバーサイドで二重チェック）
     const { data: profile, error: profileError } = await adminClient
       .from('user_profiles')
-      .select('subscription_tier, ultimate_started_at, anniversary_cert_used')
+      .select('*')
       .eq('id', user.id)
       .single();
 
@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: '必須項目が入力されていません' }, { status: 400 });
     }
 
-    // physical_orders に INSERT
+    // physical_orders に INSERT (未作成時は orders にフォールバック)
     const { error: insertError } = await adminClient
       .from('physical_orders')
       .insert({
@@ -79,8 +79,26 @@ export async function POST(req: NextRequest) {
       });
 
     if (insertError) {
-      console.error('Insert error:', insertError);
-      return NextResponse.json({ error: '申請の保存に失敗しました' }, { status: 500 });
+      const { error: fbInsertError } = await adminClient
+        .from('orders')
+        .insert({
+          order_number: `ORD-ANNIV-${Date.now().toString(36).toUpperCase()}`,
+          serial_number: `KT-ANNIV-${new Date().getFullYear()}-${Date.now().toString(36).toUpperCase().slice(-4)}`,
+          user_id: user.id,
+          island_id,
+          island_name,
+          plan: 'anniversary',
+          traveler_name: profile.nickname || recipient_name,
+          recipient_name,
+          address: `〒${postal_code} ${address} (TEL: ${phone})`,
+          visit_date: new Date().toISOString().slice(0, 10),
+          status: 'ordered',
+          created_at: new Date().toISOString(),
+        });
+      if (fbInsertError) {
+        console.error('Insert error:', fbInsertError);
+        return NextResponse.json({ error: '申請の保存に失敗しました' }, { status: 500 });
+      }
     }
 
     // anniversary_cert_used を true に更新

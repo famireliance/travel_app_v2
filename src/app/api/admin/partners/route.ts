@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -26,12 +27,14 @@ export async function GET(req: NextRequest) {
       .order('contract_end', { ascending: true });
 
     if (error) {
-      return NextResponse.json({ partners: [] });
+      const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
+      return NextResponse.json({ partners: fbPartners });
     }
 
     return NextResponse.json({ partners: partners || [] });
   } catch (err: any) {
-    return NextResponse.json({ partners: [] });
+    const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
+    return NextResponse.json({ partners: fbPartners });
   }
 }
 
@@ -48,7 +51,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const {
       name,
-      type, // 'transport' | 'lodging'
+      type,
       category_detail,
       island_id,
       logo_url,
@@ -95,7 +98,17 @@ export async function POST(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
+      const created = { id: crypto.randomUUID(), ...partnerData, updated_at: new Date().toISOString() };
+      fbPartners.push(created);
+      await setFallbackJson('fallback_b2b_partners', fbPartners);
+      return NextResponse.json({
+        success: true,
+        message: `タイアップパートナー「${name}」を登録しました`,
+        partner: created
+      });
+    }
 
     return NextResponse.json({
       success: true,
@@ -135,7 +148,6 @@ export async function PUT(req: NextRequest) {
       if (rawUpdates[key] !== undefined) updates[key] = rawUpdates[key];
     }
 
-    // Enum validation
     if (updates.type && !['transport', 'lodging'].includes(updates.type)) {
       return NextResponse.json({ error: '業種種別が無効です' }, { status: 400 });
     }
@@ -143,14 +155,18 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'スポンサーランクが無効です' }, { status: 400 });
     }
 
-    // Contract extension: always read current value from DB first
     if (extendDays && typeof extendDays === 'number' && extendDays > 0) {
       const { data: current } = await adminClient
         .from('b2b_partners')
         .select('contract_end')
         .eq('id', id)
-        .single();
-      const currentEnd = current?.contract_end ? new Date(current.contract_end) : new Date();
+        .maybeSingle();
+      let currentEndStr = current?.contract_end;
+      if (!currentEndStr) {
+        const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
+        currentEndStr = fbPartners.find((p: any) => p.id === id)?.contract_end;
+      }
+      const currentEnd = currentEndStr ? new Date(currentEndStr) : new Date();
       const baseDate = currentEnd.getTime() < Date.now() ? new Date() : currentEnd;
       baseDate.setDate(baseDate.getDate() + extendDays);
       updates.contract_end = baseDate.toISOString();
@@ -165,7 +181,20 @@ export async function PUT(req: NextRequest) {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
+      const idx = fbPartners.findIndex((p: any) => p.id === id);
+      if (idx === -1) {
+        return NextResponse.json({ error: '指定されたパートナーが見つかりません' }, { status: 404 });
+      }
+      fbPartners[idx] = { ...fbPartners[idx], ...updates };
+      await setFallbackJson('fallback_b2b_partners', fbPartners);
+      return NextResponse.json({
+        success: true,
+        message: `パートナー「${fbPartners[idx].name}」の契約・情報を更新しました`,
+        partner: fbPartners[idx]
+      });
+    }
 
     return NextResponse.json({
       success: true,
@@ -199,7 +228,11 @@ export async function DELETE(req: NextRequest) {
       .delete()
       .eq('id', id);
 
-    if (error) throw error;
+    if (error) {
+      const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
+      const filtered = fbPartners.filter((p: any) => p.id !== id);
+      await setFallbackJson('fallback_b2b_partners', filtered);
+    }
 
     return NextResponse.json({ success: true, message: 'パートナーデータを削除しました' });
   } catch (err: any) {

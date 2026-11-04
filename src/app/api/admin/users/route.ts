@@ -139,6 +139,73 @@ export async function POST(req: NextRequest) {
   }
 }
 
+export async function PUT(req: NextRequest) {
+  const user = await getAuthUser(req);
+  if (!user || !['super_admin', 'org_admin'].includes(user.role)) {
+    return NextResponse.json({ error: 'スタッフ更新の権限がありません' }, { status: 403 });
+  }
+
+  try {
+    const body = await req.json();
+    const { id, password, name, role } = body;
+
+    if (!id) {
+      return NextResponse.json({ error: '対象IDが指定されていません' }, { status: 400 });
+    }
+
+    const client = getAdminClient();
+    const { data: targetUser, error: fetchError } = await client
+      .from('admin_users')
+      .select('id, role, org_id')
+      .eq('id', id)
+      .single();
+
+    if (fetchError || !targetUser) {
+      return NextResponse.json({ error: '対象スタッフが見つかりません' }, { status: 404 });
+    }
+
+    if (user.role === 'org_admin') {
+      if (targetUser.org_id !== user.org_id) {
+        return NextResponse.json({ error: '他組織のスタッフを変更することはできません' }, { status: 403 });
+      }
+      if (targetUser.role === 'super_admin' || role === 'super_admin') {
+        return NextResponse.json({ error: 'システム管理者を変更することはできません' }, { status: 403 });
+      }
+    }
+
+    const updates: Record<string, any> = { updated_at: new Date().toISOString() };
+    if (password !== undefined) {
+      if (typeof password !== 'string' || password.length < 6) {
+        return NextResponse.json({ error: 'パスワードは6文字以上で入力してください' }, { status: 400 });
+      }
+      updates.password_hash = bcrypt.hashSync(password, 10);
+    }
+    if (name !== undefined && typeof name === 'string' && name.trim()) {
+      updates.name = name.trim();
+    }
+    if (role !== undefined && ['super_admin', 'org_admin', 'editor', 'viewer'].includes(role)) {
+      updates.role = role;
+    }
+
+    const { error: updateError } = await client
+      .from('admin_users')
+      .update(updates)
+      .eq('id', id);
+
+    if (updateError) {
+      return NextResponse.json({ error: 'スタッフ情報の更新に失敗しました' }, { status: 500 });
+    }
+
+    if (password !== undefined) {
+      await client.from('admin_sessions').delete().eq('user_id', id);
+    }
+
+    return NextResponse.json({ success: true, message: 'スタッフ情報を更新しました' });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || '予期せぬエラーが発生しました' }, { status: 500 });
+  }
+}
+
 export async function DELETE(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user || !['super_admin', 'org_admin'].includes(user.role)) {

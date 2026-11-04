@@ -73,7 +73,7 @@ export default function TimelineClient() {
       if (userIds.length > 0) {
         const { data: profilesData, error: profilesError } = await supabase
           .from('user_profiles')
-          .select('id, nickname, avatar_url')
+          .select('*')
           .in('id', userIds);
 
         if (!profilesError && profilesData) {

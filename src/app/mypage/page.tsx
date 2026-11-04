@@ -190,7 +190,7 @@ export default function MyPage() {
       setIsLoadingReservations(true);
       supabase
         .from('reservations')
-        .select('*, accommodations(id, name, address, enable_certificate, certificate_message)')
+        .select('*, accommodations(*)')
         .eq('guest_id', user.id)
         .order('created_at', { ascending: false })
         .then(({ data, error }) => {

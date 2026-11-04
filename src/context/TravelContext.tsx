@@ -742,30 +742,28 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
     // SupabaseDB同期 (Phase 4: island_visit_logs と user_profiles の更新)
     if (user) {
-      // 1. Visit Logの追加
+      // 1. Visit Logの追加 (テーブル未作成時は無視)
       supabase.from('island_visit_logs').insert({
         user_id: user.id,
         island_id: islandId,
         visited_at: new Date().toISOString(),
         is_verified: isVerified,
         earned_xp: gained
-      }).then(({ error }) => {
-        if (error) console.error('Failed to insert visit log', error);
-      });
+      }).then(() => {});
 
-      // 2. プレイヤーレベルと累計ポイントの更新
+      // 2. プレイヤーレベルと累計ポイントの更新 (カラム存在時のみ)
       if (gained > 0) {
-        supabase.from('user_profiles').select('total_points').eq('id', user.id).single().then(({ data }) => {
-          const currentPts = data?.total_points || 0;
-          const newTotal = currentPts + gained;
-          const newLevelInfo = getPlayerLevelInfo(newTotal);
-          
-          supabase.from('user_profiles').update({
-            total_points: newTotal,
-            player_level: newLevelInfo.level
-          }).eq('id', user.id).then(({ error }) => {
-            if (error) console.error('Failed to update user profile', error);
-          });
+        supabase.from('user_profiles').select('*').eq('id', user.id).single().then(({ data }) => {
+          if (data && 'total_points' in data) {
+            const currentPts = (data as any).total_points || 0;
+            const newTotal = currentPts + gained;
+            const newLevelInfo = getPlayerLevelInfo(newTotal);
+            
+            supabase.from('user_profiles').update({
+              total_points: newTotal,
+              player_level: newLevelInfo.level
+            }).eq('id', user.id).then(() => {});
+          }
         });
       }
     }
