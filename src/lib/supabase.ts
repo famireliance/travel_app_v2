@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { FALLBACK_ISLANDS } from '@/data/islandsData';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 const rawUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://placeholder.supabase.co';
 const supabaseUrl = rawUrl.replace(/\/rest\/v1\/?$/, '').replace(/\/$/, '');
@@ -40,7 +41,7 @@ export async function trackFacilityEvent(
 
 export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
   try {
-    // Only fetch published islands for the user app, ordered by popularity
+    // Fetch published islands from Supabase and merge strictly against authoritative ALL_ISLANDS_MASTER_DICTIONARY
     const { data, error } = await supabase
       .from('islands')
       .select('*')
@@ -48,7 +49,60 @@ export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
       .order('popularity_score', { ascending: false });
       
     if (!error && data && data.length > 0) {
-      return data;
+      const dbById = new Map<string, Record<string, any>>();
+      for (const row of data) {
+        const idStr = String(row.id);
+        if (ALL_ISLANDS_MASTER_DICTIONARY[idStr]) {
+          dbById.set(idStr, row);
+        }
+      }
+
+      const merged: Record<string, unknown>[] = [];
+      for (const master of Object.values(ALL_ISLANDS_MASTER_DICTIONARY) as any[]) {
+        if (master.is_conquest_target === false || !master.coordinates) continue;
+        const idStr = String(master.id);
+        const row = dbById.get(idStr);
+
+        if (row) {
+          merged.push({
+            ...row,
+            id: master.id,
+            name: master.name,
+            slug: master.slug || row.slug,
+            region_id: master.region_id || row.region_id,
+            prefecture: master.prefecture || row.prefecture,
+            coordinates: master.coordinates,
+            description: master.description || row.description || '',
+            access: master.access || row.access || '',
+            tags: (Array.isArray(row.tags) && row.tags.length > 0) ? row.tags : (master.tags || []),
+            is_conquest_target: true,
+            is_published: true,
+          });
+        } else {
+          merged.push({
+            id: master.id,
+            name: master.name,
+            slug: master.slug,
+            region_id: master.region_id || 'other',
+            prefecture: master.prefecture || '',
+            difficulty: master.difficulty === '未設定' ? 2 : (typeof master.difficulty === 'number' ? master.difficulty : 2),
+            coordinates: master.coordinates,
+            description: master.description || '',
+            access: master.access || '',
+            tags: master.tags || [],
+            spots: master.spots || [],
+            image_url: master.image_url || '',
+            hero_image_url: master.hero_image_url || master.image_url || '',
+            popularity_score: 0,
+            is_published: true,
+            is_conquest_target: true,
+          });
+        }
+      }
+
+      // Preserve popularity_score ordering from DB
+      merged.sort((a: any, b: any) => (Number(b.popularity_score) || 0) - (Number(a.popularity_score) || 0));
+      return merged;
     }
   } catch {
   }

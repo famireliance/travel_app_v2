@@ -46,7 +46,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "天売島",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "44.4333, 141.3167",
+    "coordinates": "44.4314, 141.3208",
     "description": "絶滅危惧種のオロロン鳥やウトウが繁殖する世界屈指の「海鳥の楽園」。断崖絶壁と青い日本海が広がる。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -66,7 +66,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "焼尻島",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "44.4333, 141.4167",
+    "coordinates": "44.4369, 141.4150",
     "description": "島の3分の1を天然記念物イチイの原生林が覆う緑の島。極上のサフォーク羊の放牧地が広がる癒やしの地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -106,7 +106,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "かもめ島",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "41.8683, 140.1183",
+    "coordinates": "41.8692, 140.1172",
     "description": "江差海岸に突き出たシンボル的島。鳥居が立つ徳山大神宮や瓶子岩、夕日の絶景スポットとして親しまれ、キャンプ場も併設されています。",
     "access": "江差町沿岸から波止場・橋を徒歩で渡ってすぐ",
     "flags": {
@@ -125,7 +125,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "厚岸小島",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "42.9450, 144.8230",
+    "coordinates": "42.9747, 144.8794",
     "description": "厚岸湾沖に浮かぶ島。希少な鳥類や野生動物が息づく道東の大自然の聖域。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -143,7 +143,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "嶮暮帰島",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "42.9667, 145.1333",
+    "coordinates": "43.0492, 145.1045",
     "description": "厚岸町と浜中町の境沖の島。ムツゴロウ王国こと畑正憲氏がかつて過ごした野生動物たちの楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -161,7 +161,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "渡島大島（松前大島）",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "41.5167, 139.3667",
+    "coordinates": "41.5117, 139.3625",
     "description": "北海道最西端に位置する火山島。オオミズナギドリの日本最大の繁殖地として天然記念物に指定されている聖域。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -179,7 +179,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "渡島小島（松前小島）",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "41.3583, 139.8083",
+    "coordinates": "41.3592, 139.8056",
     "description": "松前沖約24kmに浮かぶ島。ケイマフリやウミネコなどの海鳥が群れをなす大自然の要衝。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -197,7 +197,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "ユルリ島",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "43.2100, 145.5883",
+    "coordinates": "43.2186, 145.5964",
     "description": "根室市落石岬の沖合に浮かぶ平坦な台地島。かつて昆布漁のために放された馬たちが野生化して暮らす奇跡の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -215,7 +215,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "モユルリ島",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "43.2250, 145.5967",
+    "coordinates": "43.2317, 145.6050",
     "description": "ユルリ島のすぐ北に寄り添う希少海鳥の聖域。エトピリカやチシマウガウ等の繁殖地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -233,7 +233,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大黒島（厚岸町）",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "42.9567, 144.8633",
+    "coordinates": "42.9539, 144.8675",
     "description": "厚岸湾の入り口にそびえる絶壁の島。天然記念物コシジロウミツバメの繁殖地として厳格に守られた秘境。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -251,7 +251,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "霧多布島（湯沸島）",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "43.0667, 145.1500",
+    "coordinates": "43.0764, 145.1614",
     "description": "浜中町の中心市街地が広がる陸続き離島。湯沸岬の灯台からは太平洋の雄大な大パノラマとラッコの姿が見られる。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -269,7 +269,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小島（松前町）",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "41.3600, 139.8100",
+    "coordinates": "41.3625, 139.8117",
     "description": "渡島小島の北に連なる岩礁の聖域。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -289,7 +289,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "弁天島（稚内市・宗谷岬）",
     "region_id": "pseudo_hokkaido",
     "prefecture": "北海道",
-    "coordinates": "45.5267, 141.9367",
+    "coordinates": "45.5256, 141.9189",
     "description": "日本の実効支配地域における最北端の島。宗谷岬沖に浮かび、トドやアザラシが休息する絶景の岩礁。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -307,7 +307,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "飛島（山形県）",
     "region_id": "pseudo_sanriku",
     "prefecture": "山形県",
-    "coordinates": "39.1983, 139.5511",
+    "coordinates": "39.1950, 139.5498",
     "description": "酒田沖の日本海に浮かぶ絶海の孤島。対馬暖流の影響で温暖な気候とダイナミックな奇岩絶景、極上の夕日の楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -327,7 +327,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "蕪島（青森県）",
     "region_id": "pseudo_sanriku",
     "prefecture": "青森県",
-    "coordinates": "40.5391, 141.5586",
+    "coordinates": "40.5386, 141.5578",
     "description": "八戸市のウミネコ繁殖地として国の天然記念物に指定。蕪嶋神社が鎮座し春には菜の花とウミネコの美しいコントラスト。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -345,7 +345,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "椿島（岩手県陸前高田）",
     "region_id": "pseudo_sanriku",
     "prefecture": "岩手県",
-    "coordinates": "38.9566, 141.7454",
+    "coordinates": "38.9357, 141.7171",
     "description": "三陸海岸・広田湾沖に浮かぶウミネコ繁殖地。島全体がツバキの林に覆われている絶景島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -363,7 +363,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "青松島（岩手県）",
     "region_id": "pseudo_sanriku",
     "prefecture": "岩手県",
-    "coordinates": "38.9610, 141.7516",
+    "coordinates": "38.9439, 141.7161",
     "description": "椿島の隣に並ぶ風光明媚な三陸の名島。松と白い岩肌の調和が美しい。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -381,7 +381,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "権現島（岩手県山田町）",
     "region_id": "pseudo_sanriku",
     "prefecture": "岩手県",
-    "coordinates": "39.4678, 141.9840",
+    "coordinates": "39.4658, 141.9817",
     "description": "山田湾に浮かぶ信仰と祈りの島。穏やかな入り江と緑豊かな自然が三陸の風情を感じさせる。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -457,7 +457,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "金華山",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.2917, 141.5767",
+    "coordinates": "38.2947, 141.5731",
     "description": "「3年続けてお参りすれば一生お金に不自由しない」と言われる黄金山神社が鎮座する信仰の聖島。野生の鹿やサルが生息。",
     "access": "定期フェリー・旅客船アクセス",
     "flags": {
@@ -477,7 +477,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "桂島（宮城県・浦戸）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3325, 141.0942",
+    "coordinates": "38.3344, 141.0961",
     "description": "松島湾に浮かぶ浦戸諸島最大の有人島。日本三景松島の美しい多島美を歩いて実感できる癒やしの散策ルートが人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -497,7 +497,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "野々島",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3375, 141.1108",
+    "coordinates": "38.3392, 141.1119",
     "description": "松島湾・浦戸諸島の中心に位置する自然豊かな島。ツバキのトンネルや伝説の洞窟が残る秘境。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -517,7 +517,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "寒風沢島",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3283, 141.1342",
+    "coordinates": "38.3292, 141.1269",
     "description": "江戸時代には千石船が寄港する港町として栄え、日露交渉の地としても知られる歴史ロマンの島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -537,7 +537,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "宮戸島",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3344, 141.1444",
+    "coordinates": "38.3422, 141.1536",
     "description": "松島四大観の一つ「大高森」を抱く奥松島最大の島。縄文時代の里浜貝塚や日本庭園のような多島美絶景。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -557,7 +557,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "出島（宮城県女川町）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.4552, 141.5367",
+    "coordinates": "38.4525, 141.5333",
     "description": "女川港の沖合に浮かぶ、縄文時代の貝塚やリアス式海岸の雄大な景色が残る歴史の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -577,7 +577,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "江島（宮城県女川町）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.4011, 141.5947",
+    "coordinates": "38.3992, 141.5947",
     "description": "太平洋に突き出た断崖絶壁に囲まれた絶海のウミネコ繁殖島。独自の島文化と素朴な漁港風景。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -617,7 +617,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "朴島（宮城県・浦戸）",
     "region_id": "oshika",
     "prefecture": "宮城県",
-    "coordinates": "38.3417, 141.1239",
+    "coordinates": "38.3472, 141.1211",
     "description": "浦戸諸島で最も面積が小さく、春になると島一面に菜の花が咲き誇る美しい隠れ家のような有人島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -763,7 +763,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊豆大島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.7417, 139.3833",
+    "coordinates": "34.7385, 139.4024",
     "description": "東京から高速ジェット船で最短1時間45分。三原山と黒い砂漠「裏砂漠」、椿の花と絶景海中温泉を体感できる大ジオパーク。",
     "access": "羽田空港より直行航空便 / 竹芝港発 高速ジェット船・客船",
     "flags": {
@@ -781,7 +781,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "利島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.5250, 139.2833",
+    "coordinates": "34.5230, 139.2800",
     "description": "島全体の8割を椿林が覆い、冬には紅蓮の花が咲き誇るピラミッド型の島。野生のミナミハンドウイルカと泳ぐ聖地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -801,7 +801,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "新島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.3667, 139.2667",
+    "coordinates": "34.3813, 139.2654",
     "description": "コーシャ石が輝く真っ白な羽伏浦海岸や絶景の古代ギリシャ風露天風呂「湯の浜露天温泉（24時間無料）」があるサーファーとアートの楽園。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -821,7 +821,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "式根島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.3250, 139.2167",
+    "coordinates": "34.3264, 139.2137",
     "description": "リアス式海岸に囲まれた波穏やかな入り江と、潮の満ち引きで温度が変わる絶景海中温泉が楽しめる極上癒やし島。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -841,7 +841,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "神津島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.2083, 139.1333",
+    "coordinates": "34.2142, 139.1523",
     "description": "東京都初の国際ダークスカイ協会認定「星空保護区」。花の百名山・天上山とエメラルドグリーンの赤崎遊歩道で有名な神秘の島。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -861,7 +861,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "三宅島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.0833, 139.5250",
+    "coordinates": "34.0854, 139.5213",
     "description": "地球の呼吸と火山地形をダイナミックに体感できるバードアイランド。火山遊歩道やダイビングが絶品。",
     "access": "羽田空港より直行航空便 / 竹芝港発 高速ジェット船・客船",
     "flags": {
@@ -881,7 +881,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "御蔵島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.8833, 139.5917",
+    "coordinates": "33.8764, 139.6031",
     "description": "島の周辺海域に約100頭以上の野生ミナミハンドウイルカが暮らす「イルカの島」。巨木のツゲ林と豊かな自然が守られている。",
     "access": "東京竹芝港発 東海汽船大型客船（黒潮状況により着岸注意）",
     "flags": {
@@ -901,7 +901,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "八丈島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.1167, 139.7833",
+    "coordinates": "33.1083, 139.7917",
     "description": "羽田から飛行機でわずか55分。八丈富士、光るキノコ、極上の絶景露天「みはらしの湯」が揃う南国リゾート。",
     "access": "羽田空港より直行航空便 / 竹芝港発 高速ジェット船・客船",
     "flags": {
@@ -921,7 +921,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "八丈小島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "33.1250, 139.6833",
+    "coordinates": "33.1244, 139.6881",
     "description": "八丈島の北西沖にある無人島。昭和44年に全島民が移住（全島集団離島）した歴史をもち、手つかずの豊かな海とダイビングスポットとして知られます。",
     "access": "八丈島底土港・神湊港からチャーター船（漁船・ダイビング船）",
     "flags": {
@@ -940,7 +940,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "青ヶ島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "32.4583, 139.7667",
+    "coordinates": "32.4569, 139.7661",
     "description": "世界中の冒険家が憧れる、二重カルデラの絶海孤島。満天の星空と天然サウナ「ひんぎゃ」、秘蔵の焼酎「青酎」が伝説的な魅力。",
     "access": "八丈島底土港発 定期船「あおがしま丸」/ 東京愛らんどシャトル（ヘリ）",
     "flags": {
@@ -958,7 +958,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "早島（新島沖）",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.3617, 139.2983",
+    "coordinates": "34.3497, 139.2775",
     "description": "新島のすぐ南東に浮かぶ奇岩と海鳥の楽園。",
     "access": "東京竹芝港発 東海汽船高速ジェット船・大型客船",
     "flags": {
@@ -976,7 +976,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鵜渡根島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "34.4833, 139.2833",
+    "coordinates": "34.4741, 139.2928",
     "description": "利島と新島の間に位置するダイナミックな岩礁の島。大型魚の釣りの絶好ポイント。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -994,7 +994,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鳥島（伊豆諸島）",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "30.4833, 140.3000",
+    "coordinates": "30.4839, 140.3028",
     "description": "特別天然記念物アホウドリの保護・繁殖地として世界的に有名な絶海孤島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1012,7 +1012,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "須美寿島",
     "region_id": "izu",
     "prefecture": "東京都",
-    "coordinates": "31.4333, 140.0500",
+    "coordinates": "31.4392, 140.0511",
     "description": "海面から垂直に切り立つ高さ136mの巨大石柱島。深海釣りとダイナミックな火山地形。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1030,7 +1030,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "父島（小笠原諸島）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "27.0667, 142.1833",
+    "coordinates": "27.0744, 142.2081",
     "description": "東京から南へ1,000km。週に1便のおがさわら丸だけで訪れる世界自然遺産の島。ボニンブルーの海とザトウクジラの楽園。",
     "access": "東京竹芝桟橋発 小笠原海運「おがさわら丸」（片道24時間）",
     "flags": {
@@ -1050,7 +1050,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "母島（小笠原諸島）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "26.6500, 142.1500",
+    "coordinates": "26.6639, 142.1583",
     "description": "父島からさらに南へ約50km。メグロなどの希少固有種と手つかずの熱帯原生林、静寂が包み込むネイチャーアイランド。",
     "access": "東京竹芝桟橋発 小笠原海運「おがさわら丸」（片道24時間）",
     "flags": {
@@ -1070,7 +1070,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "兄島（小笠原諸島）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "27.1167, 142.2167",
+    "coordinates": "27.1208, 142.2097",
     "description": "父島の北すぐ海峡を隔てて位置する無人島。熱帯乾性スクラブ林と透明度抜群の海峡美。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1089,7 +1089,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "弟島（小笠原諸島）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "27.1667, 142.1833",
+    "coordinates": "27.1681, 142.1903",
     "description": "兄島からさらに北に位置する秘境。小笠原の原生態が厳密に保全された聖域。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1108,7 +1108,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "舳島（小笠原）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "26.6333, 142.1467",
+    "coordinates": "26.6208, 142.1764",
     "description": "小笠原群島母島列島に所属する無人島。固有種の野鳥や手つかずのサンゴ礁が広がる小笠原の自然遺産エリアです。",
     "access": "小笠原母島からチャーター船等",
     "flags": {
@@ -1127,7 +1127,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "向島（小笠原母島列島）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "26.6000, 142.1333",
+    "coordinates": "26.6022, 142.1306",
     "description": "母島の南方に浮かぶ自然の聖域。",
     "access": "母島・沖港より漁船チャーター（定期船なし・無人島）",
     "flags": {
@@ -1145,7 +1145,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "西之島（小笠原火山島）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "27.2467, 140.8750",
+    "coordinates": "27.2469, 140.8744",
     "description": "現在も海底火山の活動と噴火活動によって成長し続けている世界的にも極めて貴重な新しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1163,7 +1163,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "硫黄島（小笠原・火山列島）",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "24.7833, 141.3167",
+    "coordinates": "24.7803, 141.3206",
     "description": "東京の南約1,200kmに位置する火山列島の中心。摺鉢山と平和への祈りが捧げられる特別な島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1181,7 +1181,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "南鳥島",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "24.2867, 153.9800",
+    "coordinates": "24.2867, 153.9806",
     "description": "日本の最東端に位置する絶海のサンゴ礁島。美しいトライアングル型のラグーン。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1199,7 +1199,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖ノ鳥島",
     "region_id": "ogasawara",
     "prefecture": "東京都",
-    "coordinates": "20.4250, 136.0833",
+    "coordinates": "20.4228, 136.0750",
     "description": "日本の最南端に位置するサンゴ礁島。日本の広大な排他的経済水域を守る重要な島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1217,7 +1217,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "江の島",
     "region_id": "pseudo_kanto",
     "prefecture": "神奈川県",
-    "coordinates": "35.3000, 139.4800",
+    "coordinates": "35.2997, 139.4803",
     "description": "湘南の海に浮かぶ歴史と観光の陸続き離島。江島神社、シーキャンドル、展望温泉、生しらす丼など首都圏屈指の観光スポット。",
     "access": "陸路・橋アクセス（車・徒歩・バス直結）",
     "flags": {
@@ -1237,7 +1237,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "猿島",
     "region_id": "pseudo_kanto",
     "prefecture": "神奈川県",
-    "coordinates": "35.2867, 139.6917",
+    "coordinates": "35.2861, 139.6942",
     "description": "東京湾に浮かぶ唯一の自然島。かつて要塞として使われた砲台跡やトンネルが残り、ラピュタのような幻想的な雰囲気が人気の無人島です。",
     "access": "横須賀市三笠桟橋から船で約10分",
     "flags": {
@@ -1256,7 +1256,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "城ヶ島",
     "region_id": "pseudo_kanto",
     "prefecture": "神奈川県",
-    "coordinates": "35.1317, 139.6183",
+    "coordinates": "35.1342, 139.6175",
     "description": "三浦半島最南端に橋で繋がる絶景島。馬の背洞門や荒々しい海蝕洞絶景、三崎マグロのグルメが楽しめるドライブ・散歩の聖地。",
     "access": "陸路・橋アクセス（車・徒歩・バス直結）",
     "flags": {
@@ -1276,7 +1276,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "佐渡島",
     "region_id": "pseudo_hokuriku",
     "prefecture": "新潟県",
-    "coordinates": "38.0167, 138.3667",
+    "coordinates": "38.0673, 138.3514",
     "description": "日本海最大、沖縄本島に次ぐ面積を誇る黄金の島。世界文化遺産「佐渡金山」、トキの舞う里、たらい舟、宿根木の町並みが広がる。",
     "access": "新潟港・直江津港発 佐渡汽船カーフェリー・ジェットフォイル",
     "flags": {
@@ -1296,7 +1296,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "粟島（新潟県）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "新潟県",
-    "coordinates": "38.4667, 139.2500",
+    "coordinates": "38.4637, 139.2429",
     "description": "日本海の優雅な島時間が流れる癒やしの離島。名物漁師料理「わっぱ煮」や野生馬が棲む自然、サイクリングが人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1316,7 +1316,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "能登島",
     "region_id": "pseudo_hokuriku",
     "prefecture": "石川県",
-    "coordinates": "37.1167, 136.9667",
+    "coordinates": "37.1278, 136.9681",
     "description": "七尾湾に浮かぶ穏やかな多島美の島。能登島大橋とツインブリッジのとで陸続きとなっており、水族館やガラス美術館が楽しめる。",
     "access": "石川県七尾市より能登島大橋・中島大橋直結（車・バスアクセス）",
     "flags": {
@@ -1336,7 +1336,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "舳倉島",
     "region_id": "pseudo_hokuriku",
     "prefecture": "石川県",
-    "coordinates": "37.8500, 136.9167",
+    "coordinates": "37.8528, 136.9194",
     "description": "輪島沖北へ約50kmに浮かぶ絶海のバードウォッチング聖地。春と秋の渡り鳥の時期には野鳥観察家が集結する伝説の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1356,7 +1356,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "七ツ島（石川県）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "石川県",
-    "coordinates": "37.6000, 136.8833",
+    "coordinates": "37.6083, 136.8972",
     "description": "輪島沖北約20kmに点在する無人の島嶼群。大島、狩島など荒々しい奇岩とオオミズナギドリの聖域。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1374,7 +1374,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "見附島（軍艦島・能登）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "石川県",
-    "coordinates": "37.3917, 137.2517",
+    "coordinates": "37.3951, 137.2478",
     "description": "能登半島沖にそびえる高さ28mの軍艦に似た奇岩島。「軍艦島」の愛称で親しまれ、能登のシンボル的観光名所として有名です。",
     "access": "珠洲市見附海岸から踏み石で島近くまでアクセス可能",
     "flags": {
@@ -1393,7 +1393,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "弁天島（新潟県柏崎市）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "新潟県",
-    "coordinates": "37.3683, 138.5367",
+    "coordinates": "37.3586, 138.5117",
     "description": "鯨波海岸に浮かぶ朱色の鳥居が映える小さな岩礁島。弁財天が祀られており、夕日と鳥居の幻想的な景観が美しい撮影スポットです。",
     "access": "柏崎市鯨波海岸から遊歩道橋を渡ってすぐ",
     "flags": {
@@ -1412,7 +1412,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "荒島（福井県三国）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "福井県",
-    "coordinates": "36.2250, 136.1367",
+    "coordinates": "36.2253, 136.1322",
     "description": "九頭竜川河口・三国サンセットビーチ沖にそびえる緑の美しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1430,7 +1430,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "雄島（福井県東尋坊沖）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "福井県",
-    "coordinates": "36.2467, 136.1217",
+    "coordinates": "36.2528, 136.1169",
     "description": "東尋坊沖に浮かぶ越前海岸最大の島。朱色の雄島橋で渡ることができ、島内には大湊神社や柱状節理の奇岩が広がる神聖な自然島です。",
     "access": "東尋坊近くの海岸から長さ224mの赤色の雄島橋を渡って徒歩約5分",
     "flags": {
@@ -1449,7 +1449,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "水島（福井県敦賀市・北陸のハワイ）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "福井県",
-    "coordinates": "35.7067, 136.0350",
+    "coordinates": "35.7208, 136.0408",
     "description": "敦賀半島沖に浮かぶ小さな無人島。「北陸のハワイ」と呼ばれる透明度抜群のクリスタルブルーの海と白い砂浜が美しい海水浴の聖地です。",
     "access": "敦賀市色ヶ浜から渡し船で約10分 (7〜8月夏期限定運行)",
     "flags": {
@@ -1468,7 +1468,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹島（福井県若狭町）",
     "region_id": "pseudo_hokuriku",
     "prefecture": "福井県",
-    "coordinates": "35.5867, 135.8850",
+    "coordinates": "35.5950, 135.8758",
     "description": "若狭湾・三方五湖の美しい景観の一角を担う静かな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1486,7 +1486,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "初島（静岡県熱海市）",
     "region_id": "pseudo_kanto",
     "prefecture": "静岡県",
-    "coordinates": "35.0417, 139.1717",
+    "coordinates": "35.0406, 139.1706",
     "description": "熱海港から高速船でわずか25分！アジアンガーデンやグランピング、極上のとれたて海鮮丼が味わえる静岡県唯一の有人離島。",
     "access": "熱海港発 富士急トラベル定期高速船（約30分）",
     "flags": {
@@ -1506,7 +1506,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "神子元島（静岡県下田）",
     "region_id": "izu",
     "prefecture": "静岡県",
-    "coordinates": "34.5750, 138.9417",
+    "coordinates": "34.5742, 138.9431",
     "description": "下田沖に浮かぶ、ハンマーヘッドシャーク大群と出会える伝説のダイビング島。日本最古級の石造り灯台。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1524,7 +1524,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "手石島（静岡県伊東市）",
     "region_id": "izu",
     "prefecture": "静岡県",
-    "coordinates": "34.9667, 139.1333",
+    "coordinates": "34.9781, 139.1244",
     "description": "伊東沖に浮かぶ静かな無人島。ダイビングポイントとしても人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1542,7 +1542,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖島（琵琶湖）",
     "region_id": "pseudo_biwako",
     "prefecture": "滋賀県",
-    "coordinates": "35.2050, 136.0650",
+    "coordinates": "35.2054, 136.0631",
     "description": "日本で唯一、淡水湖（琵琶湖）に人が暮らす奇跡の有人離島。車が1台も走らない路地裏と猫たち、名物湖魚料理と癒やし。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1562,7 +1562,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹生島（琵琶湖）",
     "region_id": "pseudo_biwako",
     "prefecture": "滋賀県",
-    "coordinates": "35.4233, 136.1433",
+    "coordinates": "35.4219, 136.1436",
     "description": "琵琶湖北部に浮かぶ神の島。国宝の宝厳寺や都久夫須麻神社が鎮座し、古くから日本三弁天の一つとしてパワースポットとして親しまれています。",
     "access": "長浜港・今津港・彦根港から観光船で約30〜40分",
     "flags": {
@@ -1581,7 +1581,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "多景島（琵琶湖）",
     "region_id": "pseudo_biwako",
     "prefecture": "滋賀県",
-    "coordinates": "35.2967, 136.2150",
+    "coordinates": "35.2966, 136.1780",
     "description": "見る方向によって島影が多様に変わることから名付けられた琵琶湖の奇岩島。日蓮宗の見塔寺が佇む。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1599,7 +1599,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "奥島（歴史的島嶼・現陸続き）",
     "region_id": "pseudo_biwako",
     "prefecture": "滋賀県",
-    "coordinates": "35.1617, 136.0883",
+    "coordinates": "35.1764, 136.0853",
     "description": "かつて琵琶湖に浮かび現在は干拓と橋で結ばれた歴史と自然の名島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1617,7 +1617,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "矢橋帰帆島（琵琶湖人工島）",
     "region_id": "pseudo_biwako",
     "prefecture": "滋賀県",
-    "coordinates": "35.0033, 135.9183",
+    "coordinates": "35.0044, 135.9158",
     "description": "琵琶湖南部に造られた大人気のアウトドア人工島。巨大遊具のある「帰帆島公園」やキャンプ場、スポーツ施設が整備されています。",
     "access": "草津市海岸から矢橋大橋を車または徒歩で渡る",
     "flags": {
@@ -1636,7 +1636,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "日間賀島",
     "region_id": "aichi_santo",
     "prefecture": "愛知県",
-    "coordinates": "34.7033, 137.0050",
+    "coordinates": "34.7050, 137.0039",
     "description": "名古屋から一番近い島！タコとトラフグで名高い「タコの島」。島を一周できる歩道と巨大ブランコ「ハイジのブランコ」、絶品タコしゃぶが最高。",
     "access": "師崎港・河和港・一色港発 名鉄海上観光定期船",
     "flags": {
@@ -1656,7 +1656,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "篠島",
     "region_id": "aichi_santo",
     "prefecture": "愛知県",
-    "coordinates": "34.6733, 137.0083",
+    "coordinates": "34.6775, 137.0044",
     "description": "伊勢神宮へ奉納するお持ちの魚「シラスと鯛」の伝統が生きる歴史の島。サンセットビーチと松島絶景。",
     "access": "師崎港・河和港・一色港発 名鉄海上観光定期船",
     "flags": {
@@ -1676,7 +1676,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "佐久島",
     "region_id": "aichi_santo",
     "prefecture": "愛知県",
-    "coordinates": "34.7217, 137.0433",
+    "coordinates": "34.7214, 137.0431",
     "description": "「おひるねハウス」や「イーストハウス」などSNS映えする現代アートスポットが島中に点在する三河湾のアート＆島カフェ楽園。",
     "access": "師崎港・河和港・一色港発 名鉄海上観光定期船",
     "flags": {
@@ -1696,7 +1696,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹島（愛知県蒲郡市）",
     "region_id": "aichi_santo",
     "prefecture": "愛知県",
-    "coordinates": "34.8150, 137.2317",
+    "coordinates": "34.8131, 137.2336",
     "description": "三河湾に浮かぶ蒲郡のシンボル。島全体が国の天然記念物に指定されており、島中央には開運の神様を祀る八百富神社が鎮座します。",
     "access": "蒲郡市海岸から長さ387mの竹島橋を徒歩で渡って約5分",
     "flags": {
@@ -1715,7 +1715,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "前島（愛知県南知多）",
     "region_id": "aichi_santo",
     "prefecture": "愛知県",
-    "coordinates": "34.7000, 136.9800",
+    "coordinates": "34.7911, 137.1369",
     "description": "知多半島の先端・師崎の沖合に静かに浮かぶ緑の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1733,7 +1733,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖島（愛知県西尾市）",
     "region_id": "aichi_santo",
     "prefecture": "愛知県",
-    "coordinates": "34.7317, 137.0250",
+    "coordinates": "34.7186, 137.0342",
     "description": "佐久島のすぐ北に寄り添う三河湾の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1751,7 +1751,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "菅島",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.4933, 136.8900",
+    "coordinates": "34.4922, 136.8975",
     "description": "鳥羽港の目の前に浮かぶ、現役最古のレンガ造り洋式灯台「菅島灯台」と海女の伝統祭りが残る美しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1791,7 +1791,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "神島（三重県鳥羽市）",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.5483, 136.9817",
+    "coordinates": "34.5475, 136.9814",
     "description": "三島由紀夫の小説『潮騒』の舞台となった純愛と絶景の島。カルスト地形の白い奇岩「監的哨」や遊歩道からの太平洋パノラマ。",
     "access": "鳥羽港から定期船で約40分",
     "flags": {
@@ -1811,7 +1811,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "賢島",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.3100, 136.8283",
+    "coordinates": "34.3094, 136.8228",
     "description": "英虞湾の美しいリアス式海岸の中心リゾート島。伊勢志摩サミットの開催地となり、真珠養殖と最高のサンセットビュー。",
     "access": "志摩半島より橋経由・短時間連絡船アクセス",
     "flags": {
@@ -1831,7 +1831,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "間崎島",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.2917, 136.8333",
+    "coordinates": "34.2892, 136.8197",
     "description": "「英虞湾の真珠」と呼ばれる真珠養殖で栄えた静かな有人島。白い砂浜と澄み切った穏やかな海。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1851,7 +1851,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "坂手島",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.4817, 136.8633",
+    "coordinates": "34.4814, 136.8575",
     "description": "鳥羽マリンターミナルから定期船でわずか10分。カキやアワビが豊富な半農半漁の温かい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1871,7 +1871,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "渡鹿野島（三重県志摩市）",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.3583, 136.8850",
+    "coordinates": "34.3578, 136.8814",
     "description": "的矢湾に浮かぶ、江戸時代の風待ち港として独特の歴史とおもてなし文化が生きるハート型の島。",
     "access": "志摩半島より橋経由・短時間連絡船アクセス",
     "flags": {
@@ -1891,7 +1891,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "横山島（三重県志摩市）",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.3183, 136.8217",
+    "coordinates": "34.3044, 136.8122",
     "description": "賢島のすぐ西に寄り添う静かな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1911,7 +1911,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（三重県紀北町）",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.1867, 136.3317",
+    "coordinates": "34.1525, 136.3106",
     "description": "熊野灘の雄大な景色に包まれた緑の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1947,7 +1947,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "浮島（三重県）",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.3683, 136.8667",
+    "coordinates": "34.4783, 136.8772",
     "description": "的矢湾沿いの自然島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1965,7 +1965,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "冠島（京都府舞鶴沖）",
     "region_id": "pseudo_awaji",
     "prefecture": "京都府",
-    "coordinates": "35.6833, 135.4333",
+    "coordinates": "35.6806, 135.4267",
     "description": "若狭湾沖に浮かぶオオミズナギドリの繁殖地として国指定天然記念物に保護された神聖な島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -1983,7 +1983,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沓島（京都府）",
     "region_id": "pseudo_awaji",
     "prefecture": "京都府",
-    "coordinates": "35.7167, 135.4333",
+    "coordinates": "35.7131, 135.4375",
     "description": "冠島と並び立つ神秘的な無人島。断崖に海鳥たちが息づく。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2001,7 +2001,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "淡路島",
     "region_id": "pseudo_awaji",
     "prefecture": "兵庫県",
-    "coordinates": "34.3417, 134.8250",
+    "coordinates": "34.3989, 134.8325",
     "description": "国生み神話の地にして関西屈指の絶景リゾート島。明石海峡大橋と鳴門海峡大橋に包まれ極上の玉ねぎ・淡路ビーフと温泉。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2021,7 +2021,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沼島",
     "region_id": "pseudo_awaji",
     "prefecture": "兵庫県",
-    "coordinates": "34.1683, 134.8233",
+    "coordinates": "34.1678, 134.8206",
     "description": "淡路島の南東沖に浮かぶ「おのころ島」伝説の本命とされる神秘の島。海中にそびえ立つ奇岩「上立神岩」が神々しい絶景。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2041,7 +2041,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "家島",
     "region_id": "ieshima",
     "prefecture": "兵庫県",
-    "coordinates": "34.6800, 134.5300",
+    "coordinates": "34.6714, 134.5289",
     "description": "姫路沖の播磨灘に浮かぶ家島諸島の主島。採石と海運で栄えた独特の活気ある港町と美しい瀬戸内の入り江風景。",
     "access": "姫路港より高速船・定期旅客船で約30分",
     "flags": {
@@ -2061,7 +2061,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "坊勢島",
     "region_id": "ieshima",
     "prefecture": "兵庫県",
-    "coordinates": "34.6467, 134.5150",
+    "coordinates": "34.6478, 134.5131",
     "description": "島民の多くが漁師であり、小型漁船が港を埋め尽くす「漁師の島」。とれたての絶品ぼうぜ鯖や海の幸グルメ。",
     "access": "姫路港より高速船・定期旅客船で約30分",
     "flags": {
@@ -2101,7 +2101,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "西島（兵庫県・家島群島）",
     "region_id": "ieshima",
     "prefecture": "兵庫県",
-    "coordinates": "34.6633, 134.4833",
+    "coordinates": "34.6569, 134.4792",
     "description": "家島諸島最大の島。兵庫県立いえしま自然体験センターがあり、野外活動やシーカヤック、キャンプ場として広く親しまれています。",
     "access": "家島・坊勢港からマリンタクシーまたは海上体験船",
     "flags": {
@@ -2121,7 +2121,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鞍掛島（兵庫県）",
     "region_id": "ieshima",
     "prefecture": "兵庫県",
-    "coordinates": "34.6133, 134.4817",
+    "coordinates": "34.6611, 134.4556",
     "description": "坊勢島の南に位置する美しい瀬戸内の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2139,7 +2139,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "松島（兵庫県家島）",
     "region_id": "ieshima",
     "prefecture": "兵庫県",
-    "coordinates": "34.6217, 134.5050",
+    "coordinates": "34.6514, 134.4828",
     "description": "播磨灘に浮かぶ緑豊かな入り江の島。",
     "access": "姫路港より高速船・定期旅客船で約30分",
     "flags": {
@@ -2157,7 +2157,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "成ヶ島（兵庫県洲本市）",
     "region_id": "pseudo_awaji",
     "prefecture": "兵庫県",
-    "coordinates": "34.2817, 134.9517",
+    "coordinates": "34.2806, 134.9547",
     "description": "淡路島東部に細長く伸びる砂州島。「淡路の天の橋立」と称され、希少なハマボウの群生や潮干狩り、豊かな自然生態系が残されています。",
     "access": "洲本市由良港から渡船で約2分",
     "flags": {
@@ -2176,7 +2176,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "紀伊大島",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "33.4750, 135.8167",
+    "coordinates": "33.4728, 135.8264",
     "description": "串本町の対岸、くしもと大橋でつながる和歌山最大の島。1890年エルトゥールル号遭難事件救助の歴史と絶景海蝕洞「海金剛」。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2196,7 +2196,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "中之島（和歌山県那智勝浦）",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "33.6267, 135.9467",
+    "coordinates": "33.6214, 135.9481",
     "description": "勝浦港の目の前に浮かぶ、船でしか行けない絶景露天風呂の温泉島ホテル「熊野別邸 中之島」が輝く癒やし島。",
     "access": "紀伊勝浦港より観光船・渡船アクセス",
     "flags": {
@@ -2214,7 +2214,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "友ヶ島（沖ノ島・和歌山）",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "34.2833, 135.0067",
+    "coordinates": "34.2814, 135.0056",
     "description": "紀淡海峡に浮かぶ無人島群の主島。旧日本軍の砲台跡や弾薬庫跡が残るレンガ造りの遺構がアニメのような世界観として大人気です。",
     "access": "和歌山市加太港から定期船で約20分",
     "flags": {
@@ -2233,7 +2233,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "地ノ島（和歌山県有田市）",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "34.0950, 135.1050",
+    "coordinates": "34.1011, 135.0956",
     "description": "紀伊水道に浮かぶ自然豊かな無人島。広いプライベート感溢れる白い砂浜があり、無人島キャンプやバーベキュー、サバイバル体験が楽しめます。",
     "access": "有田市初島漁港から渡船で約7分",
     "flags": {
@@ -2252,7 +2252,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "弁天島（和歌山県）",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "33.6233, 135.9483",
+    "coordinates": "33.6247, 135.9522",
     "description": "勝浦湾に浮かぶ奇岩と緑が美しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2270,7 +2270,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "通夜島（和歌山県）",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "33.4683, 135.8017",
+    "coordinates": "33.4439, 135.7897",
     "description": "串本・紀伊大島のすぐ西に隣接する歴史的な島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2288,7 +2288,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "藤島（和歌山県田辺市）",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "33.7167, 135.3333",
+    "coordinates": "33.6853, 135.3672",
     "description": "田辺湾の海岸を彩る美しい緑の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2306,7 +2306,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鹿久居島",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.7083, 134.2833",
+    "coordinates": "34.7239, 134.2931",
     "description": "備前日生諸島最大の有人島。2015年に備前ハートフル大橋で頭島と直結し、古代の野生鹿とみかん狩りが人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2326,7 +2326,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "頭島（岡山県備前市）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.6850, 134.2900",
+    "coordinates": "34.7003, 134.2865",
     "description": "日生港から橋と車で直結する漁業とカキ養殖の島。お好み焼き「カキオコ」と展望台からの多島美サンセット。",
     "access": "鹿久居島経由で頭島大橋にて陸続き",
     "flags": {
@@ -2346,7 +2346,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鶴島（岡山県）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.7217, 134.2633",
+    "coordinates": "34.6908, 134.3164",
     "description": "日生沖の静かな瀬戸内海に浮かぶ美しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2364,7 +2364,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鴻島（岡山県備前市）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.7017, 134.2500",
+    "coordinates": "34.7011, 134.2533",
     "description": "島中に数百棟もの別荘が立ち並ぶ瀬戸内の別荘アイランド。ミカンと穏やかなプライベートビーチ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2384,7 +2384,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "前島（岡山県瀬戸内市牛窓）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.6067, 134.1817",
+    "coordinates": "34.6064, 134.1806",
     "description": "「日本のエーゲ海」牛窓のすぐ目の前、フェリーで5分！緑の松林とキャベツ畑、瀬戸内海を見渡す絶景展望台が人気。",
     "access": "牛窓港からフェリーで約5分",
     "flags": {
@@ -2424,7 +2424,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "北木島",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.3883, 133.5383",
+    "coordinates": "34.3833, 133.5367",
     "description": "笠岡諸島最大の島にして、日本銀行本店などに使われた高級石材「北木石」の産地。高さ60mの壮大な「石切の渓谷」。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2444,7 +2444,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "真鍋島",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.3600, 133.5783",
+    "coordinates": "34.3556, 133.5789",
     "description": "のどかな漁村の古い家並みと多く人なつっこい猫たちが暮らす猫と映画の島。『瀬戸内少年野球団』のロケ地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2464,7 +2464,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高島（岡山県笠岡市）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.4317, 133.5117",
+    "coordinates": "34.4300, 133.5089",
     "description": "神武東征伝説の地として伝わる神聖な島。春にはツツジが満開になり瀬戸内海を見渡す名峰・高島展望台が美しい。",
     "access": "笠岡港から定期船で約25分",
     "flags": {
@@ -2484,7 +2484,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小飛島（笠岡諸島）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.3483, 133.5167",
+    "coordinates": "34.3536, 133.5056",
     "description": "笠岡沖南端に位置する静寂の漁師島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2504,7 +2504,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大飛島（笠岡諸島）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.3467, 133.5017",
+    "coordinates": "34.3439, 133.5042",
     "description": "古代遺跡と白い砂州の大自然が広がる笠岡諸島の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2524,7 +2524,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "六島（岡山県笠岡市）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.3017, 133.5317",
+    "coordinates": "34.2981, 133.5322",
     "description": "岡山県最南端の有人島。白亜の六島灯台と冬から早春にかけて島一面に咲き誇る数万株の水仙の花畑が魅了。",
     "access": "笠岡港から定期船で約60分",
     "flags": {
@@ -2584,7 +2584,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "向島（広島県尾道市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3750, 133.2083",
+    "coordinates": "34.3828, 133.1977",
     "description": "尾道のすぐ目の前に位置するしまなみ海道のスタート島。レトロなラムネ工場や高見山絶景、おしゃれなチョコレート工場。",
     "access": "しまなみ海道より橋直結（車・自転車・バスアクセス）",
     "flags": {
@@ -2604,7 +2604,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大久野島（うさぎ島）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3083, 132.9933",
+    "coordinates": "34.3075, 132.9950",
     "description": "瀬戸内海に浮かぶ「ウサギの島」。約900羽の野性ウサギが棲息し、かつての毒ガス工場跡の歴史遺構と豊かな自然が共存しています。",
     "access": "竹原市忠海港からフェリーで約15分",
     "flags": {
@@ -2624,7 +2624,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "厳島（宮島）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.2800, 132.3217",
+    "coordinates": "34.2731, 132.3186",
     "description": "世界文化遺産・國寶「嚴島神社」と海中に浮かぶ大鳥居。弥山の原始林や神の使いの鹿、あなごめしやもみじ饅頭など日本屈指の聖島。",
     "access": "宮島口港発 JR西日本・宮島松大汽船定期フェリー（約10分）",
     "flags": {
@@ -2644,7 +2644,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "似島（広島市南区）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3167, 132.4333",
+    "coordinates": "34.3106, 132.4331",
     "description": "広島宇品港からフェリーで約20分。「安芸の小富士」と呼ばれる標高278mの美しい山容とバウムクーヘン発祥の歴史。",
     "access": "宇品港からフェリーで約20分",
     "flags": {
@@ -2664,7 +2664,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "金輪島（広島市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3500, 132.4833",
+    "coordinates": "34.3372, 132.4819",
     "description": "広島港の目の前に浮かぶ造船と自然の緑の島。",
     "access": "宇品港から定期船で約15分",
     "flags": {
@@ -2704,7 +2704,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "倉橋島",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.1167, 132.5167",
+    "coordinates": "34.1111, 132.5194",
     "description": "呉市から音戸大橋・早瀬大橋で直結する遣唐使や平清盛ゆかりの歴史島。桂浜の美しい松原と美しい白浜がドライブに最高。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2744,7 +2744,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "下蒲刈島（安芸灘とびしま海道）",
     "region_id": "kamijima",
     "prefecture": "広島県",
-    "coordinates": "34.1933, 132.6733",
+    "coordinates": "34.1917, 132.6708",
     "description": "安芸灘大橋で呉市から最初に渡る島。朝鮮通信使資料館「松濤園」や白砂青松の美しい石畳の町並み。",
     "access": "安芸灘とびしま海道で陸続き",
     "flags": {
@@ -2764,7 +2764,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "豊島（広島県呉市）",
     "region_id": "kamijima",
     "prefecture": "広島県",
-    "coordinates": "34.1750, 132.7850",
+    "coordinates": "34.1756, 132.7931",
     "description": "とびしま海道でつながる、段々畑のミカン栽培と石積み護岸の懐かしい港町が広がる島。",
     "access": "安芸灘とびしま海道で陸続き",
     "flags": {
@@ -2784,7 +2784,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大崎下島（安芸灘とびしま海道）",
     "region_id": "kamijima",
     "prefecture": "広島県",
-    "coordinates": "34.1750, 132.8333",
+    "coordinates": "34.1792, 132.8361",
     "description": "江戸時代に風待ち・潮待ちの港として栄えた国の重要伝統的建造物群保存地区「御手洗町並み」が感動を呼ぶ歴史の島。",
     "access": "安芸灘とびしま海道で陸続き",
     "flags": {
@@ -2824,7 +2824,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "三角島（広島県呉市）",
     "region_id": "kamijima",
     "prefecture": "広島県",
-    "coordinates": "34.1917, 132.8167",
+    "coordinates": "34.1972, 132.8153",
     "description": "豊島と大崎下島の間に浮かぶ静かな自然島。",
     "access": "呉市斎島汽船（久比港）より定期船で約10分",
     "flags": {
@@ -2844,7 +2844,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "細島（広島県尾道市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3667, 133.1333",
+    "coordinates": "34.3719, 133.1408",
     "description": "因島沖に静かに浮かぶ小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2864,7 +2864,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "生野島（広島県大崎上島町）",
     "region_id": "kamijima",
     "prefecture": "広島県",
-    "coordinates": "34.2917, 132.9083",
+    "coordinates": "34.2872, 132.9117",
     "description": "大崎上島の北沖に浮かぶ自然豊かな小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2884,7 +2884,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "契島（広島県・軍艦島）",
     "region_id": "kamijima",
     "prefecture": "広島県",
-    "coordinates": "34.3017, 132.8983",
+    "coordinates": "34.3033, 132.8981",
     "description": "島全体が東邦亜鉛の製錬工場となっており、海上に要塞や軍艦が浮かんでいるような圧倒的異彩を放つ産業の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -2904,7 +2904,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "百島（広島県尾道市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3800, 133.2667",
+    "coordinates": "34.3767, 133.2664",
     "description": "尾道と鞆の浦の間に浮かぶ桃源郷のようなアートの島。旧中学校校舎を活用した現代アートセンター。",
     "access": "尾道港からフェリーで約45分",
     "flags": {
@@ -2924,7 +2924,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "佐木島（広島県三原市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3383, 133.1117",
+    "coordinates": "34.3408, 133.1114",
     "description": "三原港から高速船で13分！島を一周できるサイクリングロードと春に約1,000本の桜が塔の峰をピンクに染める名島。",
     "access": "三原港からフェリーで約25分",
     "flags": {
@@ -2944,7 +2944,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小佐木島（広島県三原市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3600, 133.1017",
+    "coordinates": "34.3614, 133.1028",
     "description": "佐木島の北に寄り添う、灯台と豊かな緑の島。",
     "access": "三原港から定期船で約15分",
     "flags": {
@@ -2964,7 +2964,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "阿多田島（広島県大竹市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.1833, 132.3167",
+    "coordinates": "34.1972, 132.3133",
     "description": "宮島南西の沖合に浮かぶタイやハマチの養殖で活気あふれる漁業の島。猪子島と砂州でつながる絶景。",
     "access": "小方港からフェリーで約35分",
     "flags": {
@@ -2984,7 +2984,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "猪子島（広島県大竹市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.1850, 132.3250",
+    "coordinates": "34.2058, 132.3028",
     "description": "阿多田島と陸続きになった美しい砂州と岩礁の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3002,7 +3002,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "仙酔島（広島県福山市鞆の浦）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3833, 133.3967",
+    "coordinates": "34.3828, 133.3958",
     "description": "鞆の浦沖に浮かぶ「仙人も酔いしれる」と言われる伝説のパワースポット。日本初の国立公園に指定された太古の五色岩が残る神秘の島です。",
     "access": "福山市鞆の浦から市営渡船で約5分",
     "flags": {
@@ -3021,7 +3021,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "走島（広島県福山市）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3333, 133.4333",
+    "coordinates": "34.3400, 133.4375",
     "description": "鞆の浦港から定期船で約25分。備後灘の豊かな漁場と豊かな緑に包まれた歴史島。",
     "access": "鞆の浦から定期船で約25分",
     "flags": {
@@ -3059,7 +3059,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "角島",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "34.3528, 130.8528",
+    "coordinates": "34.3528, 130.8583",
     "description": "コバルトブルーの海をまたぐ全長1,780mの「角島大橋」で有名な絶景島。明治時代の洋風石造り角島灯台と白い砂浜が美しいドライブ聖地。",
     "access": "山口県下関市より角島大橋直結（車・バスアクセス）",
     "flags": {
@@ -3079,7 +3079,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "青海島",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "34.4083, 131.2050",
+    "coordinates": "34.4194, 131.2056",
     "description": "「海上アルプス」と称されるダイナミックな海蝕洞や奇岩・石柱が連なる絶景島。ダイビングや観光遊覧船からのパノラマ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3099,7 +3099,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "情島（山口県・岩国）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.9667, 132.3333",
+    "coordinates": "33.9601, 132.4742",
     "description": "周防灘の沖合に静かに佇む自然豊かな有人島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3119,7 +3119,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "浮島（山口県周防大島町）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.9583, 132.3500",
+    "coordinates": "33.9497, 132.3458",
     "description": "周防大島沖に浮かぶイリコ生産量日本一級の活気あふれる漁師島。",
     "access": "山口県柳井市より大島大橋直結（車・バスアクセス）",
     "flags": {
@@ -3139,7 +3139,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "笠戸島",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.9750, 131.8500",
+    "coordinates": "33.9528, 131.8389",
     "description": "下松市から笠戸大橋でつながる絶景サンセットリゾート。恐竜公園やはなぐり海水浴場、ヒラメ料理が大人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3159,7 +3159,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "野島（山口県防府市）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.9317, 131.6917",
+    "coordinates": "33.9424, 131.6937",
     "description": "防府市三田尻港から定期船で約35分。瀬戸内海の豊かな一本釣り漁業と温かい島人たちが暮らす緑の島。",
     "access": "三田尻港から定期船で約30分",
     "flags": {
@@ -3179,7 +3179,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "牛島（山口県光市）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.8483, 132.0167",
+    "coordinates": "33.8616, 132.0185",
     "description": "室積港から船で約20分。天然記念物の珍しい藤の自生地と透き通るブルーの海に恵まれた癒やしの島。",
     "access": "室積港から定期船で約20分",
     "flags": {
@@ -3199,7 +3199,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "八島（山口県上関町）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.7167, 132.1467",
+    "coordinates": "33.7292, 132.1422",
     "description": "山口県最南端の有人島。古代からの航路の要衝であり、豊かな漁場と大自然の静寂。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3219,7 +3219,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "祝島（山口県上関町）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.7833, 131.9833",
+    "coordinates": "33.7825, 131.9764",
     "description": "万葉集にも詠まれた歴史と神事「神舞」が4年に一度行われる伝統の島。石積み練塀の路地裏が美しい。",
     "access": "柳井港から定期船で約70分",
     "flags": {
@@ -3239,7 +3239,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "平佐多島（山口県）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.9400, 132.2200",
+    "coordinates": "33.8903, 132.1778",
     "description": "周防大島の周辺を彩る瀬戸内の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3257,7 +3257,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖家室島（山口県周防大島）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.8267, 132.3583",
+    "coordinates": "33.8542, 132.3622",
     "description": "周防大島と橋で直結する明治大正時代にハワイ移民や鯛網漁で日本一の人口密度を誇った歴史島。",
     "access": "山口県柳井市より大島大橋直結（車・バスアクセス）",
     "flags": {
@@ -3277,7 +3277,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "前島（山口県周防大島）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "34.0067, 132.2617",
+    "coordinates": "34.0006, 132.2697",
     "description": "久賀港から渡船でわずか15分。澄んだ海。",
     "access": "山口県柳井市より大島大橋直結（車・バスアクセス）",
     "flags": {
@@ -3297,7 +3297,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹島（山口県）",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.9683, 132.0667",
+    "coordinates": "33.9439, 132.0833",
     "description": "瀬戸内海の穏やかな入り江に佇む有人島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3315,7 +3315,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "蓋井島（山口県下関市）",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "34.0983, 130.7850",
+    "coordinates": "34.0989, 130.7850",
     "description": "響灘に浮かぶエメラルドの自然島。6年ごとに島を挙げて行われる「山のみやじま」神事が国の重要無形民俗文化財。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3335,7 +3335,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "六連島（山口県下関市）",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "33.9767, 130.8733",
+    "coordinates": "33.9772, 130.8617",
     "description": "彦島から連絡船で約20分。日本最古級の洋式石造り六連島灯台と、温室花卉栽培が盛んな花の島。",
     "access": "竹崎港から定期船で約20分",
     "flags": {
@@ -3355,7 +3355,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "見島（山口県萩市）",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "34.7733, 131.1417",
+    "coordinates": "34.7736, 131.1414",
     "description": "萩沖北約45kmの日本海に浮かぶ絶海の島。天然記念物の日本在来牛「見島牛」が放牧され、世界有数の巨大マグロ漁場。",
     "access": "萩港から定期船で約75分",
     "flags": {
@@ -3375,7 +3375,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（山口県萩市）",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "34.5033, 131.4083",
+    "coordinates": "34.5019, 131.4094",
     "description": "萩港から定期船で約25分。美しいブロッコリー栽培や巻き網漁が盛んな萩沖最大の有人離島。",
     "access": "萩港から定期船で約25分",
     "flags": {
@@ -3395,7 +3395,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "相島（山口県萩市）",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "34.5067, 131.2850",
+    "coordinates": "34.5081, 131.2806",
     "description": "萩港から定期船で約40分。島全体に美しい階段状の段々畑（スイカ・サツマイモ）が広がる緑の楽園。",
     "access": "萩港から定期船で約40分",
     "flags": {
@@ -3415,7 +3415,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "櫃島（山口県萩市）",
     "region_id": "hagi",
     "prefecture": "山口県",
-    "coordinates": "34.5167, 131.1567",
+    "coordinates": "34.5181, 131.3880",
     "description": "萩沖に浮かぶ火山起源のフラットな島。平坦な地形を生かした牛の放牧や農業が行われており、のどかな離島風景が残ります。",
     "access": "萩港から定期船「はぎとび」で約25分",
     "flags": {
@@ -3435,7 +3435,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "隠岐島前・西ノ島",
     "region_id": "oki",
     "prefecture": "島根県",
-    "coordinates": "36.1000, 133.0167",
+    "coordinates": "36.0917, 133.0056",
     "description": "ユネスコ世界ジオパーク・隠岐のハイライト。高さ257mの日本屈指の大断崖「摩天崖」の絶景と牛馬の放牧。",
     "access": "七類港・境港発 隠岐汽船フェリー・高速船レインボー",
     "flags": {
@@ -3453,7 +3453,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "隠岐島前・中ノ島（海士町）",
     "region_id": "oki",
     "prefecture": "島根県",
-    "coordinates": "36.0833, 133.1000",
+    "coordinates": "36.0861, 133.0958",
     "description": "「ないものはない」の宣言で地方創生の奇跡と呼ばれる島。後鳥羽上皇が配流された歴史ロマンと明屋海岸ハート岩。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3471,7 +3471,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "隠岐島前・知夫里島",
     "region_id": "oki",
     "prefecture": "島根県",
-    "coordinates": "36.0167, 133.0333",
+    "coordinates": "36.0175, 133.0336",
     "description": "隠岐諸島で最も人口が少なく大自然がそのまま残された島。赤と白の縞模様の大絶壁「赤壁」の大パノラマ。",
     "access": "七類港・境港発 隠岐汽船フェリー・高速船レインボー",
     "flags": {
@@ -3489,7 +3489,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "隠岐島後（島根県隠岐の島町）",
     "region_id": "oki",
     "prefecture": "島根県",
-    "coordinates": "36.2333, 133.3167",
+    "coordinates": "36.2500, 133.3000",
     "description": "隠岐諸島最大の主島。樹齢2000年を超える神秘の巨木「岩倉の乳房杉」や白島海岸の絶景、伝統の牛突き文化が生きる。",
     "access": "七類港・境港発 隠岐汽船フェリー・高速船レインボー",
     "flags": {
@@ -3527,7 +3527,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "恵曇島（山陰海岸）",
     "region_id": "pseudo_san_in",
     "prefecture": "島根県",
-    "coordinates": "35.5333, 132.9667",
+    "coordinates": "35.5319, 132.9681",
     "description": "島根半島・恵曇漁港の沖に浮かぶ風光明媚な島。山陰ジオパークの複雑な海蝕地形と豊かな漁業の聖地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3545,7 +3545,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "江島（島根県松江市）",
     "region_id": "pseudo_san_in",
     "prefecture": "島根県",
-    "coordinates": "35.5183, 133.1833",
+    "coordinates": "35.5183, 133.1967",
     "description": "ベタ踏み坂（江島大橋）を渡り大根島へと接続する中海の玄関島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3565,7 +3565,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "経島（島根県出雲市）",
     "region_id": "pseudo_san_in",
     "prefecture": "島根県",
-    "coordinates": "35.4333, 132.6283",
+    "coordinates": "35.4300, 132.6258",
     "description": "日御碕神社の沖合に神々しく浮かぶウミネコの繁殖聖域。島そのものが神域。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3583,7 +3583,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "直島",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4583, 133.9950",
+    "coordinates": "34.4583, 133.9900",
     "description": "世界中のアートファンが巡礼する現代アートの聖地。草間彌生の黄色い南瓜、地中美術館、直島銭湯「I♥湯」。",
     "access": "高松港・宇野港発 四国汽船定期フェリー・高速船",
     "flags": {
@@ -3603,7 +3603,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "豊島（香川県）",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4833, 134.0833",
+    "coordinates": "34.4833, 134.0750",
     "description": "水滴のような奇跡の建築が包む「豊島美術館」と、海へ向かって棚田が広がるアートの島。電動自転車島巡りが爽快。",
     "access": "高松港・宇野港発 四国汽船定期フェリー・高速船",
     "flags": {
@@ -3623,7 +3623,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小豆島",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.5167, 134.2833",
+    "coordinates": "34.4898, 134.2604",
     "description": "瀬戸内海第2の大きさを誇る「オリーブの島」。エンジェルロード、寒霞渓の渓谷美、二十四の瞳映画村など見どころ満載。",
     "access": "高松港・姫路港・新岡山港発 定期フェリー・高速船",
     "flags": {
@@ -3643,7 +3643,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "男木島",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4233, 134.0583",
+    "coordinates": "34.4258, 134.0603",
     "description": "斜面に石垣と民家が階段状に重なる「坂と猫の島」。歩いて巡れる迷路のような路地裏に現代アートとカフェ。",
     "access": "高松港発 雌雄島海運定期フェリー（めおん）",
     "flags": {
@@ -3663,7 +3663,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "女木島（鬼ヶ島）",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.3950, 134.0533",
+    "coordinates": "34.3939, 134.0519",
     "description": "桃太郎伝説の「鬼ヶ島」として知られ山頂には広大な鬼ヶ島大洞窟。海水浴場と防風石垣「オオテ」が独特の景観。",
     "access": "高松港発 雌雄島海運定期フェリー（めおん）",
     "flags": {
@@ -3683,7 +3683,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "塩飽本島",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3833, 133.7833",
+    "coordinates": "34.3883, 133.7764",
     "description": "かつて幕府の特権を得た「塩飽水軍」の本拠地。笠島地区には江戸・明治の古い町家が美しく保存。",
     "access": "丸亀港からフェリーで約35分",
     "flags": {
@@ -3701,7 +3701,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "粟島（香川県）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.2717, 133.6333",
+    "coordinates": "34.2708, 133.6333",
     "description": "スクリュー型をした瀬戸内海の穏やかな島。日本初の海員学校跡地のクラシックな洋館と「漂流郵便局」。",
     "access": "須田港から定期船で約15分",
     "flags": {
@@ -3721,7 +3721,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小豊島（香川県）",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4833, 134.1350",
+    "coordinates": "34.4839, 134.1325",
     "description": "小豆島と豊島の間にあるオリーブと酪農の穏やかな島。",
     "access": "高松港・宇野港発 四国汽船定期フェリー・高速船",
     "flags": {
@@ -3741,7 +3741,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "屏風島（香川県）",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4750, 133.9183",
+    "coordinates": "34.4989, 133.9721",
     "description": "直島の西にそびえる奇岩の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3761,7 +3761,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "向島（香川県丸亀市）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3733, 133.7717",
+    "coordinates": "34.3983, 133.7847",
     "description": "塩飽本島のそばに寄り添う歴史的な漁港の島。",
     "access": "丸亀港より本島汽船にて本島へ渡りチャーター船",
     "flags": {
@@ -3781,7 +3781,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖之島（香川県小豆島沖）",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4933, 134.2233",
+    "coordinates": "34.5169, 134.1672",
     "description": "小豆島・土庄港のすぐ目の前に浮かぶ漁船と海の幸豊かな島。",
     "access": "高松港・姫路港・新岡山港発 定期フェリー・高速船",
     "flags": {
@@ -3801,7 +3801,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "余島（小豆島エンジェルロード先）",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4783, 134.1883",
+    "coordinates": "34.4775, 134.1894",
     "description": "小豆島弁天島とつながるエンジェルロード（天使の散歩道）の先にある無人島。潮の満ち引きで道が現れ、恋人の聖地として大人気です。",
     "access": "小豆島銀波浦からエンジェルロード（引き潮の砂道）を徒歩で渡る",
     "flags": {
@@ -3820,7 +3820,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "広島（香川県丸亀市）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3667, 133.7083",
+    "coordinates": "34.3683, 133.7083",
     "description": "塩飽諸島最大の面積を誇る石の島。青木石の採石と江の浦港の風雅な佇まい。",
     "access": "丸亀港からフェリーで約45分",
     "flags": {
@@ -3840,7 +3840,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "手島（香川県丸亀市）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3983, 133.6667",
+    "coordinates": "34.3986, 133.6669",
     "description": "島の絶壁「青木山」とヒマワリ畑が美しい塩飽の隠れ家島。",
     "access": "丸亀港から定期船で約75分",
     "flags": {
@@ -3860,7 +3860,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小手島（香川県）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3850, 133.6650",
+    "coordinates": "34.3831, 133.6514",
     "description": "手島の南隣に位置する静かな漁業島。",
     "access": "丸亀港から定期船で約60分",
     "flags": {
@@ -3880,7 +3880,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "牛島（香川県丸亀市）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3617, 133.7783",
+    "coordinates": "34.3611, 133.7803",
     "description": "丸亀港から定期船で約15分。赤煉瓦の煙突と極上の穏やかな入り江。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -3900,7 +3900,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高見島（香川県多度津町）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3167, 133.6750",
+    "coordinates": "34.3150, 133.6750",
     "description": "円錐形の斜面に美しい石垣が階段状に積まれた映画のセットのような島。",
     "access": "多度津港からフェリーで約25分",
     "flags": {
@@ -3920,7 +3920,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "佐柳島（香川県多度津町・猫島）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.3367, 133.6233",
+    "coordinates": "34.3414, 133.6258",
     "description": "防波堤の間を飛び移る「飛び猫」で世界的に有名な香川県屈指の癒やしの猫島！",
     "access": "多度津港からフェリーで約50分",
     "flags": {
@@ -3940,7 +3940,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "志々島（香川県三豊市）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.2667, 133.6833",
+    "coordinates": "34.2708, 133.6819",
     "description": "樹齢約1200年と伝わる巨大な神秘の「大くすのき」が島を優しく見守る癒やしのパワースポット島。",
     "access": "宮の下港から定期船で約20分",
     "flags": {
@@ -3960,7 +3960,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊吹島（香川県観音寺市）",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.1033, 133.5350",
+    "coordinates": "34.1303, 133.5356",
     "description": "讃岐うどんの出汁に欠かせない日本一の煮干し「伊吹いりこ」の産地！独特の京ことばが伝わる文化島。",
     "access": "観音寺港から定期船で約25分",
     "flags": {
@@ -3980,7 +3980,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（愛媛県・しまなみ海道）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.1417, 133.0667",
+    "coordinates": "34.1500, 133.0583",
     "description": "しまなみ海道の四国側玄関口。亀老山展望公園から見下ろす来島海峡大橋のダイナミックな夕日・夜景。",
     "access": "しまなみ海道より橋直結（車・自転車・バスアクセス）",
     "flags": {
@@ -4000,7 +4000,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伯方島",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.2083, 133.0917",
+    "coordinates": "34.2125, 133.0958",
     "description": "「伯方の塩」のCMでもおなじみの塩業と造船の島。開山公園の桜と橋のコントラスト。",
     "access": "しまなみ海道より橋直結（車・自転車・バスアクセス）",
     "flags": {
@@ -4040,7 +4040,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "弓削島（上島諸島）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.2667, 133.2167",
+    "coordinates": "34.2736, 133.2147",
     "description": "ゆめしま海道の主島。京都東寺の荘園として栄えた歴史と海藻塩、松原海水浴場。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4060,7 +4060,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "中島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9717, 132.6167",
+    "coordinates": "33.9736, 132.6167",
     "description": "松山・三津浜港から高速船で30分！みかん畑が包み込む忽那諸島の主島。姫ヶ浜ビーチが爽快。",
     "access": "高浜港からフェリーで約60分",
     "flags": {
@@ -4080,7 +4080,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "興居島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.8867, 132.6833",
+    "coordinates": "33.8917, 132.6750",
     "description": "松山・高浜港からフェリーで10分！美しい「小富士」と極上の柑橘類、絶景カフェが充実した手軽なリゾート。",
     "access": "高浜港からフェリーで約10分",
     "flags": {
@@ -4100,7 +4100,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "日振島（宇和海）",
     "region_id": "uwakai",
     "prefecture": "愛媛県",
-    "coordinates": "33.1617, 132.3217",
+    "coordinates": "33.1667, 132.3083",
     "description": "平安時代の藤原純友の海賊拠点の島。断崖と磯釣りのメッカ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4120,7 +4120,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "九島（宇和海）",
     "region_id": "uwakai",
     "prefecture": "愛媛県",
-    "coordinates": "33.2267, 132.5333",
+    "coordinates": "33.2250, 132.5236",
     "description": "宇和島市の目の前、2016年に九島大橋で直結した箱庭のような美島。ゴジラ岩やサイクリングロード。",
     "access": "九島大橋で陸続き",
     "flags": {
@@ -4140,7 +4140,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "津島（愛媛県今治市）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.1350, 133.0233",
+    "coordinates": "34.1517, 133.0033",
     "description": "大島のすぐ沖に浮かぶ静かなしまなみの島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4160,7 +4160,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鵜島（しまなみ）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.1867, 133.0817",
+    "coordinates": "34.1872, 133.0819",
     "description": "大島と伯方島の間の能島村上水軍ゆかりの島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4180,7 +4180,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "佐島（ゆめしま海道）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.2500, 133.2167",
+    "coordinates": "34.2492, 133.1978",
     "description": "弓削島と生名島の間に架かるゆめしま海道のハブ島。",
     "access": "弓削島からゆげ大橋で陸続き",
     "flags": {
@@ -4200,7 +4200,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "生名島（ゆめしま海道）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.2750, 133.1667",
+    "coordinates": "34.2672, 133.1783",
     "description": "因島とフェリー約3分でつながるゆめしま海道の玄関口。巨石「立石山」。",
     "access": "因島からフェリーで約5分",
     "flags": {
@@ -4220,7 +4220,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "岩城島（青いレモンの島）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.2583, 133.1467",
+    "coordinates": "34.2600, 133.1467",
     "description": "積善山に約3,000本の桜が咲き誇る「天女の羽衣」と、無農薬「青いレモン」の美食島。",
     "access": "生口島からフェリーで約10分",
     "flags": {
@@ -4240,7 +4240,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "赤穂根島（愛媛県）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.2467, 133.1317",
+    "coordinates": "34.2439, 133.1558",
     "description": "上島町に位置する上島諸島の島。古くからミカン栽培や放牧が行われてきた穏やかな瀬戸内海の島です。",
     "access": "岩城島または生名島からチャーター船",
     "flags": {
@@ -4260,7 +4260,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "睦月島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9800, 132.6667",
+    "coordinates": "33.9792, 132.6625",
     "description": "伊予柑栽培発祥の島！明治時代の美しい行商屋敷が残る歴史島。",
     "access": "高浜港からフェリーで約40分",
     "flags": {
@@ -4280,7 +4280,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "野忽那島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9833, 132.6933",
+    "coordinates": "33.9814, 132.6939",
     "description": "映画『船を降りたら彼女の島』のロケ地となった白い砂浜と夕日が絶品。",
     "access": "高浜港からフェリーで約50分",
     "flags": {
@@ -4300,7 +4300,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "釣島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9167, 132.6167",
+    "coordinates": "33.8908, 132.6422",
     "description": "明治時代に建てられた洋式灯台・釣島灯台と旧官舎が残る歴史の島。",
     "access": "三津浜港から定期船で約40分",
     "flags": {
@@ -4320,7 +4320,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "二神島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9317, 132.5317",
+    "coordinates": "33.9306, 132.5361",
     "description": "忽那水軍の二神氏が代々本拠とした重厚な石垣と路地裏が続く島。",
     "access": "高浜港からフェリーで約70分",
     "flags": {
@@ -4340,7 +4340,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "津和地島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9783, 132.4933",
+    "coordinates": "33.9792, 132.4958",
     "description": "愛媛県最西端、美しいタマネギと柑橘の段々畑が続くのどかな有人島。",
     "access": "高浜港からフェリーで約100分",
     "flags": {
@@ -4360,7 +4360,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "怒和島（忽那諸島）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9683, 132.5183",
+    "coordinates": "33.9683, 132.5236",
     "description": "元怒和・上怒和の集落と柑橘類、素晴らしい透明度の海。",
     "access": "高浜港からフェリーで約80分",
     "flags": {
@@ -4380,7 +4380,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "魚島（愛媛県越智郡）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.1750, 133.3250",
+    "coordinates": "34.1764, 133.3211",
     "description": "瀬戸内海のほぼ中央・備後灘に浮かぶ好漁場・一本釣りの聖島。",
     "access": "因島・土生港から定期船で約60分",
     "flags": {
@@ -4400,7 +4400,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高井神島（愛媛県）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.1917, 133.2667",
+    "coordinates": "34.1894, 133.2683",
     "description": "魚島の西隣に位置し、壁に漫画家たちによるアート壁画が描かれた『漫画とアートの島』！",
     "access": "因島・土生港から定期船で約45分",
     "flags": {
@@ -4420,7 +4420,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（愛媛県八幡浜市）",
     "region_id": "uwakai",
     "prefecture": "愛媛県",
-    "coordinates": "33.5133, 132.3617",
+    "coordinates": "33.3853, 132.3336",
     "description": "八幡浜港から定期船で約22分。「南予のエンジェルロード」や白いサンゴ砂のビーチが輝く絶景島。",
     "access": "八幡浜港より定期船で約22分",
     "flags": {
@@ -4440,7 +4440,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "安居島（愛媛県松山市）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "34.0250, 132.7050",
+    "coordinates": "34.0696, 132.7045",
     "description": "北条港から渡船で約35分。忽那諸島最北端に位置する静かな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4460,7 +4460,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "青島（愛媛県大洲市・猫島）",
     "region_id": "uwakai",
     "prefecture": "愛媛県",
-    "coordinates": "33.7383, 132.4833",
+    "coordinates": "33.7359, 132.4815",
     "description": "島民の十数倍もの数百匹の猫たちが暮らす世界的に有名な瀬戸内海の猫島！",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4480,7 +4480,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "嘉島（宇和海）",
     "region_id": "uwakai",
     "prefecture": "愛媛県",
-    "coordinates": "33.2267, 132.3617",
+    "coordinates": "33.2225, 132.3378",
     "description": "宇和海に浮かぶ石垣の段々畑と極上の透明度のサンゴ海。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4500,7 +4500,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "戸島（宇和海）",
     "region_id": "uwakai",
     "prefecture": "愛媛県",
-    "coordinates": "33.2250, 132.3917",
+    "coordinates": "33.2046, 132.3613",
     "description": "宇和島港から高速船で直結するハマチやブリの日本一の養殖漁業島。",
     "access": "宇和島港から定期船で約50分",
     "flags": {
@@ -4520,7 +4520,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹ヶ島（愛媛県宇和島）",
     "region_id": "uwakai",
     "prefecture": "愛媛県",
-    "coordinates": "33.1617, 132.4333",
+    "coordinates": "33.1117, 132.4086",
     "description": "宇和海の入り江に浮かぶ自然の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4538,7 +4538,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊島（阿波の島々）",
     "region_id": "pseudo_tokushima",
     "prefecture": "徳島県",
-    "coordinates": "33.8450, 134.8167",
+    "coordinates": "33.8458, 134.8128",
     "description": "四国最東端に位置する絶海の秘境島。固有種ササユリが島を彩り白い伊島灯台からの紀伊水道360度絶景が圧巻。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4558,7 +4558,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（徳島県牟岐町）",
     "region_id": "pseudo_tokushima",
     "prefecture": "徳島県",
-    "coordinates": "33.6367, 134.4850",
+    "coordinates": "33.6353, 134.4892",
     "description": "牟岐港沖に浮かぶ島。島全体が国の名勝に指定されたダイナミックな奇岩絶景。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4576,7 +4576,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "出羽島（徳島県牟岐町）",
     "region_id": "pseudo_tokushima",
     "prefecture": "徳島県",
-    "coordinates": "33.6550, 134.4383",
+    "coordinates": "33.6517, 134.4328",
     "description": "牟岐港から連絡船で約15分。国の重要伝統的建造物群保存地区「ミセ造り」の民家と車のない島時間。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4596,7 +4596,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹ヶ島（徳島県海陽町）",
     "region_id": "pseudo_tokushima",
     "prefecture": "徳島県",
-    "coordinates": "33.5417, 134.3167",
+    "coordinates": "33.5444, 134.3192",
     "description": "橋で本土と直結する環境省指定海域のサンゴ礁島。海中観光船とシュノーケリング。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4616,7 +4616,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "柏島（高知県・大月町）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "32.7667, 132.6283",
+    "coordinates": "32.7686, 132.6281",
     "description": "「船が宙に浮いて見える」ほどの圧倒的透明度！熱帯・温帯魚が群れるダイビングの楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4636,7 +4636,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖の島（高知県・宿毛市）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "32.7317, 132.5533",
+    "coordinates": "32.7317, 132.5550",
     "description": "四国最南西端、黒潮の荒波が直撃する絶海の島。階段状の「母島集落」や妹背山の原生林。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4656,7 +4656,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鵜来島（高知県宿毛市）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "32.8050, 132.5183",
+    "coordinates": "32.8014, 132.4958",
     "description": "沖の島の北東に浮かぶ、急斜面に重なる石垣と段々畑の集落が美しいダイビング楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4676,7 +4676,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "戸島（高知県須崎市）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "33.3933, 133.3067",
+    "coordinates": "33.3831, 133.2961",
     "description": "土佐湾横浪半島沿いに位置する自然島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4696,7 +4696,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "中ノ島（高知県須崎市）",
     "region_id": "pseudo_tosa",
     "prefecture": "高知県",
-    "coordinates": "33.3850, 133.3100",
+    "coordinates": "33.3806, 133.2989",
     "description": "須崎湾内の穏やかな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -4734,7 +4734,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "海栗島（対馬北端沖）",
     "region_id": "tsushima",
     "prefecture": "長崎県",
-    "coordinates": "34.6983, 129.4750",
+    "coordinates": "34.7058, 129.4346",
     "description": "対馬最北端・鰐浦のすぐ沖合に位置する、韓国釜山を目の前に望む国境最前線の島。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4754,7 +4754,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "泊島（対馬市美津島町）",
     "region_id": "tsushima",
     "prefecture": "長崎県",
-    "coordinates": "34.3317, 129.3517",
+    "coordinates": "34.3596, 129.4039",
     "description": "浅茅湾のリアス式海岸に抱かれた真珠養殖と絶景の島。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4772,7 +4772,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖ノ島（対馬市美津島町）",
     "region_id": "tsushima",
     "prefecture": "長崎県",
-    "coordinates": "34.3417, 129.3667",
+    "coordinates": "34.3408, 129.4033",
     "description": "泊島のすぐ隣に位置する浅茅湾の島。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4792,7 +4792,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "赤島（長崎県対馬市美津島町）",
     "region_id": "tsushima",
     "prefecture": "長崎県",
-    "coordinates": "34.3517, 129.3783",
+    "coordinates": "34.3497, 129.4075",
     "description": "赤島大橋で結ばれる対馬東部の美しい海と自然島。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4812,7 +4812,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "島山島（対馬市豊玉町）",
     "region_id": "tsushima",
     "prefecture": "長崎県",
-    "coordinates": "34.3683, 129.2833",
+    "coordinates": "34.3436, 129.3183",
     "description": "浅茅湾西部に浮かぶ対馬有数の大島。浅茅湾大橋からの絶景。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4852,7 +4852,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "辰の島（壱岐島沖）",
     "region_id": "iki",
     "prefecture": "長崎県",
-    "coordinates": "33.8617, 129.6883",
+    "coordinates": "33.8658, 129.6756",
     "description": "壱岐北部に位置する無人島。エメラルドグリーンの「辰の島海水浴場」や高さ50mの断崖絶壁「蛇ヶ谷」など、雄大な自然美が広がります。",
     "access": "壱岐勝本港から渡船で約10分 (3月〜11月限定)",
     "flags": {
@@ -4871,7 +4871,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "原島（壱岐市郷ノ浦町）",
     "region_id": "iki",
     "prefecture": "長崎県",
-    "coordinates": "33.7167, 129.6583",
+    "coordinates": "33.7197, 129.6486",
     "description": "郷ノ浦港から定期船約15分。壱岐南西沖「渡良三島」の一つで島を囲む澄んだ海と漁村風景。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4891,7 +4891,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "長島（長崎県壱岐市郷ノ浦町）",
     "region_id": "iki",
     "prefecture": "長崎県",
-    "coordinates": "33.7275, 129.6383",
+    "coordinates": "33.7289, 129.6331",
     "description": "原島の隣・渡良三島の中心に位置し珊瑚橋で大島と結ばれた有人島。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4911,7 +4911,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（長崎県壱岐市郷ノ浦町）",
     "region_id": "iki",
     "prefecture": "長崎県",
-    "coordinates": "33.7367, 129.6183",
+    "coordinates": "33.7367, 129.6333",
     "description": "渡良三島最西端。島内には最高の磯釣りポイントが点在。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4931,7 +4931,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "若宮島（壱岐沖）",
     "region_id": "iki",
     "prefecture": "長崎県",
-    "coordinates": "33.8767, 129.6967",
+    "coordinates": "33.8667, 129.6875",
     "description": "勝本港北沖、白亜の若宮灯台がそびえる玄界灘の要衝島。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4951,7 +4951,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "五島列島・福江島",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.6950, 128.8417",
+    "coordinates": "32.6559, 128.8069",
     "description": "五島列島最大の中心島。世界文化遺産に輝く堂崎天主堂や日本屈指の白砂「高浜海水浴場」、シンボル「鬼岳」。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -4987,7 +4987,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "五島列島・若松島",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.8917, 129.0250",
+    "coordinates": "32.8917, 129.0167",
     "description": "中通島と若松大橋でつながる静謐な島。キリシタン洞窟や若松大橋からの真っ青な海峡美。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5005,7 +5005,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "五島列島・奈留島",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.8333, 128.9333",
+    "coordinates": "32.8389, 128.9306",
     "description": "ユーミンの名曲『瞳を閉じて』の舞台となった純朴で美しい島。世界遺産江上天主堂が輝く。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5023,7 +5023,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "五島列島・久賀島",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.8000, 128.8667",
+    "coordinates": "32.8028, 128.8750",
     "description": "世界文化遺産「久賀島の集落」と旧五輪教会堂が残る歴史島。椿の原生林と深い祈り。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5059,7 +5059,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "五島列島・野崎島",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.1833, 129.1333",
+    "coordinates": "33.1861, 129.1278",
     "description": "世界文化遺産「野崎島の集落跡」がある島。美しい旧野首教会や野生のニホンジカが群生し、厳かな時間が流れる保全島です。",
     "access": "小値賀島本校港から町営船「はなぐり」で約25分",
     "flags": {
@@ -5078,7 +5078,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "宇久島（五島列島最北端）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.2667, 129.1167",
+    "coordinates": "33.2750, 129.1167",
     "description": "五島列島の最北端、平家伝説と五島家発祥の歴史島。大浜海水浴場の絶景ビーチと東光寺の禅庭。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5098,7 +5098,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "頭ヶ島（新上五島町）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.0133, 129.1833",
+    "coordinates": "33.0125, 129.1856",
     "description": "中通島と頭ヶ島大橋で結ばれた世界文化遺産・頭ヶ島天主堂が厳かに立つ石造り教会の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5116,7 +5116,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "黄島（長崎県五島市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.5683, 128.8983",
+    "coordinates": "32.5664, 128.8996",
     "description": "福江島の南東沖に浮かぶ、溶岩トンネルや黄島神社が佇む豊かな釣り島。",
     "access": "福江港から定期船で約40分",
     "flags": {
@@ -5136,7 +5136,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "赤島（長崎県五島市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.6033, 128.9200",
+    "coordinates": "32.5950, 128.9207",
     "description": "福江島と黄島の間にある澄んだ海に包まれた隠れ家島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5156,7 +5156,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "蕨小島（五島市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.7833, 128.8417",
+    "coordinates": "32.8281, 128.8938",
     "description": "奈留島の西に寄り添う静かな小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5176,7 +5176,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "島山島（五島市玉之浦）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.6283, 128.6083",
+    "coordinates": "32.6585, 128.6261",
     "description": "福江島西部の玉之浦湾に架かる玉之浦大橋で結ばれた野生鹿と絶景サンセットの島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5214,7 +5214,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "串島（新上五島町）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.9667, 129.0417",
+    "coordinates": "32.9548, 128.9868",
     "description": "中通島と橋で直結する静かな入り江島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5232,7 +5232,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "平戸島",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.3500, 129.5333",
+    "coordinates": "33.2891, 129.4679",
     "description": "日本で最初に西洋貿易の扉を開いた歴史とロマンの島。平戸大橋で本土と直結し平戸城や教会が見える風景が人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5272,7 +5272,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "度島（長崎県平戸市）",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.4350, 129.5467",
+    "coordinates": "33.4375, 129.5389",
     "description": "平戸港からフェリーで約30分。島を一周する散策道とヒラメ・海鮮が自慢の穏やかな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5292,7 +5292,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "的山大島（長崎県平戸市）",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.4717, 129.5583",
+    "coordinates": "33.4750, 129.5556",
     "description": "神湊港からフェリー約40分。江戸時代の捕鯨で栄えた重要伝統的建造物群保存地区・神浦町並み。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5312,7 +5312,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鷹島（長崎県松浦市）",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.4333, 129.7500",
+    "coordinates": "33.4436, 129.7583",
     "description": "元寇（モンゴル襲来）の舞台にして水中考古学の聖地！鷹島肥前大橋で佐賀県側から直結し「鷹島本マグロ」が絶品。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5332,7 +5332,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "福島（長崎県松浦市）",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.3750, 129.8250",
+    "coordinates": "33.3736, 129.8306",
     "description": "伊万里湾に浮かび福島大橋で佐賀県伊万里市と直結。日本の棚田百選「土谷棚田」に沈む夕日が極上。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5352,7 +5352,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "飛島（長崎県松浦市鷹島沖）",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.4683, 129.7850",
+    "coordinates": "33.4281, 129.7917",
     "description": "鷹島の東沖に浮かぶ緑豊かな釣りポイント島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5372,7 +5372,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "青島（長崎県松浦市）",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.4125, 129.7383",
+    "coordinates": "33.4139, 129.6850",
     "description": "御厨港からフェリーで約20分。伊万里湾の出口に位置する阿弥陀寺と漁港の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5411,7 +5411,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "九十九島・黒島（佐世保市）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "33.1417, 129.5883",
+    "coordinates": "33.1414, 129.5335",
     "description": "佐世保港沖の九十九島最大の島。世界遺産構成資産「黒島の集落」の象徴であるロマネスク様式の黒島天主堂が佇む。",
     "access": "相浦港からフェリーで約50分",
     "flags": {
@@ -5429,7 +5429,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高島（佐世保市九十九島）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "33.1817, 129.6150",
+    "coordinates": "33.1828, 129.5858",
     "description": "九十九島の美しい入り江と番岳展望台からの大絶景が味わえる隠れ家島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5449,7 +5449,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊王島（長崎市）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "32.7050, 129.7783",
+    "coordinates": "32.7042, 129.7789",
     "description": "長崎市街から伊王島大橋で車直結！温泉リゾート「i+Land nagasaki」や白亜の伊王島灯台、ビーチが揃う。",
     "access": "伊王島大橋で陸続き",
     "flags": {
@@ -5469,7 +5469,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高島（長崎市・世界遺産）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "32.6617, 129.7567",
+    "coordinates": "32.6625, 129.7542",
     "description": "長崎港から高速船35分。世界文化遺産「高島炭坑跡」と美しいタカナシビーチ。",
     "access": "長崎港から高速船で約35分",
     "flags": {
@@ -5489,7 +5489,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "池島（長崎市・炭鉱体験）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "32.8833, 129.6000",
+    "coordinates": "32.8856, 129.5989",
     "description": "2001年まで稼働していた「九州最後の炭鉱島」！本物のトロッコ列車に乗って坑道へ入る炭鉱ツアーが大人気。",
     "access": "神浦港からフェリーで約30分",
     "flags": {
@@ -5529,7 +5529,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "崎戸島（長崎県西海市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.0167, 129.5667",
+    "coordinates": "33.0056, 129.5556",
     "description": "大島から橋で結ばれる最西端の絶景島。北緯33度線展望台からの東シナ海パノラマ。",
     "access": "橋で陸続き",
     "flags": {
@@ -5549,7 +5549,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "江島（長崎県西海市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.0117, 129.3467",
+    "coordinates": "33.0056, 129.3514",
     "description": "五島灘に浮かぶ、美しい自然と磯釣りのメッカ。",
     "access": "佐世保港からフェリーで約2時間",
     "flags": {
@@ -5569,7 +5569,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "平島（長崎県西海市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.9967, 129.2883",
+    "coordinates": "32.9986, 129.2422",
     "description": "江島の西に位置し五島列島を望む島。",
     "access": "佐世保港・崎戸港よりフェリーで約1時間20分",
     "flags": {
@@ -5589,7 +5589,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "松島（長崎県西海市）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "32.9367, 129.6150",
+    "coordinates": "32.9278, 129.6056",
     "description": "瀬戸港から定期船でわずか10分。桜の名所と炭鉱の歴史が眠る島。",
     "access": "瀬戸港からフェリーで約15分",
     "flags": {
@@ -5609,7 +5609,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "針尾島（長崎県佐世保市）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "33.0617, 129.7567",
+    "coordinates": "33.0968, 129.7481",
     "description": "西海橋と新西海橋で結ばれた巨大島。国指定重要文化財「針尾送信所」の3本の巨大無線塔が圧巻。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5629,7 +5629,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "能古島",
     "region_id": "chikuzen",
     "prefecture": "福岡県",
-    "coordinates": "33.6183, 130.3017",
+    "coordinates": "33.6222, 130.3017",
     "description": "博多湾に浮かび姪浜渡船場からフェリー10分！「のこしまアイランドパーク」の菜の花・コスモス大パノラマが人気。",
     "access": "博多埠頭・姪浜港発 市営渡船（約10〜15分）",
     "flags": {
@@ -5669,7 +5669,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "相島（福岡県新宮町・猫島）",
     "region_id": "genkai",
     "prefecture": "福岡県",
-    "coordinates": "33.7617, 130.3833",
+    "coordinates": "33.7610, 130.3682",
     "description": "米CNNの「世界6大猫スポット」にも選出された人なつっこい猫たちの癒やしの猫島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5709,7 +5709,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "玄界島（福岡市西区）",
     "region_id": "genkai",
     "prefecture": "福岡県",
-    "coordinates": "33.6867, 130.2383",
+    "coordinates": "33.6881, 130.2389",
     "description": "博多埠頭から市営定期船で約35分。玄界灘の大パノラマと美味しい海鮮料理が自慢の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5729,7 +5729,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小呂島（福岡市西区）",
     "region_id": "genkai",
     "prefecture": "福岡県",
-    "coordinates": "33.8733, 130.0383",
+    "coordinates": "33.8686, 130.0369",
     "description": "福岡県最西端・玄界灘の中央に位置する絶海の漁業島。澄み切った海と天然ブリの宝庫。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5749,7 +5749,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "地島（福岡県宗像市）",
     "region_id": "genkai",
     "prefecture": "福岡県",
-    "coordinates": "33.8833, 130.4833",
+    "coordinates": "33.8819, 130.4875",
     "description": "神湊港から市営フェリー約15分。椿の花が美しい島一周トレッキング道。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5789,7 +5789,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "馬島（北九州市小倉北区）",
     "region_id": "genkai",
     "prefecture": "福岡県",
-    "coordinates": "33.9850, 130.8250",
+    "coordinates": "33.9708, 130.8542",
     "description": "藍島のすぐ南に位置する福岡県で最も小さい有人島。温かい島暮らし。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5809,7 +5809,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "加部島",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "33.5600, 129.8833",
+    "coordinates": "33.5539, 129.8839",
     "description": "呼子大橋で車直結！杉ノ原放牧場の雄大な牛たちと風の見える丘公園、絶品呼子イカ料理。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5829,7 +5829,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "加唐島",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "33.6067, 129.8450",
+    "coordinates": "33.6008, 129.8581",
     "description": "百済の武寧王の生誕地伝説と椿の野生林が広がる島。日本のツバキ油発祥の歴史。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5849,7 +5849,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小川島",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "33.5850, 129.8983",
+    "coordinates": "33.5994, 129.8994",
     "description": "呼子港から定期船で約20分。かつて捕鯨の基地として栄えた歴史島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5869,7 +5869,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "馬渡島",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "33.5417, 129.8083",
+    "coordinates": "33.5729, 129.7567",
     "description": "佐賀県最大の離島。カトリック馬渡島教会と雄大な番岳、美しい断崖海岸。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5889,7 +5889,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "神集島",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "33.5350, 129.9850",
+    "coordinates": "33.5322, 129.9614",
     "description": "唐津市湊港から定期船で約8分。神功皇后ゆかりの神社と万葉集の舞台。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5909,7 +5909,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高島（佐賀県唐津市宝くじの島）",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "33.5017, 130.0017",
+    "coordinates": "33.4744, 129.9897",
     "description": "唐津城下・宝当桟橋から船で10分！宝くじ高額当選のパワースポット「宝当神社」として人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5929,7 +5929,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "姫島（大分県）",
     "region_id": "bungo",
     "prefecture": "大分県",
-    "coordinates": "33.7250, 131.6667",
+    "coordinates": "33.7267, 131.6669",
     "description": "国東半島の沖に浮かぶ車エビとアサギマダラの島。渡り蝶の神秘と絶品の活車海老料理。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5949,7 +5949,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "保戸島（大分県津久見市）",
     "region_id": "bungo",
     "prefecture": "大分県",
-    "coordinates": "33.1017, 131.9867",
+    "coordinates": "33.1039, 131.9814",
     "description": "津久見港から定期船約25分。遠洋マグロ漁業の基地として栄え、コンクリート建物が斜面にひしめく地中海調の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5969,7 +5969,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（大分県佐伯市）",
     "region_id": "bungo",
     "prefecture": "大分県",
-    "coordinates": "32.9617, 132.0633",
+    "coordinates": "32.9658, 132.0750",
     "description": "豊後水道に浮かぶ自然と海の幸の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -5989,7 +5989,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "深島（大分県佐伯市・猫島）",
     "region_id": "bungo",
     "prefecture": "大分県",
-    "coordinates": "32.7217, 132.0917",
+    "coordinates": "32.7207, 131.9263",
     "description": "大分県最南端に位置しサンゴ礁に囲まれた極小の島。多くの猫たちと透明度のサンゴダイビング楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6009,7 +6009,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "屋形島（大分県佐伯市）",
     "region_id": "bungo",
     "prefecture": "大分県",
-    "coordinates": "32.7783, 131.9867",
+    "coordinates": "32.7741, 131.9176",
     "description": "蒲江港から船で約10分。極上の緋扇貝養殖とサンゴビーチ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6029,7 +6029,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "島野浦島（日向灘）",
     "region_id": "minami_naka",
     "prefecture": "宮崎県",
-    "coordinates": "32.6683, 131.7850",
+    "coordinates": "32.6694, 131.7908",
     "description": "延岡市の沖合に浮かぶ宮崎県最大の有人離島。透き通る日向灘の海とサンゴ礁、美味な新鮮魚介グルメ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6049,7 +6049,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "築島（宮崎県串間市）",
     "region_id": "minami_naka",
     "prefecture": "宮崎県",
-    "coordinates": "31.4583, 131.3367",
+    "coordinates": "31.4765, 131.3900",
     "description": "日向灘・志布志湾の出口に浮かぶ天然記念物ビロウ樹林の美しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6069,7 +6069,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "乙島（宮崎県門川町）",
     "region_id": "minami_naka",
     "prefecture": "宮崎県",
-    "coordinates": "32.4783, 131.6917",
+    "coordinates": "32.4733, 131.6783",
     "description": "門川湾に浮かぶキャンプやアウトドアレジャーが人気の美しい自然体験島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6087,7 +6087,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "天草下島",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.4000, 130.1333",
+    "coordinates": "32.3700, 130.1034",
     "description": "天草諸島の最大の島。世界遺産の崎津集落、野生のミナミハンドウイルカのイルカウォッチングが人気。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6107,7 +6107,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "天草上島",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.5167, 130.3833",
+    "coordinates": "32.4833, 130.3500",
     "description": "天草五橋で九州本土とつながる天草東部のハブ島。千岸の絶景やイルカウォッチングの出港地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6127,7 +6127,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "御所浦島（恐竜の島）",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.3333, 130.3450",
+    "coordinates": "32.3333, 130.3528",
     "description": "島全体が日本有数の化石採集地・恐竜ジオパーク！白亜紀の恐竜化石やアンモナイトが出土。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6167,7 +6167,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "湯島（熊本県上天草市・猫島）",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.6017, 130.3667",
+    "coordinates": "32.6019, 130.3353",
     "description": "有明海の中央に浮かぶ「天草・島原の乱」作戦会議の島。現在は多くの猫と甘い「湯島大根」で人気の猫島！",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6187,7 +6187,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "維和島（上天草市）",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.5717, 130.4567",
+    "coordinates": "32.5936, 130.4639",
     "description": "大矢野島から東大維橋で結ばれるクルマエビ養殖発祥の美しい島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6207,7 +6207,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "戸馳島（宇城市）",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.6167, 130.4667",
+    "coordinates": "32.6067, 130.4917",
     "description": "戸馳大橋で本土と結ばれた「洋ランの島」。若宮海水浴場のヤシの木ビーチ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6227,7 +6227,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "樋島（上天草市）",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.4167, 130.4333",
+    "coordinates": "32.3833, 130.4169",
     "description": "天草上島から橋で結ばれた静かな漁港島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6247,7 +6247,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "横浦島（天草御所浦）",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.3617, 130.3417",
+    "coordinates": "32.3694, 130.3514",
     "description": "御所浦島のすぐ北にある石切り場跡と美しい海。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6267,7 +6267,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "牧島（熊本県御所浦）",
     "region_id": "amakusa",
     "prefecture": "熊本県",
-    "coordinates": "32.3167, 130.3567",
+    "coordinates": "32.3538, 130.3191",
     "description": "御所浦島と橋でつながるアンモナイト館と化石ビーチの島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6287,7 +6287,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "長島（鹿児島県出水郡）",
     "region_id": "pseudo_nagashima",
     "prefecture": "鹿児島県",
-    "coordinates": "32.1667, 130.1667",
+    "coordinates": "32.1595, 130.1601",
     "description": "黒之瀬戸大橋で本土と直結する自然豊かな島。日本一のブリ養殖生産量を誇るブリグルメが絶品。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6327,7 +6327,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊唐島（長島町）",
     "region_id": "pseudo_nagashima",
     "prefecture": "鹿児島県",
-    "coordinates": "32.2217, 130.1783",
+    "coordinates": "32.2289, 130.2039",
     "description": "伊唐大橋で長島とつながる柑橘類栽培と美しい海峡の島。",
     "access": "伊唐大橋で陸続き",
     "flags": {
@@ -6347,7 +6347,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "諸浦島（長島町）",
     "region_id": "pseudo_nagashima",
     "prefecture": "鹿児島県",
-    "coordinates": "32.2350, 130.1417",
+    "coordinates": "32.2475, 130.1718",
     "description": "乳ノ瀬橋で長島と結ばれたブリ養殖拠点島。",
     "access": "長島経由で陸続き",
     "flags": {
@@ -6367,7 +6367,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "甑島・上甑島",
     "region_id": "koshiki",
     "prefecture": "鹿児島県",
-    "coordinates": "31.8667, 129.8833",
+    "coordinates": "31.8417, 129.8833",
     "description": "断崖絶壁と神秘の長目の浜（4つの湖沼群を隔てる細長い砂州絶景）が美しい東シナ海の楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6385,7 +6385,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "甑島・中甑島",
     "region_id": "koshiki",
     "prefecture": "鹿児島県",
-    "coordinates": "31.8167, 129.8500",
+    "coordinates": "31.8056, 129.8306",
     "description": "上甑島と鹿島・下甑島の間にある島。甑大明神橋・甑大橋で両島と結ばれた絶景の中核。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6403,7 +6403,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "甑島・下甑島",
     "region_id": "koshiki",
     "prefecture": "鹿児島県",
-    "coordinates": "31.6833, 129.7333",
+    "coordinates": "31.6917, 129.7333",
     "description": "2020年に開通した全長1,533mの絶景「甑大橋」で上・中甑島と直結！高さ200m級の大断崖「鹿島断崖」。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6421,7 +6421,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "種子島",
     "region_id": "osumi",
     "prefecture": "鹿児島県",
-    "coordinates": "30.5667, 130.9833",
+    "coordinates": "30.5918, 130.9959",
     "description": "日本最大のロケット発射場「JAXA種子島宇宙センター」と1543年鉄砲伝来の歴史を誇る島。",
     "access": "鹿児島空港より直行航空便 / 鹿児島港発 高速船トッピー・ジエタ",
     "flags": {
@@ -6461,7 +6461,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "口永良部島",
     "region_id": "osumi",
     "prefecture": "鹿児島県",
-    "coordinates": "30.4417, 130.2167",
+    "coordinates": "30.4556, 130.2000",
     "description": "屋久島の西約12kmに位置する緑と活火山のジオパーク島。本物の天然温泉「寝待温泉」が湧き出る秘境。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6481,7 +6481,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹島（鹿児島県三島村）",
     "region_id": "pseudo_satsuma",
     "prefecture": "鹿児島県",
-    "coordinates": "30.8167, 130.4250",
+    "coordinates": "30.8100, 130.4250",
     "description": "島全体が天然の竹林（大名竹）に覆われた三島村の島。大名竹のタケノコは最高級グルメ。",
     "access": "鹿児島港発 三島村定期船「フェリーみしま」",
     "flags": {
@@ -6501,7 +6501,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "硫黄島（鹿児島県薩摩硫黄島）",
     "region_id": "pseudo_satsuma",
     "prefecture": "鹿児島県",
-    "coordinates": "30.7917, 130.3067",
+    "coordinates": "30.7889, 130.2950",
     "description": "常時噴煙をあげる活火山・硫黄岳と、鉄分を含み海が黄金に染まる秘島！波の音を聞きながら浸かる秘湯「東温泉」。",
     "access": "鹿児島港発 三島村定期船「フェリーみしま」",
     "flags": {
@@ -6521,7 +6521,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "黒島（鹿児島県三島村）",
     "region_id": "osumi",
     "prefecture": "鹿児島県",
-    "coordinates": "30.8383, 129.9333",
+    "coordinates": "30.8333, 129.9333",
     "description": "三島村の中で最も西に位置し深い原生林に覆われた島。大里集落と平良集落の温かい島時間。",
     "access": "鹿児島港発 三島村定期船「フェリーみしま」",
     "flags": {
@@ -6541,7 +6541,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "口之島（トカラ列島最北端）",
     "region_id": "tokara",
     "prefecture": "鹿児島県",
-    "coordinates": "29.9667, 129.9250",
+    "coordinates": "29.9722, 129.9222",
     "description": "トカラ列島の玄関口にして野生牛（口之島牛）が生息する秘島。セランマ温泉やダイビングが絶品。",
     "access": "鹿児島港本港南埠頭発 十島村定期船「フェリーとしま2」",
     "flags": {
@@ -6561,7 +6561,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "中之島（トカラ列島）",
     "region_id": "tokara",
     "prefecture": "鹿児島県",
-    "coordinates": "29.8333, 129.8667",
+    "coordinates": "29.8500, 129.8667",
     "description": "トカラ列島最大の島。「トカラ富士」と呼ばれる美しい御岳とトカラ馬、天然温泉が湧く絶海秘島。",
     "access": "鹿児島港本港南埠頭発 十島村定期船「フェリーとしま2」",
     "flags": {
@@ -6581,7 +6581,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "諏訪之瀬島（トカラ列島）",
     "region_id": "tokara",
     "prefecture": "鹿児島県",
-    "coordinates": "29.6383, 129.7150",
+    "coordinates": "29.6383, 129.7142",
     "description": "常時噴煙を上げる御岳を有する活火山の島。夜空を焦がす火柱と豊かな海の幸。",
     "access": "鹿児島港本港南埠頭発 十島村定期船「フェリーとしま2」",
     "flags": {
@@ -6601,7 +6601,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "平島（トカラ列島）",
     "region_id": "tokara",
     "prefecture": "鹿児島県",
-    "coordinates": "29.6833, 129.5467",
+    "coordinates": "29.6872, 129.5325",
     "description": "平家の落人伝説と、島の中央に湧き出る霊泉・美しいガジュマル巨木が残る島。",
     "access": "鹿児島港本港南埠頭発 十島村定期船「フェリーとしま2」",
     "flags": {
@@ -6621,7 +6621,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "悪石島（トカラ列島）",
     "region_id": "tokara",
     "prefecture": "鹿児島県",
-    "coordinates": "29.4583, 129.6000",
+    "coordinates": "29.4611, 129.6000",
     "description": "仮面神「ボゼ」の奇祭で世界的に有名な神秘の島。島中の崖下に湧き出る砂入り海中温泉。",
     "access": "鹿児島港本港南埠頭発 十島村定期船「フェリーとしま2」",
     "flags": {
@@ -6641,7 +6641,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小宝島（トカラ列島）",
     "region_id": "tokara",
     "prefecture": "鹿児島県",
-    "coordinates": "29.1967, 129.1300",
+    "coordinates": "29.2235, 129.3248",
     "description": "周囲約4kmのサンゴ礁に囲まれた妊婦さんが横たわったような美しいシルエットの極小島。湯泊温泉。",
     "access": "鹿児島港本港南埠頭発 十島村定期船「フェリーとしま2」",
     "flags": {
@@ -6661,7 +6661,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "宝島（トカラ列島最南端）",
     "region_id": "tokara",
     "prefecture": "鹿児島県",
-    "coordinates": "29.1433, 129.2067",
+    "coordinates": "29.1464, 129.2083",
     "description": "キャプテン・キッドが財宝を隠したという伝説が伝わる冒険島！サンゴ礁のラグーンと鍾乳洞。",
     "access": "鹿児島港本港南埠頭発 十島村定期船「フェリーとしま2」",
     "flags": {
@@ -6681,7 +6681,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "奄美大島",
     "region_id": "amami",
     "prefecture": "鹿児島県",
-    "coordinates": "28.3833, 129.4833",
+    "coordinates": "28.3199, 129.3968",
     "description": "2021年世界自然遺産登録！東洋のガラパゴスと称され、アマミノクロウサギとマングローブ原生林、極上のビーチが輝く。",
     "access": "鹿児島空港・羽田・関空等より直行航空便 / 鹿児島港発 フェリー",
     "flags": {
@@ -6701,7 +6701,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "加計呂麻島",
     "region_id": "amami",
     "prefecture": "鹿児島県",
-    "coordinates": "28.1250, 129.2983",
+    "coordinates": "28.1317, 129.2326",
     "description": "古仁屋港のすぐ対岸に位置する、巨大なデイゴの巨木と寅さん映画の舞台にもなった純朴な島。透明度が極上。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6721,7 +6721,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "請島（奄美群島瀬戸内町）",
     "region_id": "amami",
     "prefecture": "鹿児島県",
-    "coordinates": "28.0250, 129.2383",
+    "coordinates": "28.0250, 129.2333",
     "description": "加計呂麻島の南に位置する、固有種ウケユリの咲き誇る自然保護島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6741,7 +6741,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "与路島（奄美群島）",
     "region_id": "amami",
     "prefecture": "鹿児島県",
-    "coordinates": "28.0417, 129.1633",
+    "coordinates": "28.0403, 129.1583",
     "description": "請島の隣に位置しサンゴの石垣とハブ除けの知恵が残る静謐な島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6781,7 +6781,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "徳之島",
     "region_id": "amami",
     "prefecture": "鹿児島県",
-    "coordinates": "27.7500, 128.9667",
+    "coordinates": "27.7775, 128.9581",
     "description": "世界自然遺産の構成島！熱い闘牛文化と長寿の島として有名であり、ムシロ瀬の奇岩と美しいアマミブルー。",
     "access": "鹿児島空港・羽田・関空等より直行航空便 / 鹿児島港発 フェリー",
     "flags": {
@@ -6841,7 +6841,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖縄本島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.5000, 127.9667",
+    "coordinates": "26.4750, 127.9115",
     "description": "琉球王国の歴史文化遺産・首里城や世界遺産の城群、美ら海水族館、極上のホテルが揃うリゾート中心地。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6861,7 +6861,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "古宇利島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.7017, 128.0217",
+    "coordinates": "26.7042, 128.0181",
     "description": "「恋の島（クイジマ）」伝説とハートロックの島。全長1,960mの古宇利大橋からのエメラルドグリーン大パノラマ。",
     "access": "沖縄本島より大橋直結（車・バスアクセス）",
     "flags": {
@@ -6881,7 +6881,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "水納島（クロワッサンアイランド）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.6467, 127.8167",
+    "coordinates": "26.6478, 127.8178",
     "description": "綺麗な三日月の形をした本部半島沖のビーチパラダイス！コーラルサンドと熱帯魚が舞うサンゴ礁ビーチ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6901,7 +6901,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "久高島（神の島）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.1600, 127.8933",
+    "coordinates": "26.1572, 127.8894",
     "description": "琉球開闢の祖・アマミキヨが最初に降り立ったとされる「神の島」。最高の聖域「フボー御嶽」やカベール岬。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6921,7 +6921,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊平屋島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "27.0400, 127.9667",
+    "coordinates": "27.0422, 127.9686",
     "description": "沖縄県最北端の有人島。第一尚氏の祖先発祥の地であり念頭平松の巨木や真っ青な念仏浜。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6941,7 +6941,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "野甫島（伊平屋村）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.9967, 127.9417",
+    "coordinates": "26.9936, 127.9219",
     "description": "伊平屋島と野甫大橋でつながるクリスタルブルーのエメラルド海に包まれた島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6961,7 +6961,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊是名島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.9317, 127.9367",
+    "coordinates": "26.9317, 127.9417",
     "description": "琉球王国尚円王（金丸）の生誕地として歴史が栄える島。伊是名城跡やギタラ（奇岩）が美しい。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -6981,7 +6981,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊江島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.7217, 127.8017",
+    "coordinates": "26.7217, 127.7917",
     "description": "本部港からフェリーで30分。島中央のタッチュー（城山）と春のゆり祭りで有名な楽園。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7001,7 +7001,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "瀬底島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.6433, 127.8633",
+    "coordinates": "26.6461, 127.8617",
     "description": "瀬底大橋で本部半島と直結するサンセットリゾート。瀬底ビーチの白砂とヒルトンホテル。",
     "access": "沖縄本島より大橋直結（車・バスアクセス）",
     "flags": {
@@ -7021,7 +7021,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "平安座島（海中道路）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.3467, 127.9617",
+    "coordinates": "26.3486, 127.9575",
     "description": "全長4.7kmの海中道路を渡り最初に到達する島。あやはし館とシーサイド絶景ドライブ。",
     "access": "勝連半島より海中道路・大橋直結（車アクセス）",
     "flags": {
@@ -7041,7 +7041,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "浜比嘉島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.3183, 127.9583",
+    "coordinates": "26.3211, 127.9592",
     "description": "平安座島から浜比嘉大橋で結ばれた琉球神話のアマミキヨとシネマリキヨが暮らした神々の住む島。",
     "access": "勝連半島より海中道路・大橋直結（車アクセス）",
     "flags": {
@@ -7061,7 +7061,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "宮城島（沖縄県うるま市）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.3683, 127.9867",
+    "coordinates": "26.3683, 127.9833",
     "description": "高台から太平洋を見下ろす絶景「果報バンタ（幸せの岬）」と塩づくりの命ぬ塩製塩所が人気。",
     "access": "勝連半島より海中道路・大橋直結（車アクセス）",
     "flags": {
@@ -7081,7 +7081,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊計島",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.3933, 127.9967",
+    "coordinates": "26.3925, 127.9958",
     "description": "海中道路の先の終着島。伊計ビーチと大泊ビーチの驚異的な透明度。",
     "access": "勝連半島より海中道路・大橋直結（車アクセス）",
     "flags": {
@@ -7101,7 +7101,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "津堅島（キャロットアイランド）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.2500, 127.9433",
+    "coordinates": "26.2508, 127.9417",
     "description": "平敷屋港から高速船約15分。甘いニンジンの名産地とトゥマイ浜の真っ白なロングビーチ。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7121,7 +7121,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "奥武島（南城市・天ぷら島）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.1317, 127.7733",
+    "coordinates": "26.1297, 127.7735",
     "description": "本島南部から短い橋で結ばれ、沖縄もずくやさかなの「極上天ぷら」の行列と猫たちで大人気の島！",
     "access": "沖縄本島南部（南城市）より奥武橋直結（車アクセス）",
     "flags": {
@@ -7141,7 +7141,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "瀬長島（ウミカジテラス）",
     "region_id": "okinawa_main",
     "prefecture": "沖縄県",
-    "coordinates": "26.1750, 127.6433",
+    "coordinates": "26.1753, 127.6431",
     "description": "那覇空港近くの海中道路で渡れる島。地中海風の白い建物が集まる「ウミカジテラス」があり、飛行機の離着陸を眼前に望むリゾートスポットです。",
     "access": "那覇空港から車または路線バスで約15分（海中道路接続）",
     "flags": {
@@ -7160,7 +7160,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "慶良間諸島・座間味島",
     "region_id": "kerama",
     "prefecture": "沖縄県",
-    "coordinates": "26.2267, 127.3033",
+    "coordinates": "26.2292, 127.3033",
     "description": "世界中のダイバーが憧れる国立公園「ケラマブルー」のハイライト！古座間味ビーチと冬のザトウクジラ観察。",
     "access": "那覇泊港（とまりん）発 高速船マリンライナー・フェリー",
     "flags": {
@@ -7178,7 +7178,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "慶良間諸島・阿嘉島",
     "region_id": "kerama",
     "prefecture": "沖縄県",
-    "coordinates": "26.1967, 127.2800",
+    "coordinates": "26.1972, 127.2786",
     "description": "座間味島と阿嘉大橋でつながる野生の天然記念物「ケラマジカ」の島。北浜ビーチの透明度は慶良間屈指！",
     "access": "那覇泊港（とまりん）発 高速船マリンライナー・フェリー",
     "flags": {
@@ -7196,7 +7196,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "慶良間諸島・渡嘉敷島",
     "region_id": "kerama",
     "prefecture": "沖縄県",
-    "coordinates": "26.1917, 127.3583",
+    "coordinates": "26.1856, 127.3592",
     "description": "那覇から高速船で35分で到達できる慶良間最大の島！阿波連ビーチととかしくビーチは最高のウミガメ楽園。",
     "access": "那覇泊港（とまりん）発 高速船マリンライナー・フェリー",
     "flags": {
@@ -7214,7 +7214,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "慶留間島（慶良間）",
     "region_id": "kerama",
     "prefecture": "沖縄県",
-    "coordinates": "26.1817, 127.2883",
+    "coordinates": "26.1806, 127.2894",
     "description": "阿嘉島と大橋で結ばれた重要文化財高良家住宅が残るサンゴ礁の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7254,7 +7254,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "奥武島（久米島）",
     "region_id": "kume",
     "prefecture": "沖縄県",
-    "coordinates": "26.3417, 126.8317",
+    "coordinates": "26.3381, 126.8286",
     "description": "久米島と海中道路でつながり国の天然記念物「畳石」とウミガメ館がある絶景リゾート。",
     "access": "久米島本島より新奥武橋直結（車アクセス）",
     "flags": {
@@ -7274,7 +7274,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "粟国島",
     "region_id": "kume",
     "prefecture": "沖縄県",
-    "coordinates": "26.5867, 127.2283",
+    "coordinates": "26.5861, 127.2278",
     "description": "那覇の北西約60kmに浮かぶ映画『ナビィの恋』の舞台となったソテツとミネラル豊富な「粟国の塩」の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7294,7 +7294,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "渡名喜島",
     "region_id": "kume",
     "prefecture": "沖縄県",
-    "coordinates": "26.3717, 127.1433",
+    "coordinates": "26.3681, 127.1417",
     "description": "国の重要伝統的建造物群保存地区に指定された赤瓦とフクギ並木の集落が保存され夜は足元灯が優しく照らす島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7314,7 +7314,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "北大東島",
     "region_id": "daito",
     "prefecture": "沖縄県",
-    "coordinates": "25.9517, 131.3083",
+    "coordinates": "25.9517, 131.3056",
     "description": "沖縄本島東約360km、絶海に浮かぶ隆起サンゴ礁の島。断崖絶壁に囲まれクレーンで船から上陸するダイナミックな港。",
     "access": "那覇空港よりRAC直行航空便 / 那覇港発 定期船「だいとう」",
     "flags": {
@@ -7334,7 +7334,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "南大東島",
     "region_id": "daito",
     "prefecture": "沖縄県",
-    "coordinates": "25.8450, 131.2333",
+    "coordinates": "25.8450, 131.2389",
     "description": "八丈島からの開拓者たちが切り拓いた八丈文化が息づく島。東洋一の鍾乳洞「星野洞」やカルスト地形。",
     "access": "那覇空港よりRAC直行航空便 / 那覇港発 定期船「だいとう」",
     "flags": {
@@ -7354,7 +7354,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "宮古島",
     "region_id": "miyako",
     "prefecture": "沖縄県",
-    "coordinates": "24.8000, 125.2833",
+    "coordinates": "24.7900, 125.3100",
     "description": "東洋屈指の透明度を誇る「ミヤコブルー」と「与那覇前浜ビーチ」。3つの大橋で周辺離島と絶景ドライブが楽しい島。",
     "access": "羽田・関空・那覇等より直行航空便直結",
     "flags": {
@@ -7374,7 +7374,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "伊良部島",
     "region_id": "miyako",
     "prefecture": "沖縄県",
-    "coordinates": "24.8367, 125.1883",
+    "coordinates": "24.8350, 125.1883",
     "description": "全長3,540mの伊良部大橋で宮古島と直結！ダイナミックな自然景観と青の洞窟で知られる島。",
     "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
     "flags": {
@@ -7392,7 +7392,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "池間島",
     "region_id": "miyako",
     "prefecture": "沖縄県",
-    "coordinates": "24.9300, 125.2433",
+    "coordinates": "24.9297, 125.2431",
     "description": "宮古島北端から池間大橋で渡るミヤコブルーの聖域。八重干瀬サンゴ礁への出港地。",
     "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
     "flags": {
@@ -7412,7 +7412,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "来間島",
     "region_id": "miyako",
     "prefecture": "沖縄県",
-    "coordinates": "24.7233, 125.2533",
+    "coordinates": "24.7222, 125.2478",
     "description": "与那覇前浜ビーチの正面に位置し来間大橋でつながる島。竜宮城展望台と絶品フルーツカフェ。",
     "access": "宮古島より伊良部大橋・池間大橋・来間大橋直結（車アクセス）",
     "flags": {
@@ -7432,7 +7432,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "多良間島",
     "region_id": "miyako",
     "prefecture": "沖縄県",
-    "coordinates": "24.6600, 124.7000",
+    "coordinates": "24.6569, 124.7022",
     "description": "宮古島と石垣島のほぼ中間に浮かぶ「日本で最も美しい村」。国指定重要無形民俗文化財「八月踊り」。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7452,7 +7452,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大神島（宮古島）",
     "region_id": "miyako",
     "prefecture": "沖縄県",
-    "coordinates": "24.9167, 125.3117",
+    "coordinates": "24.9169, 125.3081",
     "description": "島尻港からフェリーで約15分。島全体が神聖なパワースポットとして厳格なルールが守られる神々しい島。",
     "access": "宮古島・島尻漁港より定期船で約15分",
     "flags": {
@@ -7472,7 +7472,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "石垣島",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.4167, 124.2333",
+    "coordinates": "24.4000, 124.1800",
     "description": "八重山諸島の玄関口＆中心地！ミシュラン三つ星「川平湾」、マンタと泳げる海、日本最高の星空保護区と石垣牛グルメ。",
     "access": "羽田・関空・那覇等より直行航空便直結",
     "flags": {
@@ -7492,7 +7492,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹富島",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.3283, 124.0867",
+    "coordinates": "24.3264, 124.0886",
     "description": "石垣港から高速船10分！赤瓦の伝統的民家と白砂の小路、ブーゲンビリアと水牛車がゆっくり歩く琉球の原風景。",
     "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
     "flags": {
@@ -7512,7 +7512,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小浜島",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.3400, 123.9817",
+    "coordinates": "24.3406, 123.9800",
     "description": "朝ドラ『ちゅらさん』の舞台！大岳展望台からの八重山360度絶景とシュガーロード、星野リゾート等の楽園。",
     "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
     "flags": {
@@ -7532,7 +7532,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "黒島（八重山・ハートアイランド）",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.2400, 124.0133",
+    "coordinates": "24.2389, 124.0125",
     "description": "島の形がハート型をしており約3,000頭もの肉牛が緑の牧草地で暮らすのどかな牛とウミガメの島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7552,7 +7552,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "西表島",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.3250, 123.8217",
+    "coordinates": "24.3300, 123.8200",
     "description": "2021年世界自然遺産登録！約90%が亜熱帯の原生林に覆われた秘境。イリオモテヤマネコやマングローブクルーズ。",
     "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
     "flags": {
@@ -7572,7 +7572,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "由布島（水牛車で渡る島）",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.3150, 123.9350",
+    "coordinates": "24.3443, 123.9354",
     "description": "西表島から浅瀬を三線が響くのんびりとした「水牛車」に乗って海を渡る亜熱帯植物楽園の島！",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7592,7 +7592,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鳩間島",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.4717, 123.8200",
+    "coordinates": "24.4719, 123.8206",
     "description": "ドラマ『瑠璃の島』のモデル！周囲約4km、エメラルドグリーンの鳩間ブルーとウミガメの島時間が流れる秘境。",
     "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
     "flags": {
@@ -7612,7 +7612,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "新城島（パナリ島）",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.2333, 123.9450",
+    "coordinates": "24.2347, 123.9447",
     "description": "定期船がなくツアーでのみ訪れることができる人魚伝説（ジュゴン）の聖域。最高の透明度。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7630,7 +7630,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "波照間島",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.0600, 123.7767",
+    "coordinates": "24.0583, 123.7792",
     "description": "【日本最南端の有人島】。これ以上美しい青はないと讃えられ日本一の透明度を誇る「ハテルマブルー」と「南十字星」。",
     "access": "石垣港離島ターミナル発 安栄観光・八重山観光フェリー",
     "flags": {
@@ -7650,7 +7650,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "与那国島",
     "region_id": "yaeyama",
     "prefecture": "沖縄県",
-    "coordinates": "24.4567, 122.9883",
+    "coordinates": "24.4556, 122.9889",
     "description": "【日本最西端の島】。台湾までわずか111km、謎に包まれた海底遺跡と「与那国馬」の放牧風景が感動を呼ぶ。",
     "access": "那覇空港・石垣空港より航空便 / 石垣港発 福山海運「フェリーよなぐに」",
     "flags": {
@@ -7670,7 +7670,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "沖島（愛知県）",
     "region_id": "aichi_santo",
     "prefecture": "愛知県",
-    "coordinates": "34.7317, 137.0250",
+    "coordinates": "34.7878, 137.1436",
     "description": "三河湾沿いに位置する自然の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7688,7 +7688,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "飛島（岡山県備前市）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.6917, 134.2750",
+    "coordinates": "34.6853, 134.2981",
     "description": "日生海域の小さな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7706,7 +7706,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "黄島（岡山県瀬戸内市）",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.5917, 134.1950",
+    "coordinates": "34.5936, 134.1856",
     "description": "牛窓沖の自然島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7726,7 +7726,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大島（香川県高松市）",
     "region_id": "naoshima",
     "prefecture": "香川県",
-    "coordinates": "34.4067, 134.1067",
+    "coordinates": "34.4058, 134.1056",
     "description": "高松沖に浮かぶ歴史と人権・癒やしの島。",
     "access": "高松港から官用船で約30分",
     "flags": {
@@ -7746,7 +7746,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "小大下島（愛媛県今治市）",
     "region_id": "kamijima",
     "prefecture": "愛媛県",
-    "coordinates": "34.1867, 132.8917",
+    "coordinates": "34.1883, 132.9056",
     "description": "関前諸島の一つ。古い石灰石の採掘場跡と青い入り江。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7766,7 +7766,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "新谷島（愛媛県・忽那）",
     "region_id": "kutsuna",
     "prefecture": "愛媛県",
-    "coordinates": "33.9517, 132.6150",
+    "coordinates": "33.9497, 132.5964",
     "description": "忽那諸島の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7784,7 +7784,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高島（徳島県鳴門市）",
     "region_id": "pseudo_tokushima",
     "prefecture": "徳島県",
-    "coordinates": "34.2167, 134.6167",
+    "coordinates": "34.2125, 134.6111",
     "description": "ウチノ海に抱かれた鳴門の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7802,7 +7802,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "島田島（徳島県鳴門市）",
     "region_id": "pseudo_tokushima",
     "prefecture": "徳島県",
-    "coordinates": "34.2333, 134.6167",
+    "coordinates": "34.2361, 134.6125",
     "description": "鳴門スカイラインが走る塩田と漁業の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7822,7 +7822,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "玄界島沖小島（福岡）",
     "region_id": "genkai",
     "prefecture": "福岡県",
-    "coordinates": "33.6950, 130.2450",
+    "coordinates": "33.6908, 130.2286",
     "description": "玄界島周辺の奇岩島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7840,7 +7840,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "向島（佐賀県唐津市）",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "33.5167, 129.8450",
+    "coordinates": "33.5050, 129.8214",
     "description": "星賀港からフェリー約10分。唐津湾・伊万里湾沿いの自然島。",
     "access": "唐津市肥前町星賀港より定期船で約10分",
     "flags": {
@@ -7860,7 +7860,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹崎島（佐賀県太良町）",
     "region_id": "genkai",
     "prefecture": "佐賀県",
-    "coordinates": "32.9667, 130.2250",
+    "coordinates": "32.9575, 130.2217",
     "description": "有明海・竹崎カニで有名な陸続き島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7878,7 +7878,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "寺島（長崎県五島市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.0833, 129.0167",
+    "coordinates": "33.2537, 129.0700",
     "description": "五島列島福江島の北沖にある静かな有人島。美しい自然と透明度の高い海が広がり、手つかずの景色が残る島です。",
     "access": "福江港・岐宿から定期船で約15分",
     "flags": {
@@ -7898,7 +7898,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "六島（長崎県五島市）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.1000, 128.9833",
+    "coordinates": "33.2238, 129.1352",
     "description": "上五島と小値賀島の間に位置する島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7918,7 +7918,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "桐木島（新上五島町）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.9517, 129.0317",
+    "coordinates": "32.9575, 129.0436",
     "description": "若松大橋近くの小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7936,7 +7936,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "折島（新上五島町）",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.9350, 129.0183",
+    "coordinates": "32.9888, 129.0241",
     "description": "若松島周辺の美しい入江島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7954,7 +7954,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "黒島（長崎県松浦市）",
     "region_id": "hirado",
     "prefecture": "長崎県",
-    "coordinates": "33.3917, 129.7850",
+    "coordinates": "33.4578, 129.7267",
     "description": "伊万里湾沖に浮かぶ自然豊かな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7974,7 +7974,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "箕島（長崎県大村市）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "32.9167, 129.9167",
+    "coordinates": "32.9169, 129.9136",
     "description": "大村湾に浮かび現在は長崎空港ターミナルが立つ歴史的島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -7992,7 +7992,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "前島（長崎県時津町）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "32.8333, 129.8500",
+    "coordinates": "32.8781, 129.8264",
     "description": "大村湾南部に位置する静かな島。ミカン栽培や漁業が盛んで、豊かな大村湾の海の幸と長閑な風景が広がる有人島です。",
     "access": "時津港から徒歩・陸路・短距離定期船",
     "flags": {
@@ -8012,7 +8012,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鹿島（長崎県佐世保）",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "33.1617, 129.6850",
+    "coordinates": "33.2308, 129.5897",
     "description": "佐世保湾岸の小島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -8032,7 +8032,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "黒島（大分県臼杵市）",
     "region_id": "bungo",
     "prefecture": "大分県",
-    "coordinates": "33.1500, 131.8333",
+    "coordinates": "33.1628, 131.8389",
     "description": "1600年に英国人ウィリアム・アダムス（三浦按針）のリーフデ号が漂着した歴史島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -8052,7 +8052,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "青島（宮崎県宮崎市）",
     "region_id": "minami_naka",
     "prefecture": "宮崎県",
-    "coordinates": "31.8050, 131.4750",
+    "coordinates": "31.8042, 131.4753",
     "description": "波状岩「鬼の洗濯板」に囲まれた亜熱帯植物が茂る神秘の島。島中央には縁結びで有名な青島神社が鎮座し、宮崎の象徴的観光地です。",
     "access": "宮崎市青島海岸から弥生橋を徒歩で渡って約5分",
     "flags": {
@@ -8071,7 +8071,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "竹ヶ島（和歌山県那智勝浦）",
     "region_id": "pseudo_awaji",
     "prefecture": "和歌山県",
-    "coordinates": "33.6167, 135.9417",
+    "coordinates": "33.6158, 135.9500",
     "description": "紀伊半島南部・勝浦湾の入り江に浮かぶ自然豊かな島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -8089,7 +8089,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "三ツ島（小島群）",
     "region_id": "aichi_santo",
     "prefecture": "三重県",
-    "coordinates": "34.4967, 136.8617",
+    "coordinates": "34.4925, 136.8464",
     "description": "鳥羽沖に並び立つ3つの美しい島影。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -8107,7 +8107,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "横島（広島県福山市鞆の浦）",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.3417, 133.3283",
+    "coordinates": "34.3392, 133.2778",
     "description": "鞆の浦沖に浮かび内海大橋で田島と結ばれる瀬戸内海国立公園の島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -8127,7 +8127,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "弁天島（長崎県壱岐市）",
     "region_id": "iki",
     "prefecture": "長崎県",
-    "coordinates": "33.8017, 129.6817",
+    "coordinates": "33.7975, 129.6542",
     "description": "壱岐島沿岸部の神社と自然が融合する聖島。",
     "access": "福岡空港・長崎空港より直行航空便 / 博多港・長崎港発 フェリー・ジェットフォイル",
     "flags": {
@@ -8145,7 +8145,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "前島（沖縄県座間味）",
     "region_id": "kerama",
     "prefecture": "沖縄県",
-    "coordinates": "26.2167, 127.4500",
+    "coordinates": "26.2125, 127.4464",
     "description": "慶良間諸島の東端に位置し白い砂浜とケラマブルーのラグーンが輝く島。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "flags": {
@@ -8165,9 +8165,9 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "能美島",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.2000, 132.4500",
-    "description": "極上のカキ小屋やオリーブ園、みかん畑が広がる瀬戸内海有数の島。江田島と陸続き。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "coordinates": "34.2125, 132.4389",
+    "description": "江田島と地続きで一体をなす広島湾最大の島域。早瀬大橋で倉橋島・呉市本土と結ばれ、穏やかな海辺と柑橘・牡蠣養殖で知られる。",
+    "access": "広島港・呉港より高速船・フェリー、または早瀬大橋経由で車アクセス",
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
@@ -8175,8 +8175,8 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "area": 91.33,
     "radius_m": 5392,
     "checkin_radius_m": 6392,
-    "points": 0,
-    "difficulty": "未判定(要データ収集)",
+    "points": 30,
+    "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
     "slug": "noumi"
   },
@@ -8227,7 +8227,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大多府島",
     "region_id": "kasaoka",
     "prefecture": "岡山県",
-    "coordinates": "34.708, 134.278",
+    "coordinates": "34.6828, 134.2975",
     "description": "日生諸島の一つで、古い風待ち港の面影を残す。",
     "access": "日生港から定期船で約15分",
     "area": 0.4,
@@ -8243,7 +8243,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "犬島",
     "region_id": "naoshima",
     "prefecture": "岡山県",
-    "coordinates": "34.563, 134.101",
+    "coordinates": "34.5614, 134.1325",
     "description": "銅の製錬所跡が残る、アートの島として有名な島。",
     "access": "宝伝港から定期船で約10分",
     "area": 0.54,
@@ -8259,7 +8259,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "高根島",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.312, 133.072",
+    "coordinates": "34.3144, 133.0742",
     "description": "生口島と高根大橋で結ばれた柑橘栽培が盛んな島。",
     "access": "生口島から橋で陸続き",
     "area": 5.57,
@@ -8275,7 +8275,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "鹿島",
     "region_id": "kasaoka",
     "prefecture": "広島県",
-    "coordinates": "34.056, 132.531",
+    "coordinates": "34.0603, 132.5325",
     "description": "倉橋島の南端から橋で結ばれた小島。段々畑の景観が美しい。",
     "access": "倉橋島から橋で陸続き",
     "area": 2.64,
@@ -8291,7 +8291,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "平郡島",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.766, 132.228",
+    "coordinates": "33.7775, 132.2300",
     "description": "柳井市の沖合に浮かぶ東西に細長い島。",
     "access": "柳井港からフェリーで約100分",
     "area": 16.56,
@@ -8307,7 +8307,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "大津島",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.992, 131.721",
+    "coordinates": "33.9961, 131.7161",
     "description": "徳山湾に浮かぶ、回天の訓練基地跡がある島。",
     "access": "徳山港からフェリーで約45分",
     "area": 4.73,
@@ -8323,7 +8323,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "柱島",
     "region_id": "suo_oshima",
     "prefecture": "山口県",
-    "coordinates": "33.995, 132.419",
+    "coordinates": "34.0178, 132.4175",
     "description": "岩国市の沖合に浮かぶ柱島群島の中心。",
     "access": "岩国港から高速船で約60分",
     "area": 3.12,
@@ -8339,7 +8339,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "与島",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.391, 133.821",
+    "coordinates": "34.3878, 133.8136",
     "description": "瀬戸大橋の中継地で与島PAがある。",
     "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
     "area": 1.1,
@@ -8355,7 +8355,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "櫃石島",
     "region_id": "shiwaku",
     "prefecture": "香川県",
-    "coordinates": "34.425, 133.805",
+    "coordinates": "34.4194, 133.8053",
     "description": "瀬戸大橋の香川県側最初の島。一般車両の乗り入れ不可。",
     "access": "路線バスまたは島民用ゲートを利用",
     "area": 0.85,
@@ -8371,7 +8371,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "蛎浦島",
     "region_id": "pseudo_saikai",
     "prefecture": "長崎県",
-    "coordinates": "33.018, 129.582",
+    "coordinates": "33.0175, 129.5806",
     "description": "西海市大島町と崎戸町の間にある細長い島。",
     "access": "橋で陸続き",
     "area": 4.83,
@@ -8387,7 +8387,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "斑島",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "33.208, 129.022",
+    "coordinates": "33.2078, 129.0194",
     "description": "小値賀島と斑大橋で結ばれたポットホールのある島。",
     "access": "小値賀島から斑大橋で陸続き",
     "area": 1.57,
@@ -8403,7 +8403,7 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "name": "嵯峨ノ島",
     "region_id": "goto",
     "prefecture": "長崎県",
-    "coordinates": "32.726, 128.601",
+    "coordinates": "32.7269, 128.6008",
     "description": "福江島の西にあり、火山海崖の絶景が広がる島。",
     "access": "貝津港から定期船で約15分",
     "area": 3.18,
@@ -8417,18 +8417,622 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   "katsurajima_kagoshima": {
     "id": "katsurajima_kagoshima",
     "name": "桂島",
-    "region_id": "koshiki",
+    "region_id": "pseudo_nagashima",
     "prefecture": "鹿児島県",
-    "coordinates": "31.849, 130.198",
-    "description": "薩摩川内市の沖に浮かぶ小さな有人島。",
-    "access": "川内港から定期船で約20分",
+    "coordinates": "32.1292, 130.2647",
+    "description": "鹿児島県出水市沖の八代海に浮かぶ小さな有人島。黒之瀬戸の穏やかな海と漁村の暮らしが残る。",
+    "access": "長島町本浦港・出水市名護港より市営定期船「桂島丸」で約12〜15分",
     "area": 0.22,
     "radius_m": 400,
     "checkin_radius_m": 1500,
     "points": 40,
     "difficulty": "未設定",
     "is_conquest_target": true,
-    "slug": "katsurajima_kagoshima"
+    "slug": "katsurajima_kagoshima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "minamijima_ogasawara": {
+    "id": "minamijima_ogasawara",
+    "name": "南島（小笠原諸島）",
+    "region_id": "ogasawara",
+    "prefecture": "東京都",
+    "coordinates": "27.0389, 142.1750",
+    "description": "父島の南西約1kmに浮かぶ、世界でも珍しい沈水カルスト地形の無人島。天然の岩のアーチからエメラルドグリーンの海が差し込む「扇池」や白砂のジョンビーチ、ヒロベソカタマイマイの半化石、アオウミガメの産卵地として小笠原世界自然遺産を象徴する絶景島。",
+    "access": "父島・二見港よりボートツアーで約15〜20分（東京都自然ガイド同行必須・1日100名上陸制限・植生保護期間中は上陸禁止期間あり）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.28,
+    "radius_m": 450,
+    "checkin_radius_m": 1500,
+    "points": 950,
+    "difficulty": "秘境中の秘境",
+    "is_conquest_target": true,
+    "slug": "minamijima_ogasawara"
+  },
+  "mukojima_ogasawara": {
+    "id": "mukojima_ogasawara",
+    "name": "聟島（小笠原諸島・聟島列島）",
+    "region_id": "ogasawara",
+    "prefecture": "東京都",
+    "coordinates": "27.6811, 142.1411",
+    "description": "父島の北約70kmに位置する聟島列島（通称ケータ列島）最大の無人島。特別天然記念物アホウドリの新たな繁殖地形成プロジェクトで世界的に知られる海鳥と海洋生態系の聖域。",
+    "access": "定期船なし（父島よりダイビング・ドルフィンスイム等のチャーター船海域／一般観光上陸不可）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.57,
+    "radius_m": 1000,
+    "checkin_radius_m": 2500,
+    "points": 1000,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "mukojima_ogasawara"
+  },
+  "yomejima_ogasawara": {
+    "id": "yomejima_ogasawara",
+    "name": "嫁島（小笠原諸島・聟島列島）",
+    "region_id": "ogasawara",
+    "prefecture": "東京都",
+    "coordinates": "27.4967, 142.2100",
+    "description": "聟島列島南部に位置する無人島。近海の「マグロ穴」はイソマグロの大群が回遊する世界屈指のダイビング・ドルフィンスイム海域として知られる。",
+    "access": "定期船なし（父島より夏場の海況良好時にダイビング・チャーター船で周辺海域へアクセス）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.85,
+    "radius_m": 600,
+    "checkin_radius_m": 2000,
+    "points": 1000,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "yomejima_ogasawara"
+  },
+  "kitaioto_ogasawara": {
+    "id": "kitaioto_ogasawara",
+    "name": "北硫黄島（小笠原・火山列島）",
+    "region_id": "ogasawara",
+    "prefecture": "東京都",
+    "coordinates": "25.4333, 141.2833",
+    "description": "火山列島北端にそびえる標高792mの急峻な火山島。戦前は石野村・西村の2集落が存在した歴史を持ち、現在は海鳥と固有動植物が息づく手つかずの自然保護島。",
+    "access": "定期船なし（年1回の小笠原海運「硫黄3島クルーズ」等で洋上より眺望）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 5.57,
+    "radius_m": 1500,
+    "checkin_radius_m": 3000,
+    "points": 1000,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "kitaioto_ogasawara"
+  },
+  "minamiioto_ogasawara": {
+    "id": "minamiioto_ogasawara",
+    "name": "南硫黄島（小笠原・火山列島）",
+    "region_id": "ogasawara",
+    "prefecture": "東京都",
+    "coordinates": "24.2350, 141.4633",
+    "description": "火山列島最南端にそびえる標高918m（伊豆・小笠原諸島最高峰）の円錐火山島。有史以来一度も人間の定住がなく、島全体が原生自然環境保全地域・天然記念物に指定された地球上の秘境。",
+    "access": "学術調査以外の立ち入り・上陸完全禁止（硫黄3島クルーズ等で洋上より眺望）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 3.54,
+    "radius_m": 1200,
+    "checkin_radius_m": 3000,
+    "points": 1000,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "minamiioto_ogasawara"
+  },
+  "jinaijima_izu": {
+    "id": "jinaijima_izu",
+    "name": "地内島（新島沖）",
+    "region_id": "izu",
+    "prefecture": "東京都",
+    "coordinates": "34.3708, 139.2281",
+    "description": "新島・前浜海岸の沖合約1.5kmに浮かぶ白色流紋岩の無人島。新島の夕日と白い断崖が織りなす象徴的な風景をつくる。",
+    "access": "定期船なし（新島前浜海岸より眺望・周辺海域マリンアクティビティ）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.48,
+    "radius_m": 450,
+    "checkin_radius_m": 1500,
+    "points": 300,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "jinaijima_izu"
+  },
+  "onbasejima_izu": {
+    "id": "onbasejima_izu",
+    "name": "恩馳島（神津島沖）",
+    "region_id": "izu",
+    "prefecture": "東京都",
+    "coordinates": "34.1939, 139.0789",
+    "description": "神津島の南西約5kmに浮かぶ無人島・岩礁群。黒潮の分流が直接当たる豊かな漁場およびダイビング海域として知られる。",
+    "access": "定期船なし（神津島よりダイビング・渡船海域）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.09,
+    "radius_m": 300,
+    "checkin_radius_m": 1200,
+    "points": 350,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "onbasejima_izu"
+  },
+  "onoharajima_izu": {
+    "id": "onoharajima_izu",
+    "name": "大野原島（三本岳・三宅島沖）",
+    "region_id": "izu",
+    "prefecture": "東京都",
+    "coordinates": "34.0469, 139.3861",
+    "description": "三宅島の西方約10kmにそびえる通称「三本岳」。国の天然記念物カンムリウミスズメの世界最大の繁殖地であり、黒潮が洗う絶海の岩峰。",
+    "access": "定期船なし（三宅島よりダイビング・チャーター船海域）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.08,
+    "radius_m": 300,
+    "checkin_radius_m": 1200,
+    "points": 400,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "onoharajima_izu"
+  },
+  "minnajima_miyako": {
+    "id": "minnajima_miyako",
+    "name": "水納島（宮古諸島・多良間村）",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.7533, 124.6958",
+    "description": "多良間島の北約8kmに浮かぶ宮古諸島8つの有人島のひとつ。広大なサンゴ礁のリーフに守られた圧倒的透明度の海と水納島灯台・宮古水納島御嶽が佇む秘境の島。",
+    "access": "多良間島・前泊港よりチャーター船で約20分（定期船なし）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.15,
+    "radius_m": 900,
+    "checkin_radius_m": 2000,
+    "points": 800,
+    "difficulty": "秘境中の秘境",
+    "is_conquest_target": true,
+    "slug": "minnajima_miyako"
+  },
+  "nagannu_kerama": {
+    "id": "nagannu_kerama",
+    "name": "ナガンヌ島（慶良間・チービシ環礁）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.1561, 127.5347",
+    "description": "那覇の西方約15km、慶良間諸島国立公園のチービシ環礁で最大のサンゴ砂の無人島。真っ白なコーラルサンドのビーチとレストコテージ・ダイニングテラスが整備され、日帰りや宿泊でケラマブルーを満喫できる。",
+    "access": "那覇・泊港（とまりん）より専用高速船で約20分（定期ツアー便で日帰り・宿泊上陸可能）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.25,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 150,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "nagannu_kerama"
+  },
+  "kuefu_kerama": {
+    "id": "kuefu_kerama",
+    "name": "クエフ島（慶良間・チービシ環礁）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.1569, 127.4981",
+    "description": "チービシ環礁を形成する3島のひとつで、木々が1本もない360度白砂とサンゴ礁だけの無人島。ウミガメや熱帯魚が泳ぐ極上のシュノーケリング・上陸スポット。",
+    "access": "那覇港・三重城港等よりマリンツアー船で約20〜25分（上陸・シュノーケリングツアー）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.03,
+    "radius_m": 300,
+    "checkin_radius_m": 1200,
+    "points": 200,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "kuefu_kerama"
+  },
+  "amurojima_kerama": {
+    "id": "amurojima_kerama",
+    "name": "安室島（慶良間諸島）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2056, 127.3119",
+    "description": "座間味島のすぐ南に浮かぶ慶良間諸島の無人島。渡し船やシーカヤックで上陸でき、人影の少ないプライベートビーチと枝サンゴの群生が広がる。",
+    "access": "座間味港より渡し船またはシーカヤックツアーで約10〜15分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.73,
+    "radius_m": 600,
+    "checkin_radius_m": 1800,
+    "points": 350,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "amurojima_kerama"
+  },
+  "gahijima_kerama": {
+    "id": "gahijima_kerama",
+    "name": "嘉比島（慶良間諸島）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2069, 127.2914",
+    "description": "座間味島と阿嘉島の間の穏やかな内海に浮かぶ無人島。眩しい白砂のビーチと透明度抜群のサンゴ礁に囲まれ、座間味港からの渡し船やカヤックで気軽に上陸できる。",
+    "access": "座間味港・阿嘉港より渡し船またはシーカヤックで約5〜10分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.13,
+    "radius_m": 350,
+    "checkin_radius_m": 1400,
+    "points": 320,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "gahijima_kerama"
+  },
+  "agenashiku_kerama": {
+    "id": "agenashiku_kerama",
+    "name": "安慶名敷島（慶良間諸島）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2144, 127.2981",
+    "description": "座間味島の南沖、嘉比島と隣り合う無人島。干潮時に現れる砂州と浅瀬のテーブルサンゴ・熱帯魚の群れが美しく、渡し船やカヤックツアーの定番上陸スポット。",
+    "access": "座間味港より渡し船またはシーカヤックで約5〜10分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.1,
+    "radius_m": 350,
+    "checkin_radius_m": 1400,
+    "points": 320,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "agenashiku_kerama"
+  },
+  "komakajima_okinawa": {
+    "id": "komakajima_okinawa",
+    "name": "コマカ島（沖縄南城市・知念沖）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.1433, 127.8481",
+    "description": "沖縄本島南部・知念岬の沖合、久高島の西に浮かぶ周囲約800mの白砂の無人島。波打ち際からすぐ熱帯魚と泳げる沖縄本島南部屈指のマリンレジャー島。",
+    "access": "南城市・知念海洋レジャーセンターより送迎船で約15分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.02,
+    "radius_m": 250,
+    "checkin_radius_m": 1200,
+    "points": 120,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "komakajima_okinawa"
+  },
+  "yagajishima_okinawa": {
+    "id": "yagajishima_okinawa",
+    "name": "屋我地島（沖縄県名護市）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.6639, 128.0139",
+    "description": "羽地内海と東シナ海に抱かれ、沖縄本島および古宇利島と橋で結ばれた名護市の有人島。屋我地ビーチやマングローブ林、サトウキビ畑と赤瓦集落の原風景が広がる。",
+    "access": "那覇空港より車で約90分（屋我地大橋・ワルミ大橋・古宇利大橋で陸続き）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 7.77,
+    "radius_m": 1800,
+    "checkin_radius_m": 3500,
+    "points": 50,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "yagajishima_okinawa"
+  },
+  "yabuchijima_okinawa": {
+    "id": "yabuchijima_okinawa",
+    "name": "藪地島（沖縄県うるま市）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.3175, 127.9219",
+    "description": "勝連半島の南東沖に浮かび、藪地大橋で結ばれた島。琉球開闢の聖地とされる海食洞「ジャネー洞」や手つかずの自然海岸が残る神秘の島。",
+    "access": "那覇空港より車で約60分（勝連半島より藪地大橋で陸続き）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.62,
+    "radius_m": 500,
+    "checkin_radius_m": 1500,
+    "points": 50,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "yabuchijima_okinawa"
+  },
+  "kayamajima_yaeyama": {
+    "id": "kayamajima_yaeyama",
+    "name": "嘉弥真島（八重山・うさぎ島）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3611, 124.0003",
+    "description": "小浜島の北東約2kmに浮かぶ周囲約2.5kmの島。野生のウサギが暮らす島として知られ、周囲を取り巻く巨大なサンゴ礁（カヤマアイランドリーフ）は八重山屈指のシュノーケリングスポット。",
+    "access": "石垣島・小浜島よりマリンツアー船で約15〜30分（ツアーで上陸可能）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.39,
+    "radius_m": 450,
+    "checkin_radius_m": 1500,
+    "points": 450,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "kayamajima_yaeyama"
+  },
+  "uchibanari_yaeyama": {
+    "id": "uchibanari_yaeyama",
+    "name": "内離島（西表島沖）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3647, 123.7397",
+    "description": "西表島西部の白浜港の向かいに浮かぶ島。明治から昭和にかけて西表炭坑の中心地として栄えた近代産業遺産の島。",
+    "access": "定期船なし（西表島・白浜港の対岸、シーカヤックツアー等で周辺海域へアクセス）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.1,
+    "radius_m": 900,
+    "checkin_radius_m": 2000,
+    "points": 500,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "uchibanari_yaeyama"
+  },
+  "sotobanari_yaeyama": {
+    "id": "sotobanari_yaeyama",
+    "name": "外離島（西表島沖）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3747, 123.7192",
+    "description": "内離島のさらに西側に並ぶ無人島。エメラルドグリーンの礁湖と白砂のビーチに囲まれた西表島西端の秘境島。",
+    "access": "定期船なし（西表島・白浜港より周辺海域マリンツアー）",
+    "flags": {
+      "宿泊・観光": "no",
+      "陸地座標実証済": "yes"
+    },
+    "area": 1.32,
+    "radius_m": 700,
+    "checkin_radius_m": 1800,
+    "points": 500,
+    "difficulty": "上陸制限・特別保護島",
+    "is_conquest_target": false,
+    "slug": "sotobanari_yaeyama"
+  },
+  "iwashima_kagawa": {
+    "id": "iwashima_kagawa",
+    "name": "岩黒島（香川県坂出市・瀬戸大橋）",
+    "region_id": "shiwaku",
+    "prefecture": "香川県",
+    "coordinates": "34.4039, 133.8094",
+    "description": "瀬戸大橋が頭上を通過する塩飽諸島の有人島。高速道路上のバス停からエレベーターで島へ降りる珍しい構造を持ち、活気ある漁港と海鮮民宿がある島。",
+    "access": "瀬戸大橋線「岩黒島バス停」よりエレベーターで下島、または坂出港等より海上タクシー（一般車両の直接乗り入れ不可）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.16,
+    "radius_m": 350,
+    "checkin_radius_m": 1500,
+    "points": 80,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "iwashima_kagawa"
+  },
+  "tashima_hiroshima": {
+    "id": "tashima_hiroshima",
+    "name": "田島（広島県福山市・内海大橋）",
+    "region_id": "kasaoka",
+    "prefecture": "広島県",
+    "coordinates": "34.3556, 133.3111",
+    "description": "福山市本土と優美なアーチを描く内海大橋で結ばれ、隣の横島とも睦橋でつながる有人島。クレセントビーチや海鮮料理、国産アボカド栽培で人気の瀬戸内ドライブアイランド。",
+    "access": "福山市街より内海大橋を渡って車で約35分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 8.59,
+    "radius_m": 1800,
+    "checkin_radius_m": 3500,
+    "points": 40,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "tashima_hiroshima"
+  },
+  "okamurajima_ehime": {
+    "id": "okamurajima_ehime",
+    "name": "岡村島（愛媛県今治市・とびしま海道）",
+    "region_id": "kamijima",
+    "prefecture": "愛媛県",
+    "coordinates": "34.1869, 132.8742",
+    "description": "安芸灘とびしま海道7つの橋の東の終点に位置する愛媛県今治市関前地区の中心有人島。広島県側の大崎下島と県境の岡村大橋で結ばれ、今治・大三島へのフェリーも発着するサイクリスト憧れの島。",
+    "access": "呉市本土より「安芸灘とびしま海道」で陸続き、または今治港・大三島（宗方港）より市営フェリー・高速船",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 3.13,
+    "radius_m": 1100,
+    "checkin_radius_m": 2500,
+    "points": 60,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "okamurajima_ehime"
+  },
+  "oshimajima_ehime": {
+    "id": "oshimajima_ehime",
+    "name": "大下島（愛媛県今治市）",
+    "region_id": "kamijima",
+    "prefecture": "愛媛県",
+    "coordinates": "34.1942, 132.9233",
+    "description": "岡村島と大三島の間の斎灘に浮かぶ今治市関前地区の有人島。白亜の大下島灯台と段々畑の柑橘園、透き通った潮の流れが美しい静寂の島。",
+    "access": "今治港または大三島（宗方港）・岡村港より今治市営フェリー・旅客船",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 1.75,
+    "radius_m": 800,
+    "checkin_radius_m": 2000,
+    "points": 120,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "oshimajima_ehime"
+  },
+  "kabashima_nagasaki": {
+    "id": "kabashima_nagasaki",
+    "name": "樺島（長崎市・野母崎）",
+    "region_id": "pseudo_saikai",
+    "prefecture": "長崎県",
+    "coordinates": "32.5642, 129.7794",
+    "description": "長崎半島の南端・野母崎と樺島大橋で結ばれた有人島。国の天然記念物「樺島のオオウナギ」や、五島灘と天草を一望する樺島灯台公園で知られる漁師町。",
+    "access": "長崎市街より車で約45分（樺島大橋で陸続き）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 2.22,
+    "radius_m": 900,
+    "checkin_radius_m": 2200,
+    "points": 40,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "kabashima_nagasaki"
+  },
+  "kabashima_goto": {
+    "id": "kabashima_goto",
+    "name": "椛島（五島列島・五島市）",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "32.7617, 128.9833",
+    "description": "福江島の北東沖に浮かぶ五島市伊福貴町の有人島。複雑なリアス式海岸の入り江に本窯・伊福貴の2集落があり、ヤブツバキと伊勢海老漁で知られる静かな島。",
+    "access": "五島・福江港より木口汽船「ソレイユ」で約25〜30分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 8.75,
+    "radius_m": 1800,
+    "checkin_radius_m": 3500,
+    "points": 260,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "kabashima_goto"
+  },
+  "hinoshima_goto": {
+    "id": "hinoshima_goto",
+    "name": "日島（五島列島・新上五島町）",
+    "region_id": "goto",
+    "prefecture": "長崎県",
+    "coordinates": "32.9219, 128.9669",
+    "description": "若松島の南西に位置し、有福島・漁生浦島と橋で連なる新上五島町の有人島。中世から近世にかけての石塔群「日島曲古墓群（国指定史跡）」が残る歴史の島。",
+    "access": "新上五島町・中通島より若松大橋・漁生浦橋・有福大橋・日島大橋を経て車でアクセス可能",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 1.39,
+    "radius_m": 750,
+    "checkin_radius_m": 2000,
+    "points": 180,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "hinoshima_goto"
+  },
+  "shinshima_kagoshima": {
+    "id": "shinshima_kagoshima",
+    "name": "新島（しんじま・鹿児島県桜島沖）",
+    "region_id": "osumi",
+    "prefecture": "鹿児島県",
+    "coordinates": "31.6175, 130.7244",
+    "description": "江戸時代の安永大噴火（1780年）で錦江湾の海底が隆起して誕生した桜島北東沖の島。白い貝殻砂のビーチと雄大な桜島の姿を正面に望み、市営連絡船で行ける癒やしの島。",
+    "access": "桜島・浦之前港より鹿児島市営行政連絡船「しんじま丸」で約10分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.13,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 120,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "shinshima_kagoshima"
+  },
+  "geshijima_amakusa": {
+    "id": "geshijima_amakusa",
+    "name": "下須島（熊本県天草市牛深）",
+    "region_id": "amakusa",
+    "prefecture": "熊本県",
+    "coordinates": "32.1767, 130.0250",
+    "description": "天草下島の最南端・牛深港の対岸に浮かび、世界的建築家レンゾ・ピアノ設計の「牛深ハイヤ大橋」で結ばれた有人島。天草夕陽八景の砂月海水浴場やうしぶか海彩館が賑わう。",
+    "access": "天草下島・牛深より牛深ハイヤ大橋で陸続き（鹿児島・長島からの蔵之元フェリー発着港至近）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 4.52,
+    "radius_m": 1300,
+    "checkin_radius_m": 2800,
+    "points": 50,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "geshijima_amakusa"
+  },
+  "tsujishima_amakusa": {
+    "id": "tsujishima_amakusa",
+    "name": "通詞島（熊本県天草市・イルカの島）",
+    "region_id": "amakusa",
+    "prefecture": "熊本県",
+    "coordinates": "32.5486, 130.1167",
+    "description": "天草下島北部の二江港沖に浮かび、通詞大橋で結ばれた周囲約4kmの有人島。早崎瀬戸の豊かな海に野生のミナミハンドウイルカ約200頭が通年定住するイルカウォッチングの聖地。",
+    "access": "天草市五和町二江より通詞大橋を渡って車ですぐ",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.48,
+    "radius_m": 500,
+    "checkin_radius_m": 1600,
+    "points": 60,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "tsujishima_amakusa"
   }
 };
 

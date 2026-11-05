@@ -73,9 +73,17 @@ export default function IslandCompareModal({ isOpen, onClose, initialSelected }:
     setSearchResults([]);
     setIsSearching(false);
     
-    // Fetch enriched data from Supabase
+    // Fetch enriched data from Supabase, preserving authoritative master coordinates/identity
     const { data } = await supabase.from('islands').select('*').eq('id', islandDef.id).maybeSingle();
-    const enriched = data ? { ...islandDef, ...data } : islandDef;
+    const enriched = data ? {
+      ...islandDef,
+      ...data,
+      name: islandDef.name || data.name,
+      slug: islandDef.slug || data.slug,
+      region_id: islandDef.region_id || data.region_id,
+      prefecture: islandDef.prefecture || data.prefecture,
+      coordinates: islandDef.coordinates || data.coordinates,
+    } : islandDef;
 
     setSelectedIslands(prev => [...prev, enriched]);
   };

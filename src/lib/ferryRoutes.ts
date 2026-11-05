@@ -153,6 +153,23 @@ export const REGION_FERRY_MAP: Record<string, FerryCompanyInfo[]> = {
       mainPorts: '宮古島平良港 ⇔ 多良間島普天間港',
     },
   ],
+  // 慶良間諸島
+  kerama: [
+    {
+      name: '座間味村営船（クイーンざまみ・フェリーざまみ）',
+      officialUrl: 'https://www.vill.zamami.okinawa.jp/',
+      statusUrl: 'https://www.vill.zamami.okinawa.jp/',
+      phone: '098-868-4567',
+      mainPorts: '那覇泊港（とまりん） ⇔ 阿嘉港・座間味港',
+    },
+    {
+      name: '渡嘉敷村営船（マリンライナーとかしき・フェリーとかしき）',
+      officialUrl: 'https://www.vill.tokashiki.okinawa.jp/ferry/top',
+      statusUrl: 'https://www.vill.tokashiki.okinawa.jp/ferry/top',
+      phone: '098-868-7541',
+      mainPorts: '那覇泊港（とまりん） ⇔ 渡嘉敷港',
+    },
+  ],
 };
 
 // デフォルトの全国フェリー案内窓口（マッピングがない島向け）
@@ -186,7 +203,7 @@ export function getFerryInfoForIsland(islandId: string | number, regionId?: stri
   // 2. prefecture から推測
   if (prefecture) {
     if (prefecture.includes('東京')) {
-      if (sId === 'chichijima' || sId === 'hahajima' || sId === '63' || sId === '64') {
+      if (sId === 'chichijima' || sId === 'hahajima' || sId === '63' || sId === '64' || sId.includes('ogasawara')) {
         return REGION_FERRY_MAP.ogasawara;
       }
       return REGION_FERRY_MAP.izu;
