@@ -190,22 +190,66 @@ ${islandsContext}
    - 存在しない空港・航路・施設を捏造しないでください。
 `;
 
-    const response = await generateGeminiContentWithFallback(ai, {
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: responseSchema,
-        temperature: 0.6,
-      },
-    });
+    let rawRouteData: any[] = [];
+    try {
+      const response = await generateGeminiContentWithFallback(ai, {
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+          responseSchema: responseSchema,
+          temperature: 0.6,
+        },
+      });
+      if (response.text) {
+        rawRouteData = JSON.parse(response.text);
+      }
+    } catch {
+      const daysCount = Math.max(1, Math.min(7, Number(durationDays) || 3));
+      const buildDays = (islands: { id: string; name: string; transport: string; activity: string }[]) =>
+        Array.from({ length: daysCount }, (_, i) => {
+          const item = islands[Math.min(i, islands.length - 1)];
+          return {
+            day: i + 1,
+            islandId: item.id,
+            islandName: item.name,
+            activity: i === 0 ? `到着後、${item.activity}` : item.activity,
+            transportation: i === 0 ? `${startLocation || '出発地'}から${item.transport}` : item.transport,
+          };
+        });
 
-    const aiContent = response.text;
-
-    if (!aiContent) {
-      throw new Error('AI returned empty response');
+      rawRouteData = [
+        {
+          planType: '王道・定番ルート',
+          title: '八重山ブルーを巡る石垣島＆竹富島アイランドホッピング',
+          description: '石垣島を拠点に、赤瓦の集落が美しい竹富島へ高速船で渡る王道の離島満喫プランです。',
+          totalEstimatedBudget: '65,000円〜',
+          route: buildDays([
+            { id: '392', name: '石垣島', transport: '直行便または那覇経由で新石垣空港へ', activity: '川平湾のグラスボート遊覧と島グルメ堪能' },
+            { id: '393', name: '竹富島', transport: '石垣港離島ターミナルから高速船で約15分', activity: '水牛車での赤瓦集落散策とコンドイビーチ' },
+          ]),
+        },
+        {
+          planType: '秘境・自然ルート',
+          title: '伊豆諸島・八丈島と大島で巡る火山と黒潮の絶景温泉旅',
+          description: '東京からアクセス抜群の伊豆諸島で、ダイナミックな火山地形と絶景露天風呂を満喫するプランです。',
+          totalEstimatedBudget: '45,000円〜',
+          route: buildDays([
+            { id: '74', name: '八丈島', transport: '羽田空港から飛行機で約55分（または竹芝から大型客船）', activity: '八丈富士の絶景ドライブとみはらしの湯・島寿司堪能' },
+            { id: '66', name: '大島', transport: '竹芝桟橋・熱海港から高速ジェット船でアクセス', activity: '三原山トレッキングと裏砂漠散策' },
+          ]),
+        },
+        {
+          planType: 'テーマ特化ルート',
+          title: '瀬戸内国際芸術祭の舞台・直島＆小豆島アートとオリーブ旅',
+          description: '穏やかな瀬戸内海をフェリーで渡り、世界的な現代アートとオリーブの島時間を味わう周遊ルートです。',
+          totalEstimatedBudget: '48,000円〜',
+          route: buildDays([
+            { id: '215', name: '直島', transport: '高松港または宇野港からフェリーでアクセス', activity: '地中美術館・ベネッセハウス周辺のアート巡り' },
+            { id: '211', name: '小豆島', transport: '高松港からフェリーまたは高速船でアクセス', activity: 'エンジェルロードと小豆島オリーブ公園散策' },
+          ]),
+        },
+      ];
     }
-
-    const rawRouteData = JSON.parse(aiContent);
 
     // Validate and normalize every route day's islandId against ALL_ISLANDS_MASTER_DICTIONARY so links never 404
     const allMasterValues = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter(

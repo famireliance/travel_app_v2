@@ -135,33 +135,65 @@ export async function POST(req: NextRequest) {
 ${islandListString}
 `;
 
-    const response = await generateGeminiContentWithFallback(ai, {
-      contents: prompt,
-      config: {
-        responseMimeType: 'application/json',
-        responseSchema: {
-          type: Type.ARRAY,
-          items: {
-            type: Type.OBJECT,
-            properties: {
-              id: { type: Type.STRING, description: '選んだ島のID' },
-              name: { type: Type.STRING, description: '選んだ島の名前' },
-              theme: { type: Type.STRING, description: 'この提案のテーマ（例: リラックス、アクティブ、穴場など）' },
-              reason: { type: Type.STRING, description: '候補島リストの事実データに基づき、なぜこの島をおすすめするのかの理由（100字程度）' },
+    let rawPlans: any[] = [];
+    try {
+      const response = await generateGeminiContentWithFallback(ai, {
+        contents: prompt,
+        config: {
+          responseMimeType: 'application/json',
+          responseSchema: {
+            type: Type.ARRAY,
+            items: {
+              type: Type.OBJECT,
+              properties: {
+                id: { type: Type.STRING, description: '選んだ島のID' },
+                name: { type: Type.STRING, description: '選んだ島の名前' },
+                theme: { type: Type.STRING, description: 'この提案のテーマ（例: リラックス、アクティブ、穴場など）' },
+                reason: { type: Type.STRING, description: '候補島リストの事実データに基づき、なぜこの島をおすすめするのかの理由（100字程度）' },
+              },
+              required: ['id', 'name', 'theme', 'reason'],
             },
-            required: ['id', 'name', 'theme', 'reason'],
           },
+          temperature: 0.5,
         },
-        temperature: 0.5,
-      },
-    });
-
-    const textResult = response.text;
-    if (!textResult) {
-      throw new Error('AI returned empty response');
+      });
+      if (response.text) {
+        rawPlans = JSON.parse(response.text);
+      }
+    } catch {
+      // Gemini全モデルが高負荷・一時障害時のスマート辞書マッチングフォールバック
+      const q = String(userInput || '').trim();
+      const keywords = q.split(/[\s、,・。]+/).filter((w) => w.length >= 2);
+      const scored = availableIslands.map((isl) => {
+        const text = `${isl.name} ${isl.prefecture} ${isl.area || ''} ${isl.description || ''} ${isl.access || ''}`;
+        let score = 0;
+        for (const kw of keywords) {
+          if (text.includes(kw)) score += 10;
+        }
+        if (q.includes('海') && (isl.prefecture === '沖縄県' || isl.prefecture === '鹿児島県' || isl.prefecture === '東京都')) score += 5;
+        if (q.includes('温泉') && (text.includes('温泉') || ['66', '71', '74', '330'].includes(String(isl.id)))) score += 12;
+        if (q.includes('アート') && (isl.prefecture === '香川県' || text.includes('アート') || text.includes('美術館'))) score += 12;
+        if (q.includes('日帰り') && isl.day_trip) score += 8;
+        return { isl, score };
+      });
+      scored.sort((a, b) => b.score - a.score);
+      const picked: any[] = [];
+      const usedPrefs = new Set<string>();
+      const themes = ['王道アイランドステイ', '絶景・自然満喫', '島時間・穴場トリップ'];
+      for (const item of scored) {
+        if (picked.length >= 3) break;
+        if (!usedPrefs.has(item.isl.prefecture || '') || picked.length === 2) {
+          usedPrefs.add(item.isl.prefecture || '');
+          picked.push({
+            id: String(item.isl.id),
+            name: item.isl.name,
+            theme: themes[picked.length] || 'おすすめ離島',
+            reason: `${item.isl.prefecture}・${item.isl.area || '離島エリア'}に位置する魅力あふれる島。${String(item.isl.description || '').slice(0, 80)}（アクセス: ${item.isl.access || '定期船・航空便'}）`,
+          });
+        }
+      }
+      rawPlans = picked;
     }
-
-    const rawPlans = JSON.parse(textResult);
     const validatedPlans = (Array.isArray(rawPlans) ? rawPlans : [])
       .map((p) => {
         const directMatch = ALL_ISLANDS_MASTER_DICTIONARY[String(p.id)];
