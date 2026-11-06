@@ -7,6 +7,7 @@ import {
   MapPin, CheckCircle, ShieldCheck, RefreshCw, AlertCircle 
 } from 'lucide-react';
 import type { PublicWifiSpot } from '@/lib/wifiStore';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 interface AdminWifiManagementProps {
   password: string;
@@ -190,7 +191,22 @@ export default function AdminWifiManagement({ password }: AdminWifiManagementPro
     }
   };
 
-  const selectedIsland = ISLAND_OPTIONS.find(i => i.id === selectedIslandId);
+  const allPublishedIslands = React.useMemo(
+    () =>
+      Object.values(ALL_ISLANDS_MASTER_DICTIONARY)
+        .filter((i: any) => i.is_published !== false)
+        .sort((a: any, b: any) => Number(a.id) - Number(b.id)),
+    []
+  );
+
+  const selectedIsland =
+    ISLAND_OPTIONS.find((i) => i.id === selectedIslandId) ||
+    (() => {
+      const m: any =
+        ALL_ISLANDS_MASTER_DICTIONARY[selectedIslandId] ||
+        allPublishedIslands.find((i: any) => String(i.id) === selectedIslandId || i.slug === selectedIslandId);
+      return m ? { id: String(m.id), name: m.name, region: m.prefecture || m.area || '' } : undefined;
+    })();
 
   return (
     <div className="space-y-6">
@@ -253,6 +269,26 @@ export default function AdminWifiManagement({ password }: AdminWifiManagementPro
                   </span>
                 </button>
               ))}
+              <select
+                value={selectedIslandId}
+                onChange={(e) => setSelectedIslandId(e.target.value)}
+                className="px-3 py-2 rounded-xl text-xs font-bold bg-slate-50 border border-slate-300 text-slate-800 focus:outline-none focus:border-emerald-500"
+              >
+                <optgroup label="主要離島クイック選択">
+                  {ISLAND_OPTIONS.map((opt) => (
+                    <option key={opt.id} value={opt.id}>
+                      {opt.name} ({opt.region})
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="全国351公開離島から選択">
+                  {allPublishedIslands.map((isl: any) => (
+                    <option key={isl.id} value={String(isl.id)}>
+                      #{isl.id} {isl.name} ({isl.prefecture})
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
             </div>
           </div>
 

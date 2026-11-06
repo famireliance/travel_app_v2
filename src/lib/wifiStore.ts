@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 export interface PublicWifiSpot {
   id: string;
@@ -23,6 +25,51 @@ export const DEFAULT_CELL_NOTES: Record<string, string> = {
   amami: '港・空港・名瀬市街は全社4G。山間部・トンネルはdocomo推奨。',
 };
 
+const SLUG_ALIASES: Record<string, string[]> = {
+  hachijojima: ['74', 'hachijojima'],
+  ishigakijima: ['392', 'ishigakijima', 'ishigaki'],
+  aogashima: ['75', 'aogashima'],
+  amami: ['334', 'amami', 'amamioshima'],
+  miyako: ['384', 'miyako', 'miyakojima'],
+  oshima: ['66', 'oshima', 'izuoshima'],
+  chichijima: ['76', 'chichijima'],
+};
+
+/**
+ * 数値ID（例: "74"）とスラッグ（例: "hachijojima"）の双方を解決して候補リストを返す
+ */
+export function resolveIslandIdCandidates(rawId: string): string[] {
+  const clean = String(rawId || '').trim().toLowerCase();
+  if (!clean) return [];
+  const candidates = new Set<string>([clean, String(rawId).trim()]);
+
+  if (SLUG_ALIASES[clean]) {
+    SLUG_ALIASES[clean].forEach((a) => candidates.add(a));
+  }
+  for (const [aliasKey, list] of Object.entries(SLUG_ALIASES)) {
+    if (list.includes(clean)) {
+      candidates.add(aliasKey);
+      list.forEach((a) => candidates.add(a));
+    }
+  }
+
+  const direct = ALL_ISLANDS_MASTER_DICTIONARY[clean] || ALL_ISLANDS_MASTER_DICTIONARY[String(rawId).trim()];
+  if (direct) {
+    candidates.add(String(direct.id));
+    if (direct.slug) candidates.add(String(direct.slug).toLowerCase());
+  } else {
+    const bySlugOrName = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+      (i) => String(i.slug || '').toLowerCase() === clean || String(i.name || '') === String(rawId).trim()
+    );
+    if (bySlugOrName) {
+      candidates.add(String(bySlugOrName.id));
+      if (bySlugOrName.slug) candidates.add(String(bySlugOrName.slug).toLowerCase());
+    }
+  }
+
+  return Array.from(candidates);
+}
+
 /** island_public_wifi テーブル操作用クライアント（Service Role使用） */
 export function getDbClient() {
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -34,18 +81,56 @@ export function getDbClient() {
 export async function getWifiSpots(islandId?: string): Promise<PublicWifiSpot[]> {
   const client = getDbClient();
   if (!client) return [];
-  
+
   let query = client.from('island_public_wifi').select('*').order('created_at', { ascending: false });
   if (islandId) {
-    query = query.eq('island_id', islandId);
+    const candidates = resolveIslandIdCandidates(islandId);
+    if (candidates.length > 1) {
+      query = query.in('island_id', candidates);
+    } else {
+      query = query.eq('island_id', islandId);
+    }
   }
-  
+
   const { data, error } = await query;
   if (error) {
     console.error('[wifiStore] getWifiSpots error:', error);
     return [];
   }
   return data || [];
+}
+
+export async function getCellNotes(): Promise<Record<string, string>> {
+  const saved = await getFallbackJson<Record<string, string>>('wifi_cell_notes', {});
+  return {
+    ...DEFAULT_CELL_NOTES,
+    ...(saved || {}),
+  };
+}
+
+export async function getCellNoteForIsland(islandId: string): Promise<string | null> {
+  const notes = await getCellNotes();
+  const candidates = resolveIslandIdCandidates(islandId);
+  for (const key of candidates) {
+    if (notes[key]) return notes[key];
+  }
+  return null;
+}
+
+export async function saveCellNote(islandId: string, cellNote: string): Promise<Record<string, string>> {
+  const saved = await getFallbackJson<Record<string, string>>('wifi_cell_notes', {});
+  const next = {
+    ...DEFAULT_CELL_NOTES,
+    ...(saved || {}),
+  };
+  const candidates = resolveIslandIdCandidates(islandId);
+  const cleanNote = sanitizeText(cellNote, 400);
+  next[islandId] = cleanNote;
+  for (const c of candidates) {
+    next[c] = cleanNote;
+  }
+  await setFallbackJson('wifi_cell_notes', next);
+  return next;
 }
 
 export async function saveWifiSpot(spot: Partial<PublicWifiSpot>): Promise<PublicWifiSpot | null> {
@@ -55,7 +140,7 @@ export async function saveWifiSpot(spot: Partial<PublicWifiSpot>): Promise<Publi
   const payload = {
     ...spot,
     id: spot.id || `spot_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-    updated_at: new Date().toISOString()
+    updated_at: new Date().toISOString(),
   };
 
   const { data, error } = await client.from('island_public_wifi').upsert(payload).select().single();
@@ -69,7 +154,7 @@ export async function saveWifiSpot(spot: Partial<PublicWifiSpot>): Promise<Publi
 export async function deleteWifiSpot(id: string): Promise<boolean> {
   const client = getDbClient();
   if (!client) throw new Error('DB Client is not available');
-  
+
   const { error } = await client.from('island_public_wifi').delete().eq('id', id);
   if (error) {
     console.error('[wifiStore] deleteWifiSpot error:', error);
@@ -79,5 +164,8 @@ export async function deleteWifiSpot(id: string): Promise<boolean> {
 }
 
 export function sanitizeText(v: unknown, max = 200): string {
-  return String(v ?? '').replace(/[<>\u0000-\u001f]/g, '').trim().slice(0, max);
+  return String(v ?? '')
+    .replace(/[<>\u0000-\u001f]/g, '')
+    .trim()
+    .slice(0, max);
 }

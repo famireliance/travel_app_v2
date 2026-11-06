@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI, Type } from '@google/genai';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { createClient } from '@supabase/supabase-js';
+import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
 
 // Vercel config
 export const maxDuration = 30; // max execution time
@@ -134,8 +135,7 @@ export async function POST(req: NextRequest) {
 ${islandListString}
 `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+    const response = await generateGeminiContentWithFallback(ai, {
       contents: prompt,
       config: {
         responseMimeType: 'application/json',

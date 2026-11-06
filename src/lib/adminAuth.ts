@@ -111,7 +111,9 @@ export async function validateTokenString(token: string): Promise<AdminUser | nu
 }
 
 export async function getAuthUser(req: NextRequest): Promise<AdminUser | null> {
-  const token = req.headers.get('x-admin-password');
+  const headerPw = req.headers.get('x-admin-password');
+  const bearerPw = req.headers.get('authorization')?.replace(/^Bearer\s+/i, '').trim();
+  const token = headerPw || bearerPw;
   if (!token) return null;
   return await validateTokenString(token);
 }

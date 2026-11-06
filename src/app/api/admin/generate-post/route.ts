@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getAuthUser } from '@/lib/adminAuth';
+import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
 
 export async function POST(request: NextRequest) {
   // Admin authentication required
@@ -40,8 +41,7 @@ export async function POST(request: NextRequest) {
 - 見出しなどは使わず、そのまま投稿できるプレーンなテキストで出力すること
 - 絵文字を適度に使用すること`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+    const response = await generateGeminiContentWithFallback(ai, {
       contents: prompt,
     });
 

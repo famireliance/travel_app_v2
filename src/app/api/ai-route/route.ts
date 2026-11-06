@@ -4,6 +4,7 @@ import { GoogleGenAI, Type, Schema } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import regionsData from '@/data/regions.json';
+import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
 
 // Helper to initialize Gemini conditionally so the app doesn't crash if API key is missing
 const getGeminiClient = () => {
@@ -189,8 +190,7 @@ ${islandsContext}
    - 存在しない空港・航路・施設を捏造しないでください。
 `;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+    const response = await generateGeminiContentWithFallback(ai, {
       contents: prompt,
       config: {
         responseMimeType: 'application/json',

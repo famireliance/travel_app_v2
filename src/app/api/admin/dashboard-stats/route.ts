@@ -88,14 +88,13 @@ export async function GET(req: NextRequest) {
     // 月額サブスクリプション概算 (Premium: ¥480, Ultimate: ¥980)
     const monthlySubscriptionRevenue = (premiumUsers * 480) + (ultimateUsers * 980);
 
-    // 3. 島マスター数 & 投稿日記数 & お問い合わせ未読数
-    const { count: islandCount } = await adminClient
-      .from('islands')
-      .select('*', { count: 'exact', head: true });
-
-    const { count: diaryCount } = await adminClient
-      .from('island_diaries')
-      .select('*', { count: 'exact', head: true });
+    // 3. 島マスター数 & 投稿日記数 & 到達記録数 & デジタル証明書数 & お問い合わせ未読数
+    const [{ count: islandCount }, { count: diaryCount }, { count: visitCount }, { count: certificateCount }] = await Promise.all([
+      adminClient.from('islands').select('*', { count: 'exact', head: true }),
+      adminClient.from('island_diaries').select('*', { count: 'exact', head: true }),
+      adminClient.from('island_visits').select('*', { count: 'exact', head: true }),
+      adminClient.from('certificates').select('*', { count: 'exact', head: true }),
+    ]);
 
     let unhandledContacts = 0;
     try {
@@ -148,6 +147,8 @@ export async function GET(req: NextRequest) {
         monthlySubscriptionRevenue,
         islandCount: islandCount || 0,
         diaryCount: diaryCount || 0,
+        visitCount: visitCount || 0,
+        certificateCount: certificateCount || 0,
         unhandledContacts: unhandledContacts || 0,
       },
       recentOrders,

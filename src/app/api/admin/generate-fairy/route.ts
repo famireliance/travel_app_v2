@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenAI } from '@google/genai';
 import { getAuthUser } from '@/lib/adminAuth';
+import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
 
 export async function POST(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -38,8 +39,7 @@ export async function POST(req: NextRequest) {
   "sparkle_color": "text-emerald-200 などのテキストカラー"
 }`;
 
-    const response = await ai.models.generateContent({
-      model: 'gemini-2.5-flash',
+    const response = await generateGeminiContentWithFallback(ai, {
       contents: prompt,
     });
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getWifiSpots } from '@/lib/wifiStore';
+import { getWifiSpots, getCellNoteForIsland } from '@/lib/wifiStore';
 
 export async function GET(
   _req: NextRequest,
@@ -8,20 +8,23 @@ export async function GET(
   try {
     const { id } = await params;
     const islandId = id.toLowerCase();
-    const allSpots = await getWifiSpots(islandId);
-    
-    const spots = allSpots.map(s => ({
-        name: s.name,
-        location: s.location,
-        ssid: s.ssid,
-        hasPassword: s.has_password,
-        password: s.has_password ? s.password : undefined,
-        authMethod: s.auth_method,
-        note: s.notes,
-      }));
-      
+    const [allSpots, cellNote] = await Promise.all([
+      getWifiSpots(islandId),
+      getCellNoteForIsland(islandId),
+    ]);
+
+    const spots = allSpots.map((s) => ({
+      name: s.name,
+      location: s.location,
+      ssid: s.ssid,
+      hasPassword: s.has_password,
+      password: s.has_password ? s.password : undefined,
+      authMethod: s.auth_method,
+      note: s.notes,
+    }));
+
     return NextResponse.json(
-      { island_id: islandId, spots, cellNote: null },
+      { island_id: islandId, spots, cellNote },
       { headers: { 'Cache-Control': 'no-store' } }
     );
   } catch (err: any) {

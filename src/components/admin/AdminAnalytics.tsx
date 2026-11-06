@@ -23,9 +23,33 @@ interface AdminAnalyticsProps {
 }
 
 export default function AdminAnalytics({ password }: AdminAnalyticsProps) {
-  const [selectedMonth, setSelectedMonth] = useState('2026-09');
+  const [selectedMonth, setSelectedMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [selectedRegion, setSelectedRegion] = useState('all');
-  const [isGeneratingPrint, setIsGeneratingPrint] = useState(false);
+  const [liveSummary, setLiveSummary] = useState<{
+    islandCount: number;
+    visitCount: number;
+    certificateCount: number;
+    totalOrders: number;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!password) return;
+    fetch('/api/admin/dashboard-stats', {
+      headers: { 'x-admin-password': password },
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.summary) {
+          setLiveSummary({
+            islandCount: data.summary.islandCount || 465,
+            visitCount: data.summary.visitCount || 0,
+            certificateCount: data.summary.certificateCount || 0,
+            totalOrders: data.summary.totalOrders || 0,
+          });
+        }
+      })
+      .catch(() => {});
+  }, [password]);
 
   // 主要自治体・地域の定義
   const PREFECTURE_REGIONS = [
@@ -205,10 +229,10 @@ export default function AdminAnalytics({ password }: AdminAnalyticsProps) {
             <MapPin className="w-4 h-4 text-blue-400" />
           </div>
           <p className="text-2xl font-black text-white">
-            {selectedRegion === 'all' ? 430 : currentIslands.length} <span className="text-xs font-normal text-slate-400">島</span>
+            {selectedRegion === 'all' ? (liveSummary?.islandCount || 465) : currentIslands.length} <span className="text-xs font-normal text-slate-400">島</span>
           </p>
           <span className="text-[11px] text-slate-400 font-bold mt-1 inline-block">
-            {selectedRegion === 'all' ? '有人離島430島網羅' : `${selectedRegion}管内`}
+            {selectedRegion === 'all' ? '全国465島（制覇対象351島）網羅' : `${selectedRegion}管内`}
           </span>
         </div>
 
@@ -297,7 +321,7 @@ export default function AdminAnalytics({ password }: AdminAnalyticsProps) {
             </div>
             <div>
               <span className="text-xs text-slate-500 block">対象離島数</span>
-              <span className="text-xl font-bold text-slate-900">{selectedRegion === 'all' ? 430 : currentIslands.length} 島</span>
+              <span className="text-xl font-bold text-slate-900">{selectedRegion === 'all' ? (liveSummary?.islandCount || 465) : currentIslands.length} 島</span>
             </div>
             <div>
               <span className="text-xs text-slate-500 block">推定観光消費額</span>

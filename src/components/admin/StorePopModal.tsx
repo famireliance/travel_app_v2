@@ -18,7 +18,7 @@ export default function StorePopModal({ isOpen, onClose, store }: StorePopModalP
 
   const islandInfo = ALL_ISLANDS_MASTER_DICTIONARY[store.island_id] || { name: store.island_id, prefecture: '離島' };
   const islandName = islandInfo.name || store.island_id;
-  const storeUrl = `https://island.kira-tabi.com/island/${store.island_id}?ref=${store.referral_code}`;
+  const storeUrl = `https://island.kira-tabi.com/island/${store.island_id}?ref_store=${store.referral_code}`;
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${encodeURIComponent(storeUrl)}`;
 
   const handlePrint = () => {
@@ -98,7 +98,7 @@ export default function StorePopModal({ isOpen, onClose, store }: StorePopModalP
                   </h1>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-bold text-amber-600 block">日本の離島432島制覇</span>
+                  <span className="text-xs font-bold text-amber-600 block">全国465島・有人離島完全網羅</span>
                   <span className="text-[10px] text-slate-400 font-mono">island.kira-tabi.com</span>
                 </div>
               </div>

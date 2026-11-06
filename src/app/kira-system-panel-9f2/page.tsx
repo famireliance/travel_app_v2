@@ -100,6 +100,7 @@ export default function AdminPage() {
   const [ticketInputCount, setTicketInputCount] = useState<number>(1);
 
   // Password Change State
+  const [currentPasswordInput, setCurrentPasswordInput] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [changePasswordMessage, setChangePasswordMessage] = useState('');
 
@@ -431,7 +432,7 @@ export default function AdminPage() {
           'x-admin-password': password,
         },
         body: JSON.stringify({
-          currentPassword: password,
+          currentPassword: currentPasswordInput || password,
           newPassword
         })
       });
@@ -441,6 +442,7 @@ export default function AdminPage() {
         return;
       }
       setChangePasswordMessage(data.message || 'パスワードを変更しました');
+      setCurrentPasswordInput('');
       setNewPassword('');
     } catch (err: any) {
       setChangePasswordMessage(`エラー: ${err.message}`);
@@ -1422,18 +1424,30 @@ export default function AdminPage() {
             <div className="bg-gray-900 border border-gray-800 p-6 rounded-2xl shadow-lg">
               <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
                 <div>
+                  <label className="block text-gray-400 mb-1 font-bold">現在のパスワード</label>
+                  <input
+                    type="password"
+                    className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500"
+                    value={currentPasswordInput}
+                    onChange={(e) => setCurrentPasswordInput(e.target.value)}
+                    placeholder="現在使用中の管理者パスワードを入力"
+                    required
+                  />
+                </div>
+                <div>
                   <label className="block text-gray-400 mb-1 font-bold">新しいパスワード (8文字以上)</label>
                   <input
                     type="password"
                     className="w-full bg-gray-950 border border-gray-800 rounded-xl p-3 text-white focus:outline-none focus:border-amber-500"
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="8文字以上の新しいパスワードを入力"
                     required
                     minLength={8}
                   />
                 </div>
                 <button type="submit" className="w-full bg-amber-500 hover:bg-amber-400 text-black font-extrabold py-3 rounded-xl transition shadow active:scale-95">
-                  新しいパスワードのハッシュを生成
+                  パスワードを変更する
                 </button>
               </form>
               {changePasswordMessage && (

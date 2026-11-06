@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAuthUser } from '@/lib/adminAuth';
 import { logAuditEvent, extractClientInfo } from '@/lib/auditLogger';
-import { getWifiSpots, saveWifiSpot, deleteWifiSpot, getDbClient, sanitizeText, PublicWifiSpot } from '@/lib/wifiStore';
+import { getWifiSpots, saveWifiSpot, deleteWifiSpot, getCellNotes, saveCellNote, sanitizeText, PublicWifiSpot } from '@/lib/wifiStore';
 
 export async function GET(req: NextRequest) {
   const user = await getAuthUser(req);
   if (!user) return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   
   const island_id = new URL(req.url).searchParams.get('island_id') || undefined;
-  const spots = await getWifiSpots(island_id);
+  const [spots, cell_notes] = await Promise.all([
+    getWifiSpots(island_id),
+    getCellNotes(),
+  ]);
   
-  // For cell notes, we would ideally fetch from a DB table, but keeping it simple for now if they aren't in DB yet.
-  // Actually, we can fetch DEFAULT_CELL_NOTES if cellNotes table doesn't exist.
-  // We'll skip cell notes here or just return empty for now, as DB migration didn't include it. 
-  return NextResponse.json({ spots, cell_notes: {} });
+  return NextResponse.json({ spots, cell_notes });
 }
 
 function checkJurisdiction(user: { role: string; org_name?: string }, islandId: string): boolean {
@@ -112,8 +112,24 @@ export async function PUT(req: NextRequest) {
     const client = extractClientInfo(req);
 
     if (body.type === 'update_cell_note') {
-       // Mock for cell note update since it wasn't migrated to DB
-       return NextResponse.json({ success: true, cell_note: body.cell_note });
+      const targetIsland = sanitizeText(body.island_id, 80);
+      if (!targetIsland) {
+        return NextResponse.json({ error: 'island_id は必須です' }, { status: 400 });
+      }
+      if (!checkJurisdiction(user, targetIsland)) {
+        return NextResponse.json({ error: '管轄外の離島データは編集できません（テナント境界保護）' }, { status: 403 });
+      }
+      const prevNotes = await getCellNotes();
+      const prevNote = prevNotes[targetIsland] || '';
+      const nextNotes = await saveCellNote(targetIsland, body.cell_note || '');
+      await logAuditEvent({
+        actor: { user_id: user.id, role: user.role, name: user.name, org: user.org_name || 'System' },
+        client,
+        action: 'WIFI_CELL_NOTE_UPDATE',
+        target: { resource_type: 'wifi_cell_note', resource_id: targetIsland, island_id: targetIsland, details: `キャリア電波目安 (${targetIsland}) を更新` },
+        diff: { before: prevNote, after: nextNotes[targetIsland] },
+      });
+      return NextResponse.json({ success: true, cell_note: nextNotes[targetIsland], cell_notes: nextNotes });
     }
 
     const spots = await getWifiSpots();
