@@ -1309,7 +1309,13 @@ export default function Home() {
             <div className="p-5 lg:p-6 pt-0 border-t border-slate-100 bg-slate-50/50">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mt-6">
           {regions.map((region) => {
-            const pct = region.total > 0 ? (region.visited / region.total) * 100 : 0;
+            const islandsInThisRegion = allIslands.filter(i => i.region_id === region.id);
+            const regionTotalCount = islandsInThisRegion.length > 0 ? islandsInThisRegion.length : region.total;
+            const regionVisitedCount = islandsInThisRegion.filter(i => {
+              const st = islandStatuses[String(i.id)];
+              return st === 'visited' || st === 'verified_visited';
+            }).length;
+            const pct = regionTotalCount > 0 ? (regionVisitedCount / regionTotalCount) * 100 : 0;
             const hash = region.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
             
             // Match real user photos to correct regions
@@ -1379,13 +1385,13 @@ export default function Home() {
                   </div>
                   
                   {/* Ultra-thin Progress */}
-                  {region.total > 0 && (
+                  {regionTotalCount > 0 && (
                     <div className="flex items-center gap-4">
                       <div className="flex-1 h-[2px] bg-white/20 rounded-full overflow-hidden">
                         <div className="h-full bg-white rounded-full shadow-[0_0_8px_rgba(255,255,255,0.6)]" style={{ width: `${pct}%` }} />
                       </div>
                       <span className="text-[0.65rem] font-medium text-white/70 tracking-widest tabular-nums shrink-0">
-                        <span className={region.visited > 0 ? 'text-white' : ''}>{region.visited}</span> / {region.total}
+                        <span className={regionVisitedCount > 0 ? 'text-white' : ''}>{regionVisitedCount}</span> / {regionTotalCount}
                       </span>
                     </div>
                   )}
