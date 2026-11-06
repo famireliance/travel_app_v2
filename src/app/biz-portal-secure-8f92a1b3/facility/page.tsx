@@ -815,7 +815,7 @@ export default function BizPortalFacility() {
               value={formData.photo_exterior} 
               onChange={handleChange} 
               className="w-full p-2.5 text-xs bg-slate-50 border rounded-xl outline-none focus:bg-white focus:border-blue-500 font-mono" 
-              placeholder="https://images.unsplash.com/..." 
+              placeholder="https://..." 
             />
             {formData.photo_exterior && (
               <div className="h-32 rounded-xl overflow-hidden border border-slate-200">
@@ -832,7 +832,7 @@ export default function BizPortalFacility() {
               value={formData.photo_room} 
               onChange={handleChange} 
               className="w-full p-2.5 text-xs bg-slate-50 border rounded-xl outline-none focus:bg-white focus:border-blue-500 font-mono" 
-              placeholder="https://images.unsplash.com/..." 
+              placeholder="https://..." 
             />
             {formData.photo_room && (
               <div className="h-32 rounded-xl overflow-hidden border border-slate-200">
@@ -849,7 +849,7 @@ export default function BizPortalFacility() {
               value={formData.photo_food} 
               onChange={handleChange} 
               className="w-full p-2.5 text-xs bg-slate-50 border rounded-xl outline-none focus:bg-white focus:border-blue-500 font-mono" 
-              placeholder="https://images.unsplash.com/..." 
+              placeholder="https://..." 
             />
             {formData.photo_food && (
               <div className="h-32 rounded-xl overflow-hidden border border-slate-200">
@@ -866,7 +866,7 @@ export default function BizPortalFacility() {
               value={formData.photo_facility} 
               onChange={handleChange} 
               className="w-full p-2.5 text-xs bg-slate-50 border rounded-xl outline-none focus:bg-white focus:border-blue-500 font-mono" 
-              placeholder="https://images.unsplash.com/..." 
+              placeholder="https://..." 
             />
             {formData.photo_facility && (
               <div className="h-32 rounded-xl overflow-hidden border border-slate-200">

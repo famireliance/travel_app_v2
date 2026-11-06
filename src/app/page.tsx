@@ -15,9 +15,10 @@ import { supabase, fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '
 import BannerCarousel from '@/components/BannerCarousel';
 import { calculateDistanceKm } from '@/lib/geo';
 import { toast } from 'react-hot-toast';
+import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
+import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 
-
-const ALL_ISLANDS_COUNT = 429;
+const ALL_ISLANDS_COUNT = 465;
 
 const getIslandIdFromLocation = (location: string) => {
   if (location.includes('西表')) return '396';
@@ -26,16 +27,6 @@ const getIslandIdFromLocation = (location: string) => {
   if (location.includes('宮古')) return '386';
   if (location.includes('粟国')) return '382';
   return null;
-};
-
-const getFallbackPlaceholder = (areaOrPrefecture: string) => {
-  if (!areaOrPrefecture) return '/region/subtropical.jpg';
-  if (areaOrPrefecture.includes('沖縄')) return '/region/tropical.jpg';
-  if (areaOrPrefecture.includes('北海道') || areaOrPrefecture.includes('東北') || areaOrPrefecture.includes('北陸')) return '/region/northern.jpg';
-  if (areaOrPrefecture.includes('四国') || areaOrPrefecture.includes('中国') || areaOrPrefecture.includes('近畿')) return '/region/setouchi.jpg';
-  if (areaOrPrefecture.includes('関東') || areaOrPrefecture.includes('伊豆') || areaOrPrefecture.includes('小笠原')) return '/region/volcanic.jpg';
-  if (areaOrPrefecture.includes('九州')) return '/region/subtropical.jpg';
-  return '/region/subtropical.jpg';
 };
 
 export default function Home() {
@@ -397,104 +388,143 @@ export default function Home() {
         <BannerCarousel campaigns={adCampaigns} marginTop="mt-[65px] lg:mt-[80px]" />
       )}
 
-      {/* Cinematic Hero Section */}
-      <div className={`relative ${adCampaigns.length > 0 ? 'min-h-[75dvh]' : 'min-h-[85dvh] lg:min-h-[90dvh]'} w-full overflow-hidden flex flex-col justify-end items-center -mt-[64px] pt-24`}>
-        {/* Subtle Ken Burns Effect */}
-        <motion.div 
-          className="absolute -inset-[10%] z-0 h-[120%] overflow-hidden bg-slate-900"
-          style={{ y: headerY }}
-        >
-          <AnimatePresence mode="wait">
-            {isMounted && slides[currentSlide] && slides[currentSlide].type === 'video' ? (
-              <motion.video 
-                key={`video-${currentSlide}`}
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                src={slides[currentSlide].src} 
-                className="absolute inset-0 w-full h-full object-cover"
-                autoPlay 
-                loop 
-                muted 
-                playsInline
-              />
-            ) : (
-              <motion.img 
-                key={`image-${currentSlide}`}
-                initial={{ opacity: 0, scale: 1.05 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1.5, ease: "easeInOut" }}
-                src={isMounted && slides[currentSlide] ? slides[currentSlide].src : slides[0].src} 
-                alt="Hero Background" 
-                className="absolute inset-0 w-full h-full object-cover"
-              />
-            )}
-          </AnimatePresence>
-        </motion.div>
-        
-        {/* Elegant Dark Gradients (Maximum Photo Vibrancy & Contrast) */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/70" />
-        
-        <motion.div 
-          className="relative z-10 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-12 lg:pb-32 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-12"
-          style={{ opacity: headerOpacity, y: headerY }}
-        >
-          <div className="mb-4 lg:mb-0 shrink-0 min-w-0">
+      {/* Cinematic Hero Section (Responsive Mobile Panorama + Desktop Full-Bleed) */}
+      <div className="relative w-full bg-slate-950 overflow-hidden -mt-[64px]">
+        {/* A. Photo / Video Viewport:
+            - スマホ(<1024px)では横写真の左右が切れないパノラマ比率(aspect-[16/11] / min-h-[380px])で写真をクリアに見せ、ダッシュボードは写真の下に分離配置
+            - PC(>=1024px)ではフルスクリーン(min-h-[88dvh]) */}
+        <div className={`relative w-full ${adCampaigns.length > 0 ? 'min-h-[420px] lg:min-h-[75dvh]' : 'min-h-[440px] sm:min-h-[520px] lg:min-h-[90dvh]'} overflow-hidden flex flex-col justify-end pt-20`}>
+          <motion.div 
+            className="absolute top-0 left-0 right-0 h-[360px] sm:h-[440px] lg:inset-0 lg:-inset-[6%] z-0 lg:h-[112%] overflow-hidden bg-slate-950"
+            style={{ y: headerY }}
+          >
             <AnimatePresence mode="wait">
-              <motion.div 
-                key={currentSlide}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.8, ease: "easeOut" }}
-              >
-                <h1 className="sr-only">日本の離島{totalIslandsCount}島を制覇しよう</h1>
-                <h2 className="font-serif text-3xl md:text-5xl lg:text-[4rem] font-light text-white leading-snug md:leading-[1.3] tracking-widest drop-shadow-lg mb-6 max-w-2xl break-words">
-                  {isMounted && slides[currentSlide] ? slides[currentSlide].title[0] : slides[0].title[0]}<br />
-                  {isMounted && slides[currentSlide] ? slides[currentSlide].title[1] : slides[0].title[1]}
-                </h2>
-                <div 
-                  className="flex items-center gap-2 text-white/90 mb-4 bg-black/20 hover:bg-black/40 backdrop-blur-sm w-fit px-3 py-1.5 rounded-full border border-white/10 cursor-pointer transition-colors group/loc"
-                  onClick={() => {
-                    const loc = isMounted && slides[currentSlide] ? slides[currentSlide].location : slides[0].location;
-                    const id = getIslandIdFromLocation(loc);
-                    if (id) router.push(`/island/${id}`);
-                  }}
+              {isMounted && slides[currentSlide] && slides[currentSlide].type === 'video' ? (
+                <motion.video 
+                  key={`video-${currentSlide}`}
+                  initial={{ opacity: 0, scale: 1.03 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  src={slides[currentSlide].src} 
+                  className="absolute inset-0 w-full h-full object-cover"
+                  autoPlay 
+                  loop 
+                  muted 
+                  playsInline
+                />
+              ) : (
+                <motion.div
+                  key={`image-${currentSlide}`}
+                  initial={{ opacity: 0, scale: 1.03 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.2, ease: "easeInOut" }}
+                  className="absolute inset-0 w-full h-full"
                 >
-                  <MapPin size={14} className="opacity-80 group-hover/loc:scale-110 transition-transform" />
-                  <span className="text-xs font-medium tracking-widest">{isMounted && slides[currentSlide] ? slides[currentSlide].location : slides[0].location}</span>
-                  <ArrowRight size={14} className="ml-1 opacity-50 group-hover/loc:opacity-100 group-hover/loc:translate-x-1 transition-all" />
-                </div>
-              </motion.div>
+                  {/* スマホで縦写真(mobileSrc)が設定されている場合は縦写真、横写真のみの場合は背景ぼかし＋自然なアスペクト比で表示 */}
+                  {(slides[currentSlide] as any)?.mobileSrc ? (
+                    <>
+                      <img
+                        src={(slides[currentSlide] as any).mobileSrc}
+                        alt="Hero Background Mobile"
+                        className="block md:hidden w-full h-full object-cover"
+                      />
+                      <img
+                        src={isMounted && slides[currentSlide] ? slides[currentSlide].src : slides[0].src}
+                        alt="Hero Background Desktop"
+                        className="hidden md:block w-full h-full object-cover"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {/* スマホ用: 横写真が極端にトリミングされないよう背面にぼかしレイヤー＋中央に横写真全体フレーム */}
+                      <div className="block md:hidden relative w-full h-full bg-slate-950">
+                        <img
+                          src={isMounted && slides[currentSlide] ? slides[currentSlide].src : slides[0].src}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 w-full h-full object-cover blur-2xl scale-110 opacity-50"
+                        />
+                        <img
+                          src={isMounted && slides[currentSlide] ? slides[currentSlide].src : slides[0].src}
+                          alt="Hero Background"
+                          className="relative z-10 w-full h-full object-contain sm:object-cover"
+                        />
+                      </div>
+                      {/* PC・タブレット用 */}
+                      <img
+                        src={isMounted && slides[currentSlide] ? slides[currentSlide].src : slides[0].src}
+                        alt="Hero Background"
+                        className="hidden md:block w-full h-full object-cover"
+                      />
+                    </>
+                  )}
+                </motion.div>
+              )}
             </AnimatePresence>
-            <p className="text-white/80 text-xs md:text-sm font-medium tracking-[0.4em] uppercase drop-shadow-sm mb-6">Japan Islands - {totalIslandsCount} Destinations</p>
+          </motion.div>
+          
+          {/* Elegant Dark Gradients */}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-slate-950/90 lg:to-black/70 pointer-events-none z-10" />
+          
+          {/* Hero Text & Navigation Overlay */}
+          <div className="relative z-20 w-full max-w-7xl mx-auto px-6 lg:px-12 pb-6 lg:pb-28 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 lg:gap-12">
+            <div className="shrink-0 min-w-0">
+              <AnimatePresence mode="wait">
+                <motion.div 
+                  key={currentSlide}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.8, ease: "easeOut" }}
+                >
+                  <h1 className="sr-only">日本の離島{totalIslandsCount}島を制覇しよう</h1>
+                  <h2 className="font-serif text-xl sm:text-3xl md:text-5xl lg:text-[3.75rem] font-light text-white leading-snug md:leading-[1.3] tracking-widest drop-shadow-lg mb-3 lg:mb-6 max-w-2xl break-words">
+                    {isMounted && slides[currentSlide] ? slides[currentSlide].title[0] : slides[0].title[0]}<br />
+                    {isMounted && slides[currentSlide] ? slides[currentSlide].title[1] : slides[0].title[1]}
+                  </h2>
+                  <div 
+                    className="flex items-center gap-2 text-white/95 mb-3 bg-black/40 hover:bg-black/60 backdrop-blur-md w-fit px-3 py-1.5 rounded-full border border-white/20 cursor-pointer transition-colors group/loc"
+                    onClick={() => {
+                      const loc = isMounted && slides[currentSlide] ? slides[currentSlide].location : slides[0].location;
+                      const id = getIslandIdFromLocation(loc);
+                      if (id) router.push(`/island/${id}`);
+                    }}
+                  >
+                    <MapPin size={14} className="text-cyan-300 group-hover/loc:scale-110 transition-transform" />
+                    <span className="text-xs font-medium tracking-widest">{isMounted && slides[currentSlide] ? slides[currentSlide].location : slides[0].location}</span>
+                    <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-1.5 py-0.5 rounded-full font-bold">現地実写</span>
+                    <ArrowRight size={14} className="ml-0.5 opacity-60 group-hover/loc:opacity-100 group-hover/loc:translate-x-1 transition-all" />
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+              <p className="text-white/75 text-[10px] md:text-sm font-medium tracking-[0.35em] uppercase drop-shadow-sm mb-3 lg:mb-6">Japan Islands - {totalIslandsCount} Destinations</p>
 
-            {/* Manual Navigation Controls */}
-            {isMounted && slides.length > 1 && (
-              <div className="flex items-center gap-4">
-                <button onClick={prevSlide} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white transition-all">
-                  <ChevronLeft size={18} strokeWidth={2} />
-                </button>
-                <button onClick={nextSlide} className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white transition-all">
-                  <ChevronRight size={18} strokeWidth={2} />
-                </button>
-                <div className="flex gap-2 ml-4">
-                  {slides.map((_, idx) => (
-                    <button 
-                      key={idx} 
-                      onClick={() => setCurrentSlide(idx)}
-                      className={`h-1.5 rounded-full transition-all duration-300 ${idx === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/60'}`}
-                    />
-                  ))}
+              {/* Manual Navigation Controls */}
+              {isMounted && slides.length > 1 && (
+                <div className="flex items-center gap-3">
+                  <button onClick={prevSlide} className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white transition-all shrink-0">
+                    <ChevronLeft size={18} strokeWidth={2} />
+                  </button>
+                  <button onClick={nextSlide} className="w-9 h-9 lg:w-10 lg:h-10 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 flex items-center justify-center text-white transition-all shrink-0">
+                    <ChevronRight size={18} strokeWidth={2} />
+                  </button>
+                  <div className="flex gap-1.5 ml-2 overflow-x-auto hide-scrollbar py-1">
+                    {slides.map((_, idx) => (
+                      <button 
+                        key={idx} 
+                        onClick={() => setCurrentSlide(idx)}
+                        className={`h-1.5 rounded-full transition-all duration-300 shrink-0 ${idx === currentSlide ? 'w-6 bg-white' : 'w-1.5 bg-white/40 hover:bg-white/60'}`}
+                      />
+                    ))}
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )}
+            </div>
 
-          {/* Premium Glass Dashboard */}
-          <div className="bg-white/10 backdrop-blur-2xl p-5 rounded-3xl border border-white/20 shadow-2xl relative overflow-hidden group w-full lg:w-[380px] shrink-0">
+            {/* Premium Glass Dashboard (スマホでは写真の邪魔にならないよう写真の直下に配置、PCでは右下に並列配置) */}
+            <div className="bg-slate-900/90 lg:bg-white/10 backdrop-blur-2xl p-5 rounded-3xl border border-white/15 lg:border-white/20 shadow-2xl relative overflow-hidden group w-full lg:w-[380px] shrink-0">
             <div className="flex justify-between items-end mb-4 relative z-10">
               <div>
                 <p className="text-[0.6rem] font-medium text-white/60 tracking-[0.2em] uppercase mb-1">{user ? 'Your Voyage' : 'Guest Voyage'}</p>
@@ -663,12 +693,13 @@ export default function Home() {
                 onClick={() => router.push('/route-planner')}
                 className="w-full py-2.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold tracking-widest text-xs flex items-center justify-center gap-2 transition-all hover:scale-[1.01]"
               >
-                <Sparkles size={15} className="text-amber-300" />
+                < Sparkles size={15} className="text-amber-300" />
                 <span>AI アイランドホッピング提案</span>
               </button>
             </div>
           </div>
-        </motion.div>
+          </div>
+        </div>
       </div>
 
       {/* Sticky Navigation for Mobile */}
@@ -774,16 +805,8 @@ export default function Home() {
                   <span className="text-[0.55rem] leading-none mb-0.5 opacity-90">No.</span>
                   <span className="text-xl leading-none">{idx + 1}</span>
                 </div>
-                <div className="h-40 bg-slate-200 relative overflow-hidden">
-                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
-                    const t = e.currentTarget as HTMLImageElement;
-                    const fallback = getFallbackPlaceholder(island.prefecture || '');
-                    if (!t.src.endsWith(fallback)) {
-                      t.src = fallback;
-                    } else {
-                      t.style.display = 'none';
-                    }
-                  }} />
+                <div className="h-40 bg-slate-900 relative overflow-hidden">
+                  <AuthenticIslandCardImage island={island} />
                 </div>
                 <div className="p-5">
                   <div className="text-[0.65rem] font-bold text-slate-400 tracking-widest mb-1">{island.prefecture}</div>
@@ -826,16 +849,8 @@ export default function Home() {
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-amber-50/50 rounded-2xl border border-amber-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
-                <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
-                    const t = e.currentTarget;
-                    const fallback = getFallbackPlaceholder(island.prefecture || '');
-                    if (!t.src.endsWith(fallback)) {
-                      t.src = fallback;
-                    } else {
-                      t.style.display = 'none';
-                    }
-                  }} />
+                <div className="h-28 bg-slate-900 relative overflow-hidden">
+                  <AuthenticIslandCardImage island={island} size="sm" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-amber-600 transition-colors">{island.name}</h3>
@@ -876,16 +891,8 @@ export default function Home() {
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-rose-50/50 rounded-2xl border border-rose-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
-                <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
-                    const t = e.currentTarget;
-                    const fallback = getFallbackPlaceholder(island.prefecture || '');
-                    if (!t.src.endsWith(fallback)) {
-                      t.src = fallback;
-                    } else {
-                      t.style.display = 'none';
-                    }
-                  }} />
+                <div className="h-28 bg-slate-900 relative overflow-hidden">
+                  <AuthenticIslandCardImage island={island} size="sm" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-rose-600 transition-colors">{island.name}</h3>
@@ -926,16 +933,8 @@ export default function Home() {
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-emerald-50/50 rounded-2xl border border-emerald-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
-                <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
-                    const t = e.currentTarget;
-                    const fallback = getFallbackPlaceholder(island.prefecture || '');
-                    if (!t.src.endsWith(fallback)) {
-                      t.src = fallback;
-                    } else {
-                      t.style.display = 'none';
-                    }
-                  }} />
+                <div className="h-28 bg-slate-900 relative overflow-hidden">
+                  <AuthenticIslandCardImage island={island} size="sm" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-emerald-600 transition-colors">{island.name}</h3>
@@ -968,16 +967,8 @@ export default function Home() {
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-blue-50/50 rounded-2xl border border-blue-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
-                <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
-                    const t = e.currentTarget;
-                    const fallback = getFallbackPlaceholder(island.prefecture || '');
-                    if (!t.src.endsWith(fallback)) {
-                      t.src = fallback;
-                    } else {
-                      t.style.display = 'none';
-                    }
-                  }} />
+                <div className="h-28 bg-slate-900 relative overflow-hidden">
+                  <AuthenticIslandCardImage island={island} size="sm" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-blue-600 transition-colors">{island.name}</h3>
@@ -1020,16 +1011,8 @@ export default function Home() {
                 onClick={() => router.push(`/island/${island.id}`)}
                 className="w-[240px] shrink-0 snap-start bg-indigo-50/50 rounded-2xl border border-indigo-100 overflow-hidden cursor-pointer group hover:shadow-lg transition-all"
               >
-                <div className="h-28 bg-slate-200 relative overflow-hidden">
-                  <img src={island.hero_image_url || island.image_url || `/region/${island.region_id || 'okinawa_main'}.jpg`} alt={island.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" onError={(e) => {
-                    const t = e.currentTarget as HTMLImageElement;
-                    const fallback = getFallbackPlaceholder(island.prefecture || '');
-                    if (!t.src.endsWith(fallback)) {
-                      t.src = fallback;
-                    } else {
-                      t.style.display = 'none';
-                    }
-                  }} />
+                <div className="h-28 bg-slate-900 relative overflow-hidden">
+                  <AuthenticIslandCardImage island={island} size="sm" />
                 </div>
                 <div className="p-4">
                   <h3 className="font-serif text-md font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">{island.name}</h3>
@@ -1191,22 +1174,9 @@ export default function Home() {
                         onClick={() => router.push(`/island/${isl.id}`)}
                         className="bg-white rounded-2xl overflow-hidden border border-slate-200/80 shadow-sm hover:shadow-md cursor-pointer transition-all flex flex-col group"
                       >
-                        <div className="relative h-36 overflow-hidden bg-slate-100">
-                          <img
-                            src={isl.hero_image_url || isl.image_url || `/region/${isl.region_id || 'okinawa_main'}.jpg`}
-                            onError={(e) => {
-                              const t = e.currentTarget;
-                              const fallback = getFallbackPlaceholder(isl.prefecture || '');
-                              if (!t.src.endsWith(fallback)) {
-                                t.src = fallback;
-                              } else {
-                                t.style.display = 'none';
-                              }
-                            }}
-                            alt={isl.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[0.65rem] font-medium">
+                        <div className="relative h-36 overflow-hidden bg-slate-900">
+                          <AuthenticIslandCardImage island={isl} />
+                          <div className="absolute top-2 right-2 z-20 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[0.65rem] font-medium">
                             {isl.prefecture || '日本離島'}
                           </div>
                         </div>
@@ -1352,17 +1322,18 @@ export default function Home() {
               return false;
             });
 
-            const representativeIsland = allIslands.find(i => (i.region_id === region.id || i.region_id === region.name || i.prefecture?.includes(region.name)) && (i.hero_image_url || i.image_url));
+            const representativeIsland = allIslands.find(i => {
+              const inRegion = i.region_id === region.id || i.region_id === region.name;
+              if (!inRegion) return false;
+              return getVerifiedIslandPhotos(i).hasVerifiedPhoto;
+            });
 
             let regionImg = '';
             if (regionSpecificSlides.length > 0) {
               regionImg = regionSpecificSlides[hash % regionSpecificSlides.length].src;
-            } else if (representativeIsland && (representativeIsland.hero_image_url || representativeIsland.image_url)) {
-              regionImg = representativeIsland.hero_image_url || representativeIsland.image_url;
-            } else if (region.hero_image_url) {
-              regionImg = region.hero_image_url;
-            } else {
-              regionImg = getFallbackPlaceholder(region.area);
+            } else if (representativeIsland) {
+              const vMeta = getVerifiedIslandPhotos(representativeIsland);
+              regionImg = vMeta.desktopUrl || vMeta.mobileUrl || '';
             }
             
             const isSelected = selectedRegionId === region.id;
@@ -1372,16 +1343,27 @@ export default function Home() {
                 whileHover={{ y: -4 }}
                 whileTap={{ scale: 0.98 }}
                 onClick={() => setSelectedRegionId(isSelected ? null : region.id)}
-                className={`relative h-[280px] rounded-2xl overflow-hidden shadow-lg cursor-pointer group transition-all ${
+                className={`relative h-[280px] rounded-2xl overflow-hidden shadow-lg cursor-pointer group transition-all bg-gradient-to-br from-slate-900 via-[#0d223c] to-slate-950 ${
                   isSelected ? 'ring-4 ring-blue-500 shadow-2xl scale-[1.02]' : ''
                 }`}
               >
-                {/* Full Bleed Background Image */}
-                <img 
-                  src={regionImg} 
-                  alt={region.name} 
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
-                />
+                {/* Full Bleed Background Image (検証済み現地写真がある場合のみ表示、無い場合は海図グラフィック) */}
+                {regionImg ? (
+                  <img 
+                    src={regionImg} 
+                    alt={region.name} 
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
+                  />
+                ) : (
+                  <div
+                    className="absolute inset-0 opacity-25 pointer-events-none"
+                    style={{
+                      backgroundImage:
+                        'radial-gradient(circle at 50% 40%, rgba(56, 189, 248, 0.3) 1px, transparent 1px), linear-gradient(to right, rgba(148, 163, 184, 0.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(148, 163, 184, 0.12) 1px, transparent 1px)',
+                      backgroundSize: '28px 28px',
+                    }}
+                  />
+                )}
                 
                 {/* Elegant Gradient Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/20 to-transparent transition-opacity duration-500" />

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { Compass, ArrowRight, Star } from 'lucide-react';
 import { getIslandDifficulty } from '@/lib/difficulty';
+import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 
 interface NearbyIslandsProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -60,7 +61,6 @@ export default function NearbyIslands({ currentIsland }: NearbyIslandsProps) {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
         {nearbyList.map((isl) => {
           const diffInfo = getIslandDifficulty(isl);
-          const bgImg = isl.hero_image_url || `/region/${isl.region_id}.jpg`;
 
           return (
             <Link
@@ -68,15 +68,10 @@ export default function NearbyIslands({ currentIsland }: NearbyIslandsProps) {
               href={`/island/${isl.slug || isl.id}`}
               className="group relative bg-slate-900 rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-slate-800 flex flex-col justify-end min-h-[140px] p-4"
             >
-              <img
-                src={bgImg}
-                alt={isl.name}
-                className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 group-hover:opacity-75 transition-all duration-500"
-                onError={(e) => {
-                  e.currentTarget.src = '/region/subtropical.jpg';
-                }}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+              <div className="absolute inset-0 opacity-65 group-hover:opacity-80 transition-opacity duration-500">
+                <AuthenticIslandCardImage island={isl} showBadgeOnPlaceholder={false} size="sm" />
+              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/35 to-transparent"></div>
 
               <div className="relative z-10 space-y-1">
                 <span className="text-[0.65rem] font-bold text-cyan-300 tracking-widest block">

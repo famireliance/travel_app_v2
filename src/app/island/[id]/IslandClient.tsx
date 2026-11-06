@@ -28,6 +28,7 @@ import NearbyIslands from '@/components/NearbyIslands';
 import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building, Key, Info, HelpCircle } from 'lucide-react';
 import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
 import IslandWifiGuide from '@/components/IslandWifiGuide';
+import { AuthenticIslandHero } from '@/components/AuthenticIslandVisual';
 
 interface IslandDiarySSR {
   id: string;
@@ -144,10 +145,10 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
       );
 
     if (initialLocalFound) {
-      setIsland(initialLocalFound);
+      setIsland((prev: any) => prev ? { ...initialLocalFound, ...prev } : initialLocalFound);
       setLoading(false);
       setNotFound(false);
-    } else {
+    } else if (!initialIsland) {
       setLoading(true);
       setNotFound(false);
     }
@@ -272,15 +273,6 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
   const ferries = parseJsonSafe(island.aff_ferry_url).filter((f: any) => f.url && f.url.trim() !== '');
   const jobs = parseJsonSafe(island.aff_job_url).filter((j: any) => j.url && j.url.trim() !== '');
 
-  let defaultFallback = '/region/subtropical.jpg';
-  if (island.prefecture === '北海道' || island.prefecture === '青森県' || island.region_id?.includes('hokkaido')) {
-    defaultFallback = '/region/northern.jpg';
-  } else if (island.prefecture === '沖縄県' || island.prefecture === '鹿児島県' || island.region_id === 'ogasawara') {
-    defaultFallback = '/region/tropical.jpg';
-  }
-
-  const fallbackImage = island.hero_image_url || `/region/${island.region_id}.jpg`;
-  
   const flagIcons: Record<string, React.ReactNode> = {
     '診療所': <Plus className="w-4 h-4 text-rose-500" />,
     '宿泊施設': <BedDouble className="w-4 h-4 text-blue-500" />,
@@ -292,77 +284,19 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans relative">
-      {/* Hero Image Section */}
-      <div className="relative w-full h-[50vh] lg:h-[60vh] overflow-hidden">
-
-        <img 
-          src={fallbackImage} 
-          onError={(e) => {
-            const target = e.currentTarget;
-            if (!target.src.includes(defaultFallback)) {
-              target.src = defaultFallback;
-            } else {
-              target.style.display = 'none';
-            }
-          }}
-          alt={island.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-black/20 to-black/40"></div>
-        
-        <header className="absolute top-0 left-0 right-0 z-50 px-6 lg:px-12 pt-12 pb-6 flex items-center justify-between">
-          <button 
-            onClick={() => {
-              if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
-                router.back();
-              } else {
-                router.push('/map');
-              }
-            }} 
-            className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-black/50 transition-colors shadow-lg"
-            title="前のページに戻る"
-          >
-            <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
-          </button>
-        </header>
-
-        <div className="absolute bottom-8 left-6 lg:left-12 z-10 text-white drop-shadow-lg">
-          <motion.p 
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-            className="text-[0.7rem] font-bold tracking-[0.3em] uppercase mb-2 text-cyan-300 drop-shadow-md"
-          >
-            {island.prefecture || island.region_id}
-          </motion.p>
-          <motion.h1 
-            initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}
-            className="font-serif font-bold text-4xl lg:text-6xl tracking-widest text-white drop-shadow-lg"
-          >
-            {island.name}
-          </motion.h1>
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="flex flex-wrap items-center gap-3 mt-4">
-            {difficultyInfo && difficultyInfo.level > 0 && (
-              <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold shadow-md ${difficultyInfo.badgeColor}`}>
-                <span className="tracking-widest">{difficultyInfo.stars}</span>
-                <span>{difficultyInfo.label}</span>
-              </div>
-            )}
-            
-            {currentWeather && (
-              <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold shadow-md bg-black/50 backdrop-blur-md text-white border border-white/30">
-                <img src={`https://openweathermap.org/img/wn/${currentWeather.icon}.png`} alt={currentWeather.description} className="w-5 h-5 -my-1" />
-                <span>{currentWeather.temp}°C {currentWeather.description}</span>
-              </div>
-            )}
-            
-            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(`【キラ旅】${island.name}に到達！`)}&url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}&hashtags=キラ旅,離島`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-[#1DA1F2] transition-colors shadow-md" aria-label="Share on X">
-              <svg className="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-            </a>
-            <a href={`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(typeof window !== 'undefined' ? window.location.href : '')}`} target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-full bg-black/40 backdrop-blur-md border border-white/30 flex items-center justify-center text-white hover:bg-[#06C755] transition-colors shadow-md" aria-label="Share on LINE">
-              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M24 10.304c0-5.369-5.383-9.738-12-9.738-6.616 0-12 4.369-12 9.738 0 4.814 4.269 8.846 10.036 9.608.391.084.922.258 1.057.592.122.298.08.683.04.945l-.173 1.057c-.053.33-.25.992.871.52 1.121-.471 6.035-3.553 8.351-6.171C22.612 14.869 24 12.721 24 10.304zM7.747 12.632H5.666c-.347 0-.629-.281-.629-.629V8.058c0-.347.282-.628.629-.628h2.081c.347 0 .628.281.628.628s-.281.628-.628.628H6.924v2.69h.823c.347 0 .628.281.628.628s-.281.627-.628.627zm4.331-.629c0 .348-.281.629-.628.629h-2.08c-.347 0-.629-.281-.629-.629V8.058c0-.347.282-.628.629-.628h.629v3.945h1.451c.347 0 .628.281.628.628zm2.493 0c0 .348-.281.629-.628.629h-.002c-.347 0-.628-.281-.628-.629V8.058c0-.347.281-.628.628-.628h.002c.347 0 .628.281.628.628v3.945zm5.291-3.316c0 .347-.282.628-.629.628h-1.451v.965h1.451c.347 0 .629.281.629.628s-.282.628-.629.628h-2.081c-.347 0-.628-.281-.628-.628V8.058c0-.347.281-.628.628-.628h2.081c.347 0 .629.281.629.628z"/></svg>
-            </a>
-          </motion.div>
-        </div>
-      </div>
+      {/* Authentic Local Photo / Coordinate Hero Section (Responsive Portrait/Landscape & Smart Mobile Panorama) */}
+      <AuthenticIslandHero
+        island={island}
+        difficultyInfo={difficultyInfo}
+        currentWeather={currentWeather}
+        onBack={() => {
+          if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
+            router.back();
+          } else {
+            router.push('/map');
+          }
+        }}
+      />
 
       {/* Global & Targeted Campaign Banner (Carousel) */}
       {adCampaigns.length > 0 && (

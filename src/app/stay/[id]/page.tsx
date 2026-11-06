@@ -173,12 +173,7 @@ const DEFAULT_FALLBACK_INN: InnData = {
       features: ['釣果持ち込み調理無料', '氷・冷凍保管無料', '朝食・夕食付き']
     },
   ],
-  galleryImages: [
-    'https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=1200&q=80',
-    'https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=800&q=80',
-    'https://images.unsplash.com/photo-1578683010236-d716f9a3f461?auto=format&fit=crop&w=800&q=80',
-  ],
+  galleryImages: [],
   amenities: [
     { name: 'Wi-Fi（無線LAN・全室完備）', category: 'service', available: true },
     { name: 'エアコン（各室冷暖房完備）', category: 'room', available: true },
@@ -197,7 +192,7 @@ const DEFAULT_FALLBACK_INN: InnData = {
     agentName: 'マサヒト',
     agentTitle: 'KIRATABI 公式エージェント',
     agentCriteria: '全国400島到達 / 離島滞在歴150日以上 / 島文化保全アドバイザー',
-    agentAvatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=200&q=80',
+    agentAvatar: '',
     stayDate: '2026年 滞在実証済み',
     title: '青酎と獲れたて地魚のハーモニー。飾らない本物の島時間がここにある',
     body: '青ヶ島を訪れるなら、絶対に外せない宿の一つです。設備自体は昭和の面影を残す昔ながらの離島民宿で、洗面所やお風呂は共用ですが、塵一つなくピカピカに清掃されており女将さんの細やかな気配りを感じます。\n\n一番の魅力はなんといっても夕食。ご主人がその日に釣り上げた鮮度抜群の地魚と、島特産の幻の焼酎「青酎」の組み合わせは、高級ホテルでは決して味わえない感動があります。島事情を知り尽くしたお二人が、翌日のひんぎゃ散策やヘリ・船の就航状況のアドバイスも丁寧に教えてくれます。「至れり尽くせりのシティホテル」を求める方には不向きかもしれませんが、「本物の島の暮らしと温もり」を味わいたい方にはこれ以上ない最高の拠り所です。'

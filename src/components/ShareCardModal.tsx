@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, Download, Share2, Sparkles, Check, Smartphone, Monitor } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useTravel } from '@/context/TravelContext';
+import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 
 interface ShareCardModalProps {
   isOpen: boolean;
@@ -52,17 +53,19 @@ export default function ShareCardModal({
       canvas.width = width;
       canvas.height = height;
 
-      // 1. 背景の描画（写真またはグラデーション）
+      // 1. 背景の描画（検証済み現地写真またはグラデーション。偽画像は一切使用しない）
       const bgImg = new Image();
       bgImg.crossOrigin = 'anonymous';
 
+      const verified = getVerifiedIslandPhotos(island);
       const imgSrc =
         photoUrl ||
-        island.hero_image_url ||
-        island.image_url ||
-        `/region/${island.region_id || 'okinawa_main'}.jpg`;
+        (!isLandscape && verified.mobileUrl ? verified.mobileUrl : verified.desktopUrl) ||
+        verified.mobileUrl ||
+        '';
 
       const loadImage = (src: string) => {
+        if (!src) return Promise.resolve(null);
         return new Promise<HTMLImageElement | null>((resolve) => {
           bgImg.onload = () => resolve(bgImg);
           bgImg.onerror = () => resolve(null);

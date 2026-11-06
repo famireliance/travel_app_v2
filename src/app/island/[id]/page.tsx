@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import { supabase } from '@/lib/supabase';
 import IslandClient from './IslandClient';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 
 // 60秒間キャッシュする（高トラフィック時の負荷対策）
 export const revalidate = 60;
@@ -73,7 +74,7 @@ export async function generateMetadata(
   
   const [islandResult, diariesResult] = await Promise.all([
     withTimeout(
-      supabase.from('islands').select('name, description, population, hero_image_url, image_url').eq('id', internalId).single(),
+      supabase.from('islands').select('name, description, population, hero_image_url, practical_info').eq('id', internalId).single(),
       1500,
       { data: null, error: null } as any
     ),
@@ -85,14 +86,20 @@ export async function generateMetadata(
   ]);
   
   if (islandResult.data) {
-    islandName = islandResult.data.name;
+    islandName = islandResult.data.name || islandName;
     description = islandResult.data.description || description;
     population = islandResult.data.population ? `人口: ${islandResult.data.population}` : '';
-    heroImageUrl = islandResult.data.hero_image_url || islandResult.data.image_url || heroImageUrl;
   } else if (masterEntry) {
     islandName = masterEntry.name;
     description = masterEntry.description || description;
   }
+
+  const verifiedMeta = getVerifiedIslandPhotos({
+    ...(masterEntry || {}),
+    ...(islandResult.data || {}),
+    id: internalId,
+  });
+  heroImageUrl = verifiedMeta.desktopUrl || verifiedMeta.mobileUrl || '';
 
   // 最新の口コミテキストをメタディスクリプションに反映
   const diarySnippet = diariesResult.data?.[0]?.content?.substring(0, 40);
@@ -169,7 +176,7 @@ export default async function Page({ params }: { params: any }) {
     withTimeout(
       supabase
         .from('islands')
-        .select('name, region_id, description, hero_image_url, image_url')
+        .select('name, region_id, description, hero_image_url, practical_info')
         .eq('id', internalId)
         .single(),
       1500,
@@ -177,9 +184,14 @@ export default async function Page({ params }: { params: any }) {
     )
   ]);
 
+  const mergedInitialIsland = masterEntry
+    ? { ...masterEntry, ...(islandResult.data || {}), id: internalId }
+    : islandResult.data;
+
   const islandName = islandResult.data?.name || masterEntry?.name || '未知の島';
   const islandDesc = islandResult.data?.description || masterEntry?.description || '魅力あふれる日本の離島の旅路。';
-  const heroImageUrl = islandResult.data?.hero_image_url || islandResult.data?.image_url || masterEntry?.hero_image_url || masterEntry?.image_url || 'https://island.kira-tabi.com/og-image.png';
+  const verifiedPhotos = getVerifiedIslandPhotos(mergedInitialIsland);
+  const heroImageUrl = verifiedPhotos.desktopUrl || verifiedPhotos.mobileUrl || 'https://island.kira-tabi.com/og-image.png';
   const canonicalUrl = `https://island.kira-tabi.com/island/${masterEntry?.slug || internalId}`;
 
   let geoCoords: { '@type': string; latitude: number; longitude: number } | undefined;
@@ -248,7 +260,7 @@ export default async function Page({ params }: { params: any }) {
       />
       <IslandClient 
         islandId={internalId} 
-        initialIsland={masterEntry}
+        initialIsland={mergedInitialIsland}
         initialDiaries={diariesResult.data ?? []} 
         initialAccommodations={accommodationsResult.data ?? []} 
       />

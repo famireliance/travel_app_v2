@@ -14,6 +14,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import type { MapStyle } from '@/components/Map/InteractiveMap';
 import { X, Layers, Map as MapIcon, Image as ImageIcon, CheckCircle, Navigation } from 'lucide-react';
 import Image from 'next/image';
+import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 
 const ARCHIPELAGOS = [
   { name: '八重山', bounds: [[24.0, 123.5], [24.6, 124.5]] as [[number, number], [number, number]] },
@@ -426,15 +427,8 @@ function GlobalMapContent() {
               </div>
               <div className="p-6 pt-4">
                 <div className="flex gap-4">
-                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden shadow-md shrink-0 relative bg-slate-100">
-                    {selectedIsland.thumbnail_url ? (
-                      <Image src={selectedIsland.thumbnail_url} alt={selectedIsland.name} fill className="object-cover" />
-                    ) : (
-                      <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
-                        <ImageIcon size={24} />
-                        <span className="text-[10px] font-bold">No Image</span>
-                      </div>
-                    )}
+                  <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-2xl overflow-hidden shadow-md shrink-0 relative bg-slate-900">
+                    <AuthenticIslandCardImage island={selectedIsland} size="sm" />
                   </div>
                   <div className="flex-1 flex flex-col justify-center">
                     <p className="text-xs font-bold text-slate-500 mb-0.5">{selectedIsland.yomi}</p>

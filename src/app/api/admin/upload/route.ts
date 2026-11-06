@@ -6,7 +6,7 @@ const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
 const ALLOWED_BUCKETS = ['islands', 'fairies', 'avatars', 'diary-photos', 'public-assets', 'accommodations'];
 
 export async function POST(req: NextRequest) {
@@ -21,7 +21,9 @@ export async function POST(req: NextRequest) {
   try {
     const formData = await req.formData();
     const file = formData.get('file') as File;
-    const bucket = (formData.get('bucket') as string) || 'public-assets';
+    const bucket = (formData.get('bucket') as string) || 'islands';
+    const islandId = ((formData.get('islandId') as string) || '').replace(/[^a-zA-Z0-9_-]/g, '');
+    const photoType = ((formData.get('photoType') as string) || 'main').replace(/[^a-zA-Z0-9_-]/g, '');
 
     if (!file) {
       return NextResponse.json({ error: 'ファイルが見つかりません' }, { status: 400 });
@@ -36,7 +38,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'ファイルサイズは10MB以下にしてください' }, { status: 400 });
+      return NextResponse.json({ error: 'ファイルサイズは15MB以下にしてください' }, { status: 400 });
     }
 
     const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
@@ -49,18 +51,31 @@ export async function POST(req: NextRequest) {
       'image/webp': 'webp',
       'image/gif': 'gif',
     };
-    const fileExt = mimeExtMap[file.type] || 'png';
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-    const filePath = `cms-uploads/${fileName}`;
+    const fileExt = mimeExtMap[file.type] || 'webp';
+    const subFolder = islandId ? `cms-uploads/${islandId}` : 'cms-uploads';
+    const fileName = `${Date.now()}-${photoType}-${Math.random().toString(36).substring(2, 8)}.${fileExt}`;
+    const filePath = `${subFolder}/${fileName}`;
 
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    const { error: uploadError } = await adminClient.storage
+    let { error: uploadError } = await adminClient.storage
       .from(bucket)
       .upload(filePath, buffer, {
         contentType: file.type,
         upsert: true
       });
+
+    // バケットが未作成の場合は自動作成してリトライ
+    if (uploadError) {
+      await adminClient.storage.createBucket(bucket, { public: true }).catch(() => {});
+      const retry = await adminClient.storage
+        .from(bucket)
+        .upload(filePath, buffer, {
+          contentType: file.type,
+          upsert: true
+        });
+      uploadError = retry.error;
+    }
 
     if (uploadError) {
       const base64 = buffer.toString('base64');

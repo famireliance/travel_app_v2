@@ -4,12 +4,7 @@ import React from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Compass, ArrowRight, CheckCircle2 } from 'lucide-react';
-
-const getFallbackPlaceholder = (areaOrPrefecture: string) => {
-  if (areaOrPrefecture.includes('沖縄') || areaOrPrefecture.includes('八重山') || areaOrPrefecture.includes('宮古')) return '/region/okinawa_main.jpg';
-  if (areaOrPrefecture.includes('伊豆') || areaOrPrefecture.includes('小笠原') || areaOrPrefecture.includes('東京')) return '/region/ogasawara.jpg';
-  return '/hero/slide1.webp';
-};
+import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 
 export interface NearbyIslandItem {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -94,24 +89,7 @@ export default function NearbyIslandsModal({ isOpen, onClose, items }: NearbyIsl
 
                     {/* Image */}
                     <div className="w-16 h-16 rounded-xl overflow-hidden bg-slate-950 shrink-0 relative border border-slate-700">
-                      <img
-                        src={
-                          island.hero_image_url ||
-                          island.image_url ||
-                          `/region/${island.region_id || 'okinawa_main'}.jpg`
-                        }
-                        alt={island.name}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                        onError={(e) => {
-                          const t = e.currentTarget as HTMLImageElement;
-                          const fallback = getFallbackPlaceholder(island.prefecture || '');
-                          if (!t.src.endsWith(fallback)) {
-                            t.src = fallback;
-                          } else {
-                            t.style.display = 'none';
-                          }
-                        }}
-                      />
+                      <AuthenticIslandCardImage island={island} showBadgeOnPlaceholder={false} size="sm" />
                     </div>
 
                     {/* Info */}
