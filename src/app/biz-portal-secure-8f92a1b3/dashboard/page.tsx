@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
 import { Loader2, Bell, Hotel, CalendarDays, TrendingUp, Users } from 'lucide-react';
 import Link from 'next/link';
+import { getBizBasePath } from '@/lib/bizPortalPath';
 
 export default function BizPortalDashboard() {
   const [loading, setLoading] = useState(true);
@@ -79,7 +80,7 @@ export default function BizPortalDashboard() {
           <div>
             <h4 className="text-sm font-bold text-amber-900">未承認の予約リクエストが {stats.pending} 件あります！</h4>
             <p className="text-xs text-amber-700 mt-1 mb-2">機会損失を防ぐため、早めの確認・承認をお願いします。</p>
-            <Link href="/biz-portal-secure-8f92a1b3/reservations" className="text-xs font-bold bg-amber-500 text-white px-4 py-1.5 rounded-lg hover:bg-amber-600 transition-colors inline-block">
+            <Link href={`${getBizBasePath()}/reservations`} className="text-xs font-bold bg-amber-500 text-white px-4 py-1.5 rounded-lg hover:bg-amber-600 transition-colors inline-block">
               予約管理へ移動
             </Link>
           </div>

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { Lock, Mail, Loader2, AlertTriangle } from 'lucide-react';
+import { getBizBasePath } from '@/lib/bizPortalPath';
 
 export default function BizPortalLogin() {
   const [email, setEmail] = useState('');
@@ -36,7 +37,7 @@ export default function BizPortalLogin() {
       return;
     }
 
-    router.replace('/biz-portal-secure-8f92a1b3/dashboard');
+    router.replace(`${getBizBasePath()}/dashboard`);
   };
 
   return (
