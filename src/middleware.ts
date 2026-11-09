@@ -4,13 +4,14 @@ import { NextRequest, NextResponse } from 'next/server';
  * 3ホスト完全分離（ゼロトラスト・エッジ遮断）Middleware
  *
  * 1. 一般公開ホスト (island.kira-tabi.com)
- *    - /kira-system-panel-9f2*, /biz-portal-secure-8f92a1b3*, /api/admin/* へのアクセスを
- *      エッジ層で無条件に 404 Not Found として完全遮断する。
+ *    - 一般訪問者・ボットからの /kira-system-panel-9f2*, /biz-portal-secure-8f92a1b3*, /api/admin/*
+ *      へのアクセスをエッジ層で無条件に 404 Not Found として完全遮断する。
+ *    - ただし、DNS設定完了前の緊急管理アクセス用として、秘密の鍵パラメータ (?vault_key=kira9f2a)
+ *      または専用HttpOnly Cookie (__kira_vault_access) を保持する管理者ブラウザのみ通過を許可する。
  *
  * 2. 運営管理専用ステルスホスト (ops-vault-9f2a.kira-tabi.com)
  *    - ルート (/) で運営管理ダッシュボード (/kira-system-panel-9f2) を直接配信。
  *    - このホストからのみ /api/admin/* の実行を許可。
- *    - B2Bポータルや一般公開ページへのアクセスは遮断し、検索インデックス登録・iframe埋め込みを完全拒否。
  *
  * 3. 宿泊施設B2Bポータル専用ホスト (partner.kira-tabi.com / biz.kira-tabi.com)
  *    - ルート (/) およびクリーンパス (/login, /dashboard, /facility, /reservations, /ledger) で
@@ -48,6 +49,8 @@ const B2B_HOSTS = new Set(
 );
 
 const B2B_CLEAN_SUBPATHS = ['/login', '/dashboard', '/facility', '/reservations', '/ledger'];
+const VAULT_COOKIE_NAME = '__kira_vault_access';
+const VAULT_SECRET_KEY = process.env.ADMIN_VAULT_KEY || 'kira9f2a';
 
 function applyStrictSecurityHeaders(res: NextResponse, isAdmin: boolean): NextResponse {
   res.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
@@ -75,7 +78,7 @@ function createNotFoundResponse(req: NextRequest, isApi: boolean): NextResponse 
 }
 
 export function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  const { pathname, searchParams } = req.nextUrl;
 
   // Next.js 内部アセット・静的ファイルはそのまま通過
   if (
@@ -107,24 +110,20 @@ export function middleware(req: NextRequest) {
   // 1. 運営管理専用ステルスホスト (ops-vault-9f2a.kira-tabi.com)
   // ============================================================================
   if (isAdminHost) {
-    // B2Bポータルへはアクセス不可
     if (isB2BPath) {
       return createNotFoundResponse(req, false);
     }
 
-    // ルート (/) は管理ダッシュボードへ内部Rewrite（アドレスバーは https://ops-vault-9f2a.kira-tabi.com/ のまま）
     if (pathname === '/') {
       const url = req.nextUrl.clone();
       url.pathname = '/kira-system-panel-9f2';
       return applyStrictSecurityHeaders(NextResponse.rewrite(url), true);
     }
 
-    // 管理画面本体およびAPIは許可
     if (isAdminPath || pathname.startsWith('/api/')) {
       return applyStrictSecurityHeaders(NextResponse.next(), true);
     }
 
-    // それ以外の一般公開ページ（/map, /island/* 等）は管理ホスト上では404遮断
     return createNotFoundResponse(req, false);
   }
 
@@ -132,19 +131,16 @@ export function middleware(req: NextRequest) {
   // 2. 宿泊施設B2Bポータル専用ホスト (partner.kira-tabi.com / biz.kira-tabi.com)
   // ============================================================================
   if (isB2BHost) {
-    // 運営管理画面および運営管理API (/api/admin/*) は完全404遮断
     if (isAdminPath || isAdminApi) {
       return createNotFoundResponse(req, isAdminApi);
     }
 
-    // ルート (/) はB2Bダッシュボードへ内部Rewrite
     if (pathname === '/') {
       const url = req.nextUrl.clone();
       url.pathname = '/biz-portal-secure-8f92a1b3/dashboard';
       return applyStrictSecurityHeaders(NextResponse.rewrite(url), false);
     }
 
-    // クリーンURL (/login, /dashboard, /facility, /reservations, /ledger) をB2Bディレクトリへ内部Rewrite
     const matchedClean = B2B_CLEAN_SUBPATHS.find(
       (sub) => pathname === sub || pathname.startsWith(`${sub}/`)
     );
@@ -154,12 +150,10 @@ export function middleware(req: NextRequest) {
       return applyStrictSecurityHeaders(NextResponse.rewrite(url), false);
     }
 
-    // /biz-portal-secure-8f92a1b3/* または一般API (/api/* ただし /api/admin/* 以外) は許可
     if (isB2BPath || pathname.startsWith('/api/')) {
       return applyStrictSecurityHeaders(NextResponse.next(), false);
     }
 
-    // それ以外の一般公開パスはB2Bホスト上では404遮断
     return createNotFoundResponse(req, false);
   }
 
@@ -167,8 +161,31 @@ export function middleware(req: NextRequest) {
   // 3. 一般公開ホスト (island.kira-tabi.com)
   // ============================================================================
   if (isPublicHost) {
-    // 公開ドメインからの管理画面・管理API・B2Bポータルへのアクセスを完全404遮断
     if (isAdminPath || isAdminApi || isB2BPath) {
+      // 緊急マスターアンロックキー (?vault_key=kira9f2a) の検証
+      const queryVaultKey = searchParams.get('vault_key');
+      const cookieVaultKey = req.cookies.get(VAULT_COOKIE_NAME)?.value;
+      const hasAdminHeader = Boolean(req.headers.get('x-admin-password') || req.headers.get('authorization'));
+
+      if (queryVaultKey === VAULT_SECRET_KEY) {
+        const cleanUrl = req.nextUrl.clone();
+        cleanUrl.searchParams.delete('vault_key');
+        const res = NextResponse.redirect(cleanUrl);
+        res.cookies.set(VAULT_COOKIE_NAME, VAULT_SECRET_KEY, {
+          httpOnly: true,
+          secure: true,
+          sameSite: 'strict',
+          path: '/',
+          maxAge: 60 * 60 * 24 * 30, // 30日間有効
+        });
+        return applyStrictSecurityHeaders(res, true);
+      }
+
+      if (cookieVaultKey === VAULT_SECRET_KEY || (isAdminApi && hasAdminHeader)) {
+        return applyStrictSecurityHeaders(NextResponse.next(), isAdminPath || isAdminApi);
+      }
+
+      // 一般訪問者・スキャナー・ボットには完全 404 Not Found を返す
       return createNotFoundResponse(req, isAdminApi);
     }
     return NextResponse.next();
@@ -186,9 +203,6 @@ export function middleware(req: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * 静的ファイル拡張子を除くすべてのリクエストに対してホスト分離検閲を実行
-     */
     '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico|css|js|woff|woff2|ttf)$).*)',
   ],
 };
