@@ -139,7 +139,7 @@ export default function ShareCardModal({
 
       ctx.fillStyle = '#38bdf8';
       ctx.font = 'bold 16px sans-serif';
-      ctx.fillText('KIRATABI SHIMASENKA - 離島432島制覇の旅', margin + 35, margin + 85);
+      ctx.fillText('KIRATABI SHIMASENKA - 全国離島制覇の旅', margin + 35, margin + 85);
 
       // 5. 到達バッジ
       ctx.fillStyle = '#fbbf24';
@@ -224,7 +224,7 @@ export default function ShareCardModal({
         ctx.font = 'bold 28px sans-serif';
         ctx.fillText(`📅 到達日: ${formattedDate}`, startX, boxY + 70);
         ctx.fillText(`👤 旅人名: ${travelerName || '名無しの島旅人'}`, startX, boxY + 140);
-        ctx.fillText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / 432 島`, startX, boxY + 210);
+        ctx.fillText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / 351 島`, startX, boxY + 210);
         ctx.fillText(`⭐ 獲得XP: +${totalPoints > 0 ? totalPoints : 100} pt`, startX, boxY + 280);
 
         // 角印
