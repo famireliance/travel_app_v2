@@ -7,22 +7,22 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { Compass, Navigation, Search, ShieldAlert } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: '日本全国離島一覧ディレクトリ（全465島・制覇対象351島）',
+  title: '日本全国離島一覧ディレクトリ（全481島・制覇対象369島）',
   description:
-    '日本全国の有人離島・主要離島（全465島収録・制覇対象351島）の完全ディレクトリです。全45諸島エリア・都道府県ごとに観光、アクセス、フェリー航路、宿泊施設の詳細情報を確認できます。',
+    '日本全国の有人離島・主要離島（全481島収録・制覇対象369島）の完全ディレクトリです。全45諸島エリア・都道府県ごとに観光、アクセス、フェリー航路、宿泊施設の詳細情報を確認できます。',
   alternates: {
     canonical: 'https://island.kira-tabi.com/islands',
   },
   openGraph: {
     title: '日本全国離島一覧ディレクトリ | 輝旅 島専科',
-    description: '日本全国の離島（全465島収録・制覇対象351島）をエリア別に網羅した公式ディレクトリ。',
+    description: '日本全国の離島（全481島収録・制覇対象369島）をエリア別に網羅した公式ディレクトリ。',
     url: 'https://island.kira-tabi.com/islands',
     images: [{ url: '/og-image.png', width: 1200, height: 630 }],
   },
   twitter: {
     card: 'summary_large_image',
     title: '日本全国離島一覧ディレクトリ | 輝旅 島専科',
-    description: '日本全国の離島（全465島収録・制覇対象351島）をエリア別に網羅した公式ディレクトリ。',
+    description: '日本全国の離島（全481島収録・制覇対象369島）をエリア別に網羅した公式ディレクトリ。',
     images: ['/og-image.png'],
   },
 };

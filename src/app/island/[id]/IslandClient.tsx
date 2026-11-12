@@ -70,8 +70,9 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
   const [isCheckInModalOpen, setIsCheckInModalOpen] = useState(false);
   const [isShareCardOpen, setIsShareCardOpen] = useState(false);
   const { user, islandStatuses, visitCounts, updateStatus, decrementVisitCount, addIslandVisit, allFairies = [], collectedFairies = [] } = useTravel();
-  const status = islandStatuses[islandId] || 'none';
-  const visitCount = visitCounts[islandId] || 0;
+  const canonicalIslandId = island?.id ? String(island.id) : islandId;
+  const status = (island?.id && islandStatuses[String(island.id)]) || (island?.slug && islandStatuses[String(island.slug)]) || islandStatuses[islandId] || 'none';
+  const visitCount = (island?.id && visitCounts[String(island.id)]) || visitCounts[islandId] || 0;
 
   // この島（または地域）に眠るご当地妖精を抽出
   const localFairy = React.useMemo(() => {
@@ -99,23 +100,26 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
 
   const handleStatusChange = (newStatus: 'visited' | 'planning' | 'verified_visited') => {
     if (newStatus === 'visited') {
-      const result = addIslandVisit(islandId as string, island, 0, false);
+      const result = addIslandVisit(canonicalIslandId, island, 0, false);
       if (result.error === 'already_visited_today') {
         toast.error('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
         return;
       }
       setIsCertModalOpen(true);
     } else {
-      updateStatus(islandId as string, newStatus);
+      updateStatus(canonicalIslandId, newStatus);
     }
   };
 
   const handleCancelRecord = () => {
     if (window.confirm("到達記録を取り消しますか？")) {
       if (visitCount > 1) {
-        decrementVisitCount(islandId);
+        decrementVisitCount(canonicalIslandId);
       } else {
-        updateStatus(islandId, 'none');
+        updateStatus(canonicalIslandId, 'none');
+        if (islandId !== canonicalIslandId) {
+          updateStatus(islandId, 'none');
+        }
       }
     }
   };
@@ -2023,7 +2027,7 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
         <NearbyIslands currentIsland={island} />
 
         {/* Island Diaries (島ログ) - SEOのために初期データを渡す */}
-        <IslandDiaries islandId={islandId} islandName={island.name} initialDiaries={initialDiaries} />
+        <IslandDiaries islandId={canonicalIslandId} islandName={island.name} initialDiaries={initialDiaries} />
 
         {/* Action Buttons (画面下部固定アクションバー) */}
         <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-6 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 flex items-center justify-center gap-2 sm:gap-3 z-40 max-w-lg mx-auto md:max-w-2xl lg:max-w-4xl shadow-2xl">

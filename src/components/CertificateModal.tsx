@@ -17,17 +17,20 @@ interface CertificateModalProps {
 
 import { useTravel } from '@/context/TravelContext';
 import { getFormattedSerial, getIslandDifficulty } from '@/lib/difficulty';
+import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 
 export default function CertificateModal({ isOpen, onClose, island, user, anniversaryMode = false }: CertificateModalProps) {
-  const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses, tempCheckInPhotoUrl, tempCheckInDate, subscriptionTier } = useTravel();
+  const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses, tempCheckInPhotoUrl, setTempCheckInPhotoUrl, tempCheckInDate, subscriptionTier } = useTravel();
   const isPremium = subscriptionTier === 'premium' || subscriptionTier === 'ultimate';
-  const status = island ? (islandStatuses[island.id] || 'none') : 'none';
-  const isVerified = status === 'verified_visited';
+  const status = island
+    ? (islandStatuses[String(island.id)] || (island.slug ? islandStatuses[String(island.slug)] : undefined) || 'none')
+    : 'none';
   const [travelerName, setTravelerName] = useState<string>('');
   const [visitDate, setVisitDate] = useState<string>('');
   const [customImage, setCustomImage] = useState<string | null>(null);
+  const isVerified = status === 'verified_visited' || Boolean(tempCheckInPhotoUrl) || Boolean(customImage);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [includeCompanionStamp, setIncludeCompanionStamp] = useState(true);
@@ -58,6 +61,8 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
   const [limitErrorMessage, setLimitErrorMessage] = useState('');
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fullscreenCanvasRef = useRef<HTMLCanvasElement>(null);
+  const renderSeqRef = useRef<number>(0);
+  const initializedIslandKeyRef = useRef<string>('');
 
   useEffect(() => {
     if (isOpen && island && user) {
@@ -112,19 +117,29 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
     
     let uploadedImageUrl: string | undefined = undefined;
 
-    if (isPremium && user && canvasRef.current) {
+    if (user && canvasRef.current) {
       try {
         const blob = await new Promise<Blob | null>(resolve => {
-          canvasRef.current?.toBlob(resolve, 'image/png', 0.9);
+          try {
+            canvasRef.current?.toBlob(resolve, 'image/png', 0.92);
+          } catch {
+            resolve(null);
+          }
         });
         if (blob) {
-          const fileName = `${user.id}/${island.id}_${Date.now()}.png`;
-          const { data, error } = await supabase.storage.from('certificates').upload(fileName, blob, { contentType: 'image/png' });
+          const fileName = `certificates/${user.id}/${island.id}_${Date.now()}.png`;
+          const { error } = await supabase.storage.from('public-assets').upload(fileName, blob, { contentType: 'image/png', upsert: true });
           if (!error) {
-            const { data: { publicUrl } } = supabase.storage.from('certificates').getPublicUrl(fileName);
+            const { data: { publicUrl } } = supabase.storage.from('public-assets').getPublicUrl(fileName);
             uploadedImageUrl = publicUrl;
           } else {
-            console.error('Failed to upload certificate to storage:', error);
+            // Fallback to certificates bucket if present
+            const altName = `${user.id}/${island.id}_${Date.now()}.png`;
+            const { error: altErr } = await supabase.storage.from('certificates').upload(altName, blob, { contentType: 'image/png', upsert: true });
+            if (!altErr) {
+              const { data: { publicUrl } } = supabase.storage.from('certificates').getPublicUrl(altName);
+              uploadedImageUrl = publicUrl;
+            }
           }
         }
       } catch (err) {
@@ -134,22 +149,27 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
 
     if (user) {
       try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const token = session?.access_token || '';
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) {
+          headers['Authorization'] = `Bearer ${token}`;
+        }
         const res = await fetch('/api/certificates', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ islandId: island.id, userId: user.id, type, imageUrl: uploadedImageUrl })
+          headers,
+          body: JSON.stringify({ islandId: String(island.id), userId: user.id, type, imageUrl: uploadedImageUrl })
         });
         const data = await res.json();
         
         if (!res.ok) {
-          if (data.error === 'FREE_LIMIT_REACHED') {
+          if (data.error === 'FREE_LIMIT_REACHED' || data.error === 'PREMIUM_LIMIT_REACHED') {
             setLimitReachedError(true);
-            return;
+            setLimitErrorMessage(data.message || '今月の公式高画質版クラウド発行枠の上限に達しました（画像DLは引き続きご利用いただけます）。');
+          } else {
+            console.warn('Server certificate record warning:', data.error);
           }
-          throw new Error(data.error || 'Failed to issue');
-        }
-        
-        if (data.certificate) {
+        } else if (data.certificate) {
           setAssignedSerial(`No.${String(data.certificate.serial_number).padStart(4, '0')}`);
         }
       } catch (err) {
@@ -165,7 +185,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       if (!prev.includes(type)) return [...prev, type];
       return prev;
     });
-  }, [island, user, isPremium, certificateType]);
+  }, [island, user, certificateType]);
 
   useEffect(() => {
     if (isPlayingAd && adTimeLeft > 0) {
@@ -184,18 +204,45 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
   }, [isPlayingAd, adTimeLeft, issueDigital, certificateType]); 
 
   useEffect(() => {
-    if (isOpen && island) {
+    if (!isOpen || !island) {
+      initializedIslandKeyRef.current = '';
+      return;
+    }
+
+    const initKey = `${island.id}`;
+    const isFirstOpenForIsland = initializedIslandKeyRef.current !== initKey;
+
+    if (isFirstOpenForIsland) {
+      initializedIslandKeyRef.current = initKey;
       const today = new Date();
-      const dateStr = tempCheckInDate || `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+      let storedPhoto: string | null = null;
+      let storedDate: string | null = null;
+      try {
+        storedPhoto =
+          sessionStorage.getItem(`kiratabi_checkin_photo_${island.id}`) ||
+          localStorage.getItem(`kiratabi_checkin_photo_${island.id}`);
+        storedDate =
+          sessionStorage.getItem(`kiratabi_checkin_date_${island.id}`) ||
+          localStorage.getItem(`kiratabi_checkin_date_${island.id}`);
+      } catch {
+        // Ignore storage errors
+      }
+      const dateStr =
+        tempCheckInDate ||
+        storedDate ||
+        `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
       setVisitDate(dateStr);
-      setCustomImage(tempCheckInPhotoUrl || null);
+      setCustomImage(tempCheckInPhotoUrl || storedPhoto || null);
       setTravelerName(contextTravelerName || user?.email?.split('@')[0] || '島旅トラベラー');
       setIsOrdering(false);
       setOrderSuccess(false);
       setErrorMessage(null);
       setUploadError(null);
       setAssignedSerial(getFormattedSerial(island.id || island.name));
-      // issuedTypes は localStorage確認エフェクト（上記）が更新するため、ここでは初期化しない
+    } else if (tempCheckInPhotoUrl) {
+      // CheckInModalから新しい写真が渡された場合は確実に反映する
+      setCustomImage(tempCheckInPhotoUrl);
+      if (tempCheckInDate) setVisitDate(tempCheckInDate);
     }
   }, [isOpen, island, user, contextTravelerName, tempCheckInDate, tempCheckInPhotoUrl]);
 
@@ -259,27 +306,89 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
   };
 
 
-  // Handle Photo Upload
+  // Handle Photo Upload (HEIC / 大容量JPEG・PNG 完全対応)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      setUploadError(null);
-      try {
-        const options = {
-          maxSizeMB: 1,
-          maxWidthOrHeight: 1920,
-          useWebWorker: true,
-        };
-        // 巨大な写真も自動で1MB以下に圧縮
-        const compressedFile = await imageCompression(file, options);
+    if (!file) return;
+    setUploadError(null);
+    setErrorMessage(null);
+
+    const saveUploadedDataUrl = (dataUrl: string) => {
+      setCustomImage(dataUrl);
+      setTempCheckInPhotoUrl(dataUrl);
+      setHasHologram(true);
+      if (island?.id) {
+        try {
+          sessionStorage.setItem(`kiratabi_checkin_photo_${island.id}`, dataUrl);
+          localStorage.setItem(`kiratabi_checkin_photo_${island.id}`, dataUrl);
+        } catch {
+          // Ignore storage quota errors
+        }
+      }
+    };
+
+    try {
+      const options = {
+        maxSizeMB: 1.5,
+        maxWidthOrHeight: 1920,
+        fileType: 'image/jpeg',
+        useWebWorker: false,
+      };
+      const compressedFile = await imageCompression(file, options);
+      const dataUrl = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = (event) => {
-          setCustomImage(event.target?.result as string);
-        };
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
         reader.readAsDataURL(compressedFile);
-      } catch (error) {
-        console.error('画像圧縮エラー:', error);
-        setUploadError('画像の最適化に失敗しました。別の写真をお試しください。');
+      });
+      saveUploadedDataUrl(dataUrl);
+    } catch {
+      // Fallback: ObjectURL -> offscreen canvas or direct FileReader
+      try {
+        const objUrl = URL.createObjectURL(file);
+        const dataUrl = await new Promise<string>((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => {
+            try {
+              const maxDim = 1920;
+              let w = img.naturalWidth || img.width;
+              let h = img.naturalHeight || img.height;
+              if (w > maxDim || h > maxDim) {
+                const ratio = Math.min(maxDim / w, maxDim / h);
+                w = Math.round(w * ratio);
+                h = Math.round(h * ratio);
+              }
+              const c = document.createElement('canvas');
+              c.width = w;
+              c.height = h;
+              const ctx = c.getContext('2d');
+              if (!ctx) throw new Error('No 2d ctx');
+              ctx.drawImage(img, 0, 0, w, h);
+              URL.revokeObjectURL(objUrl);
+              resolve(c.toDataURL('image/jpeg', 0.9));
+            } catch (err) {
+              URL.revokeObjectURL(objUrl);
+              reject(err);
+            }
+          };
+          img.onerror = (err) => {
+            URL.revokeObjectURL(objUrl);
+            reject(err);
+          };
+          img.src = objUrl;
+        });
+        saveUploadedDataUrl(dataUrl);
+      } catch (fallbackErr) {
+        console.error('画像変換エラー:', fallbackErr);
+        try {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            if (ev.target?.result) saveUploadedDataUrl(ev.target.result as string);
+          };
+          reader.readAsDataURL(file);
+        } catch {
+          setUploadError('画像の読み込みに失敗しました。JPEGまたはPNG形式の写真をお試しください。');
+        }
       }
     }
   };
@@ -532,7 +641,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           ctx.font = '26px monospace';
           ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 115);
 
-          // Hero Image (Smart 縦写真 & 横写真 自動対応)
+          // Hero Image (Smart 縦写真 & 横写真 自動対応 / 写真未設定時は公式海図エンブレム)
           if (heroImg) {
             ctx.save();
             const isPortraitPhoto = heroImg.height > heroImg.width;
@@ -577,6 +686,32 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             drawCornerBracket(heroX + heroW + 7, heroY - 7, Math.PI / 2);
             drawCornerBracket(heroX + heroW + 7, heroY + heroH + 7, Math.PI);
             drawCornerBracket(heroX - 7, heroY + heroH + 7, (Math.PI * 3) / 2);
+          } else {
+            // 公式海図・座標紋章プレート（偽写真は一切使用しない）
+            const plateW = 820;
+            const plateH = 520;
+            const plateX = cx - plateW / 2;
+            const plateY = 860;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+            ctx.fillRect(plateX, plateY, plateW, plateH);
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = 4;
+            ctx.strokeRect(plateX, plateY, plateW, plateH);
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(plateX + 12, plateY + 12, plateW - 24, plateH - 24);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = accentColor;
+            ctx.font = 'bold 28px serif';
+            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 140);
+            ctx.fillStyle = primaryColor;
+            ctx.font = 'bold 56px serif';
+            ctx.fillText(island.name, cx, plateY + 240);
+            ctx.fillStyle = secondaryColor;
+            ctx.font = '26px monospace';
+            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 320);
+            ctx.fillText(`PREFECTURE: ${island.prefecture || '日本'}`, cx, plateY + 375);
           }
 
           // Seal Stamp (Bottom-Right Wax Seal)
@@ -667,7 +802,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           ctx.font = '20px monospace';
           ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 88);
 
-          // Hero Image (Smart 縦写真 & 横写真 自動対応)
+          // Hero Image (Smart 縦写真 & 横写真 自動対応 / 写真未設定時は公式海図エンブレム)
           if (heroImg) {
             ctx.save();
             const isPortraitPhoto = heroImg.height > heroImg.width;
@@ -693,6 +828,31 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             ctx.strokeStyle = '#F59E0B';
             ctx.lineWidth = 2;
             ctx.strokeRect(heroX - 6, heroY - 6, heroW + 12, heroH + 12);
+          } else {
+            const plateW = 640;
+            const plateH = 300;
+            const plateX = cx - plateW / 2;
+            const plateY = 565;
+            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+            ctx.fillRect(plateX, plateY, plateW, plateH);
+            ctx.strokeStyle = accentColor;
+            ctx.lineWidth = 4;
+            ctx.strokeRect(plateX, plateY, plateW, plateH);
+            ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(plateX + 10, plateY + 10, plateW - 20, plateH - 20);
+
+            ctx.textAlign = 'center';
+            ctx.fillStyle = accentColor;
+            ctx.font = 'bold 18px serif';
+            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 75);
+            ctx.fillStyle = primaryColor;
+            ctx.font = 'bold 38px serif';
+            ctx.fillText(`${island.prefecture || ''} ${island.name}`, cx, plateY + 150);
+            ctx.fillStyle = secondaryColor;
+            ctx.font = '18px monospace';
+            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 215);
+            ctx.fillText('KIRATABI VERIFIED ARCHIPELAGO ARCHIVE', cx, plateY + 250);
           }
 
           // Seal Stamp (Bottom-Right Wax Seal)
@@ -734,23 +894,38 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
         }
       };
 
-      if (customImage) {
+      const verifiedPhotos = getVerifiedIslandPhotos(island);
+      const verifiedFallbackUrl =
+        orientation === 'vertical'
+          ? (verifiedPhotos.mobileUrl || verifiedPhotos.desktopUrl)
+          : (verifiedPhotos.desktopUrl || verifiedPhotos.mobileUrl);
+      const activePhotoSrc = customImage || tempCheckInPhotoUrl || verifiedFallbackUrl || null;
+
+      if (activePhotoSrc) {
         const img = new Image();
-        img.onload = () => renderContent(ctx, img);
-        img.src = customImage;
+        if (!activePhotoSrc.startsWith('data:') && !activePhotoSrc.startsWith('blob:')) {
+          img.crossOrigin = 'anonymous';
+        }
+        img.onload = () => {
+          if (seq !== renderSeqRef.current) return;
+          renderContent(ctx, img);
+        };
+        img.onerror = () => {
+          if (seq !== renderSeqRef.current) return;
+          renderContent(ctx, undefined);
+        };
+        img.src = activePhotoSrc;
       } else {
-        const img = new Image();
-        img.crossOrigin = 'anonymous';
-        img.onload = () => renderContent(ctx, img);
-        img.src = `https://picsum.photos/seed/${island.id}/800/600`;
+        renderContent(ctx, undefined);
       }
     };
 
+    const seq = ++renderSeqRef.current;
     drawToCanvas(canvasRef.current);
     if (isFullscreenPreview) {
       drawToCanvas(fullscreenCanvasRef.current);
     }
-  }, [island, anniversaryMode, travelerName, visitDate, hasHologram, includeCompanionStamp, companionChar, companionStage, customImage, certificateType, orientation, designTheme, isFullscreenPreview, assignedSerial]);
+  }, [island, anniversaryMode, travelerName, visitDate, hasHologram, includeCompanionStamp, companionChar, companionStage, customImage, tempCheckInPhotoUrl, certificateType, orientation, designTheme, isFullscreenPreview, assignedSerial]);
 
   useEffect(() => {
     if (isFullscreenPreview) {
@@ -771,28 +946,68 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
     return () => clearTimeout(timer);
   }, [isOpen, island, drawCertificate]);
 
-  // Handle Download (CORS Safe)
+  // Handle Download (Safari / Mobile / Desktop 完全対応)
   const handleDownload = async () => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    // Instead of directly using toDataURL which can cause security errors if CORS images were drawn,
-    // we use a blob. If there's still a CORS issue, the canvas might be tainted.
-    // However, imageCompression creates a local data URL or blob, which doesn't taint.
-    // If island.image_url is used, it must have CORS headers from Supabase.
+    if (!canvas) {
+      toast.error('証明書キャンバスの準備中です。もう一度お試しください。');
+      return;
+    }
+
+    const safeIslandName = (island?.name || 'Island').replace(/[\\/:*?"<>|]/g, '_');
+    const safeDate = (visitDate || '').replace(/[^0-9]/g, '');
+    const fileName = `KIRATABI_Certificate_${safeIslandName}${safeDate ? '_' + safeDate : ''}.png`;
+
+    const triggerDownloadLink = (href: string, revokeAfterMs = 0) => {
+      const link = document.createElement('a');
+      link.download = fileName;
+      link.href = href;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        if (document.body.contains(link)) {
+          document.body.removeChild(link);
+        }
+        if (revokeAfterMs > 0) {
+          URL.revokeObjectURL(href);
+        }
+      }, revokeAfterMs || 500);
+    };
+
     try {
-      canvas.toBlob((blob) => {
-        if (!blob) return;
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.download = `KIRATABI_Certificate_${island?.name || 'Island'}.png`;
-        link.href = url;
-        link.click();
-        URL.revokeObjectURL(url);
-      }, 'image/png');
+      const blob = await new Promise<Blob | null>((resolve) => {
+        try {
+          canvas.toBlob((b) => resolve(b), 'image/png', 1.0);
+        } catch {
+          resolve(null);
+        }
+      });
+
+      if (blob) {
+        const blobUrl = URL.createObjectURL(blob);
+        triggerDownloadLink(blobUrl, 15000);
+        toast.success('📸 到達証明書をダウンロードしました！');
+      } else {
+        const dataUrl = canvas.toDataURL('image/png');
+        triggerDownloadLink(dataUrl, 0);
+        toast.success('📸 到達証明書をダウンロードしました！');
+      }
+
+      if (!issuedTypes.includes(certificateType)) {
+        issueDigital(certificateType);
+      }
     } catch (e) {
-      console.error('Download error (CORS):', e);
-      setErrorMessage('画像の保存に失敗しました。画像に外部のリソースが含まれている可能性があります。');
+      console.error('Download error:', e);
+      try {
+        const dataUrl = canvas.toDataURL('image/png');
+        triggerDownloadLink(dataUrl, 0);
+        toast.success('📸 到達証明書をダウンロードしました！');
+      } catch (err) {
+        console.error('Fallback toDataURL error:', err);
+        setErrorMessage('画像の保存に失敗しました。別の写真でお試しください。');
+        toast.error('画像の保存に失敗しました。');
+      }
     }
   };
 
@@ -826,64 +1041,6 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
   };
 
   if (!isOpen || !island) return null;
-
-  if (!isVerified) {
-    return (
-      <AnimatePresence>
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4 lg:p-8"
-        >
-          <motion.div
-            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-            animate={{ scale: 1, opacity: 1, y: 0 }}
-            exit={{ scale: 0.95, opacity: 0, y: 20 }}
-            className="w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden bg-white"
-          >
-            <div className="bg-slate-100 px-6 py-4 border-b border-slate-200 flex justify-between items-center">
-              <h3 className="font-bold text-slate-700">到達記録</h3>
-              <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X className="w-5 h-5" /></button>
-            </div>
-            <div className="p-6 text-center">
-              <div className="w-24 h-24 mx-auto bg-blue-50 rounded-full flex items-center justify-center mb-4">
-                {companionChar ? (
-                  <span className="text-4xl">{companionStage?.icon || '🦉'}</span>
-                ) : (
-                  <CheckCircle className="w-12 h-12 text-blue-400" />
-                )}
-              </div>
-              <h4 className="font-serif font-bold text-xl text-slate-800 mb-2">「{island.name}」<br/>自己申告記録完了！</h4>
-              
-              <div className="text-xs font-mono text-slate-400 bg-slate-100 py-1.5 px-4 rounded-full inline-block mb-4 border border-slate-200">
-                DATE OF ARRIVAL: {visitDate}
-              </div>
-
-              <p className="text-sm text-slate-500 mb-6">
-                簡易到達記録を保存しました。到達率がアップします！
-              </p>
-              
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-left">
-                <div className="flex items-center gap-2 mb-2">
-                  <Sparkles className="w-4 h-4 text-amber-500" />
-                  <span className="text-xs font-bold text-amber-800">公式認定でさらに豪華に！</span>
-                </div>
-                <p className="text-xs text-amber-700 leading-relaxed">
-                  現地での写真(GPS付)やGPSチェックインを行うと、<strong className="text-amber-900">ポイント獲得</strong>や<strong className="text-amber-900">高画質な公式証明書</strong>の発行が可能になります！
-                </p>
-              </div>
-            </div>
-            <div className="p-4 bg-slate-50 border-t border-slate-100">
-              <button onClick={onClose} className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm transition-colors">
-                閉じる
-              </button>
-            </div>
-          </motion.div>
-        </motion.div>
-      </AnimatePresence>
-    );
-  }
 
   return (
     <AnimatePresence>
@@ -984,10 +1141,29 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                   <div className="pt-2 border-t border-slate-700/60">
                     <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
                       <div className="flex items-center gap-3 w-full md:w-auto">
-                        <Camera className="w-4 h-4 text-slate-400" />
-                        <input type="file" accept="image/*" onChange={handleImageUpload} className="text-xs text-slate-300 file:mr-2 file:py-1 file:px-2 file:rounded file:border-0 file:bg-slate-700 file:text-amber-400" />
-                        {customImage && <button onClick={() => setCustomImage(null)} className="text-xs text-rose-400 hover:underline">削除</button>}
+                        <Camera className="w-4 h-4 text-amber-400 shrink-0" />
+                        <input type="file" accept="image/*,.heic,.heif" onChange={handleImageUpload} className="text-xs text-slate-300 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold hover:file:bg-amber-400 cursor-pointer" />
+                        {customImage && (
+                          <button
+                            onClick={() => {
+                              setCustomImage(null);
+                              setTempCheckInPhotoUrl(null);
+                              if (island?.id) {
+                                try {
+                                  sessionStorage.removeItem(`kiratabi_checkin_photo_${island.id}`);
+                                  localStorage.removeItem(`kiratabi_checkin_photo_${island.id}`);
+                                } catch {}
+                              }
+                            }}
+                            className="text-xs text-rose-400 hover:underline shrink-0"
+                          >
+                            写真を削除
+                          </button>
+                        )}
                       </div>
+                      {uploadError && (
+                        <p className="text-xs text-rose-400 font-bold">{uploadError}</p>
+                      )}
                       {companionChar && companionStage && (
                         <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
                           <input type="checkbox" checked={includeCompanionStamp} onChange={(e) => setIncludeCompanionStamp(e.target.checked)} className="rounded text-amber-500 bg-slate-800 border-slate-600" />
@@ -1046,27 +1222,27 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                 </div>
 
                 {/* Viral & Free Download Actions */}
-                <div className={`grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 transition-all duration-500 ${issuedTypes.length === 0 ? 'opacity-50 pointer-events-none grayscale' : ''}`}>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 transition-all duration-500">
                   <button
                     onClick={handleNativeShare}
-                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all"
+                    className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
                   >
                     <Share2 className="w-4 h-4" />
                     シェア(X/LINE等)
                   </button>
                   <button
                     onClick={handleInstagramShare}
-                    className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 hover:from-pink-400 hover:to-yellow-400 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all"
+                    className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 hover:from-pink-400 hover:to-yellow-400 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
                   >
                     <Camera className="w-4 h-4" />
                     Instagramへ
                   </button>
                   <button
                     onClick={handleDownload}
-                    className="w-full py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all"
+                    className="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
                   >
                     <Download className="w-4 h-4" />
-                    画像DL(無料)
+                    画像DL(無料・即時保存)
                   </button>
                 </div>
 
@@ -1291,7 +1467,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             <div className="flex-1 overflow-auto p-4 flex items-center justify-center cursor-zoom-out" onClick={() => setIsFullscreenPreview(false)}>
               <canvas
                 ref={fullscreenCanvasRef}
-                className={`max-w-none w-auto max-h-none h-auto shadow-2xl border border-slate-800 ${issuedTypes.length === 0 ? 'blur-sm grayscale opacity-80' : ''}`}
+                className="max-w-none w-auto max-h-none h-auto shadow-2xl border border-slate-800"
                 style={{ width: '1200px', height: '900px', transform: 'scale(0.8)', transformOrigin: 'center' }}
               />
             </div>

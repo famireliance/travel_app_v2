@@ -365,7 +365,7 @@
     "enName": "KERAMA",
     "area": "沖縄地方",
     "visited": 0,
-    "total": 10,
+    "total": 16,
     "hero_image_url": ""
   },
   {
@@ -379,11 +379,11 @@
   },
   {
     "id": "okinawa_main",
-    "name": "琉球弧の島々",
-    "enName": "OKINAWA MAIN",
+    "name": "沖縄本島周辺離島",
+    "enName": "OKINAWA MAIN ISLANDS",
     "area": "沖縄地方",
     "visited": 0,
-    "total": 18,
+    "total": 34,
     "hero_image_url": ""
   },
   {
@@ -401,7 +401,7 @@
     "enName": "KUME ISLANDS",
     "area": "沖縄地方",
     "visited": 0,
-    "total": 4,
+    "total": 6,
     "hero_image_url": ""
   }
 ]

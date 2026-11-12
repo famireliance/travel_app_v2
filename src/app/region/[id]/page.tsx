@@ -39,11 +39,14 @@ export default function RegionMap() {
 
   const initialRegionIslands = useMemo(() => {
     if (!region) return [];
-    return Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter((i: any) => 
-      i.region_id === region.id || 
-      i.region_id === region.name || 
-      i.prefecture?.includes(region.name)
-    ) as unknown as IslandData[];
+    return Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter((i: any) => {
+      if (i.is_conquest_target === false) return false;
+      if (region.id === 'okinawa_main') return i.region_id === 'okinawa_main' || i.region_id === 'kume';
+      if (region.id === 'kume') return i.region_id === 'kume' || String(i.id) === '382' || String(i.id) === '383';
+      return i.region_id === region.id || 
+        i.region_id === region.name || 
+        i.prefecture?.includes(region.name);
+    }) as unknown as IslandData[];
   }, [region]);
 
   const [regionIslands, setRegionIslands] = useState<IslandData[]>(initialRegionIslands);
@@ -54,11 +57,13 @@ export default function RegionMap() {
     if (!region) return;
     fetchAllIslands()
       .then(islands => {
-        const filtered = (islands || []).filter((i: any) => 
-          i.region_id === region.id || 
-          i.region_id === region.name || 
-          i.prefecture?.includes(region.name)
-        );
+        const filtered = (islands || []).filter((i: any) => {
+          if (region.id === 'okinawa_main') return i.region_id === 'okinawa_main' || i.region_id === 'kume';
+          if (region.id === 'kume') return i.region_id === 'kume' || String(i.id) === '382' || String(i.id) === '383';
+          return i.region_id === region.id || 
+            i.region_id === region.name || 
+            i.prefecture?.includes(region.name);
+        });
         if (filtered.length > 0) {
           setRegionIslands(filtered as unknown as IslandData[]);
         }

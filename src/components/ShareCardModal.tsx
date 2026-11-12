@@ -29,7 +29,7 @@ export default function ShareCardModal({
   const [isRendering, setIsRendering] = useState(false);
   const [isCopied, setIsCopied] = useState(false);
 
-  const { travelerName, totalVisited, totalPoints } = useTravel();
+  const { travelerName, totalVisited, totalPoints, conquestTargetCount, tempCheckInPhotoUrl } = useTravel();
 
   const formattedDate = checkinDate || new Date().toISOString().split('T')[0].replace(/-/g, '.');
 
@@ -53,13 +53,26 @@ export default function ShareCardModal({
       canvas.width = width;
       canvas.height = height;
 
-      // 1. 背景の描画（検証済み現地写真またはグラデーション。偽画像は一切使用しない）
+      // 1. 背景の描画（ユーザー撮影写真、検証済み現地写真、またはグラデーション。偽画像は一切使用しない）
       const bgImg = new Image();
-      bgImg.crossOrigin = 'anonymous';
+
+      const storedPhoto = (() => {
+        if (typeof window === 'undefined' || !island?.id) return null;
+        try {
+          return (
+            sessionStorage.getItem(`kiratabi_checkin_photo_${island.id}`) ||
+            localStorage.getItem(`kiratabi_checkin_photo_${island.id}`)
+          );
+        } catch {
+          return null;
+        }
+      })();
 
       const verified = getVerifiedIslandPhotos(island);
       const imgSrc =
         photoUrl ||
+        tempCheckInPhotoUrl ||
+        storedPhoto ||
         (!isLandscape && verified.mobileUrl ? verified.mobileUrl : verified.desktopUrl) ||
         verified.mobileUrl ||
         '';
@@ -67,6 +80,9 @@ export default function ShareCardModal({
       const loadImage = (src: string) => {
         if (!src) return Promise.resolve(null);
         return new Promise<HTMLImageElement | null>((resolve) => {
+          if (!src.startsWith('data:') && !src.startsWith('blob:')) {
+            bgImg.crossOrigin = 'anonymous';
+          }
           bgImg.onload = () => resolve(bgImg);
           bgImg.onerror = () => resolve(null);
           bgImg.src = src;
@@ -224,7 +240,7 @@ export default function ShareCardModal({
         ctx.font = 'bold 28px sans-serif';
         ctx.fillText(`📅 到達日: ${formattedDate}`, startX, boxY + 70);
         ctx.fillText(`👤 旅人名: ${travelerName || '名無しの島旅人'}`, startX, boxY + 140);
-        ctx.fillText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / 351 島`, startX, boxY + 210);
+        ctx.fillText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / ${conquestTargetCount || 369} 島`, startX, boxY + 210);
         ctx.fillText(`⭐ 獲得XP: +${totalPoints > 0 ? totalPoints : 100} pt`, startX, boxY + 280);
 
         // 角印
@@ -256,7 +272,7 @@ export default function ShareCardModal({
     return () => {
       isCancelled = true;
     };
-  }, [isOpen, island, aspectMode, travelerName, totalVisited, totalPoints, formattedDate, photoUrl]);
+  }, [isOpen, island, aspectMode, travelerName, totalVisited, totalPoints, conquestTargetCount, formattedDate, photoUrl, tempCheckInPhotoUrl]);
 
   if (!isOpen) return null;
 
@@ -266,9 +282,16 @@ export default function ShareCardModal({
     const a = document.createElement('a');
     a.href = generatedImageUrl;
     a.download = `KIRATABI_${island.name}_到達証明書_${aspectMode}.png`;
+    a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
-    document.body.removeChild(a);
+    setTimeout(() => {
+      try {
+        if (a.parentNode) document.body.removeChild(a);
+      } catch {
+        // ignore
+      }
+    }, 1000);
     toast.success('📸 到達証明カード画像を保存しました！');
   };
 

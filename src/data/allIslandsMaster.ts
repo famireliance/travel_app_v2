@@ -7148,10 +7148,12 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
     },
-    "area": null,
+    "area": 0.18,
+    "radius_m": 450,
     "points": 10,
     "difficulty": "はじめの一歩",
-    "is_conquest_target": false,
+    "is_published": true,
+    "is_conquest_target": true,
     "checkin_radius_m": 3000,
     "slug": "senagajimaumikajiterasu"
   },
@@ -7272,11 +7274,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   "382": {
     "id": "382",
     "name": "粟国島",
-    "region_id": "kume",
+    "region_id": "okinawa_main",
     "prefecture": "沖縄県",
     "coordinates": "26.5861, 127.2278",
     "description": "那覇の北西約60kmに浮かぶ映画『ナビィの恋』の舞台となったソテツとミネラル豊富な「粟国の塩」の島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "access": "那覇泊港（とまりん）よりフェリー粟国で約2時間10分",
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
@@ -7292,11 +7294,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   "383": {
     "id": "383",
     "name": "渡名喜島",
-    "region_id": "kume",
+    "region_id": "okinawa_main",
     "prefecture": "沖縄県",
     "coordinates": "26.3681, 127.1417",
     "description": "国の重要伝統的建造物群保存地区に指定された赤瓦とフクギ並木の集落が保存され夜は足元灯が優しく照らす島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "access": "那覇泊港（とまりん）よりフェリー琉球・フェリーなはで約1時間55分",
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
@@ -8142,22 +8144,23 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   },
   "432": {
     "id": "432",
-    "name": "前島（沖縄県座間味）",
+    "name": "前島（慶良間・渡嘉敷村）",
     "region_id": "kerama",
     "prefecture": "沖縄県",
     "coordinates": "26.2125, 127.4464",
-    "description": "慶良間諸島の東端に位置し白い砂浜とケラマブルーのラグーンが輝く島。",
-    "access": "沿岸各港より定期フェリー・高速船・旅客船アクセス",
+    "description": "慶良間諸島の東端・渡嘉敷村に位置し、真っ白な砂浜とケラマブルーのラグーンが輝く島。チャーター船やダイビング・上陸ツアーで訪れることができる。",
+    "access": "那覇港・渡嘉敷港等よりマリンツアー・チャーター船で約30分",
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
     },
-    "area": 2.41,
+    "area": 1.6,
     "radius_m": 876,
     "checkin_radius_m": 1876,
     "points": 350,
     "difficulty": "遠隔離島",
-    "is_conquest_target": false,
+    "is_published": true,
+    "is_conquest_target": true,
     "slug": "maejimaokinawakenzamami"
   },
   "noumi": {
@@ -9033,6 +9036,326 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
     "slug": "tsujishima_amakusa"
+  },
+  "oujima_nago": {
+    "id": "oujima_nago",
+    "name": "奥武島（名護市・羽地内海）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.6331, 128.0319",
+    "description": "沖縄本島北部の名護市真喜屋と屋我地島の間に浮かび、羽地奥武橋と屋我地大橋で結ばれた有人島。「沖縄の瀬戸内海」と呼ばれる穏やかな羽地内海に包まれている。",
+    "access": "沖縄本島北部（名護市）より羽地奥武橋で陸続き（屋我地島・古宇利島ルート上）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.25,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 40,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "oujima_nago"
+  },
+  "miyagijima_ogimi": {
+    "id": "miyagijima_ogimi",
+    "name": "宮城島（大宜味村・塩屋湾）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.6714, 128.1056",
+    "description": "やんばる（大宜味村）の塩屋湾口に浮かび、真紅の塩屋大橋で結ばれた有人島。重要無形民俗文化財「塩屋湾のウンガミ（海神祭）」の舞台であり、古き良き赤瓦とフクギ並木が残る。",
+    "access": "那覇空港より車で約90分（国道58号・塩屋大橋で陸続き）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.24,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 50,
+    "difficulty": "架橋・陸続き",
+    "is_conquest_target": true,
+    "slug": "miyagijima_ogimi"
+  },
+  "ukibarujima_okinawa": {
+    "id": "ukibarujima_okinawa",
+    "name": "浮原島（うるま市・勝連沖）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.3014, 127.9917",
+    "description": "うるま市・浜比嘉島の南東約3kmに浮かぶ隆起サンゴ礁の無人島。手つかずの天然白砂ビーチと透明度抜群のリーフに囲まれ、マリンツアーやカヤックで上陸できる秘境アイランド。",
+    "access": "浜比嘉島・勝連半島各港よりマリンツアー船・チャーター船で約15分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.3,
+    "radius_m": 450,
+    "checkin_radius_m": 1600,
+    "points": 220,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "ukibarujima_okinawa"
+  },
+  "minamiukibarujima_okinawa": {
+    "id": "minamiukibarujima_okinawa",
+    "name": "南浮原島（うるま市・勝連沖）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2889, 127.9814",
+    "description": "浮原島のさらに南西に浮かぶ周囲約1.3kmの無人島。遠浅のコバルトブルーの礁池と星砂の浜が広がり、シュノーケリングや無人島上陸ツアーで人気。",
+    "access": "浜比嘉島・勝連半島各港よりマリンツアー船で約15〜20分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.07,
+    "radius_m": 300,
+    "checkin_radius_m": 1400,
+    "points": 240,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "minamiukibarujima_okinawa"
+  },
+  "yanahajima_okinawa": {
+    "id": "yanahajima_okinawa",
+    "name": "屋那覇島（伊是名村）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.8972, 127.9153",
+    "description": "伊是名島の南西約1kmに浮かぶ伊是名村最大の無人島。平坦な隆起サンゴ礁の島を取り囲むように極上の白砂ビーチとリーフが広がる。",
+    "access": "伊是名島より渡し船・チャーター船で約10〜15分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.74,
+    "radius_m": 650,
+    "checkin_radius_m": 1800,
+    "points": 380,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "yanahajima_okinawa"
+  },
+  "gushikawajima_okinawa": {
+    "id": "gushikawajima_okinawa",
+    "name": "具志川島（伊是名村）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.9822, 127.9519",
+    "description": "伊是名島と伊平屋島の間の海峡に浮かぶ細長い無人島。縄文時代からの貝塚群（具志川島遺跡群）が発見された歴史ロマンとエメラルドグリーンの砂州が魅力。",
+    "access": "伊是名島・内花港等よりチャーター船で約15分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.47,
+    "radius_m": 550,
+    "checkin_radius_m": 1800,
+    "points": 380,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "gushikawajima_okinawa"
+  },
+  "urugamijima_okinawa": {
+    "id": "urugamijima_okinawa",
+    "name": "降神島（伊是名村）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.9258, 127.9814",
+    "description": "伊是名島の東沖・仲田港の正面に浮かぶ神聖な小島。神々が降り立つ島として崇められ、フェリーいぜな尚円の船上からも間近に望むことができる。",
+    "access": "伊是名島・仲田港沖（チャーター船・カヤックまたは航路至近）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.05,
+    "radius_m": 300,
+    "checkin_radius_m": 1500,
+    "points": 320,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "urugamijima_okinawa"
+  },
+  "adagashima_okinawa": {
+    "id": "adagashima_okinawa",
+    "name": "安田ヶ島（国頭村・やんばる沖）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.7408, 128.3269",
+    "description": "世界自然遺産・やんばる（国頭村安田）の東海岸沖約500mに浮かぶ無人島。コバルトブルーの太平洋とサンゴ礁に囲まれ、シーカヤックや渡し船で上陸できる秘境島。",
+    "access": "国頭村・安田（あだ）漁港より渡し船またはシーカヤックで約10分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.08,
+    "radius_m": 350,
+    "checkin_radius_m": 1500,
+    "points": 200,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "adagashima_okinawa"
+  },
+  "ukahajima_okinawa": {
+    "id": "ukahajima_okinawa",
+    "name": "岡波島（ウカハ島・糸満市沖）",
+    "region_id": "okinawa_main",
+    "prefecture": "沖縄県",
+    "coordinates": "26.1053, 127.6433",
+    "description": "沖縄本島南部・糸満市の沖合約2kmのリーフ内に浮かぶ無人島（通称ウカハ島）。白砂のビーチと豊かなイノー（礁池）に囲まれ、カヤックやサップ・マリンツアーで訪れることができる。",
+    "access": "糸満市沿岸よりシーカヤック・SUPまたはマリンボートで約20分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.03,
+    "radius_m": 300,
+    "checkin_radius_m": 1500,
+    "points": 180,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "ukahajima_okinawa"
+  },
+  "ohajima_kume": {
+    "id": "ohajima_kume",
+    "name": "オーハ島（東奥武島・久米島町）",
+    "region_id": "kume",
+    "prefecture": "沖縄県",
+    "coordinates": "26.3389, 126.8436",
+    "description": "久米島・奥武島のすぐ東隣に浮かぶ沖縄県公式指定の有人離島。定期船はなく、干潮時に奥武島から海底の砂道を歩いて渡るか渡し船で上陸する、沖縄原風景と「神様の足跡」の秘境島。",
+    "access": "久米島・奥武島より渡し船で約5分（大潮干潮時は徒歩横断も可能）",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.37,
+    "radius_m": 450,
+    "checkin_radius_m": 1600,
+    "points": 420,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "ohajima_kume"
+  },
+  "hatenohama_kume": {
+    "id": "hatenohama_kume",
+    "name": "ハテの浜（久米島町・サンゴの砂州島）",
+    "region_id": "kume",
+    "prefecture": "沖縄県",
+    "coordinates": "26.3519, 126.8858",
+    "description": "久米島の東沖約5kmに浮かぶ全長約7kmの真っ白なサンゴ砂だけの無人島（メーヌ浜・ナカノ浜・ハテノ浜の総称）。360度エメラルドグリーンの海に囲まれた東洋一の絶景ビーチ。",
+    "access": "久米島・泊フィッシャリーナよりグラスボート・上陸ツアー船で約20分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.15,
+    "radius_m": 800,
+    "checkin_radius_m": 2500,
+    "points": 280,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "hatenohama_kume"
+  },
+  "kamiyamajima_kerama": {
+    "id": "kamiyamajima_kerama",
+    "name": "神山島（慶良間・チービシ環礁）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2625, 127.5819",
+    "description": "那覇の北西沖、慶良間諸島国立公園のチービシ環礁を形成する3島のひとつ（ナガンヌ島・クエフ島・神山島）。灯台が立つ緑豊かな無人島で、周囲のサンゴ礁とラビリンス地形はダイビング・カヤックの名所。",
+    "access": "那覇港・泊港等よりマリンツアー船・シーカヤックツアーで約20〜30分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.29,
+    "radius_m": 450,
+    "checkin_radius_m": 1600,
+    "points": 220,
+    "difficulty": "日帰り圏内",
+    "is_conquest_target": true,
+    "slug": "kamiyamajima_kerama"
+  },
+  "unjima_kerama": {
+    "id": "unjima_kerama",
+    "name": "ウン島（渡嘉敷村・ハナリ島）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.1650, 127.3386",
+    "description": "渡嘉敷島・阿波連ビーチの正面約800mに浮かぶ無人島（通称ハナリ島）。阿波連ビーチからバナナボート（渡し船）やカヤックでわずか5分で上陸でき、ケラマブルーの絶景とシュノーケリングを楽しめる。",
+    "access": "渡嘉敷島・阿波連ビーチより渡し船（バナナボート）またはカヤックで約5分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.26,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 320,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "slug": "unjima_kerama"
+  },
+  "yakabijima_kerama": {
+    "id": "yakabijima_kerama",
+    "name": "屋嘉比島（座間味村・慶良間諸島）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2167, 127.2464",
+    "description": "阿嘉島の北西沖に浮かぶ慶良間諸島の無人島。かつて銅鉱山として栄えた歴史を持ち、現在は国の天然記念物「ケラマジカ」が野生生息する静寂の島。",
+    "access": "座間味港・阿嘉港よりチャーター船またはシーカヤックツアーで約15〜20分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 1.26,
+    "radius_m": 700,
+    "checkin_radius_m": 1800,
+    "points": 400,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "yakabijima_kerama"
+  },
+  "kubashima_kerama": {
+    "id": "kubashima_kerama",
+    "name": "久場島（座間味村・慶良間諸島）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.1756, 127.2408",
+    "description": "慶良間諸島の南西端に位置する険しい断崖とクバ（ビロウ）の原生林に覆われた無人島。外洋に面した豪快な地形と圧倒的な魚影でダイバー憧れの海域。",
+    "access": "阿嘉港・座間味港よりダイビングボート・チャーター船で約20分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 1.55,
+    "radius_m": 800,
+    "checkin_radius_m": 1900,
+    "points": 420,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "kubashima_kerama"
+  },
+  "oujima_kerama": {
+    "id": "oujima_kerama",
+    "name": "奥武島（座間味村・慶良間諸島）",
+    "region_id": "kerama",
+    "prefecture": "沖縄県",
+    "coordinates": "26.2058, 127.2708",
+    "description": "阿嘉島と屋嘉比島の間に浮かぶ慶良間諸島の無人島（うぶじま）。周囲のリーフは色鮮やかなサンゴと熱帯魚の宝庫で、カヤックやシュノーケリングツアーで立ち寄れる。",
+    "access": "阿嘉港・座間味港よりシーカヤックまたはマリンツアー船で約10分",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "area": 0.05,
+    "radius_m": 300,
+    "checkin_radius_m": 1400,
+    "points": 340,
+    "difficulty": "遠隔離島",
+    "is_conquest_target": true,
+    "slug": "oujima_kerama"
   }
 };
 

@@ -6,7 +6,7 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const ALLOWED_CERTIFICATE_TYPES = ['standard', 'high_quality'] as const;
+const ALLOWED_CERTIFICATE_TYPES = ['card', 'standard', 'high_quality'] as const;
 
 export async function POST(request: Request) {
   try {
@@ -16,19 +16,48 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
-    const { islandId, type = 'high_quality', imageUrl } = body;
+    const { islandId: rawIslandId, type = 'high_quality', imageUrl } = body;
+    const islandId = rawIslandId !== undefined && rawIslandId !== null ? String(rawIslandId) : '';
     const userId = auth.user.id;
 
     if (body.userId && body.userId !== userId) {
       return NextResponse.json({ error: '不正なユーザーIDです' }, { status: 403 });
     }
 
-    if (!islandId || typeof islandId !== 'string') {
+    if (!islandId) {
       return NextResponse.json({ error: 'Missing islandId' }, { status: 400 });
     }
 
     if (!ALLOWED_CERTIFICATE_TYPES.includes(type)) {
       return NextResponse.json({ error: '無効な証明書タイプです' }, { status: 400 });
+    }
+
+    // Check if certificate already exists for this user and island (same type) BEFORE checking monthly quota
+    const { data: existingCert, error: existingError } = await supabase
+      .from('certificates')
+      .select('*')
+      .eq('island_id', islandId)
+      .eq('user_id', userId)
+      .eq('type', type)
+      .single();
+
+    if (existingCert) {
+      // If a newer imageUrl was uploaded, update it
+      if (imageUrl && imageUrl !== existingCert.image_url) {
+        const { data: updatedCert } = await supabase
+          .from('certificates')
+          .update({ image_url: imageUrl })
+          .eq('id', existingCert.id)
+          .select()
+          .single();
+        return NextResponse.json({ certificate: updatedCert || existingCert, message: 'Already issued (updated image)' });
+      }
+      return NextResponse.json({ certificate: existingCert, message: 'Already issued' });
+    }
+
+    if (existingError && existingError.code !== 'PGRST116') {
+      console.error('Error checking existing certificate:', existingError);
+      return NextResponse.json({ error: 'Database error checking certificate' }, { status: 500 });
     }
 
     // Check user tier and tickets
@@ -56,34 +85,16 @@ export async function POST(request: Request) {
         if (tickets > 0) {
           useTicket = true;
         } else {
-          return NextResponse.json({ error: 'FREE_LIMIT_REACHED', message: '無料プランの今月の高画質発行枠（1枚）を使い切りました。Premiumプランへご登録いただくか、来月までお待ちください。' }, { status: 403 });
+          return NextResponse.json({ error: 'FREE_LIMIT_REACHED', message: '無料プランの今月の高画質クラウド保存枠（1枚）を使い切りました（画像DLは引き続き無料でご利用いただけます）。' }, { status: 403 });
         }
       } else if (tier === 'premium' && monthlyCount >= 5) {
         if (tickets > 0) {
           useTicket = true;
         } else {
-          return NextResponse.json({ error: 'PREMIUM_LIMIT_REACHED', message: '今月のPremium高画質発行枠（5枚）を使い切りました。チケットを利用するか、Ultimateプランへの変更をご検討ください。' }, { status: 403 });
+          return NextResponse.json({ error: 'PREMIUM_LIMIT_REACHED', message: '今月のPremium高画質クラウド保存枠（5枚）を使い切りました。チケットを利用するか、Ultimateプランへの変更をご検討ください。' }, { status: 403 });
         }
       }
       // Ultimate is unlimited
-    }
-
-    // Check if certificate already exists for this user and island (same type)
-    const { data: existingCert, error: existingError } = await supabase
-      .from('certificates')
-      .select('*')
-      .eq('island_id', islandId)
-      .eq('user_id', userId)
-      .eq('type', type)
-      .single();
-
-    if (existingCert) {
-      return NextResponse.json({ certificate: existingCert, message: 'Already issued' });
-    }
-
-    if (existingError && existingError.code !== 'PGRST116') {
-      console.error('Error checking existing certificate:', existingError);
-      return NextResponse.json({ error: 'Database error checking certificate' }, { status: 500 });
     }
 
     // Get the max serial number for this island (regardless of type to keep serials unique per island)

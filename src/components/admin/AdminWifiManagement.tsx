@@ -281,7 +281,7 @@ export default function AdminWifiManagement({ password }: AdminWifiManagementPro
                     </option>
                   ))}
                 </optgroup>
-                <optgroup label="全国351公開離島から選択">
+                <optgroup label="全国369公開離島から選択">
                   {allPublishedIslands.map((isl: any) => (
                     <option key={isl.id} value={String(isl.id)}>
                       #{isl.id} {isl.name} ({isl.prefecture})

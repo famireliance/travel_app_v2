@@ -4,10 +4,72 @@ import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Camera, CheckCircle2, ShieldCheck, Navigation2, AlertCircle, WifiOff } from 'lucide-react';
 import exifr from 'exifr';
+import imageCompression from 'browser-image-compression';
 import { calculateDistanceKm } from '@/lib/geo';
 import { useTravel } from '@/context/TravelContext';
 import { saveOfflineCheckin } from '@/lib/offlineSync';
 import { Award } from 'lucide-react';
+
+async function fileToRenderableDataUrl(file: File): Promise<string> {
+  try {
+    const compressed = await imageCompression(file, {
+      maxSizeMB: 1.5,
+      maxWidthOrHeight: 1920,
+      fileType: 'image/jpeg',
+      useWebWorker: false,
+    });
+    return await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(compressed);
+    });
+  } catch {
+    // Fallback: try drawing via ObjectURL onto an offscreen canvas (handles Safari native HEIC decoding)
+    try {
+      const objUrl = URL.createObjectURL(file);
+      const dataUrl = await new Promise<string>((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+          try {
+            const maxDim = 1920;
+            let w = img.naturalWidth || img.width;
+            let h = img.naturalHeight || img.height;
+            if (w > maxDim || h > maxDim) {
+              const ratio = Math.min(maxDim / w, maxDim / h);
+              w = Math.round(w * ratio);
+              h = Math.round(h * ratio);
+            }
+            const c = document.createElement('canvas');
+            c.width = w;
+            c.height = h;
+            const ctx = c.getContext('2d');
+            if (!ctx) throw new Error('No 2d ctx');
+            ctx.drawImage(img, 0, 0, w, h);
+            URL.revokeObjectURL(objUrl);
+            resolve(c.toDataURL('image/jpeg', 0.9));
+          } catch (e) {
+            URL.revokeObjectURL(objUrl);
+            reject(e);
+          }
+        };
+        img.onerror = (err) => {
+          URL.revokeObjectURL(objUrl);
+          reject(err);
+        };
+        img.src = objUrl;
+      });
+      return dataUrl;
+    } catch {
+      return await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+  }
+}
 
 interface CheckInModalProps {
   isOpen: boolean;
@@ -25,7 +87,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
   const [distanceInfo, setDistanceInfo] = useState<number | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { addIslandVisit, setTempCheckInPhotoUrl, setTempCheckInDate } = useTravel();
+  const { addIslandVisit, updateStatus, setTempCheckInPhotoUrl, setTempCheckInDate } = useTravel();
 
 
 
@@ -67,20 +129,19 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
         }
       }
 
-      // Read file to data URL so we can pass it to the certificate modal (await promise to avoid race condition)
-      const dataUrl = await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(reader.result as string);
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      // Read & convert file to standard JPEG data URL so Canvas can always render it (including iPhone HEIC)
+      const dataUrl = await fileToRenderableDataUrl(file);
       setTempCheckInPhotoUrl(dataUrl);
-
-      if (parsedDateStr) {
-        setTempCheckInDate(parsedDateStr);
-      } else {
-        const today = new Date();
-        setTempCheckInDate(`${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`);
+      const today = new Date();
+      const finalDateStr = parsedDateStr || `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+      setTempCheckInDate(finalDateStr);
+      try {
+        sessionStorage.setItem(`kiratabi_checkin_photo_${island.id}`, dataUrl);
+        sessionStorage.setItem(`kiratabi_checkin_date_${island.id}`, finalDateStr);
+        localStorage.setItem(`kiratabi_checkin_photo_${island.id}`, dataUrl);
+        localStorage.setItem(`kiratabi_checkin_date_${island.id}`, finalDateStr);
+      } catch {
+        // Ignore storage quota errors
       }
 
       const photoLat = gpsData.latitude;
@@ -122,10 +183,11 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
           addIslandVisit(island.id, island, 0, true);
           setResultStatus('offline_saved');
         } else {
-          const result = addIslandVisit(island.id, island, 0, true);
+          const result = addIslandVisit(String(island.id), island, 0, true);
           if (result.error === 'already_visited_today') {
-            setResultStatus('error');
-            setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+            // 同日すでに到達記録がある場合も、写真付き公認認定（verified_visited）へ昇格し証明書発行を許可する
+            updateStatus(String(island.id), 'verified_visited');
+            setResultStatus('success');
           } else {
             setResultStatus('success');
           }
@@ -283,8 +345,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
                   >
                     <input 
                       type="file" 
-                      accept="image/jpeg,image/png,image/heic" 
-                      capture="environment"
+                      accept="image/*,.heic,.heif" 
                       className="hidden" 
                       ref={fileInputRef}
                       onChange={onFileChange}

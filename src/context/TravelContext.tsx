@@ -599,8 +599,9 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const addIslandVisit = (islandId: string, islandObj?: any, newSpots: number = 0, isVerified: boolean = false) => {
     const todayStr = new Date().toISOString().split('T')[0];
 
-    // --- ゲスト（非ログイン）の場合は、保存処理を行わず Pending 状態にする ---
+    // --- ゲスト（非ログイン）の場合もローカル到達ステータスを即時反映しつつ Pending 状態にする ---
     if (!user) {
+      updateStatus(islandId, isVerified ? 'verified_visited' : 'visited');
       if (lastVisitDates[islandId] === todayStr) {
         return { xpGained: 0, error: 'already_visited_today' };
       }
@@ -641,6 +642,9 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // -------------------------------------------------------------
 
     if (lastVisitDates[islandId] === todayStr) {
+      if (isVerified) {
+        updateStatus(islandId, 'verified_visited');
+      }
       return { xpGained: 0, error: 'already_visited_today' };
     }
 

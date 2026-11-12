@@ -14,6 +14,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { calculateDifficultyStats, getIslandDifficulty } from '@/lib/difficulty';
 import { getPlayerLevelInfo, getIslandMastery, getSpecialTitles, getRegionMastery } from '@/lib/gamification';
 import { FAIRIES_MASTER } from '@/lib/fairies';
+import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 
@@ -31,7 +32,7 @@ export default function MyPage() {
     }
   }, [user, router]);
 
-  const ALL_ISLANDS_COUNT = conquestTargetCount || 429;
+  const ALL_ISLANDS_COUNT = conquestTargetCount || 369;
   const progressPct = (totalVisited / ALL_ISLANDS_COUNT) * 100;
   const playerLvInfo = getPlayerLevelInfo(totalPoints || 0);
 
@@ -575,7 +576,9 @@ export default function MyPage() {
                         onClick={() => router.push(`/island/${island.id}`)}
                         className="group cursor-pointer aspect-[3/4] bg-slate-100 rounded-2xl border border-slate-200 overflow-hidden relative shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-300"
                       >
-                        <img src={`https://picsum.photos/seed/${island.id}/400/600`} alt={island.name} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 w-full h-full">
+                          <AuthenticIslandCardImage island={island} showBadgeOnPlaceholder={false} size="sm" />
+                        </div>
                         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-slate-900/80 z-10" />
                         <div className="absolute inset-0 flex flex-col justify-end p-4 z-20">
                           <div className="flex flex-wrap items-center gap-1.5 mb-2">

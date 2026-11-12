@@ -30,66 +30,69 @@ export default function ArchipelagoProgressModal({ isOpen, onClose }: Archipelag
   // Archipelago definition & island grouping
   const allIslands = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter(i => i.is_conquest_target !== false);
 
+  const getRegionIslandIds = (...regionIds: string[]) =>
+    allIslands.filter((i: any) => regionIds.includes(String(i.region_id))).map((i: any) => String(i.id));
+
   const archipelagos: ArchipelagoGroup[] = [
     {
-      id: 'yaeyama',
-      name: '八重山諸島',
+      id: 'okinawa_main',
+      name: '沖縄本島周辺離島',
       region: '沖縄県',
-      description: '石垣島・竹富島・西表島・波照間島・与那国島など、日本の最南端・最西端を擁する絶景諸島。',
-      icon: '🌺',
-      colorFrom: 'from-emerald-600',
-      colorTo: 'to-teal-800',
-      islandIds: ['392', '393', '394', '395', '396', '397', '398', '399', '400'] // Ishigaki, Taketomi, Iriomote, etc.
+      description: '伊江島・水納島・古宇利島・瀬底島・伊平屋島・伊是名島・久高島・津堅島・粟国島・渡名喜島・海中道路諸島など本島周辺の離島群。',
+      icon: '🏝️',
+      colorFrom: 'from-sky-600',
+      colorTo: 'to-blue-900',
+      islandIds: getRegionIslandIds('okinawa_main')
     },
     {
       id: 'kerama',
       name: '慶良間諸島',
       region: '沖縄県',
-      description: '世界中のダイバーが羨む「ケラマブルー」の透明度を誇る国立公園離島群。',
+      description: '座間味島・阿嘉島・渡嘉敷島・慶留間島・ナガンヌ島など、世界中のダイバーが羨む「ケラマブルー」の国立公園離島群。',
       icon: '🐢',
       colorFrom: 'from-cyan-600',
       colorTo: 'to-blue-800',
-      islandIds: ['380', '381', '382', '383', '384', '385'] // Tokashiki, Zamami, Aka, etc.
+      islandIds: getRegionIslandIds('kerama')
     },
     {
-      id: 'izu',
-      name: '伊豆諸島',
-      region: '東京都',
-      description: '伊豆大島・新島・神津島・三宅島・八丈島・青ヶ島など、東京発高速船で出かける黒潮の島々。',
-      icon: '🌋',
-      colorFrom: 'from-blue-600',
-      colorTo: 'to-indigo-900',
-      islandIds: ['10', '11', '12', '13', '14', '15', '16', '17'] // Oshima, Niijima, Hachijojima, etc.
-    },
-    {
-      id: 'ogasawara',
-      name: '小笠原諸島',
-      region: '東京都',
-      description: '世界自然遺産。片道24時間の航路を越えた先にある東洋のガラパゴス（父島・母島）。',
-      icon: '🐋',
-      colorFrom: 'from-amber-600',
-      colorTo: 'to-orange-900',
-      islandIds: ['18', '19'] // Chichijima, Hahajima
-    },
-    {
-      id: 'oki',
-      name: '隠岐諸島',
-      region: '島根県',
-      description: 'ユネスコ世界ジオパーク。島前・島後からなる壮大な断崖絶壁と歴史の島。',
-      icon: '🪨',
-      colorFrom: 'from-purple-600',
+      id: 'kume_daito',
+      name: '久米島・大東諸島',
+      region: '沖縄県',
+      description: '球美の島・久米島、オーハ島、ハテの浜、そして絶海の孤島・北大東島＆南大東島。',
+      icon: '🐚',
+      colorFrom: 'from-indigo-600',
       colorTo: 'to-slate-900',
-      islandIds: ['200', '201', '202', '203'] // Dogo, Nishinoshima, Nakanoshima, Chiburijima
+      islandIds: getRegionIslandIds('kume', 'daito')
     },
     {
-      id: 'goto',
-      name: '五島列島',
-      region: '長崎県',
-      description: '世界遺産潜伏キリシタン関連遺産と教会群、雄大な西海国立公園の島々。',
-      icon: '⛪',
-      colorFrom: 'from-sky-600',
-      colorTo: 'to-indigo-800',
-      islandIds: ['300', '301', '302', '303', '304'] // Fukue, Nakadori, Wakamatsu, Ojika, etc.
+      id: 'miyako',
+      name: '宮古諸島',
+      region: '沖縄県',
+      description: '宮古島・伊良部島・下地島・池間島・来間島・大神島・多良間島・水納島などミヤコブルーの珊瑚礁諸島。',
+      icon: '🐬',
+      colorFrom: 'from-teal-500',
+      colorTo: 'to-cyan-900',
+      islandIds: getRegionIslandIds('miyako')
+    },
+    {
+      id: 'yaeyama',
+      name: '八重山諸島',
+      region: '沖縄県',
+      description: '石垣島・竹富島・西表島・小浜島・黒島・鳩間島・波照間島・与那国島など、日本最南端・最西端を擁する絶景諸島。',
+      icon: '🌺',
+      colorFrom: 'from-emerald-600',
+      colorTo: 'to-teal-800',
+      islandIds: getRegionIslandIds('yaeyama')
+    },
+    {
+      id: 'amami',
+      name: '奄美群島',
+      region: '鹿児島県',
+      description: '奄美大島・加計呂麻島・喜界島・徳之島・沖永良部島・与論島など世界自然遺産とサンゴの島々。',
+      icon: '🌴',
+      colorFrom: 'from-green-600',
+      colorTo: 'to-emerald-900',
+      islandIds: getRegionIslandIds('amami')
     },
     {
       id: 'tokara',
@@ -99,17 +102,57 @@ export default function ArchipelagoProgressModal({ isOpen, onClose }: Archipelag
       icon: '🐎',
       colorFrom: 'from-rose-600',
       colorTo: 'to-red-950',
-      islandIds: ['350', '351', '352', '353', '354', '355', '356'] // Kuchinoshima, Nakanoshima, Suwanosejima, Akusekijima, etc.
+      islandIds: getRegionIslandIds('tokara')
+    },
+    {
+      id: 'goto',
+      name: '五島列島',
+      region: '長崎県',
+      description: '世界遺産潜伏キリシタン関連遺産と教会群、雄大な西海国立公園の島々。',
+      icon: '⛪',
+      colorFrom: 'from-sky-600',
+      colorTo: 'to-indigo-800',
+      islandIds: getRegionIslandIds('goto')
+    },
+    {
+      id: 'oki',
+      name: '隠岐諸島',
+      region: '島根県',
+      description: 'ユネスコ世界ジオパーク。島前・島後からなる壮大な断崖絶壁と歴史の島。',
+      icon: '🪨',
+      colorFrom: 'from-purple-600',
+      colorTo: 'to-slate-900',
+      islandIds: getRegionIslandIds('oki')
     },
     {
       id: 'setouchi',
       name: '瀬戸内アート諸島',
       region: '香川県・岡山県',
-      description: '直島・豊島・男木島・女木島・小豆島。現代アートと穏やかな瀬戸内海が調和する島々。',
+      description: '直島・豊島・男木島・女木島・小豆島・犬島など、現代アートと穏やかな瀬戸内海が調和する島々。',
       icon: '🎨',
       colorFrom: 'from-yellow-600',
       colorTo: 'to-amber-800',
-      islandIds: ['195', '196', '197', '198', '199'] // Naoshima, Teshima, Ogijima, Megijima, Shodoshima
+      islandIds: getRegionIslandIds('naoshima', 'shiwaku', 'kasaoka')
+    },
+    {
+      id: 'izu',
+      name: '伊豆諸島',
+      region: '東京都',
+      description: '伊豆大島・利島・新島・式根島・神津島・三宅島・御蔵島・八丈島・青ヶ島など黒潮の火山列島。',
+      icon: '🌋',
+      colorFrom: 'from-blue-600',
+      colorTo: 'to-indigo-900',
+      islandIds: getRegionIslandIds('izu')
+    },
+    {
+      id: 'ogasawara',
+      name: '小笠原諸島',
+      region: '東京都',
+      description: '世界自然遺産。片道24時間の航路を越えた先にある東洋のガラパゴス（父島・母島・南島）。',
+      icon: '🐋',
+      colorFrom: 'from-amber-600',
+      colorTo: 'to-orange-900',
+      islandIds: getRegionIslandIds('ogasawara')
     }
   ];
 

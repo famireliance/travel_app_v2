@@ -18,7 +18,7 @@ import { toast } from 'react-hot-toast';
 import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 
-const ALL_ISLANDS_COUNT = 465;
+const ALL_ISLANDS_COUNT = 369;
 
 const getIslandIdFromLocation = (location: string) => {
   if (location.includes('西表')) return '396';
@@ -203,7 +203,15 @@ export default function Home() {
   const selectedRegionIslands = useMemo(() => {
     if (!selectedRegionId || !allIslands.length) return [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return allIslands.filter((island: any) => island.region_id === selectedRegionId);
+    return allIslands.filter((island: any) => {
+      if (selectedRegionId === 'okinawa_main') {
+        return island.region_id === 'okinawa_main' || island.region_id === 'kume';
+      }
+      if (selectedRegionId === 'kume') {
+        return island.region_id === 'kume' || String(island.id) === '382' || String(island.id) === '383';
+      }
+      return island.region_id === selectedRegionId;
+    });
   }, [selectedRegionId, allIslands]);
 
   const kiratabiChoice = useMemo(() => {
@@ -1309,7 +1317,11 @@ export default function Home() {
             <div className="p-5 lg:p-6 pt-0 border-t border-slate-100 bg-slate-50/50">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8 mt-6">
           {regions.map((region) => {
-            const islandsInThisRegion = allIslands.filter(i => i.region_id === region.id);
+            const islandsInThisRegion = allIslands.filter(i => {
+              if (region.id === 'okinawa_main') return i.region_id === 'okinawa_main' || i.region_id === 'kume';
+              if (region.id === 'kume') return i.region_id === 'kume' || String(i.id) === '382' || String(i.id) === '383';
+              return i.region_id === region.id;
+            });
             const regionTotalCount = islandsInThisRegion.length > 0 ? islandsInThisRegion.length : region.total;
             const regionVisitedCount = islandsInThisRegion.filter(i => {
               const st = islandStatuses[String(i.id)];

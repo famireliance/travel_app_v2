@@ -41,7 +41,7 @@ export default function AdminAnalytics({ password }: AdminAnalyticsProps) {
       .then((data) => {
         if (data?.summary) {
           setLiveSummary({
-            islandCount: data.summary.islandCount || 465,
+            islandCount: data.summary.islandCount || 481,
             visitCount: data.summary.visitCount || 0,
             certificateCount: data.summary.certificateCount || 0,
             totalOrders: data.summary.totalOrders || 0,
@@ -229,10 +229,10 @@ export default function AdminAnalytics({ password }: AdminAnalyticsProps) {
             <MapPin className="w-4 h-4 text-blue-400" />
           </div>
           <p className="text-2xl font-black text-white">
-            {selectedRegion === 'all' ? (liveSummary?.islandCount || 465) : currentIslands.length} <span className="text-xs font-normal text-slate-400">島</span>
+            {selectedRegion === 'all' ? (liveSummary?.islandCount || 481) : currentIslands.length} <span className="text-xs font-normal text-slate-400">島</span>
           </p>
           <span className="text-[11px] text-slate-400 font-bold mt-1 inline-block">
-            {selectedRegion === 'all' ? '全国465島（制覇対象351島）網羅' : `${selectedRegion}管内`}
+            {selectedRegion === 'all' ? '全国481島（制覇対象369島）網羅' : `${selectedRegion}管内`}
           </span>
         </div>
 
@@ -321,7 +321,7 @@ export default function AdminAnalytics({ password }: AdminAnalyticsProps) {
             </div>
             <div>
               <span className="text-xs text-slate-500 block">対象離島数</span>
-              <span className="text-xl font-bold text-slate-900">{selectedRegion === 'all' ? (liveSummary?.islandCount || 465) : currentIslands.length} 島</span>
+              <span className="text-xl font-bold text-slate-900">{selectedRegion === 'all' ? (liveSummary?.islandCount || 481) : currentIslands.length} 島</span>
             </div>
             <div>
               <span className="text-xs text-slate-500 block">推定観光消費額</span>
