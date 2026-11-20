@@ -18,6 +18,8 @@ interface CertificateModalProps {
 import { useTravel } from '@/context/TravelContext';
 import { getFormattedSerial, getIslandDifficulty } from '@/lib/difficulty';
 import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
+import { drawOfficialSquareHanko, drawOfficialMedallionSeal } from '@/lib/officialSeal';
+import regionsData from '@/data/regions.json';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 
@@ -400,23 +402,44 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       const ctx = canvas.getContext('2d');
       if (!ctx) return Promise.resolve();
 
-      // 📐 アスペクト比計算
-      // 横型: ISO A4サイズ比率 (1.414 : 1) → 1414 x 1000 px
-      // 縦型: スマートフォン壁紙サイズ比率 (9 : 16) → 1080 x 1920 px (Card: 540 x 960 px)
-      let width: number;
-      let height: number;
+      // 📐 統一仮想座標系 + 解像度スケール
+      // 横型: ISO A4比率 (1414 x 1000) / カード版は0.7倍 (990 x 700)
+      // 縦型: スマホ壁紙比率 (1080 x 1920) / カード版は0.65倍 (702 x 1248)
+      // 全ての描画座標を仮想サイズ(width x height)に統一し ctx.scale() で縮小するため、カード版でも一切の位置ズレ・はみ出しが起きない
+      const isVert = orientation === 'vertical';
+      const width = isVert ? 1080 : 1414;
+      const height = isVert ? 1920 : 1000;
+      const scaleRatio = certificateType === 'card' ? (isVert ? 0.65 : 0.7) : 1.0;
 
-      if (orientation === 'horizontal') {
-        width = certificateType === 'card' ? 848 : 1414;
-        height = certificateType === 'card' ? 600 : 1000;
-      } else {
-        width = certificateType === 'card' ? 540 : 1080;
-        height = certificateType === 'card' ? 960 : 1920;
-      }
+      const fillFittedText = (
+        c: CanvasRenderingContext2D,
+        text: string,
+        x: number,
+        y: number,
+        maxWidth: number,
+        basePx: number,
+        minPx: number,
+        fontWeightAndFamily: string
+      ) => {
+        let px = basePx;
+        c.font = `${px}px ${fontWeightAndFamily}`.replace(/^(\d+px)\s+(bold|900|800)\s+/, '$2 $1 ');
+        while (px > minPx && c.measureText(text).width > maxWidth) {
+          px -= 2;
+          c.font = `${px}px ${fontWeightAndFamily}`.replace(/^(\d+px)\s+(bold|900|800)\s+/, '$2 $1 ');
+        }
+        c.fillText(text, x, y, maxWidth);
+      };
+
+      const regionObj = regionsData.find((r) => r.id === island.region_id);
+      const regionLabel = regionObj?.name || island.prefecture || '日本離島';
+      const prefPrefix = island.prefecture && !island.name?.startsWith(island.prefecture) ? `${island.prefecture} ` : '';
 
       const renderContent = (ctx: CanvasRenderingContext2D, heroImg?: HTMLImageElement) => {
-        canvas.width = width;
-        canvas.height = height;
+        canvas.width = Math.round(width * scaleRatio);
+        canvas.height = Math.round(height * scaleRatio);
+        ctx.save();
+        ctx.scale(scaleRatio, scaleRatio);
+
         if (anniversaryMode) {
           // Anniversary mode logic (simplified for brevity or kept original)
           ctx.fillStyle = '#0A0F2E';
@@ -428,6 +451,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           ctx.font = 'bold 40px serif';
           ctx.textAlign = 'center';
           ctx.fillText('★★★ 1ST ANNIVERSARY ★★★', width / 2, height / 2);
+          ctx.restore();
           return;
         }
 
@@ -579,75 +603,90 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           primaryColor = '#F3E5AB'; secondaryColor = '#94A3B8'; accentColor = '#D4AF37';
         }
 
-        const isVert = orientation === 'vertical';
         const cx = width / 2;
+        const displaySerial = assignedSerial || `No.0001`;
+        const diff = getIslandDifficulty(island);
 
-        // 🎨 縦型 (スマホ壁紙 9:16) vs 横型 (A4印刷 1.414:1) 専属レイアウトエンジン
+        // 🎨 縦型 (スマホ壁紙 9:16 = 1080x1920) vs 横型 (A4印刷 1.414:1 = 1414x1000) 専属レイアウトエンジン
         if (isVert) {
-          // 📱 【縦型テンプレート】 Smartphone Wallpaper 9:16 (1080 x 1920 px)
+          // 📱 【縦型テンプレート】 (仮想 1080 x 1920 px / 全要素が非重複ゾーンに厳密配置)
           ctx.textAlign = 'center';
+          ctx.textBaseline = 'alphabetic';
 
-          // Headers
+          // Zone 1: Headers (y = 140..255)
           ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 28px serif';
-          ctx.fillText(hasHologram ? 'VERIFIED PHOTO DIARY RECORD' : 'VERIFIED RECORD OF ARRIVAL', cx, 160);
-          
-          // Glowing Gold Title
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 64px serif';
-          ctx.fillText(certificateType === 'card' ? '到 達 証' : '島 旅 到 達 公 認 証', cx, 250);
+          ctx.font = 'bold 24px serif';
+          ctx.fillText(hasHologram ? 'KIRATABI VERIFIED PHOTO ARRIVAL RECORD' : 'KIRATABI OFFICIAL RECORD OF ARRIVAL', cx, 140);
 
-          // Subtitle Rule Line
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 62px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText(certificateType === 'card' ? '公 認 到 達 証' : '島 旅 到 達 公 認 証', cx, 224);
+
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
           ctx.lineWidth = 2;
           ctx.beginPath();
-          ctx.moveTo(cx - 240, 280);
-          ctx.lineTo(cx + 240, 280);
+          ctx.moveTo(cx - 260, 254);
+          ctx.lineTo(cx + 260, 254);
           ctx.stroke();
 
-          // Name Ribbon Plate (Rich Metallic Banner)
-          const nameY = 410;
-          const bannerGrad = ctx.createLinearGradient(cx - 360, 0, cx + 360, 0);
+          // Zone 2: Name Ribbon Plate & Official Citation (y = 285..425)
+          const nameBoxTop = 285;
+          const nameBoxH = 82;
+          const nameBoxW = 760;
+          const bannerGrad = ctx.createLinearGradient(cx - nameBoxW / 2, 0, cx + nameBoxW / 2, 0);
           bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
           bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
           bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
           ctx.fillStyle = bannerGrad;
-          ctx.fillRect(cx - 360, nameY - 48, 720, 80);
+          ctx.fillRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
 
           ctx.strokeStyle = '#D4AF37';
           ctx.lineWidth = 2;
-          ctx.strokeRect(cx - 360, nameY - 48, 720, 80);
+          ctx.strokeRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
           ctx.strokeStyle = '#F59E0B';
           ctx.lineWidth = 1;
-          ctx.strokeRect(cx - 354, nameY - 42, 708, 68);
+          ctx.strokeRect(cx - nameBoxW / 2 + 6, nameBoxTop + 6, nameBoxW - 12, nameBoxH - 12);
 
           ctx.fillStyle = primaryColor;
-          ctx.font = 'bold 52px serif';
-          ctx.fillText((travelerName || 'Voyager') + ' 殿', cx, nameY + 12);
-
-          // Island Info
-          const infoY = 570;
-          const diff = getIslandDifficulty(island);
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 36px sans-serif';
-          ctx.fillText(`【 到達島 】 ${island.name} (${island.region_id || 'Japan'})`, cx, infoY);
-          
-          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : '#F59E0B';
-          ctx.font = 'bold 28px sans-serif';
-          ctx.fillText(`【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})`, cx, infoY + 58);
+          fillFittedText(ctx, `${travelerName || '島旅トラベラー'}  殿`, cx, nameBoxTop + 57, nameBoxW - 48, 48, 28, 'bold "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif');
 
           ctx.fillStyle = secondaryColor;
-          ctx.font = '26px monospace';
-          ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 115);
+          ctx.font = 'bold 21px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText('貴殿が下記離島へ実際に渡航・到達したことを公式に認定しこれを証します', cx, 412, 880);
 
-          // Hero Image (Smart 縦写真 & 横写真 自動対応 / 写真未設定時は公式海図エンブレム)
+          // Zone 3: Island Info (y = 472..540)
+          ctx.fillStyle = accentColor;
+          fillFittedText(
+            ctx,
+            `【 到達離島 】 ${prefPrefix}${island.name}（${regionLabel}）`,
+            cx,
+            474,
+            900,
+            34,
+            22,
+            'bold "Hiragino Mincho ProN", "Yu Mincho", sans-serif'
+          );
+
+          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : designTheme === 'vintage' ? '#8D3B12' : '#F59E0B';
+          fillFittedText(
+            ctx,
+            `【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})   ｜   【 到達日 】 ${visitDate}`,
+            cx,
+            528,
+            900,
+            25,
+            18,
+            'bold sans-serif'
+          );
+
+          // Zone 4: Hero Photo or Official Maritime Plate (strictly bounded y = 575..1515)
           if (heroImg) {
             ctx.save();
             const isPortraitPhoto = heroImg.height > heroImg.width;
-            const heroW = isPortraitPhoto ? 760 : 860;
-            const heroH = isPortraitPhoto ? 1020 : 560;
+            const heroW = isPortraitPhoto ? 700 : 860;
+            const heroH = isPortraitPhoto ? 910 : 580;
             const heroX = cx - heroW / 2;
-            const heroY = isPortraitPhoto ? 710 : 860;
+            const heroY = isPortraitPhoto ? 585 : 735;
 
             ctx.beginPath();
             ctx.rect(heroX, heroY, heroW, heroH);
@@ -659,15 +698,13 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
             ctx.restore();
 
-            // Luxury Double Gold Frame
             ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 7;
+            ctx.lineWidth = 6;
             ctx.strokeRect(heroX, heroY, heroW, heroH);
             ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 2.5;
+            ctx.lineWidth = 2;
             ctx.strokeRect(heroX - 7, heroY - 7, heroW + 14, heroH + 14);
 
-            // Ornate Corner Accents around Photo Frame
             const drawCornerBracket = (bx: number, by: number, rot: number) => {
               ctx.save();
               ctx.translate(bx, by);
@@ -675,9 +712,9 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
               ctx.strokeStyle = '#F3E5AB';
               ctx.lineWidth = 3;
               ctx.beginPath();
-              ctx.moveTo(-15, 0);
+              ctx.moveTo(-16, 0);
               ctx.lineTo(0, 0);
-              ctx.lineTo(0, -15);
+              ctx.lineTo(0, -16);
               ctx.stroke();
               ctx.restore();
             };
@@ -686,12 +723,11 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             drawCornerBracket(heroX + heroW + 7, heroY + heroH + 7, Math.PI);
             drawCornerBracket(heroX - 7, heroY + heroH + 7, (Math.PI * 3) / 2);
           } else {
-            // 公式海図・座標紋章プレート（偽写真は一切使用しない）
-            const plateW = 820;
-            const plateH = 520;
+            const plateW = 840;
+            const plateH = 540;
             const plateX = cx - plateW / 2;
-            const plateY = 860;
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+            const plateY = 755;
+            ctx.fillStyle = designTheme === 'vintage' ? 'rgba(93, 64, 55, 0.08)' : 'rgba(15, 23, 42, 0.55)';
             ctx.fillRect(plateX, plateY, plateW, plateH);
             ctx.strokeStyle = accentColor;
             ctx.lineWidth = 4;
@@ -702,113 +738,131 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
 
             ctx.textAlign = 'center';
             ctx.fillStyle = accentColor;
-            ctx.font = 'bold 28px serif';
-            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 140);
+            ctx.font = 'bold 26px serif';
+            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 145);
             ctx.fillStyle = primaryColor;
-            ctx.font = 'bold 56px serif';
-            ctx.fillText(island.name, cx, plateY + 240);
+            fillFittedText(ctx, island.name, cx, plateY + 250, plateW - 60, 54, 30, 'bold serif');
             ctx.fillStyle = secondaryColor;
-            ctx.font = '26px monospace';
-            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 320);
-            ctx.fillText(`PREFECTURE: ${island.prefecture || '日本'}`, cx, plateY + 375);
+            ctx.font = '24px monospace';
+            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 340, plateW - 60);
+            ctx.fillText(`REGION: ${prefPrefix}${regionLabel}`, cx, plateY + 395, plateW - 60);
           }
 
-          // Seal Stamp (Bottom-Right Wax Seal)
-          const sealX = width - 180;
-          const sealY = height - 190;
-          const sealRadius = 75;
-
-          // Seal 3D Drop Shadow
+          // Zone 5: Official Footer & Dual Seals (strictly y = 1565..1835, zero overlap with photo or borders)
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+          ctx.lineWidth = 1.5;
           ctx.beginPath();
-          ctx.arc(sealX + 4, sealY + 4, sealRadius, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-          ctx.fill();
-
-          // Outer Ring
-          ctx.beginPath();
-          ctx.arc(sealX, sealY, sealRadius, 0, Math.PI * 2);
-          ctx.fillStyle = '#991B1B';
-          ctx.fill();
-          ctx.strokeStyle = '#E11D48';
-          ctx.lineWidth = 5;
+          ctx.moveTo(100, 1570);
+          ctx.lineTo(width - 100, 1570);
           ctx.stroke();
 
-          // Inner Ring
-          ctx.beginPath();
-          ctx.arc(sealX, sealY, sealRadius - 10, 0, Math.PI * 2);
-          ctx.strokeStyle = '#FCA5A5';
-          ctx.lineWidth = 2;
-          ctx.stroke();
+          // 左：40稜ギザ金縁・公式海事公証メダリオン丸印 (x = 185, r = 72 -> spans 113..257)
+          drawOfficialMedallionSeal(ctx, 185, 1715, 72, {
+            variant: designTheme === 'vintage' ? 'crimson' : 'gold',
+          });
 
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = 'bold 22px serif';
-          ctx.fillText('KIRATABI', sealX, sealY - 12);
-          ctx.font = 'bold 26px serif';
-          ctx.fillText('公認証明', sealX, sealY + 18);
-
-          // Serial Number (Bottom-Left)
-          const displaySerial = assignedSerial || `No.0001`;
-          ctx.textAlign = 'left';
-          ctx.fillStyle = secondaryColor;
-          ctx.font = '24px monospace';
-          ctx.fillText(`SERIAL: ${displaySerial}`, 90, height - 90);
-
-        } else {
-          // 📄 【横型テンプレート】 ISO A4 Print Paper 1.414:1 (1414 x 1000 px)
+          // 中央：発行機関・シリアル署名ブロック (x = 540, maxWidth = 440 -> spans 320..760)
           ctx.textAlign = 'center';
-
-          // Headers
+          ctx.textBaseline = 'alphabetic';
           ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 22px serif';
-          ctx.fillText(hasHologram ? 'VERIFIED PHOTO DIARY RECORD' : 'VERIFIED RECORD OF ARRIVAL', cx, 110);
-          
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 52px serif';
-          ctx.fillText(certificateType === 'card' ? '到 達 証' : '島 旅 到 達 公 認 証', cx, 180);
+          ctx.font = 'bold 20px monospace';
+          ctx.fillText(`SERIAL NO: ${displaySerial}`, cx, 1650, 440);
+          ctx.font = '18px monospace';
+          ctx.fillText(`LAT/LON: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, 1684, 440);
 
-          // Name Ribbon Plate
-          const nameY = 300;
-          const bannerGrad = ctx.createLinearGradient(cx - 300, 0, cx + 300, 0);
+          ctx.fillStyle = primaryColor;
+          ctx.font = 'bold 31px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText('輝旅 島専科', cx, 1742, 440);
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 20px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText('離島到達公式認定委員会 発行', cx, 1780, 440);
+          ctx.fillStyle = secondaryColor;
+          ctx.font = '15px sans-serif';
+          ctx.fillText('KIRATABI SHIMASENKA OFFICIAL CERTIFICATION BOARD', cx, 1812, 440);
+
+          // 右：伝統二重枠・縦組み3列本朱官印「輝旅島専 / 公式到達 / 認定之印」 (x = 895, size = 138 -> spans 826..964)
+          drawOfficialSquareHanko(ctx, 895, 1715, 138, {
+            onDarkBackground: designTheme !== 'vintage',
+          });
+        } else {
+          // 📄 【横型テンプレート】 (仮想 1414 x 1000 px / 全要素が非重複ゾーンに厳密配置)
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'alphabetic';
+
+          // Zone 1: Headers (y = 102..192)
+          ctx.fillStyle = secondaryColor;
+          ctx.font = 'bold 20px serif';
+          ctx.fillText(hasHologram ? 'KIRATABI VERIFIED PHOTO ARRIVAL RECORD' : 'KIRATABI OFFICIAL RECORD OF ARRIVAL', cx, 102);
+
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 50px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText(certificateType === 'card' ? '公 認 到 達 証' : '島 旅 到 達 公 認 証', cx, 166);
+
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.moveTo(cx - 250, 190);
+          ctx.lineTo(cx + 250, 190);
+          ctx.stroke();
+
+          // Zone 2: Name Ribbon Plate & Citation (y = 212..320)
+          const nameBoxTop = 212;
+          const nameBoxH = 66;
+          const nameBoxW = 640;
+          const bannerGrad = ctx.createLinearGradient(cx - nameBoxW / 2, 0, cx + nameBoxW / 2, 0);
           bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
           bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
           bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
           ctx.fillStyle = bannerGrad;
-          ctx.fillRect(cx - 300, nameY - 40, 600, 68);
+          ctx.fillRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
 
           ctx.strokeStyle = '#D4AF37';
           ctx.lineWidth = 2;
-          ctx.strokeRect(cx - 300, nameY - 40, 600, 68);
+          ctx.strokeRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
           ctx.strokeStyle = '#F59E0B';
           ctx.lineWidth = 1;
-          ctx.strokeRect(cx - 294, nameY - 34, 588, 56);
+          ctx.strokeRect(cx - nameBoxW / 2 + 5, nameBoxTop + 5, nameBoxW - 10, nameBoxH - 10);
 
           ctx.fillStyle = primaryColor;
-          ctx.font = 'bold 44px serif';
-          ctx.fillText((travelerName || 'Voyager') + ' 殿', cx, nameY + 10);
-
-          // Island Info
-          const infoY = 410;
-          const diff = getIslandDifficulty(island);
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 28px sans-serif';
-          ctx.fillText(`【 到達島 】 ${island.name} (${island.region_id || 'Japan'})`, cx, infoY);
-          
-          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : '#F59E0B';
-          ctx.font = 'bold 22px sans-serif';
-          ctx.fillText(`【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})`, cx, infoY + 45);
+          fillFittedText(ctx, `${travelerName || '島旅トラベラー'}  殿`, cx, nameBoxTop + 47, nameBoxW - 40, 40, 24, 'bold "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif');
 
           ctx.fillStyle = secondaryColor;
-          ctx.font = '20px monospace';
-          ctx.fillText(`DATE OF ARRIVAL: ${visitDate}`, cx, infoY + 88);
+          ctx.font = 'bold 17px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText('貴殿が下記離島へ実際に渡航・到達したことを公式に認定しこれを証します', cx, 312, 1100);
 
-          // Hero Image (Smart 縦写真 & 横写真 自動対応 / 写真未設定時は公式海図エンブレム)
+          // Zone 3: Island Info (y = 358..404)
+          ctx.fillStyle = accentColor;
+          fillFittedText(
+            ctx,
+            `【 到達離島 】 ${prefPrefix}${island.name}（${regionLabel}）`,
+            cx,
+            360,
+            1160,
+            28,
+            20,
+            'bold "Hiragino Mincho ProN", "Yu Mincho", sans-serif'
+          );
+
+          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : designTheme === 'vintage' ? '#8D3B12' : '#F59E0B';
+          fillFittedText(
+            ctx,
+            `【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})   ｜   【 到達日 】 ${visitDate}`,
+            cx,
+            402,
+            1160,
+            21,
+            16,
+            'bold sans-serif'
+          );
+
+          // Zone 4: Hero Photo or Maritime Plate (strictly bounded y = 432..784)
           if (heroImg) {
             ctx.save();
             const isPortraitPhoto = heroImg.height > heroImg.width;
-            const heroW = isPortraitPhoto ? 340 : 640;
-            const heroH = isPortraitPhoto ? 380 : 330;
+            const heroW = isPortraitPhoto ? 286 : 580;
+            const heroH = 342;
             const heroX = cx - heroW / 2;
-            const heroY = 560;
+            const heroY = 436;
 
             ctx.beginPath();
             ctx.rect(heroX, heroY, heroW, heroH);
@@ -820,22 +874,21 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
             ctx.restore();
 
-            // Gold Frame
             ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 6;
+            ctx.lineWidth = 5;
             ctx.strokeRect(heroX, heroY, heroW, heroH);
             ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 2;
+            ctx.lineWidth = 1.8;
             ctx.strokeRect(heroX - 6, heroY - 6, heroW + 12, heroH + 12);
           } else {
-            const plateW = 640;
-            const plateH = 300;
+            const plateW = 620;
+            const plateH = 324;
             const plateX = cx - plateW / 2;
-            const plateY = 565;
-            ctx.fillStyle = 'rgba(15, 23, 42, 0.55)';
+            const plateY = 444;
+            ctx.fillStyle = designTheme === 'vintage' ? 'rgba(93, 64, 55, 0.08)' : 'rgba(15, 23, 42, 0.55)';
             ctx.fillRect(plateX, plateY, plateW, plateH);
             ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 4;
+            ctx.lineWidth = 3.5;
             ctx.strokeRect(plateX, plateY, plateW, plateH);
             ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
             ctx.lineWidth = 1.5;
@@ -844,53 +897,55 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             ctx.textAlign = 'center';
             ctx.fillStyle = accentColor;
             ctx.font = 'bold 18px serif';
-            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 75);
+            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 78);
             ctx.fillStyle = primaryColor;
-            ctx.font = 'bold 38px serif';
-            ctx.fillText(`${island.prefecture || ''} ${island.name}`, cx, plateY + 150);
+            fillFittedText(ctx, `${prefPrefix}${island.name}`, cx, plateY + 156, plateW - 48, 38, 24, 'bold serif');
             ctx.fillStyle = secondaryColor;
             ctx.font = '18px monospace';
-            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 215);
-            ctx.fillText('KIRATABI VERIFIED ARCHIPELAGO ARCHIVE', cx, plateY + 250);
+            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 220, plateW - 48);
+            ctx.fillText('KIRATABI VERIFIED ARCHIPELAGO ARCHIVE', cx, plateY + 256, plateW - 48);
           }
 
-          // Seal Stamp (Bottom-Right Wax Seal)
-          const sealX = width - 180;
-          const sealY = height - 160;
-          const sealRadius = 65;
-
+          // Zone 5: Official Footer & Dual Seals (strictly y = 805..932, zero overlap)
+          ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+          ctx.lineWidth = 1.5;
           ctx.beginPath();
-          ctx.arc(sealX + 3, sealY + 3, sealRadius, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
-          ctx.fill();
-
-          ctx.beginPath();
-          ctx.arc(sealX, sealY, sealRadius, 0, Math.PI * 2);
-          ctx.fillStyle = '#991B1B';
-          ctx.fill();
-          ctx.strokeStyle = '#E11D48';
-          ctx.lineWidth = 5;
+          ctx.moveTo(96, 806);
+          ctx.lineTo(width - 96, 806);
           ctx.stroke();
 
-          ctx.beginPath();
-          ctx.arc(sealX, sealY, sealRadius - 8, 0, Math.PI * 2);
-          ctx.strokeStyle = '#FCA5A5';
-          ctx.lineWidth = 2;
-          ctx.stroke();
+          // 左：40稜ギザ金縁・公式海事公証メダリオン丸印 (x = 162, r = 54 -> spans 108..216) + シリアル情報 (x = 236..496)
+          drawOfficialMedallionSeal(ctx, 162, 872, 54, {
+            variant: designTheme === 'vintage' ? 'crimson' : 'gold',
+          });
 
-          ctx.fillStyle = '#FFFFFF';
-          ctx.font = 'bold 18px serif';
-          ctx.fillText('KIRATABI', sealX, sealY - 12);
-          ctx.font = 'bold 22px serif';
-          ctx.fillText('公認証明', sealX, sealY + 14);
-
-          // Serial Number (Bottom-Left)
-          const displaySerial = assignedSerial || `No.0001`;
           ctx.textAlign = 'left';
+          ctx.textBaseline = 'alphabetic';
           ctx.fillStyle = secondaryColor;
-          ctx.font = '18px monospace';
-          ctx.fillText(`SERIAL: ${displaySerial}`, 80, height - 60);
+          ctx.font = 'bold 17px monospace';
+          ctx.fillText(`SERIAL: ${displaySerial}`, 236, 864, 260);
+          ctx.font = '15px monospace';
+          ctx.fillText(`GPS: ${island.coordinates || 'JAPAN'}`, 236, 892, 260);
+
+          // 中央：発行機関署名ブロック (x = 707, maxWidth = 420 -> spans 497..917)
+          ctx.textAlign = 'center';
+          ctx.fillStyle = primaryColor;
+          ctx.font = 'bold 24px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText('輝旅 島専科（KIRATABI SHIMASENKA）', cx, 858, 420);
+          ctx.fillStyle = accentColor;
+          ctx.font = 'bold 17px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+          ctx.fillText('離島到達公式認定委員会 発行', cx, 888, 420);
+          ctx.fillStyle = secondaryColor;
+          ctx.font = '13px sans-serif';
+          ctx.fillText('OFFICIAL ISLAND CONQUEST CERTIFICATION BOARD', cx, 914, 420);
+
+          // 右：伝統二重枠・縦組み3列本朱官印「輝旅島専 / 公式到達 / 認定之印」 (x = 1246, size = 110 -> spans 1191..1301)
+          drawOfficialSquareHanko(ctx, 1246, 870, 110, {
+            onDarkBackground: designTheme !== 'vintage',
+          });
         }
+
+        ctx.restore();
       };
 
       const verifiedPhotos = getVerifiedIslandPhotos(island);
@@ -1210,8 +1265,8 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                     <button onClick={() => setIsFullscreenPreview(true)} className="text-xs font-bold text-blue-400 hover:text-blue-300">拡大表示</button>
                   </div>
                   
-                  <div className="w-full bg-slate-950 p-4 rounded-2xl border border-slate-700/60 shadow-inner flex justify-center cursor-zoom-in overflow-hidden" onClick={() => setIsFullscreenPreview(true)}>
-                    <canvas ref={canvasRef} className="max-w-full h-auto rounded-lg shadow-2xl border border-slate-800 transition-all duration-300" style={{ maxHeight: '400px' }} />
+                  <div className="w-full bg-slate-950 p-4 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center cursor-zoom-in overflow-hidden" onClick={() => setIsFullscreenPreview(true)}>
+                    <canvas ref={canvasRef} className="max-w-full max-h-[420px] w-auto h-auto object-contain rounded-lg shadow-2xl border border-slate-800 transition-all duration-300" />
                   </div>
                 </div>
 
@@ -1494,8 +1549,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
             <div className="flex-1 overflow-auto p-4 flex items-center justify-center cursor-zoom-out" onClick={() => setIsFullscreenPreview(false)}>
               <canvas
                 ref={fullscreenCanvasRef}
-                className="max-w-none w-auto max-h-none h-auto shadow-2xl border border-slate-800"
-                style={{ width: '1200px', height: '900px', transform: 'scale(0.8)', transformOrigin: 'center' }}
+                className="max-w-full max-h-[82vh] w-auto h-auto object-contain rounded-lg shadow-2xl border border-slate-800"
               />
             </div>
           </motion.div>

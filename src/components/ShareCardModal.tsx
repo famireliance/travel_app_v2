@@ -6,6 +6,8 @@ import { X, Download, Share2, Sparkles, Check, Smartphone, Monitor } from 'lucid
 import toast from 'react-hot-toast';
 import { useTravel } from '@/context/TravelContext';
 import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
+import { drawOfficialSquareHanko } from '@/lib/officialSeal';
+import regionsData from '@/data/regions.json';
 
 interface ShareCardModalProps {
   isOpen: boolean;
@@ -168,54 +170,77 @@ export default function ShareCardModal({
       ctx.font = '16px monospace';
       ctx.fillText(`NO. ${safeIslandId}-${Date.now().toString().slice(-6)}`, width - margin - 35, margin + 85);
 
-      // 6. メインコンテンツ（島名・都道府県）
-      if (isLandscape) {
-        // 横型レイアウト
-        ctx.textAlign = 'left';
+      const regionObj = regionsData.find((r) => r.id === island?.region_id);
+      const regionLabel = regionObj?.name || island.region_id || '離島航路';
 
-        // 都道府県・地域
+      const drawAutoFitText = (
+        text: string,
+        x: number,
+        y: number,
+        maxWidth: number,
+        basePx: number,
+        minPx: number,
+        family: string
+      ) => {
+        let px = basePx;
+        ctx.font = `bold ${px}px ${family}`;
+        while (px > minPx && ctx.measureText(text).width > maxWidth) {
+          px -= 2;
+          ctx.font = `bold ${px}px ${family}`;
+        }
+        ctx.fillText(text, x, y, maxWidth);
+      };
+
+      // 6. メインコンテンツ（島名・都道府県・公式官印）
+      if (isLandscape) {
+        // 横型レイアウト (1200 x 630 / 右下公印エリア x = 975..1125 と完全に非重複)
+        ctx.textAlign = 'left';
+        ctx.textBaseline = 'alphabetic';
+        const maxLeftTextW = 870;
+
+        // 都道府県・地域 ＋ 到達達成バッジ
         ctx.fillStyle = '#38bdf8';
         ctx.font = 'bold 22px sans-serif';
-        ctx.fillText(`📍 ${island.prefecture || '日本'} / ${island.region_id || '離島航路'}`, margin + 40, height - 260);
+        const locText = `📍 ${island.prefecture || '日本'} / ${regionLabel}`;
+        ctx.fillText(locText, margin + 40, height - 255, 620);
 
-        // 島名
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 76px "Noto Serif JP", serif';
-        ctx.fillText(island.name, margin + 40, height - 160);
-
-        // 到達達成ラベル
+        const locW = Math.min(ctx.measureText(locText).width, 620);
         ctx.fillStyle = '#fbbf24';
-        ctx.font = 'bold 28px sans-serif';
-        ctx.fillText('到達達成！', margin + 40 + ctx.measureText(island.name).width + 25, height - 160);
+        ctx.font = 'bold 22px sans-serif';
+        ctx.fillText('★ 到達達成！', margin + 40 + locW + 22, height - 255);
+
+        // 島名（自動フォントサイズ調整で公印と絶対に被らない）
+        ctx.fillStyle = '#ffffff';
+        drawAutoFitText(island.name, margin + 40, height - 160, maxLeftTextW, 72, 38, '"Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif');
 
         // 詳細情報（到達日・トラベラー・累計島数）
         ctx.fillStyle = '#cbd5e1';
-        ctx.font = '20px sans-serif';
-        ctx.fillText(`📅 到達日: ${formattedDate}   👤 旅人: ${travelerName || '名無しの島旅人'}   🏝️ 累計到達: ${Math.max(totalVisited || 1, 1)}島制覇`, margin + 40, height - 100);
+        drawAutoFitText(
+          `📅 到達日: ${formattedDate}   👤 旅人: ${travelerName || '島旅トラベラー'}   🏝️ 累計到達: ${Math.max(totalVisited || 1, 1)}島制覇`,
+          margin + 40,
+          height - 96,
+          maxLeftTextW,
+          20,
+          15,
+          'sans-serif'
+        );
 
-        // 右下の公式デジタル角印（赤い朱印風デザイン）
-        const sealX = width - margin - 150;
-        const sealY = height - margin - 170;
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 4;
-        ctx.strokeRect(sealX, sealY, 110, 110);
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 22px "Noto Serif JP", serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('輝旅', sealX + 55, sealY + 45);
-        ctx.fillText('公認', sealX + 55, sealY + 85);
+        // 右下の本格・二重枠本朱官印「輝旅島専 / 公式到達 / 認定之印」
+        drawOfficialSquareHanko(ctx, width - margin - 102, height - margin - 104, 124, {
+          onDarkBackground: true,
+        });
       } else {
-        // 縦型レイアウト（Instagramストーリーズ用）
+        // 縦型レイアウト（Instagramストーリーズ用 1080 x 1920）
         ctx.textAlign = 'center';
+        ctx.textBaseline = 'alphabetic';
 
         // 中央の島名
         ctx.fillStyle = '#38bdf8';
-        ctx.font = 'bold 36px sans-serif';
-        ctx.fillText(`📍 ${island.prefecture || '日本離島'}`, width / 2, height / 2 - 120);
+        ctx.font = 'bold 34px sans-serif';
+        ctx.fillText(`📍 ${island.prefecture || '日本'} ・ ${regionLabel}`, width / 2, height / 2 - 125, width - 160);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 110px "Noto Serif JP", serif';
-        ctx.fillText(island.name, width / 2, height / 2 + 10);
+        drawAutoFitText(island.name, width / 2, height / 2 + 10, width - 160, 104, 52, '"Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif');
 
         ctx.fillStyle = '#fbbf24';
         ctx.font = 'bold 44px sans-serif';
@@ -225,35 +250,29 @@ export default function ShareCardModal({
         const boxY = height - margin - 420;
         const boxW = width - (margin + 40) * 2;
         const boxH = 340;
-        ctx.fillStyle = 'rgba(15, 23, 42, 0.7)';
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        const boxLeft = (width - boxW) / 2;
+        ctx.fillStyle = 'rgba(15, 23, 42, 0.76)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.18)';
         ctx.lineWidth = 2;
         ctx.beginPath();
-        ctx.roundRect((width - boxW) / 2, boxY, boxW, boxH, 24);
+        ctx.roundRect(boxLeft, boxY, boxW, boxH, 24);
         ctx.fill();
         ctx.stroke();
 
         ctx.textAlign = 'left';
-        const startX = (width - boxW) / 2 + 50;
+        const startX = boxLeft + 46;
+        const summaryMaxW = boxW - 260;
 
         ctx.fillStyle = '#e2e8f0';
-        ctx.font = 'bold 28px sans-serif';
-        ctx.fillText(`📅 到達日: ${formattedDate}`, startX, boxY + 70);
-        ctx.fillText(`👤 旅人名: ${travelerName || '名無しの島旅人'}`, startX, boxY + 140);
-        ctx.fillText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / ${conquestTargetCount || 369} 島`, startX, boxY + 210);
-        ctx.fillText(`⭐ 獲得XP: +${totalPoints > 0 ? totalPoints : 100} pt`, startX, boxY + 280);
+        drawAutoFitText(`📅 到達日: ${formattedDate}`, startX, boxY + 76, summaryMaxW, 28, 20, 'sans-serif');
+        drawAutoFitText(`👤 旅人名: ${travelerName || '島旅トラベラー'}`, startX, boxY + 146, summaryMaxW, 28, 20, 'sans-serif');
+        drawAutoFitText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / ${conquestTargetCount || 369} 島`, startX, boxY + 216, summaryMaxW, 28, 20, 'sans-serif');
+        drawAutoFitText(`⭐ 獲得XP: +${totalPoints > 0 ? totalPoints : 100} pt`, startX, boxY + 286, summaryMaxW, 28, 20, 'sans-serif');
 
-        // 角印
-        const sealX = width - (width - boxW) / 2 - 170;
-        const sealY = boxY + 70;
-        ctx.strokeStyle = '#ef4444';
-        ctx.lineWidth = 5;
-        ctx.strokeRect(sealX, sealY, 130, 130);
-        ctx.fillStyle = '#ef4444';
-        ctx.font = 'bold 26px "Noto Serif JP", serif';
-        ctx.textAlign = 'center';
-        ctx.fillText('輝旅', sealX + 65, sealY + 55);
-        ctx.fillText('公式認定', sealX + 65, sealY + 105);
+        // 右側の本格・二重枠本朱官印「輝旅島専 / 公式到達 / 認定之印」
+        drawOfficialSquareHanko(ctx, boxLeft + boxW - 118, boxY + boxH / 2, 152, {
+          onDarkBackground: true,
+        });
       }
 
       // 生成した画像DataURLをstateに保存（CORSエラー時は安全にハンドリング）
