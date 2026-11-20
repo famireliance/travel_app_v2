@@ -394,11 +394,11 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
   };
 
   // Draw Certificate to Canvas
-  const drawCertificate = useCallback(() => {
-    const drawToCanvas = (canvas: HTMLCanvasElement | null) => {
-      if (!canvas || !island) return;
+  const drawCertificate = useCallback((): Promise<void> => {
+    const drawToCanvas = (canvas: HTMLCanvasElement | null, seq: number): Promise<void> => {
+      if (!canvas || !island) return Promise.resolve();
       const ctx = canvas.getContext('2d');
-      if (!ctx) return;
+      if (!ctx) return Promise.resolve();
 
       // 📐 アスペクト比計算
       // 横型: ISO A4サイズ比率 (1.414 : 1) → 1414 x 1000 px
@@ -414,10 +414,9 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
         height = certificateType === 'card' ? 960 : 1920;
       }
 
-      canvas.width = width;
-      canvas.height = height;
-
       const renderContent = (ctx: CanvasRenderingContext2D, heroImg?: HTMLImageElement) => {
+        canvas.width = width;
+        canvas.height = height;
         if (anniversaryMode) {
           // Anniversary mode logic (simplified for brevity or kept original)
           ctx.fillStyle = '#0A0F2E';
@@ -902,36 +901,43 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       const activePhotoSrc = customImage || tempCheckInPhotoUrl || verifiedFallbackUrl || null;
 
       if (activePhotoSrc) {
-        const img = new Image();
-        if (!activePhotoSrc.startsWith('data:') && !activePhotoSrc.startsWith('blob:')) {
-          img.crossOrigin = 'anonymous';
-        }
-        img.onload = () => {
-          if (seq !== renderSeqRef.current) return;
-          renderContent(ctx, img);
-        };
-        img.onerror = () => {
-          if (seq !== renderSeqRef.current) return;
-          renderContent(ctx, undefined);
-        };
-        img.src = activePhotoSrc;
+        return new Promise<void>((resolve) => {
+          const img = new Image();
+          if (!activePhotoSrc.startsWith('data:') && !activePhotoSrc.startsWith('blob:')) {
+            img.crossOrigin = 'anonymous';
+          }
+          img.onload = () => {
+            if (seq === renderSeqRef.current) {
+              renderContent(ctx, img);
+            }
+            resolve();
+          };
+          img.onerror = () => {
+            if (seq === renderSeqRef.current) {
+              renderContent(ctx, undefined);
+            }
+            resolve();
+          };
+          img.src = activePhotoSrc;
+        });
       } else {
         renderContent(ctx, undefined);
+        return Promise.resolve();
       }
     };
 
     const seq = ++renderSeqRef.current;
-    drawToCanvas(canvasRef.current);
+    const tasks = [drawToCanvas(canvasRef.current, seq)];
     if (isFullscreenPreview) {
-      drawToCanvas(fullscreenCanvasRef.current);
+      tasks.push(drawToCanvas(fullscreenCanvasRef.current, seq));
     }
+    return Promise.all(tasks).then(() => {});
   }, [island, anniversaryMode, travelerName, visitDate, hasHologram, includeCompanionStamp, companionChar, companionStage, customImage, tempCheckInPhotoUrl, certificateType, orientation, designTheme, isFullscreenPreview, assignedSerial]);
 
   useEffect(() => {
     if (isFullscreenPreview) {
-      // Small delay to allow the conditionally rendered canvas to mount
       const timer = setTimeout(() => {
-        drawCertificate();
+        void drawCertificate();
       }, 50);
       return () => clearTimeout(timer);
     }
@@ -941,8 +947,8 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
   useEffect(() => {
     if (!isOpen || !island) return;
     const timer = setTimeout(() => {
-      drawCertificate();
-    }, 300);
+      void drawCertificate();
+    }, 60);
     return () => clearTimeout(timer);
   }, [isOpen, island, drawCertificate]);
 
@@ -953,6 +959,9 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       toast.error('証明書キャンバスの準備中です。もう一度お試しください。');
       return;
     }
+
+    // 最新の写真・名前・テーマが確実にCanvasへ描画完了してからエクスポートする
+    await drawCertificate();
 
     const safeIslandName = (island?.name || 'Island').replace(/[\\/:*?"<>|]/g, '_');
     const safeDate = (visitDate || '').replace(/[^0-9]/g, '');
@@ -1013,18 +1022,36 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
 
   // Handle Web Share API & Twitter/X Direct Share
   const handleNativeShare = async () => {
+    await drawCertificate();
     const text = `【キラ旅 到達証明】\n日本の離島「${island?.name}」への到達を正式証明！到達証明書を獲得しました 🏝️✨\n\n#キラ旅 #${island?.name || '離島'}到達証明書 #離島旅 #キラ旅島専科`;
-    const shareUrl = window.location.origin ? `${window.location.origin}/island/${island?.id}` : `https://app.kira-tabi.com/island/${island?.id}`;
+    const slugOrId = island?.slug || island?.id;
+    const shareUrl = window.location.origin ? `${window.location.origin}/island/${slugOrId}` : `https://island.kira-tabi.com/island/${slugOrId}`;
     
     if (navigator.share) {
       try {
-        await navigator.share({
+        let shareData: ShareData = {
           title: `【キラ旅】${island?.name} 到達証明書`,
           text: text,
           url: shareUrl
-        });
-      } catch (err) {
-        // Fallback to X if user cancels or share API fails
+        };
+        if (canvasRef.current && typeof navigator.canShare === 'function') {
+          const blob = await new Promise<Blob | null>((resolve) => {
+            try {
+              canvasRef.current?.toBlob((b) => resolve(b), 'image/png', 0.95);
+            } catch {
+              resolve(null);
+            }
+          });
+          if (blob) {
+            const file = new File([blob], `KIRATABI_${island?.name || 'Certificate'}.png`, { type: 'image/png' });
+            if (navigator.canShare({ files: [file] })) {
+              shareData = { ...shareData, files: [file] };
+            }
+          }
+        }
+        await navigator.share(shareData);
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === 'AbortError') return;
         const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
         window.open(twitterUrl, '_blank', 'noopener,noreferrer');
       }
