@@ -11,14 +11,103 @@ interface StorePopModalProps {
   store: any;
 }
 
+const POP_ISLAND_ALIASES: Record<string, string> = {
+  ishigaki: '392',
+  ishigakijima: '392',
+  miyako: '386',
+  miyakojima: '386',
+  hachijo: '56',
+  hachijojima: '56',
+  aogashima: '58',
+  chichijima: '63',
+  chichijimaogasawarashoto: '63',
+  hahajima: '64',
+  hahajimaogasawarashoto: '64',
+  oshima: '49',
+  izuoshima: '49',
+  toshima: '50',
+  nijima: '51',
+  niijima: '51',
+  shikine: '52',
+  shikinejima: '52',
+  kozushima: '53',
+  miyake: '54',
+  miyakejima: '54',
+  mikura: '55',
+  mikurajima: '55',
+  amami: '352',
+  amamioshima: '352',
+  taketomi: '393',
+  taketomijima: '393',
+  kohama: '394',
+  kohamajima: '394',
+  iriomote: '396',
+  iriomotejima: '396',
+  hateruma: '400',
+  haterumajima: '400',
+  yonaguni: '401',
+  yonagunijima: '401',
+  kume: '380',
+  kumejima: '380',
+  yakushima: '340',
+  tanegashima: '339',
+  yoron: '359',
+  yoronto: '359',
+  tokunoshima: '357',
+  shodoshima: '197',
+  naoshima: '195',
+  sado: '76',
+  sadoto: '76',
+  iki: '258',
+  ikishima: '258',
+  tsushima: '252',
+  rebun: '1',
+  rebunto: '1',
+  rishiri: '2',
+  rishirito: '2',
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function resolveIslandForPop(rawIslandId: string): any | null {
+  const trimmed = String(rawIslandId || '').trim();
+  const lower = trimmed.toLowerCase();
+  if (!trimmed) return null;
+
+  if (ALL_ISLANDS_MASTER_DICTIONARY[trimmed]) {
+    return ALL_ISLANDS_MASTER_DICTIONARY[trimmed];
+  }
+  const aliasId = POP_ISLAND_ALIASES[lower];
+  if (aliasId && ALL_ISLANDS_MASTER_DICTIONARY[aliasId]) {
+    return ALL_ISLANDS_MASTER_DICTIONARY[aliasId];
+  }
+  const exact = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+    (i: any) =>
+      String(i.slug || '').toLowerCase() === lower ||
+      String(i.name || '') === trimmed ||
+      String(i.name || '').startsWith(`${trimmed}（`)
+  );
+  if (exact) return exact;
+
+  if (lower.length >= 3) {
+    return (
+      Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+        (i: any) => String(i.slug || '').toLowerCase().startsWith(lower) || String(i.name || '').includes(trimmed)
+      ) || null
+    );
+  }
+  return null;
+}
+
 export default function StorePopModal({ isOpen, onClose, store }: StorePopModalProps) {
   const printAreaRef = useRef<HTMLDivElement>(null);
 
   if (!isOpen || !store) return null;
 
-  const islandInfo = ALL_ISLANDS_MASTER_DICTIONARY[store.island_id] || { name: store.island_id, prefecture: '離島' };
+  const resolvedIsland = resolveIslandForPop(store.island_id);
+  const islandInfo = resolvedIsland || { name: store.island_id, prefecture: '離島', slug: store.island_id };
   const islandName = islandInfo.name || store.island_id;
-  const storeUrl = `https://island.kira-tabi.com/island/${store.island_id}?ref_store=${store.referral_code}`;
+  const slugOrId = resolvedIsland?.slug || store.island_id;
+  const storeUrl = `https://island.kira-tabi.com/island/${encodeURIComponent(slugOrId)}?ref_store=${encodeURIComponent(store.referral_code)}`;
   const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=${encodeURIComponent(storeUrl)}`;
 
   const handlePrint = () => {

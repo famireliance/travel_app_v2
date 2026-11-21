@@ -18,12 +18,33 @@ function escapeHtml(str: string): string {
     .replace(/'/g, '&#39;');
 }
 
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export async function POST(req: NextRequest) {
   try {
-    const { name, email, category, message } = await req.json();
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const name = typeof body?.name === 'string' ? body.name.trim() : '';
+    const email = typeof body?.email === 'string' ? body.email.trim() : '';
+    const category = typeof body?.category === 'string' ? body.category.trim().slice(0, 50) : 'general';
+    const message = typeof body?.message === 'string' ? body.message.trim() : '';
 
     if (!name || !email || !message) {
       return NextResponse.json({ error: '必須項目が未入力です' }, { status: 400 });
+    }
+    if (name.length > 100) {
+      return NextResponse.json({ error: 'お名前は100文字以内で入力してください' }, { status: 400 });
+    }
+    if (email.length > 254 || !EMAIL_REGEX.test(email)) {
+      return NextResponse.json({ error: '有効なメールアドレスを入力してください' }, { status: 400 });
+    }
+    if (message.length > 5000) {
+      return NextResponse.json({ error: 'お問い合わせ内容は5000文字以内で入力してください' }, { status: 400 });
     }
 
     const categoryLabels: Record<string, string> = {

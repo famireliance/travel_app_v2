@@ -87,11 +87,29 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
       '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
       '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
       '福岡県': 'kyushu', '佐賀県': 'kyushu', '長崎県': 'kyushu', '熊本県': 'kyushu', '大分県': 'kyushu', '宮崎県': 'kyushu', '鹿児島県': 'kyushu',
+      '沖縄県': 'okinawa',
     };
-    const rId = island.region_id || island.region || prefectureMap[island.prefecture] || 'unknown';
+    const prefRegion = island.prefecture ? prefectureMap[island.prefecture] : undefined;
+    const rId = island.region_id || island.region || prefRegion || 'unknown';
+    const cleanName = String(island.name || '').split('（')[0].split('(')[0].split('・').pop()?.trim() || '';
     return (
-      allFairies.find(f => f.island_id && String(f.island_id) === String(island.id)) ||
-      allFairies.find(f => f.region_id === rId) ||
+      allFairies.find(
+        f =>
+          f.rarity !== 'SPOT_EXCLUSIVE' &&
+          f.island_id &&
+          (f.island_id === island.name ||
+            String(f.island_id) === String(island.id) ||
+            (cleanName && f.island_id === cleanName))
+      ) ||
+      allFairies.find(
+        f =>
+          f.island_id &&
+          (f.island_id === island.name ||
+            String(f.island_id) === String(island.id) ||
+            (cleanName && f.island_id === cleanName))
+      ) ||
+      allFairies.find(f => !f.island_id && (f.region_id === rId || (prefRegion && f.region_id === prefRegion))) ||
+      allFairies.find(f => f.region_id === rId || (prefRegion && f.region_id === prefRegion)) ||
       allFairies[0]
     );
   }, [island, allFairies]);

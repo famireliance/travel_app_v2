@@ -3,31 +3,43 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function POST(req: Request) {
   try {
-    const { code } = await req.json();
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const code = typeof body?.code === 'string' ? body.code.trim() : '';
     if (!code) {
-      return NextResponse.json({ error: 'Code is required' }, { status: 400 });
+      return NextResponse.json({ error: 'クーポンコードを入力してください' }, { status: 400 });
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
     }
 
     const authHeader = req.headers.get('authorization');
     if (!authHeader) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    const token = authHeader.replace('Bearer ', '');
+    const token = authHeader.replace('Bearer ', '').trim();
 
-    const anonClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
+    const anonClient = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
     const { data: { user }, error: userError } = await anonClient.auth.getUser(token);
 
     if (userError || !user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const adminClient = createClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.SUPABASE_SERVICE_ROLE_KEY!
-    );
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
 
     // 2. Look up the code in app_promo_codes
     const { data: promoCode, error: promoError } = await adminClient
@@ -40,11 +52,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: '無効なコードです。' }, { status: 404 });
     }
 
-    // 3. Check if expired or max_uses reached
-    if (promoCode.expires_at && new Date(promoCode.expires_at) < new Date()) {
+    // 3. Check if expired (valid_until || expires_at) or max_uses reached
+    const expiryDate = promoCode.valid_until || promoCode.expires_at;
+    if (expiryDate && new Date(expiryDate) < new Date()) {
       return NextResponse.json({ error: 'このコードは有効期限切れです。' }, { status: 400 });
     }
-    if (promoCode.max_uses !== null && promoCode.current_uses >= promoCode.max_uses) {
+    if (promoCode.max_uses !== null && promoCode.max_uses !== undefined && (promoCode.current_uses || 0) >= promoCode.max_uses) {
       return NextResponse.json({ error: 'このコードは利用上限に達しています。' }, { status: 400 });
     }
 
@@ -54,32 +67,37 @@ export async function POST(req: Request) {
       .select('id')
       .eq('promo_code_id', promoCode.id)
       .eq('user_id', user.id)
-      .single();
+      .maybeSingle();
 
     if (existingRedemption) {
       return NextResponse.json({ error: 'このコードはすでに利用済みです。' }, { status: 400 });
     }
 
-    const rewardAmount = promoCode.reward_amount || 1;
-
-    // 5. Update data
-    await adminClient
-      .from('app_promo_codes')
-      .update({ current_uses: promoCode.current_uses + 1 })
-      .eq('id', promoCode.id);
-
-    await adminClient
+    // 5. Insert redemption record FIRST and check error BEFORE granting tickets (prevents double-redemption!)
+    const { error: redemptionError } = await adminClient
       .from('promo_code_redemptions')
       .insert({
         promo_code_id: promoCode.id,
-        user_id: user.id
+        user_id: user.id,
       });
+
+    if (redemptionError) {
+      console.error('Redemption insert error:', redemptionError);
+      return NextResponse.json({ error: 'このコードはすでに利用済みです。' }, { status: 400 });
+    }
+
+    const rewardAmount = promoCode.reward_amount || 1;
+
+    await adminClient
+      .from('app_promo_codes')
+      .update({ current_uses: (promoCode.current_uses || 0) + 1 })
+      .eq('id', promoCode.id);
 
     const { data: userProfile, error: profileError } = await adminClient
       .from('user_profiles')
       .select('high_quality_tickets')
       .eq('id', user.id)
-      .single();
+      .maybeSingle();
 
     if (!profileError && userProfile) {
       await adminClient
@@ -91,10 +109,10 @@ export async function POST(req: Request) {
     } else {
       await adminClient
         .from('user_profiles')
-        .insert({
+        .upsert({
           id: user.id,
           high_quality_tickets: rewardAmount
-        });
+        }, { onConflict: 'id' });
     }
 
     // 6. Return success message

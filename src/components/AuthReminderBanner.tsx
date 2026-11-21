@@ -20,8 +20,16 @@ export default function AuthReminderBanner() {
     }
   }, []);
 
-  // If user is logged in, banner was dismissed, or on map page, don't show
-  if (!isDataLoaded || user || isDismissed || pathname === '/map') return null;
+  const isRestrictedPortal =
+    pathname?.startsWith('/kira-system-panel-9f2') ||
+    pathname?.startsWith('/biz-portal-secure-8f92a1b3') ||
+    (typeof window !== 'undefined' &&
+      (window.location.hostname.startsWith('ops-vault-') ||
+        window.location.hostname.startsWith('partner.') ||
+        window.location.hostname.startsWith('biz.')));
+
+  // If user is logged in, banner was dismissed, on map page, or on admin/B2B portal, don't show
+  if (!isDataLoaded || user || isDismissed || pathname === '/map' || isRestrictedPortal) return null;
 
   return (
     <>

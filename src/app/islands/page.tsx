@@ -2,9 +2,10 @@ import React from 'react';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import { PREFECTURE_SEO_LIST, FEATURE_SEO_LIST } from '@/data/seoTaxonomies';
 import regionsData from '@/data/regions.json';
 import Breadcrumb from '@/components/Breadcrumb';
-import { Compass, Navigation, Search, ShieldAlert } from 'lucide-react';
+import { Compass, Navigation, Search, ShieldAlert, MapPin, Sparkles } from 'lucide-react';
 
 export const metadata: Metadata = {
   title: '日本全国離島一覧ディレクトリ（全481島・制覇対象369島）',
@@ -29,12 +30,12 @@ export const metadata: Metadata = {
 
 export default function AllIslandsDirectory() {
   const allIslands = Object.values(ALL_ISLANDS_MASTER_DICTIONARY);
-  const publishedIslands = allIslands.filter((i) => i.is_published !== false);
-  const restrictedIslands = allIslands.filter((i) => i.is_published === false);
+  const conquestIslands = allIslands.filter((i) => i.is_conquest_target !== false && i.is_published !== false);
+  const restrictedIslands = allIslands.filter((i) => i.is_conquest_target === false || i.is_published === false);
 
-  // Group published islands by region_id
+  // Group conquest islands by region_id
   const groupedPublished: Record<string, typeof allIslands> = {};
-  publishedIslands.forEach((island) => {
+  conquestIslands.forEach((island) => {
     const regionId = island.region_id || 'unknown';
     if (!groupedPublished[regionId]) {
       groupedPublished[regionId] = [];
@@ -58,15 +59,16 @@ export default function AllIslandsDirectory() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-blue-500/10 blur-[100px] rounded-full pointer-events-none" />
         <div className="max-w-4xl mx-auto relative z-10">
           <Breadcrumb
-            items={[{ label: 'ホーム', href: '/' }, { label: '日本全国離島一覧ディレクトリ' }]}
-            className="mb-6 !text-slate-300"
+            items={[{ label: '日本全国離島一覧ディレクトリ' }]}
+            isDark={true}
+            className="mb-6"
           />
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-white mb-4 tracking-wider flex items-center gap-3">
             <Compass className="w-8 h-8 text-blue-400" />
             日本の全離島一覧ディレクトリ
           </h1>
           <p className="text-blue-100 font-serif leading-relaxed text-sm md:text-base max-w-2xl">
-            輝旅 島専科（KIRATABI）に収録されている全国<strong>{allIslands.length}島</strong>（上陸・制覇対象<strong>{publishedIslands.length}島</strong> ／ 上陸制限・海域参照<strong>{restrictedIslands.length}島</strong>）を全45諸島エリア別にご案内します。
+            輝旅 島専科（KIRATABI）に収録されている全国<strong>{allIslands.length}島</strong>（上陸・制覇対象<strong>{conquestIslands.length}島</strong> ／ 上陸制限・海域参照<strong>{restrictedIslands.length}島</strong>）を全45諸島エリア別にご案内します。
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Link
@@ -81,6 +83,45 @@ export default function AllIslandsDirectory() {
       </header>
 
       <div className="max-w-4xl mx-auto px-6 py-12">
+        {/* 都道府県別 ＆ 目的テーマ別 クイックインデックス（SEO内部リンクハブ） */}
+        <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200 mb-12 space-y-6">
+          <div>
+            <h2 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2 mb-3">
+              <MapPin className="w-5 h-5 text-blue-600" />
+              都道府県から離島を探す（全29都道府県）
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {PREFECTURE_SEO_LIST.map((p) => (
+                <Link
+                  key={p.slug}
+                  href={`/prefecture/${p.slug}`}
+                  className="px-3 py-1.5 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-xs font-bold text-slate-700 hover:text-blue-700 transition-colors"
+                >
+                  {p.name}の離島
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-5 border-t border-slate-100">
+            <h2 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2 mb-3">
+              <Sparkles className="w-5 h-5 text-amber-500" />
+              目的・条件から離島を探す
+            </h2>
+            <div className="flex flex-wrap gap-2">
+              {FEATURE_SEO_LIST.map((f) => (
+                <Link
+                  key={f.slug}
+                  href={`/feature/${f.slug}`}
+                  className="px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-xs font-bold text-amber-900 transition-colors"
+                >
+                  {f.shortLabel}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         <div className="space-y-12">
           {regionsData.map((region) => {
             const pubList = groupedPublished[region.id] || [];

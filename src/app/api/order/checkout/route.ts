@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getStripeConfig } from '@/lib/stripeConfig';
-
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+import { verifyUserAuth } from '@/lib/userAuth';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 // プラン別の価格・名称定義
 const PLANS: Record<string, { name: string; amount: number; description: string }> = {
@@ -29,11 +28,45 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
   },
 };
 
-  export async function POST(req: NextRequest) {
+export async function POST(req: NextRequest) {
   try {
-    const { stripe } = await getStripeConfig();
-    const body = await req.json();
-    const { plan, travelerName, recipientName, postalCode, address, phone, islandId, islandName, visitDate, userId } = body;
+    // 認証ヘッダーがある場合はJWT検証し、未検証の body.userId は一切信用しない
+    const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
+    let verifiedUserId = 'anonymous';
+    if (authHeader) {
+      const auth = await verifyUserAuth(req);
+      if (!auth.user) {
+        return NextResponse.json({ error: auth.error || '認証トークンが無効です' }, { status: 401 });
+      }
+      verifiedUserId = auth.user.id;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const {
+      plan,
+      design = 'horizontal',
+      laminated = false,
+      country = 'Japan',
+      travelerName,
+      recipientName,
+      postalCode,
+      address,
+      phone,
+      islandId,
+      islandName,
+      visitDate,
+    } = body || {};
+
+    if (authHeader && body?.userId && body.userId !== verifiedUserId) {
+      return NextResponse.json({ error: '不正なユーザーIDです' }, { status: 403 });
+    }
 
     // バリデーション
     if (!recipientName?.trim() || !address?.trim() || !travelerName?.trim() || !postalCode?.trim()) {
@@ -43,15 +76,34 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
       return NextResponse.json({ error: '島の情報が不足しています' }, { status: 400 });
     }
 
-    const planInfo = PLANS[plan] || PLANS.standard;
+    const rawIdStr = String(islandId || '').trim();
+    const masterEntry =
+      ALL_ISLANDS_MASTER_DICTIONARY[rawIdStr] ||
+      Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+        (isl) => isl.slug === rawIdStr.toLowerCase() || isl.name === islandName
+      );
+    const canonicalIslandId = String(masterEntry?.id || rawIdStr || 'unknown');
+    const resolvedIslandName = String(masterEntry?.name || islandName || canonicalIslandId);
+
+    const { stripe } = await getStripeConfig();
+    const planKey = plan && PLANS[plan] ? plan : 'standard';
+    const planInfo = PLANS[planKey];
+    const isLaminated = laminated === true;
+    const unitAmount = planInfo.amount + (isLaminated ? 300 : 0);
+
     const ALLOWED_ORIGINS = ['https://island.kira-tabi.com', 'http://localhost:3000', 'http://localhost:3001'];
     const rawOrigin = req.headers.get('origin') || '';
     const origin = ALLOWED_ORIGINS.includes(rawOrigin) ? rawOrigin : 'https://island.kira-tabi.com';
 
-    // シリアルナンバー生成
-    const islandKey = (islandId || islandName || 'ISL').toString().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6) || 'ISL';
+    // 注文番号・シリアルナンバー生成
+    const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`;
+    const islandKey = (canonicalIslandId || resolvedIslandName || 'ISL').toString().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6) || 'ISL';
     const timestampSuffix = Date.now().toString(36).toUpperCase().slice(-4);
     const pendingSerial = `KT-${new Date().getFullYear()}-${islandKey}-${timestampSuffix}`;
+
+    const cancelParams = canonicalIslandId && canonicalIslandId !== 'unknown'
+      ? `?island_id=${encodeURIComponent(masterEntry?.slug || canonicalIslandId)}`
+      : '';
 
     // Stripe Checkout Session 作成
     const session = await stripe.checkout.sessions.create({
@@ -61,77 +113,107 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
           price_data: {
             currency: 'jpy',
             product_data: {
-              name: planInfo.name,
-              description: `${islandName || islandId} の到達証明書 / 旅人ネーム: ${travelerName}`,
+              name: `${planInfo.name}${isLaminated ? '（ラミネート加工付き）' : ''}`,
+              description: `${resolvedIslandName} の到達証明書 / 旅人ネーム: ${travelerName}`,
               images: [],
             },
-            unit_amount: planInfo.amount,
+            unit_amount: unitAmount,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
       success_url: `${origin}/order/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${origin}/order/cancel`,
+      cancel_url: `${origin}/order/cancel${cancelParams}`,
       metadata: {
-        plan: plan || 'standard',
-        traveler_name: travelerName,
-        recipient_name: recipientName,
-        postal_code: postalCode,
-        address: address.slice(0, 500),
-        phone: phone || '',
-        island_id: islandId || '',
-        island_name: islandName || '',
-        visit_date: visitDate || new Date().toISOString().slice(0, 10),
-        user_id: userId || 'anonymous',
+        order_number: orderNumber,
+        plan: planKey,
+        design: String(design || 'horizontal'),
+        laminated: String(isLaminated),
+        country: String(country || 'Japan'),
+        traveler_name: String(travelerName).slice(0, 200),
+        recipient_name: String(recipientName).slice(0, 200),
+        postal_code: String(postalCode).slice(0, 40),
+        address: String(address).slice(0, 500),
+        phone: String(phone || '').slice(0, 40),
+        island_id: canonicalIslandId,
+        island_name: resolvedIslandName,
+        visit_date: String(visitDate || new Date().toISOString().slice(0, 10)),
+        user_id: verifiedUserId,
         pending_serial: pendingSerial,
       },
       allow_promotion_codes: true,
       locale: 'ja',
     });
 
-    // 注文レコードを pending 状態で保存
-    if (SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
+    // 注文レコードを pending_payment 状態で保存（physical_orders 未作成時は orders へフォールバック）
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (supabaseUrl && serviceRoleKey && !serviceRoleKey.startsWith('REPLACE')) {
       try {
-        const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+        const adminClient = createClient(supabaseUrl, serviceRoleKey, {
           auth: { autoRefreshToken: false, persistSession: false }
         });
-        const orderRecord = {
-          user_id: userId || 'anonymous',
-          island_id: islandId || 'unknown',
-          type: plan || 'standard',
-          shipping_name: recipientName,
-          shipping_postal_code: postalCode,
-          shipping_address: address,
-          shipping_phone: phone || null,
-          status: 'pending_payment',
-          stripe_session_id: session.id,
-          ordered_at: new Date().toISOString(),
-        };
-        const { error: physErr } = await adminClient.from('physical_orders').insert([orderRecord]);
-        if (physErr) {
-          await adminClient.from('orders').insert([{
-            order_number: `ORD-${Date.now().toString(36).toUpperCase()}`,
+
+        let savedInPhysical = false;
+        if (verifiedUserId !== 'anonymous') {
+          const orderRecord = {
+            user_id: verifiedUserId,
+            island_id: canonicalIslandId,
+            type: planKey,
+            shipping_name: recipientName,
+            shipping_postal_code: postalCode,
+            shipping_address: country && country !== 'Japan' ? `[${country}] ${address}` : address,
+            shipping_phone: phone || null,
+            status: 'pending_payment',
+            stripe_session_id: session.id,
+            ordered_at: new Date().toISOString(),
+          };
+          const { error: physErr } = await adminClient.from('physical_orders').insert([orderRecord]);
+          if (!physErr) {
+            savedInPhysical = true;
+          }
+        }
+
+        if (!savedInPhysical) {
+          const formattedAddress = `${country && country !== 'Japan' ? `[${country}] ` : ''}〒${postalCode} ${address}${phone ? ` (TEL: ${phone})` : ''}`;
+          const { error: ordErr } = await adminClient.from('orders').insert([{
+            order_number: orderNumber,
             serial_number: pendingSerial,
             stripe_session_id: session.id,
-            user_id: userId || 'anonymous',
-            island_id: islandId || 'unknown',
-            island_name: islandName || islandId || 'unknown',
-            plan: plan || 'standard',
+            ...(verifiedUserId !== 'anonymous' ? { user_id: verifiedUserId } : {}),
+            island_id: canonicalIslandId,
+            island_name: resolvedIslandName,
+            plan: planKey,
             traveler_name: travelerName,
             recipient_name: recipientName,
-            address: `〒${postalCode} ${address}${phone ? ` (TEL: ${phone})` : ''}`,
+            address: formattedAddress,
             visit_date: visitDate || new Date().toISOString().slice(0, 10),
             status: 'pending_payment',
             created_at: new Date().toISOString(),
           }]);
+          if (ordErr) {
+            // スキーマ差分がある場合でも確実に orders に記録を残す最小構成フォールバック
+            await adminClient.from('orders').insert([{
+              order_number: orderNumber,
+              serial_number: pendingSerial,
+              island_id: canonicalIslandId,
+              island_name: resolvedIslandName,
+              plan: planKey,
+              traveler_name: travelerName,
+              recipient_name: recipientName,
+              address: formattedAddress,
+              visit_date: visitDate || new Date().toISOString().slice(0, 10),
+              status: 'pending_payment',
+            }]);
+          }
         }
-      } catch {
-        // テーブルが存在しない場合は無視
+      } catch (dbErr) {
+        console.warn('Order pre-save warning:', dbErr);
       }
     }
 
-    return NextResponse.json({ url: session.url, sessionId: session.id });
+    return NextResponse.json({ url: session.url, sessionId: session.id, orderNumber });
 
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : '決済セッションの作成に失敗しました';

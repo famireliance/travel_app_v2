@@ -6,9 +6,9 @@ import {
   Loader2, Save, Image as ImageIcon, MapPin, CheckCircle, Info, 
   ExternalLink, Sparkles, BedDouble, ShieldCheck, Plus, Trash2, Eye,
   MessageCircle, Globe, Mail, Clock, Award, ArrowUp, ArrowDown, Tag,
-  Printer, Wifi, QrCode, Smartphone, Copy, Check
+  Printer, Wifi, Phone
 } from 'lucide-react';
-import Link from 'next/link';
+import { getPublicStayUrl } from '@/lib/bizPortalPath';
 
 function InstagramIcon({ className = 'w-5 h-5' }: { className?: string }) {
   return (
@@ -56,11 +56,14 @@ export default function BizPortalFacility() {
   const [success, setSuccess] = useState(false);
   
   const [accId, setAccId] = useState<string | null>(null);
+  const [publicStayHref, setPublicStayHref] = useState<string>('');
+  const [extraPhotoUrls, setExtraPhotoUrls] = useState<string[]>([]);
   const [catchphrases, setCatchphrases] = useState<string[]>(['']);
   const [plans, setPlans] = useState<PlanItem[]>(DEFAULT_PLANS);
 
   const [formData, setFormData] = useState({
     name: '',
+    address: '',
     description: '',
     price_range: '',
     phone: '',
@@ -91,81 +94,95 @@ export default function BizPortalFacility() {
   useEffect(() => {
     async function loadData() {
       setLoading(true);
-      const { data: { user } } = await supabase.auth.getUser();
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        let targetAcc: any = null;
 
-      let targetAcc: any = null;
+        if (session) {
+          const resp = await fetch('/api/b2b/facility', {
+            headers: {
+              Authorization: `Bearer ${session.access_token}`,
+            },
+          });
+          if (resp.ok) {
+            const json = await resp.json();
+            targetAcc = json.accommodation || null;
+          }
+        }
 
-      if (user) {
-        const { data: acc } = await supabase
-          .from('accommodations')
-          .select('*')
-          .eq('owner_id', user.id)
-          .limit(1)
-          .maybeSingle();
-        targetAcc = acc;
+        if (targetAcc) {
+          setAccId(targetAcc.id);
+          setPublicStayHref(getPublicStayUrl(targetAcc.id));
+
+          // Preserve 5th+ photos in photo_urls
+          const allUrls = Array.isArray(targetAcc.photo_urls)
+            ? targetAcc.photo_urls.filter((u: any) => typeof u === 'string' && u.trim())
+            : [];
+          setExtraPhotoUrls(allUrls.slice(4));
+
+          // キャッチコピーのパース
+          let parsedCatchphrases: string[] = [];
+          if (targetAcc.catchphrase) {
+            parsedCatchphrases = targetAcc.catchphrase
+              .split('\n')
+              .map((s: string) => s.trim())
+              .filter(Boolean);
+          }
+          if (parsedCatchphrases.length === 0) {
+            parsedCatchphrases = [''];
+          }
+          setCatchphrases(parsedCatchphrases.slice(0, 4));
+
+          // プランのパース
+          if (targetAcc.plans && Array.isArray(targetAcc.plans) && targetAcc.plans.length > 0) {
+            const loadedPlans: PlanItem[] = targetAcc.plans.map((p: any, idx: number) => ({
+              id: p.id || `plan-${idx + 1}`,
+              name: p.name || `プラン ${idx + 1}`,
+              price: p.price || '¥10,000〜 / 人',
+              desc: p.desc || '',
+              badge: p.badge || '',
+              features_text: Array.isArray(p.features) ? p.features.join(', ') : ''
+            }));
+            setPlans(loadedPlans);
+          }
+
+          setFormData({
+            name: targetAcc.name || '',
+            address: targetAcc.address || '',
+            description: targetAcc.description || '',
+            price_range: targetAcc.price_range || '',
+            phone: targetAcc.phone_number || targetAcc.phone || '',
+            email: targetAcc.email || '',
+            line_url: targetAcc.line_url || '',
+            instagram_url: targetAcc.instagram_url || '',
+            instagram_account: targetAcc.instagram_account || '',
+            twitter_url: targetAcc.twitter_url || '',
+            website_url: targetAcc.website_url || '',
+            check_in_time: targetAcc.check_in_time || '15:00 〜 19:00',
+            check_out_time: targetAcc.check_out_time || '10:00',
+            same_day_cutoff: targetAcc.same_day_cutoff || '当日受付: 12:00まで',
+            enable_certificate: targetAcc.enable_certificate ?? true,
+            certificate_message: targetAcc.certificate_message || '離島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。この証明書はあなたが本島に滞在された公式な証です。',
+            has_pickup: targetAcc.has_pickup ?? true,
+            booking_mode: targetAcc.booking_mode || 'request_based',
+            deposit_policy: targetAcc.deposit_policy || '',
+            enable_pre_checkin: targetAcc.enable_pre_checkin ?? true,
+            photo_exterior: targetAcc.photo_exterior?.[0] || targetAcc.photo_urls?.[0] || '',
+            photo_room: targetAcc.photo_room?.[0] || targetAcc.photo_urls?.[1] || '',
+            photo_food: targetAcc.photo_food?.[0] || targetAcc.photo_urls?.[2] || '',
+            photo_facility: targetAcc.photo_facility?.[0] || targetAcc.photo_urls?.[3] || '',
+            features_text: (targetAcc.features && targetAcc.features.length > 0)
+              ? targetAcc.features.join('\n')
+              : '',
+            wifi_ssid: targetAcc.wifi_ssid || '',
+            wifi_password: targetAcc.wifi_password || ''
+          });
+        }
+      } catch (err) {
+        console.error('Failed to load facility data:', err);
+      } finally {
+        setLoading(false);
       }
-      
-      if (targetAcc) {
-        setAccId(targetAcc.id);
-
-        // キャッチコピーのパース
-        let parsedCatchphrases: string[] = [];
-        if (targetAcc.catchphrase) {
-          parsedCatchphrases = targetAcc.catchphrase
-            .split('\n')
-            .map((s: string) => s.trim())
-            .filter(Boolean);
-        }
-        if (parsedCatchphrases.length === 0) {
-          parsedCatchphrases = [''];
-        }
-        setCatchphrases(parsedCatchphrases.slice(0, 4));
-
-        // プランのパース
-        if (targetAcc.plans && Array.isArray(targetAcc.plans) && targetAcc.plans.length > 0) {
-          const loadedPlans: PlanItem[] = targetAcc.plans.map((p: any, idx: number) => ({
-            id: p.id || `plan-${idx + 1}`,
-            name: p.name || `プラン ${idx + 1}`,
-            price: p.price || '¥10,000〜 / 人',
-            desc: p.desc || '',
-            badge: p.badge || '',
-            features_text: Array.isArray(p.features) ? p.features.join('\n') : ''
-          }));
-          setPlans(loadedPlans);
-        }
-
-        setFormData({
-          name: targetAcc.name || '',
-          description: targetAcc.description || '',
-          price_range: targetAcc.price_range || '',
-          phone: targetAcc.phone_number || targetAcc.phone || '',
-          email: targetAcc.email || '',
-          line_url: targetAcc.line_url || '',
-          instagram_url: targetAcc.instagram_url || '',
-          instagram_account: targetAcc.instagram_account || '',
-          twitter_url: targetAcc.twitter_url || '',
-          website_url: targetAcc.website_url || '',
-          check_in_time: targetAcc.check_in_time || '15:00 〜 19:00',
-          check_out_time: targetAcc.check_out_time || '10:00',
-          same_day_cutoff: targetAcc.same_day_cutoff || '当日受付: 12:00まで',
-          enable_certificate: targetAcc.enable_certificate ?? true,
-          certificate_message: targetAcc.certificate_message || '離島へのご来島ならびに当館へのご宿泊、誠にありがとうございました。この証明書はあなたが本島に滞在された公式な証です。',
-          has_pickup: targetAcc.has_pickup ?? true,
-          booking_mode: targetAcc.booking_mode || 'request_based',
-          deposit_policy: targetAcc.deposit_policy || '',
-          enable_pre_checkin: targetAcc.enable_pre_checkin ?? true,
-          photo_exterior: targetAcc.photo_exterior?.[0] || targetAcc.photo_urls?.[0] || '',
-          photo_room: targetAcc.photo_room?.[0] || targetAcc.photo_urls?.[1] || '',
-          photo_food: targetAcc.photo_food?.[0] || targetAcc.photo_urls?.[2] || '',
-          photo_facility: targetAcc.photo_facility?.[0] || targetAcc.photo_urls?.[3] || '',
-          features_text: (targetAcc.features && targetAcc.features.length > 0)
-            ? targetAcc.features.join('\n')
-            : '',
-          wifi_ssid: targetAcc.wifi_ssid || '',
-          wifi_password: targetAcc.wifi_password || ''
-        });
-      }
-      setLoading(false);
     }
     loadData();
   }, []);
@@ -238,68 +255,99 @@ export default function BizPortalFacility() {
     setSaving(true);
     setSuccess(false);
 
-    const formattedCatchphrase = catchphrases.filter(s => s.trim().length > 0).join('\n');
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        alert('セッションが切れました。再ログインしてください。');
+        setSaving(false);
+        return;
+      }
 
-    const formattedPlans = plans.map(p => ({
-      id: p.id,
-      name: p.name.trim(),
-      price: p.price.trim(),
-      desc: p.desc.trim(),
-      badge: p.badge.trim(),
-      features: p.features_text.split('\n').map(f => f.trim()).filter(Boolean)
-    }));
+      const formattedCatchphrase = catchphrases.filter(s => s.trim().length > 0).join('\n');
 
-    const featuresArray = formData.features_text
-      .split('\n')
-      .map(s => s.trim())
-      .filter(Boolean);
+      const formattedPlans = plans.map(p => ({
+        id: p.id,
+        name: p.name.trim(),
+        price: p.price.trim(),
+        desc: p.desc.trim(),
+        badge: p.badge.trim(),
+        features: p.features_text.split(/[\n,、]+/).map(f => f.trim()).filter(Boolean)
+      }));
 
-    const updateData: any = {
-      description: formData.description,
-      price_range: formData.price_range,
-      phone_number: formData.phone,
-      email: formData.email,
-      line_url: formData.line_url,
-      instagram_url: formData.instagram_url,
-      instagram_account: formData.instagram_account,
-      twitter_url: formData.twitter_url,
-      website_url: formData.website_url,
-      check_in_time: formData.check_in_time,
-      check_out_time: formData.check_out_time,
-      same_day_cutoff: formData.same_day_cutoff,
-      enable_certificate: formData.enable_certificate,
-      certificate_message: formData.certificate_message,
-      has_pickup: formData.has_pickup,
-      booking_mode: formData.booking_mode,
-      deposit_policy: formData.deposit_policy,
-      enable_pre_checkin: formData.enable_pre_checkin,
-      photo_exterior: formData.photo_exterior ? [formData.photo_exterior] : [],
-      photo_room: formData.photo_room ? [formData.photo_room] : [],
-      photo_food: formData.photo_food ? [formData.photo_food] : [],
-      photo_facility: formData.photo_facility ? [formData.photo_facility] : [],
-      photo_urls: [
+      const featuresArray = formData.features_text
+        .split('\n')
+        .map(s => s.trim())
+        .filter(Boolean);
+
+      const primaryPhotos = [
         formData.photo_exterior,
         formData.photo_room,
         formData.photo_food,
-        formData.photo_facility
-      ].filter(Boolean),
-      catchphrase: formattedCatchphrase,
-      plans: formattedPlans,
-      features: featuresArray,
-      wifi_ssid: formData.wifi_ssid,
-      wifi_password: formData.wifi_password
-    };
+        formData.photo_facility,
+      ]
+        .map(s => s.trim())
+        .filter(Boolean);
 
-    if (formData.name) updateData.name = formData.name;
+      const mergedPhotoUrls = [
+        ...primaryPhotos,
+        ...extraPhotoUrls.filter(u => u && !primaryPhotos.includes(u)),
+      ];
 
-    const { error } = await supabase.from('accommodations').update(updateData).eq('id', accId);
-    
-    setSaving(false);
-    if (!error) {
-      setSuccess(true);
-      setTimeout(() => setSuccess(false), 5000);
-    } else {
-      alert('エラーが発生しました: ' + error.message);
+      const updateData: Record<string, any> = {
+        id: accId,
+        address: formData.address,
+        description: formData.description,
+        price_range: formData.price_range,
+        phone_number: formData.phone,
+        email: formData.email,
+        line_url: formData.line_url,
+        instagram_url: formData.instagram_url,
+        instagram_account: formData.instagram_account,
+        twitter_url: formData.twitter_url,
+        website_url: formData.website_url,
+        check_in_time: formData.check_in_time,
+        check_out_time: formData.check_out_time,
+        same_day_cutoff: formData.same_day_cutoff,
+        enable_certificate: formData.enable_certificate,
+        certificate_message: formData.certificate_message,
+        has_pickup: formData.has_pickup,
+        booking_mode: formData.booking_mode,
+        deposit_policy: formData.deposit_policy,
+        enable_pre_checkin: formData.enable_pre_checkin,
+        photo_exterior: formData.photo_exterior.trim() ? [formData.photo_exterior.trim()] : [],
+        photo_room: formData.photo_room.trim() ? [formData.photo_room.trim()] : [],
+        photo_food: formData.photo_food.trim() ? [formData.photo_food.trim()] : [],
+        photo_facility: formData.photo_facility.trim() ? [formData.photo_facility.trim()] : [],
+        photo_urls: mergedPhotoUrls,
+        catchphrase: formattedCatchphrase,
+        plans: formattedPlans,
+        features: featuresArray,
+        wifi_ssid: formData.wifi_ssid,
+        wifi_password: formData.wifi_password
+      };
+
+      if (formData.name.trim()) updateData.name = formData.name.trim();
+
+      const resp = await fetch('/api/b2b/facility', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify(updateData),
+      });
+
+      const json = await resp.json().catch(() => ({}));
+      if (resp.ok && json.success) {
+        setSuccess(true);
+        setTimeout(() => setSuccess(false), 5000);
+      } else {
+        alert('エラーが発生しました: ' + (json.error || resp.statusText));
+      }
+    } catch (err: any) {
+      alert('エラーが発生しました: ' + (err.message || '通信エラー'));
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -341,15 +389,16 @@ export default function BizPortalFacility() {
 
         <div className="flex items-center gap-2">
           {accId && (
-            <Link
-              href={`/stay/${accId}`}
+            <a
+              href={publicStayHref || getPublicStayUrl(accId)}
               target="_blank"
+              rel="noopener noreferrer"
               className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center gap-1.5"
             >
               <Eye className="w-4 h-4 text-slate-600" />
               <span>公開LPを見る</span>
               <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
-            </Link>
+            </a>
           )}
 
           <button
@@ -585,7 +634,9 @@ export default function BizPortalFacility() {
               <div className="p-2 bg-slate-50 rounded-lg border border-slate-200 inline-block">
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=8&data=${encodeURIComponent(
-                    `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password || ''};;`
+                    !formData.wifi_password
+                      ? `WIFI:T:nopass;S:${formData.wifi_ssid || 'HOTEL_WIFI'};;`
+                      : `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password};;`
                   )}`}
                   alt="Wi-Fi接続用QRコードプレビュー"
                   className="w-28 h-28 object-contain mx-auto"
@@ -633,6 +684,34 @@ export default function BizPortalFacility() {
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+              <Phone className="w-3.5 h-3.5 text-emerald-600" /> ご予約・問い合わせ電話番号
+            </label>
+            <input
+              type="tel"
+              name="phone"
+              value={formData.phone}
+              onChange={handleChange}
+              placeholder="04996-9-0141"
+              className="w-full p-2.5 text-xs bg-slate-50 border rounded-xl outline-none focus:bg-white font-mono"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-blue-600" /> 所在地（住所）
+            </label>
+            <input
+              type="text"
+              name="address"
+              value={formData.address}
+              onChange={handleChange}
+              placeholder="東京都青ヶ島村本村"
+              className="w-full p-2.5 text-xs bg-slate-50 border rounded-xl outline-none focus:bg-white"
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center gap-1.5">
               <InstagramIcon className="w-3.5 h-3.5 text-pink-500" /> Instagram URL
@@ -1167,7 +1246,9 @@ export default function BizPortalFacility() {
           <div className="p-4 bg-white rounded-3xl border-4 border-emerald-600 shadow-xl inline-block relative">
             <img
               src={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=${encodeURIComponent(
-                `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password || ''};;`
+                !formData.wifi_password
+                  ? `WIFI:T:nopass;S:${formData.wifi_ssid || 'HOTEL_WIFI'};;`
+                  : `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password};;`
               )}`}
               alt="Wi-Fi接続用QRコード"
               className="w-64 h-64 object-contain"

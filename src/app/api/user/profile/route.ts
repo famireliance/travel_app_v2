@@ -3,19 +3,37 @@ import { createClient } from '@supabase/supabase-js';
 
 export async function GET(request: Request) {
   try {
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-    // Use service role key to bypass RLS
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    // Check authentication first before creating service client
+    const authHeader = request.headers.get('Authorization') || request.headers.get('authorization');
+    if (!authHeader) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    const token = authHeader.replace('Bearer ', '').trim();
+    if (!token) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    if (!supabaseUrl || !supabaseServiceKey || supabaseServiceKey.startsWith('REPLACE')) {
+      if (supabaseUrl && supabaseAnonKey) {
+        const anonClient = createClient(supabaseUrl, supabaseAnonKey, {
+          auth: { autoRefreshToken: false, persistSession: false }
+        });
+        const { data: { user } } = await anonClient.auth.getUser(token);
+        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        return NextResponse.json({ profile: {} });
+      }
+      return NextResponse.json({ error: 'Server configuration error' }, { status: 503 });
+    }
+
+    // Lazy-init service role client inside route handler to bypass RLS
     const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
-    // Check authentication
-    const authHeader = request.headers.get('Authorization');
-    if (!authHeader) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-    const token = authHeader.replace('Bearer ', '');
     const { data: { user }, error: authError } = await adminClient.auth.getUser(token);
     
     if (authError || !user) {

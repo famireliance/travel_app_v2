@@ -256,9 +256,16 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
     setErrorMessage(null);
     setOrderSubmitting(true);
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token || '';
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
       const res = await fetch('/api/order/checkout', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers,
         body: JSON.stringify({
           plan: orderPlan,
           design: orderDesign,

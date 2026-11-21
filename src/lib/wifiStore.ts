@@ -25,41 +25,42 @@ export const DEFAULT_CELL_NOTES: Record<string, string> = {
   amami: '港・空港・名瀬市街は全社4G。山間部・トンネルはdocomo推奨。',
 };
 
-const SLUG_ALIASES: Record<string, string[]> = {
-  hachijojima: ['74', 'hachijojima'],
-  ishigakijima: ['392', 'ishigakijima', 'ishigaki'],
-  aogashima: ['75', 'aogashima'],
-  amami: ['334', 'amami', 'amamioshima'],
-  miyako: ['384', 'miyako', 'miyakojima'],
-  oshima: ['66', 'oshima', 'izuoshima'],
-  chichijima: ['76', 'chichijima'],
+export const SLUG_ALIASES: Record<string, string[]> = {
+  hachijojima: ['56', 'hachijojima', 'hachijo', '八丈島'],
+  aogashima: ['58', 'aogashima', '青ヶ島'],
+  chichijima: ['63', 'chichijima', 'chichijimaogasawarashoto', '父島'],
+  oshima: ['49', 'oshima', 'izuoshima', '大島', '伊豆大島'],
+  amami: ['352', 'amamioshima', 'amami', '奄美大島'],
+  miyako: ['386', 'miyakojima', 'miyako', '宮古島'],
+  ishigakijima: ['392', 'ishigakijima', 'ishigaki', '石垣島'],
 };
 
 /**
- * 数値ID（例: "74"）とスラッグ（例: "hachijojima"）の双方を解決して候補リストを返す
+ * 数値ID（例: "56"）とスラッグ（例: "hachijojima"）の双方を解決して候補リストを返す
  */
 export function resolveIslandIdCandidates(rawId: string): string[] {
-  const clean = String(rawId || '').trim().toLowerCase();
+  const trimmed = String(rawId || '').trim();
+  const clean = trimmed.toLowerCase();
   if (!clean) return [];
-  const candidates = new Set<string>([clean, String(rawId).trim()]);
+  const candidates = new Set<string>([clean, trimmed]);
 
   if (SLUG_ALIASES[clean]) {
     SLUG_ALIASES[clean].forEach((a) => candidates.add(a));
   }
   for (const [aliasKey, list] of Object.entries(SLUG_ALIASES)) {
-    if (list.includes(clean)) {
+    if (list.some((a) => a.toLowerCase() === clean || a === trimmed)) {
       candidates.add(aliasKey);
       list.forEach((a) => candidates.add(a));
     }
   }
 
-  const direct = ALL_ISLANDS_MASTER_DICTIONARY[clean] || ALL_ISLANDS_MASTER_DICTIONARY[String(rawId).trim()];
+  const direct = ALL_ISLANDS_MASTER_DICTIONARY[clean] || ALL_ISLANDS_MASTER_DICTIONARY[trimmed];
   if (direct) {
     candidates.add(String(direct.id));
     if (direct.slug) candidates.add(String(direct.slug).toLowerCase());
   } else {
     const bySlugOrName = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
-      (i) => String(i.slug || '').toLowerCase() === clean || String(i.name || '') === String(rawId).trim()
+      (i) => String(i.slug || '').toLowerCase() === clean || String(i.name || '') === trimmed
     );
     if (bySlugOrName) {
       candidates.add(String(bySlugOrName.id));
@@ -80,24 +81,30 @@ export function getDbClient() {
 
 export async function getWifiSpots(islandId?: string): Promise<PublicWifiSpot[]> {
   const client = getDbClient();
-  if (!client) return [];
+  if (client) {
+    let query = client.from('island_public_wifi').select('*').order('created_at', { ascending: false });
+    if (islandId) {
+      const candidates = resolveIslandIdCandidates(islandId);
+      if (candidates.length > 1) {
+        query = query.in('island_id', candidates);
+      } else {
+        query = query.eq('island_id', islandId);
+      }
+    }
 
-  let query = client.from('island_public_wifi').select('*').order('created_at', { ascending: false });
-  if (islandId) {
-    const candidates = resolveIslandIdCandidates(islandId);
-    if (candidates.length > 1) {
-      query = query.in('island_id', candidates);
-    } else {
-      query = query.eq('island_id', islandId);
+    const { data, error } = await query;
+    if (!error && data) {
+      return data;
     }
   }
 
-  const { data, error } = await query;
-  if (error) {
-    console.error('[wifiStore] getWifiSpots error:', error);
-    return [];
-  }
-  return data || [];
+  // Fallback to admin_config when standalone wifi table does not exist
+  const fbSpots = await getFallbackJson<PublicWifiSpot[]>('fallback_wifi_spots', []);
+  const list = Array.isArray(fbSpots) ? fbSpots : [];
+  if (!islandId) return list;
+
+  const candidateSet = new Set(resolveIslandIdCandidates(islandId).map((c) => c.toLowerCase()));
+  return list.filter((s) => candidateSet.has(String(s.island_id || '').toLowerCase()));
 }
 
 export async function getCellNotes(): Promise<Record<string, string>> {
@@ -134,32 +141,57 @@ export async function saveCellNote(islandId: string, cellNote: string): Promise<
 }
 
 export async function saveWifiSpot(spot: Partial<PublicWifiSpot>): Promise<PublicWifiSpot | null> {
-  const client = getDbClient();
-  if (!client) throw new Error('DB Client is not available');
-
-  const payload = {
-    ...spot,
+  const now = new Date().toISOString();
+  const payload: PublicWifiSpot = {
     id: spot.id || `spot_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`,
-    updated_at: new Date().toISOString(),
+    island_id: String(spot.island_id || ''),
+    name: String(spot.name || ''),
+    location: String(spot.location || '館内・待合スペース'),
+    ssid: String(spot.ssid || ''),
+    has_password: Boolean(spot.has_password),
+    password: spot.password || '',
+    auth_method: String(spot.auth_method || 'ブラウザ認証 / 同意のみ'),
+    notes: spot.notes || '',
+    is_verified: spot.is_verified ?? true,
+    created_at: spot.created_at || now,
+    updated_at: now,
+    updated_by: spot.updated_by,
   };
 
-  const { data, error } = await client.from('island_public_wifi').upsert(payload).select().single();
-  if (error) {
-    console.error('[wifiStore] saveWifiSpot error:', error);
-    throw error;
+  const client = getDbClient();
+  if (client) {
+    const { data, error } = await client.from('island_public_wifi').upsert(payload).select().single();
+    if (!error && data) {
+      return data;
+    }
   }
-  return data;
+
+  // Fallback to admin_config when standalone wifi table does not exist
+  const fbSpots = await getFallbackJson<PublicWifiSpot[]>('fallback_wifi_spots', []);
+  const list = Array.isArray(fbSpots) ? fbSpots : [];
+  const idx = list.findIndex((s) => s.id === payload.id);
+  if (idx >= 0) {
+    list[idx] = { ...list[idx], ...payload };
+  } else {
+    list.unshift(payload);
+  }
+  await setFallbackJson('fallback_wifi_spots', list);
+  return payload;
 }
 
 export async function deleteWifiSpot(id: string): Promise<boolean> {
   const client = getDbClient();
-  if (!client) throw new Error('DB Client is not available');
-
-  const { error } = await client.from('island_public_wifi').delete().eq('id', id);
-  if (error) {
-    console.error('[wifiStore] deleteWifiSpot error:', error);
-    return false;
+  if (client) {
+    const { error } = await client.from('island_public_wifi').delete().eq('id', id);
+    if (!error) {
+      return true;
+    }
   }
+
+  const fbSpots = await getFallbackJson<PublicWifiSpot[]>('fallback_wifi_spots', []);
+  const list = Array.isArray(fbSpots) ? fbSpots : [];
+  const filtered = list.filter((s) => s.id !== id);
+  await setFallbackJson('fallback_wifi_spots', filtered);
   return true;
 }
 

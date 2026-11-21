@@ -1,7 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { Package, MapPin, Edit3, Check } from 'lucide-react';
 import toast from 'react-hot-toast';
+
+function getOrderStatusDisplay(status?: string): { label: string; className: string } {
+  switch (status) {
+    case 'pending_payment':
+      return { label: '未決済・手続き中', className: 'bg-amber-100 text-amber-800' };
+    case 'ordered':
+    case 'paid':
+    case 'received':
+      return { label: '注文確認済', className: 'bg-blue-100 text-blue-700' };
+    case 'processing':
+      return { label: '発送準備中', className: 'bg-indigo-100 text-indigo-700' };
+    case 'shipped':
+      return { label: '発送済', className: 'bg-emerald-100 text-emerald-700' };
+    case 'delivered':
+      return { label: '配達完了', className: 'bg-green-100 text-green-700' };
+    default:
+      return { label: '確認中', className: 'bg-slate-100 text-slate-700' };
+  }
+}
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -83,25 +103,29 @@ export default function OrderHistory() {
 
   return (
     <div className="space-y-4">
-      {orders.map(order => (
+      {orders.map(order => {
+        const statusInfo = getOrderStatusDisplay(order.status);
+        const resolvedIslandName =
+          (order.island_id && ALL_ISLANDS_MASTER_DICTIONARY[String(order.island_id)]?.name) ||
+          order.island_name ||
+          order.island_id;
+        const canEditShipping = order.status === 'ordered' || order.status === 'paid' || order.status === 'processing' || order.status === 'pending_payment';
+
+        return (
         <div key={order.id} className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200 relative overflow-hidden">
           <div className="flex flex-col md:flex-row gap-6">
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-3">
-                <span className={`px-3 py-1 rounded-full text-xs font-bold ${
-                  order.status === 'shipped' || order.status === 'delivered' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
-                }`}>
-                  {order.status === 'ordered' ? '注文確認済' : 
-                   order.status === 'processing' ? '発送準備中' : 
-                   order.status === 'shipped' ? '発送済' : '配達完了'}
+                <span className={`px-3 py-1 rounded-full text-xs font-bold ${statusInfo.className}`}>
+                  {statusInfo.label}
                 </span>
                 <span className="text-xs text-slate-400 font-mono">
                   {new Date(order.ordered_at).toLocaleDateString('ja-JP')}
                 </span>
               </div>
               <h4 className="font-bold text-slate-800 mb-4">
-                {order.type === 'anniversary' ? '1周年記念 リアル証明書' : '公式到達証明書'} 
-                {order.island_id && ` (${order.island_id})`}
+                {order.type === 'anniversary' ? '1周年記念 リアル証明書' : '公式到達証明書'}
+                {resolvedIslandName && ` (${resolvedIslandName})`}
               </h4>
 
               {editingOrderId === order.id ? (
@@ -120,7 +144,7 @@ export default function OrderHistory() {
                 <div className="bg-slate-50 p-4 rounded-xl">
                   <div className="flex justify-between items-start mb-2">
                     <h5 className="text-xs font-bold text-slate-700 flex items-center gap-1"><MapPin size={14}/> 配送先</h5>
-                    {(order.status === 'ordered' || order.status === 'processing') ? (
+                    {canEditShipping ? (
                       <button onClick={() => handleEditClick(order)} className="text-blue-600 hover:text-blue-700 text-xs flex items-center gap-1">
                         <Edit3 size={12}/> 変更する
                       </button>
@@ -137,7 +161,8 @@ export default function OrderHistory() {
             </div>
           </div>
         </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

@@ -124,26 +124,35 @@ export default function BookingModal({
     try {
       let targetAccId = accommodationId;
 
-      if (!targetAccId || targetAccId === 'aogashimaya') {
-        // Fallback: 宿名またはオーナーから取得
-        const { data: matchedAcc } = await supabase
-          .from('accommodations')
-          .select('id')
-          .ilike('name', `%${innName.replace(/（.*）|\(.*?\)/g, '').trim()}%`)
-          .limit(1)
-          .single();
+      if (targetAccId === 'aogashimaya' || targetAccId === 'demo') {
+        toast.error(
+          'こちらはサンプル表示用のデモ施設のため、予約リクエストの送信はできません。各離島の掲載宿ページよりご予約ください。',
+          { duration: 5000 }
+        );
+        setIsSubmitting(false);
+        return;
+      }
 
-        if (matchedAcc) {
-          targetAccId = matchedAcc.id;
-        } else {
-          // フォールバック: DBにある最初の有効な宿を使う
-          const { data: fallbackAccs } = await supabase.from('accommodations').select('id').limit(1);
-          if (fallbackAccs && fallbackAccs.length > 0) {
-            targetAccId = fallbackAccs[0].id;
-          } else {
-            throw new Error('宿泊施設情報の特定に失敗しました。');
+      if (!targetAccId) {
+        const cleanInnName = innName.replace(/（.*）|\(.*?\)/g, '').trim();
+        if (cleanInnName) {
+          const { data: matchedAcc } = await supabase
+            .from('accommodations')
+            .select('id')
+            .eq('name', cleanInnName)
+            .limit(1)
+            .maybeSingle();
+
+          if (matchedAcc?.id) {
+            targetAccId = matchedAcc.id;
           }
         }
+      }
+
+      if (!targetAccId) {
+        throw new Error(
+          'この宿泊施設は現在Web予約リクエストの受付対象外です。お電話にて直接お問い合わせください。'
+        );
       }
 
       const contactHeader = `【代表者様氏名】: ${guestName.trim()}\n【お電話番号】: ${guestPhone.trim()}\n【メールアドレス】: ${guestEmail.trim() || user.email || ''}`;

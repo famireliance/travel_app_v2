@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { getFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -27,20 +28,44 @@ export async function GET(req: NextRequest) {
   });
 
   try {
-    // 並列クエリで高速取得
-    const [profileRes, visitsRes, certsRes, ordersRes, diariesRes] = await Promise.all([
+    // 並列クエリで高速取得（physical_orders テーブル未存在エラーは無視）
+    const [profileRes, visitsRes, certsRes, ordersRes, physOrdersRes, diariesRes, shippingOv] = await Promise.all([
       adminClient.from('user_profiles').select('*').eq('id', userId).maybeSingle(),
       adminClient.from('island_visits').select('*').eq('user_id', userId).order('visited_at', { ascending: false, nullsFirst: false }),
       adminClient.from('certificates').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
       adminClient.from('orders').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+      Promise.resolve(
+        adminClient.from('physical_orders').select('*').eq('user_id', userId).order('ordered_at', { ascending: false })
+      ).catch(() => ({ data: null, error: true })),
       adminClient.from('island_diaries').select('*').eq('user_id', userId).order('created_at', { ascending: false }),
+      getFallbackJson<Record<string, any>>('fallback_order_shipping', {}),
     ]);
+
+    const physRows = !physOrdersRes.error && Array.isArray(physOrdersRes.data) ? physOrdersRes.data : [];
+    const orderRows = Array.isArray(ordersRes.data) ? ordersRes.data : [];
+    const seenOrderIds = new Set<string>();
+    const normalizedOrders = [...physRows, ...orderRows]
+      .filter((o: any) => {
+        if (!o?.id || seenOrderIds.has(o.id)) return false;
+        seenOrderIds.add(o.id);
+        return true;
+      })
+      .map((o: any) => {
+        const ov = shippingOv?.[o.id] || {};
+        return {
+          ...o,
+          type: o.plan || o.type || 'standard',
+          ordered_at: o.created_at || o.ordered_at || null,
+          shipping_name: ov.shipping_name || o.recipient_name || o.traveler_name || o.shipping_name || '-',
+          status: ov.status || o.status || 'ordered',
+        };
+      });
 
     return NextResponse.json({
       profile: profileRes.data,
       visits: visitsRes.data || [],
       certificates: certsRes.data || [],
-      orders: ordersRes.data || [],
+      orders: normalizedOrders,
       diaries: diariesRes.data || [],
     });
   } catch (err: any) {

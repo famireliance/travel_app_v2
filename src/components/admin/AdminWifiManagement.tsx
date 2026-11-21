@@ -23,6 +23,49 @@ const ISLAND_OPTIONS = [
   { id: 'chichijima', name: '父島', region: '小笠原諸島' }
 ];
 
+const WIFI_SLUG_ALIASES: Record<string, string[]> = {
+  hachijojima: ['56', 'hachijojima', 'hachijo', '八丈島'],
+  aogashima: ['58', 'aogashima', '青ヶ島'],
+  chichijima: ['63', 'chichijima', 'chichijimaogasawarashoto', '父島'],
+  oshima: ['49', 'oshima', 'izuoshima', '大島', '伊豆大島'],
+  amami: ['352', 'amamioshima', 'amami', '奄美大島'],
+  miyako: ['386', 'miyakojima', 'miyako', '宮古島'],
+  ishigakijima: ['392', 'ishigakijima', 'ishigaki', '石垣島'],
+};
+
+function getIslandAliasKeys(rawId: string): string[] {
+  const trimmed = String(rawId || '').trim();
+  const clean = trimmed.toLowerCase();
+  if (!clean) return [];
+  const keys = new Set<string>([trimmed, clean]);
+
+  if (WIFI_SLUG_ALIASES[clean]) {
+    WIFI_SLUG_ALIASES[clean].forEach((a) => keys.add(a));
+  }
+  for (const [aliasKey, list] of Object.entries(WIFI_SLUG_ALIASES)) {
+    if (list.some((a) => a.toLowerCase() === clean || a === trimmed)) {
+      keys.add(aliasKey);
+      list.forEach((a) => keys.add(a));
+    }
+  }
+
+  const direct = ALL_ISLANDS_MASTER_DICTIONARY[clean] || ALL_ISLANDS_MASTER_DICTIONARY[trimmed];
+  if (direct) {
+    keys.add(String(direct.id));
+    if (direct.slug) keys.add(String(direct.slug).toLowerCase());
+  } else {
+    const bySlugOrName = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+      (i: any) => String(i.slug || '').toLowerCase() === clean || String(i.name || '') === trimmed
+    );
+    if (bySlugOrName) {
+      keys.add(String((bySlugOrName as any).id));
+      if ((bySlugOrName as any).slug) keys.add(String((bySlugOrName as any).slug).toLowerCase());
+    }
+  }
+
+  return Array.from(keys);
+}
+
 export default function AdminWifiManagement({ password }: AdminWifiManagementProps) {
   const [selectedIslandId, setSelectedIslandId] = useState<string>('hachijojima');
   const [spots, setSpots] = useState<PublicWifiSpot[]>([]);
@@ -56,9 +99,15 @@ export default function AdminWifiManagement({ password }: AdminWifiManagementPro
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
 
+      const notesMap: Record<string, string> = data.cell_notes || {};
       setSpots(data.spots || []);
-      setCellNotes(data.cell_notes || {});
-      setCurrentCellNote(data.cell_notes?.[selectedIslandId] || '');
+      setCellNotes(notesMap);
+      const aliasKeys = getIslandAliasKeys(selectedIslandId);
+      const resolvedNote =
+        aliasKeys.map((k) => notesMap[k]).find((v) => v !== undefined) ??
+        notesMap[selectedIslandId] ??
+        '';
+      setCurrentCellNote(resolvedNote);
     } catch (err: any) {
       toast.error(`データ取得に失敗しました: ${err.message}`);
     } finally {
@@ -195,7 +244,16 @@ export default function AdminWifiManagement({ password }: AdminWifiManagementPro
     () =>
       Object.values(ALL_ISLANDS_MASTER_DICTIONARY)
         .filter((i: any) => i.is_published !== false)
-        .sort((a: any, b: any) => Number(a.id) - Number(b.id)),
+        .sort((a: any, b: any) => {
+          const numA = Number(a.id);
+          const numB = Number(b.id);
+          const validA = !Number.isNaN(numA);
+          const validB = !Number.isNaN(numB);
+          if (validA && validB) return numA - numB;
+          if (validA) return -1;
+          if (validB) return 1;
+          return String(a.id).localeCompare(String(b.id), 'ja');
+        }),
     []
   );
 

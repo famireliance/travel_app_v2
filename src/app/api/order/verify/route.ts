@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getStripeConfig } from '@/lib/stripeConfig';
-
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 export async function GET(req: NextRequest) {
   const sessionId = req.nextUrl.searchParams.get('session_id');
@@ -20,46 +18,113 @@ export async function GET(req: NextRequest) {
     }
 
     const meta = session.metadata || {};
+    const deterministicSuffix = sessionId.replace(/[^a-zA-Z0-9]/g, '').slice(-8).toUpperCase() || 'VERIFIED';
 
-    // シリアルナンバーの最終確定
+    // シリアルナンバー・注文番号の確定（リロードしても同一の番号を再利用）
     const islandKey = (meta.island_id || meta.island_name || 'ISL').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6) || 'ISL';
-    const finalSerial = meta.pending_serial || `KT-${new Date().getFullYear()}-${islandKey}-${Date.now().toString(36).toUpperCase().slice(-4)}`;
+    const sessionYear = session.created ? new Date(session.created * 1000).getFullYear() : new Date().getFullYear();
+    let finalSerial = meta.pending_serial || `KT-${sessionYear}-${islandKey}-${deterministicSuffix.slice(-4)}`;
+    let finalOrderNumber = meta.order_number || `ORD-${deterministicSuffix}`;
 
-    // DBのステータスを ordered に更新（physical_orders と orders の両方を更新）
-    if (SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    // DBの既存注文番号を再利用しつつステータスを ordered に更新
+    if (supabaseUrl && serviceRoleKey && !serviceRoleKey.startsWith('REPLACE')) {
       try {
-        const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+        const adminClient = createClient(supabaseUrl, serviceRoleKey, {
           auth: { autoRefreshToken: false, persistSession: false }
         });
-        // 1. physical_orders テーブルの更新（メイン管理テーブル）
-        await adminClient.from('physical_orders')
-          .update({
-            status: 'ordered',
-            stripe_payment_intent: typeof session.payment_intent === 'string' ? session.payment_intent : '',
-          })
-          .eq('stripe_session_id', sessionId);
 
-        // 2. 旧 orders テーブル（存在する場合）の互換更新
-        await adminClient.from('orders')
-          .update({
-            status: 'paid',
+        const paymentIntentId = typeof session.payment_intent === 'string' ? session.payment_intent : '';
+
+        // 1. physical_orders の確認と更新
+        let hasPhysicalRow = false;
+        const { data: existingPhys, error: physSelectErr } = await adminClient
+          .from('physical_orders')
+          .select('id, status')
+          .eq('stripe_session_id', sessionId)
+          .maybeSingle();
+
+        if (!physSelectErr && existingPhys) {
+          hasPhysicalRow = true;
+          if (existingPhys.status === 'pending_payment') {
+            await adminClient
+              .from('physical_orders')
+              .update({
+                status: 'ordered',
+                stripe_payment_intent: paymentIntentId,
+              })
+              .eq('id', existingPhys.id);
+          }
+        }
+
+        // 2. orders テーブルの確認・order_number 再利用・フォールバック作成
+        const { data: existingLegacy, error: legSelectErr } = await adminClient
+          .from('orders')
+          .select('id, order_number, serial_number, status')
+          .eq('stripe_session_id', sessionId)
+          .maybeSingle();
+
+        if (!legSelectErr && existingLegacy) {
+          if (existingLegacy.order_number) {
+            finalOrderNumber = existingLegacy.order_number;
+          }
+          if (existingLegacy.serial_number) {
+            finalSerial = existingLegacy.serial_number;
+          }
+          if (existingLegacy.status === 'pending_payment') {
+            await adminClient
+              .from('orders')
+              .update({
+                status: 'ordered',
+                serial_number: finalSerial,
+                stripe_payment_intent: paymentIntentId,
+                paid_at: new Date().toISOString(),
+              })
+              .eq('id', existingLegacy.id);
+          }
+        } else if (!hasPhysicalRow) {
+          // physical_orders が存在せず orders にも未登録だった場合は確定レコードを作成
+          const formattedAddress = `${meta.country && meta.country !== 'Japan' ? `[${meta.country}] ` : ''}〒${meta.postal_code || ''} ${meta.address || ''}${meta.phone ? ` (TEL: ${meta.phone})` : ''}`.trim();
+          await adminClient.from('orders').insert([{
+            order_number: finalOrderNumber,
             serial_number: finalSerial,
-            stripe_payment_intent: typeof session.payment_intent === 'string' ? session.payment_intent : '',
-            paid_at: new Date().toISOString(),
-          })
-          .eq('stripe_session_id', sessionId);
-      } catch {
-        // テーブルが存在しない等のエラーは許容
+            stripe_session_id: sessionId,
+            ...(meta.user_id && meta.user_id !== 'anonymous' ? { user_id: meta.user_id } : {}),
+            island_id: meta.island_id || 'unknown',
+            island_name: ALL_ISLANDS_MASTER_DICTIONARY[meta.island_id || '']?.name || meta.island_name || meta.island_id || 'unknown',
+            plan: meta.plan || 'standard',
+            traveler_name: meta.traveler_name || '',
+            recipient_name: meta.recipient_name || '',
+            address: formattedAddress,
+            visit_date: meta.visit_date || new Date().toISOString().slice(0, 10),
+            status: 'ordered',
+            created_at: new Date().toISOString(),
+          }]);
+        }
+      } catch (dbErr) {
+        console.warn('Order verify DB sync warning:', dbErr);
       }
     }
 
+    const resolvedIslandName =
+      (meta.island_id && ALL_ISLANDS_MASTER_DICTIONARY[meta.island_id]?.name) ||
+      meta.island_name ||
+      meta.island_id ||
+      '';
+
     return NextResponse.json({
       success: true,
-      orderNumber: `ORD-${Date.now().toString(36).toUpperCase()}`,
+      orderNumber: finalOrderNumber,
       serialNumber: finalSerial,
-      islandName: meta.island_name || meta.island_id,
+      islandId: meta.island_id || '',
+      islandName: resolvedIslandName,
       travelerName: meta.traveler_name,
-      plan: meta.plan,
+      plan: meta.plan || 'standard',
+      design: meta.design || 'horizontal',
+      laminated: meta.laminated === 'true',
+      country: meta.country || 'Japan',
       amount: session.amount_total,
     });
 

@@ -14,8 +14,18 @@ export async function GET(req: NextRequest) {
 
   try {
     const { stripe } = await getStripeConfig();
-    const promotionCodes = await stripe.promotionCodes.list({ limit: 100, active: true });
-    return NextResponse.json({ coupons: promotionCodes.data });
+    const promotionCodes = await stripe.promotionCodes.list({
+      limit: 100,
+      active: true,
+      expand: ['data.promotion.coupon'],
+    });
+    const coupons = promotionCodes.data.map((c) => {
+      const resolvedCoupon =
+        (c as any).coupon ||
+        (typeof (c as any).promotion?.coupon === 'object' ? (c as any).promotion.coupon : null);
+      return { ...c, coupon: resolvedCoupon };
+    });
+    return NextResponse.json({ coupons });
   } catch (err: any) {
     return NextResponse.json({ error: err.message }, { status: 500 });
   }
@@ -54,11 +64,10 @@ export async function POST(req: NextRequest) {
 
     const coupon = await stripe.coupons.create(couponParams);
 
-    // 2. Promotion Code を作成して紐付け
+    // 2. Promotion Code を作成して紐付け (Stripe v22 dahlia API 対応)
     const promotionCode = await stripe.promotionCodes.create({
-      // @ts-ignore
-      coupon: coupon.id,
-      code: code,
+      promotion: { type: 'coupon', coupon: coupon.id },
+      code: String(code).trim(),
     });
 
     return NextResponse.json({ success: true, promotionCode });

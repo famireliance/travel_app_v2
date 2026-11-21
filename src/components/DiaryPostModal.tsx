@@ -53,6 +53,7 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
         const options = {
           maxSizeMB: 1,
           maxWidthOrHeight: 1200,
+          fileType: 'image/jpeg',
           useWebWorker: true,
         };
         const compressedFile = await imageCompression(file, options);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -138,7 +139,10 @@ export async function GET(req: NextRequest) {
     let query = adminClient.from('islands').select('*', { count: 'exact' });
 
     if (search) {
-      query = query.or(`name.ilike.%${search}%,prefecture.ilike.%${search}%,region_id.ilike.%${search}%`);
+      const cleanSearch = search.replace(/[,()*%\\'"]/g, '').trim();
+      if (cleanSearch) {
+        query = query.or(`name.ilike.%${cleanSearch}%,prefecture.ilike.%${cleanSearch}%,region_id.ilike.%${cleanSearch}%`);
+      }
     }
 
     const { data, count, error } = await query
@@ -152,6 +156,11 @@ export async function GET(req: NextRequest) {
   } catch (error: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
+}
+
+function extractMissingColumn(errMsg: string): string | null {
+  const m = errMsg.match(/'([^']+)' column|column "([^"]+)"/i);
+  return m ? (m[1] || m[2] || null) : null;
 }
 
 export async function POST(req: NextRequest) {
@@ -169,18 +178,36 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const insertPayload = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const insertPayload: Record<string, any> = {
       id: body.id || `island_${Date.now()}`,
       ...buildDbPayload(body, {}),
     };
 
-    const { data, error } = await adminClient
-      .from('islands')
-      .insert([insertPayload])
-      .select()
-      .single();
+    let data: any = null;
+    let lastError: any = null;
 
-    if (error) throw error;
+    for (let attempt = 0; attempt < 6; attempt++) {
+      const res = await adminClient
+        .from('islands')
+        .insert([insertPayload])
+        .select()
+        .single();
+      if (!res.error) {
+        data = res.data;
+        lastError = null;
+        break;
+      }
+      lastError = res.error;
+      const missingCol = extractMissingColumn(String(res.error.message || ''));
+      if (missingCol && missingCol !== 'id' && missingCol in insertPayload) {
+        delete insertPayload[missingCol];
+        continue;
+      }
+      break;
+    }
+
+    if (lastError) throw lastError;
 
     return NextResponse.json({ message: '島データを追加しました', data: normalizeIslandRowForAdmin(data) });
   } catch (error: any) {
@@ -209,27 +236,108 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: '更新対象のIDが必要です' }, { status: 400 });
     }
 
+    const idStr = String(id);
     const { data: existingRow } = await adminClient
       .from('islands')
-      .select('practical_info')
-      .eq('id', id)
-      .single();
+      .select('id, practical_info')
+      .eq('id', idStr)
+      .maybeSingle();
 
     const existingPractical =
       existingRow?.practical_info && typeof existingRow.practical_info === 'object'
         ? existingRow.practical_info
         : {};
 
-    const updatePayload = buildDbPayload(body, existingPractical);
+    let data: any = null;
+    let lastError: any = null;
 
-    const { data, error } = await adminClient
-      .from('islands')
-      .update(updatePayload)
-      .eq('id', id)
-      .select()
-      .single();
+    if (existingRow) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const updatePayload: Record<string, any> = buildDbPayload(body, existingPractical);
 
-    if (error) throw error;
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const res = await adminClient
+          .from('islands')
+          .update(updatePayload)
+          .eq('id', idStr)
+          .select()
+          .single();
+        if (!res.error) {
+          data = res.data;
+          lastError = null;
+          break;
+        }
+        lastError = res.error;
+        const missingCol = extractMissingColumn(String(res.error.message || ''));
+        if (missingCol && missingCol !== 'id' && missingCol in updatePayload) {
+          delete updatePayload[missingCol];
+          continue;
+        }
+        break;
+      }
+    } else {
+      // Row missing in public.islands — seed from ALL_ISLANDS_MASTER_DICTIONARY and upsert
+      const master =
+        ALL_ISLANDS_MASTER_DICTIONARY[idStr] ||
+        Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+          (m: any) => String(m.id) === idStr || String(m.slug || '') === idStr
+        );
+      const masterDiff = parseDifficultyInt(body.difficulty ?? master?.difficulty);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const seedPayload: Record<string, any> = master
+        ? {
+            id: String(master.id),
+            name: master.name,
+            region_id: master.region_id,
+            prefecture: master.prefecture,
+            coordinates: master.coordinates || '',
+            description: master.description || '',
+            access: master.access || '',
+            difficulty: masterDiff.difficulty,
+            difficulty_name: masterDiff.difficulty_name,
+            points: Number(master.points) || 10,
+            checkin_radius_m: Number(master.checkin_radius_m) || 3000,
+            is_published: master.is_published !== false,
+            slug: master.slug || String(master.id),
+            ...buildDbPayload(body, {}),
+          }
+        : {
+            id: idStr,
+            name: body.name || idStr,
+            region_id: body.region_id || 'other',
+            prefecture: body.prefecture || '',
+            coordinates: body.coordinates || '',
+            description: body.description || '',
+            access: body.access || '',
+            difficulty: masterDiff.difficulty,
+            difficulty_name: masterDiff.difficulty_name,
+            points: Number(body.points) || 10,
+            checkin_radius_m: Number(body.checkin_radius_m) || 3000,
+            ...buildDbPayload(body, {}),
+          };
+
+      for (let attempt = 0; attempt < 6; attempt++) {
+        const res = await adminClient
+          .from('islands')
+          .upsert(seedPayload, { onConflict: 'id' })
+          .select()
+          .single();
+        if (!res.error) {
+          data = res.data;
+          lastError = null;
+          break;
+        }
+        lastError = res.error;
+        const missingCol = extractMissingColumn(String(res.error.message || ''));
+        if (missingCol && missingCol !== 'id' && missingCol in seedPayload) {
+          delete seedPayload[missingCol];
+          continue;
+        }
+        break;
+      }
+    }
+
+    if (lastError) throw lastError;
 
     return NextResponse.json({ message: '島データ・現地写真を保存しました', data: normalizeIslandRowForAdmin(data) });
   } catch (error: any) {

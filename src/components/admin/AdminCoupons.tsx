@@ -141,7 +141,14 @@ export default function AdminCoupons({ password }: { password: string }) {
                 <tr key={c.id} className="hover:bg-gray-750">
                   <td className="p-3 font-bold text-white tracking-widest">{c.code}</td>
                   <td className="p-3">
-                    {c.coupon.percent_off ? `${c.coupon.percent_off}% OFF` : `¥${c.coupon.amount_off} OFF`}
+                    {c.coupon?.percent_off != null
+                      ? `${c.coupon.percent_off}% OFF`
+                      : c.coupon?.amount_off != null
+                        ? `¥${Number(c.coupon.amount_off).toLocaleString()} OFF`
+                        : '-'}
+                    {c.coupon?.duration ? (
+                      <span className="ml-1.5 text-xs text-gray-400">({c.coupon.duration})</span>
+                    ) : null}
                   </td>
                   <td className="p-3">
                     <span className={`px-2 py-1 rounded text-xs ${c.active ? 'bg-green-900 text-green-300' : 'bg-gray-600 text-gray-300'}`}>
@@ -149,7 +156,7 @@ export default function AdminCoupons({ password }: { password: string }) {
                     </span>
                   </td>
                   <td className="p-3">
-                    {new Date(c.created * 1000).toLocaleDateString('ja-JP')}
+                    {c.created ? new Date(c.created * 1000).toLocaleDateString('ja-JP') : '-'}
                   </td>
                 </tr>
               ))}

@@ -27,7 +27,7 @@ export default function BizPortalLogin() {
     }
 
     // Role check (in a real app, this should ideally be checked at the server or layout level as well)
-    const { data: profile } = await supabase.from('user_profiles').select('role').eq('id', data.user.id).single();
+    const { data: profile } = await supabase.from('user_profiles').select('role').eq('id', data.user.id).maybeSingle();
     
     // 厳格なアクセス制限 (CMSやオーナー以外は弾く)
     if (profile?.role !== 'owner' && profile?.role !== 'super_admin') {

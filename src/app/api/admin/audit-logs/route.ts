@@ -25,7 +25,8 @@ export async function GET(req: NextRequest) {
       action,
       island_id,
       search,
-      org_id: user.role !== 'super_admin' ? user.org_id : undefined
+      org_id: user.role !== 'super_admin' ? user.org_id : undefined,
+      org_name: user.role !== 'super_admin' ? user.org_name : undefined,
     });
 
     return NextResponse.json(result);
@@ -50,9 +51,11 @@ export async function POST(req: NextRequest) {
     const log = await logAuditEvent({
       actor: { 
         user_id: user.id,
+        email: user.email,
         role: user.role, 
         name: user.name, 
-        org: user.org_name || 'System'
+        org: user.org_name || 'System',
+        org_id: user.org_id,
       },
       client,
       action: body.action || 'CUSTOM_ADMIN_ACTION',

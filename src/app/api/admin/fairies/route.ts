@@ -11,6 +11,24 @@ async function verifyAuth(req: NextRequest) {
   return !!user;
 }
 
+interface FallbackFairiesState {
+  added: any[];
+  updated: Record<string, any>;
+  deleted: string[];
+}
+
+async function loadFallbackFairiesState(): Promise<FallbackFairiesState> {
+  const raw = await getFallbackJson<any>('fallback_fairies', { added: [], updated: {}, deleted: [] });
+  if (Array.isArray(raw)) {
+    return { added: raw, updated: {}, deleted: [] };
+  }
+  return {
+    added: Array.isArray(raw?.added) ? raw.added : [],
+    updated: raw?.updated && typeof raw.updated === 'object' ? raw.updated : {},
+    deleted: Array.isArray(raw?.deleted) ? raw.deleted : [],
+  };
+}
+
 export async function GET(req: NextRequest) {
   if (!await verifyAuth(req)) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
@@ -34,16 +52,18 @@ export async function GET(req: NextRequest) {
     }
 
     const { data, count, error } = await query;
-    if (!error && data && data.length > 0) {
+    if (!error && Array.isArray(data) && data.length > 0) {
       return NextResponse.json({ data, count });
     }
-  } catch {}
+  } catch {
+    // standalone fairies table does not exist — fallback below
+  }
 
   // DBテーブル未作成時は FAIRIES_MASTER + fallback_fairies にフォールバック
   try {
     const [{ FAIRIES_MASTER }, customState] = await Promise.all([
       import('@/lib/fairies'),
-      getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] })
+      loadFallbackFairiesState()
     ]);
 
     const deletedSet = new Set(customState.deleted || []);
@@ -51,27 +71,50 @@ export async function GET(req: NextRequest) {
       .filter(f => !deletedSet.has(f.id))
       .map(f => {
         const ov = customState.updated?.[f.id] || {};
+        const photoUrl = ov.custom_photo_url ?? ov.image_url ?? (f.visual.imageUrl || '');
         return {
+          ...ov,
           id: f.id,
-          fairy_key: f.id,
+          fairy_key: ov.fairy_key ?? f.id,
           name: ov.name ?? f.name,
           theme: ov.theme ?? f.theme,
           island_id: ov.island_id ?? (f.island_id || ''),
           region_id: ov.region_id ?? (f.region_id || ''),
           rarity: ov.rarity ?? f.rarity,
           attribute: ov.attribute ?? f.attribute,
+          collab_sponsor: ov.collab_sponsor ?? '',
           icon: ov.icon ?? f.visual.icon,
-          image_url: ov.image_url ?? ov.custom_photo_url ?? (f.visual.imageUrl || ''),
-          custom_photo_url: ov.custom_photo_url ?? ov.image_url ?? (f.visual.imageUrl || ''),
+          image_url: ov.image_url ?? photoUrl,
+          custom_photo_url: ov.custom_photo_url ?? photoUrl,
           description: ov.description ?? f.description,
           color_from: ov.color_from ?? f.visual.colorFrom,
           color_to: ov.color_to ?? f.visual.colorTo,
           shadow_color: ov.shadow_color ?? f.visual.shadowColor,
           sparkle_color: ov.sparkle_color ?? f.visual.sparkleColor,
+          is_time_limited: ov.is_time_limited ?? false,
+          start_date: ov.start_date ?? '',
+          end_date: ov.end_date ?? '',
+          checkin_radius_m: ov.checkin_radius_m ?? 0,
+          is_qr_exclusive: ov.is_qr_exclusive ?? false,
         };
       });
 
-    const addedList = (customState.added || []).filter((f: any) => !deletedSet.has(f.id));
+    const addedList = (customState.added || [])
+      .filter((f: any) => f && !deletedSet.has(f.id) && !deletedSet.has(f.fairy_key))
+      .map((f: any) => {
+        const fid = f.id || f.fairy_key;
+        const ov = (fid && customState.updated?.[fid]) || {};
+        const merged = { ...f, ...ov };
+        const photoUrl = merged.custom_photo_url || merged.image_url || '';
+        return {
+          ...merged,
+          id: fid,
+          fairy_key: merged.fairy_key || fid,
+          image_url: merged.image_url || photoUrl,
+          custom_photo_url: merged.custom_photo_url || photoUrl,
+        };
+      });
+
     let combined = [...addedList, ...baseFormatted];
 
     if (search) {
@@ -79,7 +122,9 @@ export async function GET(req: NextRequest) {
       combined = combined.filter(f =>
         (f.name || '').toLowerCase().includes(q) ||
         (f.theme || '').toLowerCase().includes(q) ||
-        (f.island_id && f.island_id.toLowerCase().includes(q))
+        (f.fairy_key || '').toLowerCase().includes(q) ||
+        (f.description || '').toLowerCase().includes(q) ||
+        (f.island_id && String(f.island_id).toLowerCase().includes(q))
       );
     }
 
@@ -111,14 +156,22 @@ export async function POST(req: NextRequest) {
       .single();
 
     if (error) {
-      const customState = await getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] });
+      const customState = await loadFallbackFairiesState();
+      const resolvedId = String(body.id || body.fairy_key || `fairy_${Date.now()}`);
+      const resolvedKey = String(body.fairy_key || resolvedId);
       const newFairy = {
-        id: body.id || body.fairy_key || `fairy_${Date.now()}`,
-        fairy_key: body.fairy_key || body.id || `fairy_${Date.now()}`,
         ...body,
-        created_at: new Date().toISOString()
+        id: resolvedId,
+        fairy_key: resolvedKey,
+        image_url: body.image_url || body.custom_photo_url || '',
+        custom_photo_url: body.custom_photo_url || body.image_url || '',
+        created_at: new Date().toISOString(),
       };
-      customState.added = [newFairy, ...(customState.added || [])];
+      customState.deleted = (customState.deleted || []).filter((d) => d !== resolvedId && d !== resolvedKey);
+      customState.added = [
+        newFairy,
+        ...(customState.added || []).filter((f: any) => f.id !== resolvedId && f.fairy_key !== resolvedKey),
+      ];
       await setFallbackJson('fallback_fairies', customState);
       return NextResponse.json({ message: '妖精データを追加しました', data: newFairy });
     }
@@ -158,13 +211,24 @@ export async function PUT(req: NextRequest) {
       .single();
 
     if (error) {
-      const customState = await getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] });
-      const addedIdx = (customState.added || []).findIndex((f: any) => f.id === id);
+      const customState = await loadFallbackFairiesState();
+      const addedIdx = (customState.added || []).findIndex(
+        (f: any) => f.id === id || f.fairy_key === id
+      );
       if (addedIdx !== -1) {
-        customState.added[addedIdx] = { ...customState.added[addedIdx], ...updates };
+        customState.added[addedIdx] = {
+          ...customState.added[addedIdx],
+          ...updates,
+          id: customState.added[addedIdx].id || id,
+          updated_at: new Date().toISOString(),
+        };
       } else {
         customState.updated = customState.updated || {};
-        customState.updated[id] = { ...(customState.updated[id] || {}), ...updates };
+        customState.updated[id] = {
+          ...(customState.updated[id] || {}),
+          ...updates,
+          updated_at: new Date().toISOString(),
+        };
       }
       await setFallbackJson('fallback_fairies', customState);
       return NextResponse.json({ message: '妖精データを更新しました', data: { id, ...updates } });
@@ -203,8 +267,10 @@ export async function DELETE(req: NextRequest) {
       .eq('id', id);
 
     if (error) {
-      const customState = await getFallbackJson<{ added: any[]; updated: Record<string, any>; deleted: string[] }>('fallback_fairies', { added: [], updated: {}, deleted: [] });
-      customState.added = (customState.added || []).filter((f: any) => f.id !== id);
+      const customState = await loadFallbackFairiesState();
+      customState.added = (customState.added || []).filter(
+        (f: any) => f.id !== id && f.fairy_key !== id
+      );
       customState.deleted = Array.from(new Set([...(customState.deleted || []), id]));
       await setFallbackJson('fallback_fairies', customState);
       return NextResponse.json({ message: '妖精データを削除しました' });

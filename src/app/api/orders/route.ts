@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 function normalizeUserOrder(o: any, shippingOv: Record<string, any> = {}) {
   const ov = shippingOv[o.id] || {};
@@ -17,12 +15,18 @@ function normalizeUserOrder(o: any, shippingOv: Record<string, any> = {}) {
   }
   const rawStatus = ov.status ?? o.status ?? 'ordered';
   const normalizedStatus = (rawStatus === 'paid' || rawStatus === 'received') ? 'ordered' : rawStatus;
+  const islandName =
+    (o.island_id && ALL_ISLANDS_MASTER_DICTIONARY[String(o.island_id)]?.name) ||
+    o.island_name ||
+    o.island_id ||
+    '';
 
   return {
     ...o,
     id: o.id,
     user_id: o.user_id,
     island_id: o.island_id,
+    island_name: islandName,
     type: o.type || o.plan || 'standard',
     shipping_name: ov.shipping_name ?? o.shipping_name ?? o.recipient_name ?? o.traveler_name ?? '',
     shipping_postal_code: postal,
@@ -35,7 +39,14 @@ function normalizeUserOrder(o: any, shippingOv: Record<string, any> = {}) {
 
 export async function GET(req: NextRequest) {
   try {
-    const anonClient = createClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    const anonClient = createClient(supabaseUrl, supabaseAnonKey);
     const { data: { user }, error: authError } = await anonClient.auth.getUser(
       req.headers.get('authorization')?.replace('Bearer ', '') || ''
     );
@@ -43,34 +54,42 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'ログインが必要です' }, { status: 401 });
     }
 
-    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
     const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
 
-    const { data: orders, error } = await adminClient
-      .from('physical_orders')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('ordered_at', { ascending: false });
-
-    if (error) {
-      const { data: fallbackOrders, error: fbError } = await adminClient
+    const [{ data: physOrders, error: physError }, { data: fallbackOrders, error: fbError }] = await Promise.all([
+      adminClient
+        .from('physical_orders')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('ordered_at', { ascending: false }),
+      adminClient
         .from('orders')
         .select('*')
         .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-      if (fbError) {
-        return NextResponse.json({ orders: [] });
-      }
-      return NextResponse.json({
-        orders: (fallbackOrders || []).map(o => normalizeUserOrder(o, shippingOv))
-      });
+        .order('created_at', { ascending: false }),
+    ]);
+
+    if (physError && fbError) {
+      return NextResponse.json({ orders: [] });
     }
 
+    const combined = [...(physOrders || []), ...(fallbackOrders || [])];
+    const seenSession = new Set<string>();
+    const seenId = new Set<string>();
+    const merged = combined.filter((o) => {
+      if (o.id && seenId.has(o.id)) return false;
+      if (o.stripe_session_id && seenSession.has(o.stripe_session_id)) return false;
+      if (o.id) seenId.add(o.id);
+      if (o.stripe_session_id) seenSession.add(o.stripe_session_id);
+      return true;
+    });
+
     return NextResponse.json({
-      orders: (orders || []).map(o => normalizeUserOrder(o, shippingOv))
+      orders: merged.map(o => normalizeUserOrder(o, shippingOv))
     });
   } catch (err) {
     return NextResponse.json({ error: 'サーバーエラーが発生しました' }, { status: 500 });
@@ -79,7 +98,14 @@ export async function GET(req: NextRequest) {
 
 export async function PUT(req: NextRequest) {
   try {
-    const anonClient = createClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    const anonClient = createClient(supabaseUrl, supabaseAnonKey);
     const { data: { user }, error: authError } = await anonClient.auth.getUser(
       req.headers.get('authorization')?.replace('Bearer ', '') || ''
     );
@@ -94,7 +120,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: '必須項目が入力されていません' }, { status: 400 });
     }
 
-    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, {
+    const adminClient = createClient(supabaseUrl, supabaseServiceKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 

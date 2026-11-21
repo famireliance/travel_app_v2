@@ -141,9 +141,13 @@ const RARITIES: { key: FairyRarity; label: string; badge: string }[] = [
 
 type CardGridSize = 'sm' | 'md' | 'lg';
 
-export default function FairyGalleryClient({ discoveredImages = [] }: FairyGalleryClientProps) {
+export default function FairyGalleryClient({ discoveredImages: _discoveredImages = [] }: FairyGalleryClientProps) {
   const router = useRouter();
-  const { collectedFairies, user } = useTravel();
+  const { collectedFairies, user, allFairies } = useTravel();
+  const fairiesList = useMemo(
+    () => (allFairies && allFairies.length > 0 ? allFairies : FAIRIES_MASTER),
+    [allFairies]
+  );
 
   // 言語ステート (ja / en)
   const [lang, setLang] = useState<'ja' | 'en'>('ja');
@@ -166,16 +170,16 @@ export default function FairyGalleryClient({ discoveredImages = [] }: FairyGalle
   const [viewerFairyId, setViewerFairyId] = useState<string | null>(null);
 
   // 統計情報
-  const totalCount = FAIRIES_MASTER.length;
+  const totalCount = fairiesList.length;
   const discoveredCount = useMemo(() => {
-    return FAIRIES_MASTER.filter(fairy => collectedFairies.includes(fairy.id)).length;
-  }, [collectedFairies]);
+    return fairiesList.filter(fairy => collectedFairies.includes(fairy.id)).length;
+  }, [fairiesList, collectedFairies]);
 
   const progressPercent = Math.round((discoveredCount / (totalCount || 1)) * 100);
 
   // フィルタリング処理
   const filteredFairies = useMemo(() => {
-    return FAIRIES_MASTER.filter(fairy => {
+    return fairiesList.filter(fairy => {
       // 1. レアリティフィルター
       if (filterRarity !== 'ALL' && fairy.rarity !== filterRarity) return false;
 
@@ -208,7 +212,7 @@ export default function FairyGalleryClient({ discoveredImages = [] }: FairyGalle
 
       return true;
     });
-  }, [filterRarity, filterAttribute, filterStatus, searchQuery, collectedFairies]);
+  }, [fairiesList, filterRarity, filterAttribute, filterStatus, searchQuery, collectedFairies]);
 
   // フィルターリセット
   const handleResetFilters = () => {
@@ -578,7 +582,7 @@ export default function FairyGalleryClient({ discoveredImages = [] }: FairyGalle
 
       {/* 6. 特大3Dカード鑑賞モード（Viewer） */}
       <FairyCardViewerModal
-        fairies={filteredFairies.length > 0 ? filteredFairies : FAIRIES_MASTER}
+        fairies={filteredFairies.length > 0 ? filteredFairies : fairiesList}
         currentFairyId={viewerFairyId}
         isOpen={Boolean(viewerFairyId)}
         isRevealed={previewAll || (viewerFairyId ? collectedFairies.includes(viewerFairyId) : false)}

@@ -12,8 +12,10 @@
 | **全国離島マップ（2D）** | [https://island.kira-tabi.com/map](https://island.kira-tabi.com/map) | 全国481島ピン表示・現在地GPS到達チェックイン |
 | **3D地球儀モード** | [https://island.kira-tabi.com/globe](https://island.kira-tabi.com/globe) | 3Dグローブでの日本の離島俯瞰ビュー |
 | **全国離島一覧ディレクトリ** | [https://island.kira-tabi.com/islands](https://island.kira-tabi.com/islands) | 全481島（制覇対象369島＋制限・参照112島）のエリア別一覧 |
-| **各離島 詳細ページ（全369島）** | `https://island.kira-tabi.com/island/[スラッグまたはID]`<br>例: [https://island.kira-tabi.com/island/hachijojima](https://island.kira-tabi.com/island/hachijojima)<br>例: [https://island.kira-tabi.com/island/ishigakijima](https://island.kira-tabi.com/island/ishigakijima)<br>例: [https://island.kira-tabi.com/island/oujima_nago](https://island.kira-tabi.com/island/oujima_nago) | 各島の現地検証写真・航路・宿・Wi-Fi・天気・島ノート・アフィリエイト導線 |
-| **各諸島エリア特集（全45エリア）** | `https://island.kira-tabi.com/region/[エリアID]` | 諸島ごとの所属離島一覧・エリア解説（下部に全45URL記載） |
+| **各離島 詳細ページ（全369島）** | `https://island.kira-tabi.com/island/[スラッグまたはID]`<br>例: [https://island.kira-tabi.com/island/hachijojima](https://island.kira-tabi.com/island/hachijojima)<br>例: [https://island.kira-tabi.com/island/ishigakijima](https://island.kira-tabi.com/island/ishigakijima)<br>例: [https://island.kira-tabi.com/island/oujima_nago](https://island.kira-tabi.com/island/oujima_nago) | 各島の現地検証写真・航路・宿・Wi-Fi・天気・島ノート・FAQ・アフィリエイト導線 |
+| **都道府県別・離島一覧（全29都道府県）** | `https://island.kira-tabi.com/prefecture/[都道府県スラッグ]`<br>例: [https://island.kira-tabi.com/prefecture/okinawa](https://island.kira-tabi.com/prefecture/okinawa)<br>例: [https://island.kira-tabi.com/prefecture/nagasaki](https://island.kira-tabi.com/prefecture/nagasaki)<br>例: [https://island.kira-tabi.com/prefecture/tokyo](https://island.kira-tabi.com/prefecture/tokyo) | 都道府県ごとの所属離島一覧・出発港/空港・日帰り＆難易度比較表 |
+| **テーマ・検索意図別特集（全11特集）** | `https://island.kira-tabi.com/feature/[特集スラッグ]`<br>例: [https://island.kira-tabi.com/feature/okinawa-daytrip](https://island.kira-tabi.com/feature/okinawa-daytrip)<br>例: [https://island.kira-tabi.com/feature/bridge-islands](https://island.kira-tabi.com/feature/bridge-islands) | 沖縄日帰り離島・橋で車で行ける離島・星空・秘境島などの比較特集LP |
+| **各諸島エリア特集（全45エリア）** | `https://island.kira-tabi.com/region/[エリアID]` | 諸島ごとのインタラクティブ地図＋所属離島比較表・FAQ（下部に全45URL記載） |
 | **AIアイランドホッピング旅程作成** | [https://island.kira-tabi.com/route-planner](https://island.kira-tabi.com/route-planner) | 出発地・日数・希望からAIが現実的な航路プランを生成 |
 | **AI離島コンシェルジュ・相棒** | [https://island.kira-tabi.com/companion](https://island.kira-tabi.com/companion) | 対話型AI相談＆育成コンパニオン |
 | **ご当地妖精図鑑** | [https://island.kira-tabi.com/fairy-gallery](https://island.kira-tabi.com/fairy-gallery) | 全国172体のご当地妖精コレクション図鑑 |
@@ -55,7 +57,7 @@
 
 | 名称 | 本番URL | 用途 |
 | :--- | :--- | :--- |
-| **XMLサイトマップ** | [https://island.kira-tabi.com/sitemap.xml](https://island.kira-tabi.com/sitemap.xml) | Google Search Console 登録用（全390 URL自動生成） |
+| **XMLサイトマップ** | [https://island.kira-tabi.com/sitemap.xml](https://island.kira-tabi.com/sitemap.xml) | Google Search Console 登録用（全468 URL自動生成） |
 | **クローラー制御 (robots.txt)** | [https://island.kira-tabi.com/robots.txt](https://island.kira-tabi.com/robots.txt) | 検索エンジンの巡回許可＆管理パス除外指定 |
 | **PWA Web App Manifest** | [https://island.kira-tabi.com/manifest.json](https://island.kira-tabi.com/manifest.json) | スマホの「ホーム画面に追加」アプリ化定義ファイル |
 

@@ -2,16 +2,23 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
-import { 
-  Loader2, CheckCircle2, User, MapPin, Briefcase, CalendarClock, Plane, 
-  ShieldCheck, ArrowLeft, BedDouble, Info, Check
+import {
+  Loader2,
+  CheckCircle2,
+  User,
+  MapPin,
+  Briefcase,
+  CalendarClock,
+  Plane,
+  ShieldCheck,
+  BedDouble,
+  Info,
 } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 
 export default function CheckinPage() {
   const params = useParams();
-  const router = useRouter();
   const resId = params?.id as string;
 
   const [loading, setLoading] = useState(true);
@@ -25,65 +32,76 @@ export default function CheckinPage() {
     occupation: '',
     age: '',
     previous_location: '',
-    next_location: ''
+    next_location: '',
   });
-  
+
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (resId) {
       loadData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [resId]);
 
   async function loadData() {
     setLoading(true);
-
-    // 1. 予約が存在するか確認
-    const { data: res, error: resError } = await supabase
-      .from('reservations')
-      .select('*, accommodations(name, address)')
-      .eq('id', resId)
-      .single();
-
-    if (resError || !res) {
-      setLoading(false);
-      return;
-    }
-    setReservation(res);
-
-    // 2. 既に台帳が登録されているか確認
-    const { data: existingLedger } = await supabase
-      .from('guest_ledgers')
-      .select('id')
-      .eq('reservation_id', resId)
-      .single();
-
-    if (existingLedger) {
-      setIsCompleted(true);
-      setLoading(false);
-      return;
-    }
-
-    // 3. ログインしている場合、プロフィール情報をオートフィル
-    const { data: { user } } = await supabase.auth.getUser();
-    if (user) {
-      const { data: profile } = await supabase.from('user_profiles').select('nickname').eq('id', user.id).single();
-      if (profile && profile.nickname) {
-        setFormData(prev => ({ 
-          ...prev, 
-          name: profile.nickname,
-          next_location: res.accommodations?.name || ''
-        }));
+    try {
+      // 1. Fetch safe reservation summary via server API (works even without guest login!)
+      const resp = await fetch(`/api/checkin/${encodeURIComponent(resId)}`);
+      if (!resp.ok) {
+        setReservation(null);
+        setLoading(false);
+        return;
       }
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        next_location: res.accommodations?.name || ''
-      }));
-    }
 
-    setLoading(false);
+      const json = await resp.json();
+      const res = json.reservation;
+      if (!res) {
+        setReservation(null);
+        setLoading(false);
+        return;
+      }
+
+      setReservation(res);
+
+      if (json.alreadySubmitted) {
+        setIsCompleted(true);
+        setLoading(false);
+        return;
+      }
+
+      // 2. Autofill nickname if user happens to be logged in
+      let autoName = '';
+      try {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        if (user) {
+          const { data: profile } = await supabase
+            .from('user_profiles')
+            .select('nickname')
+            .eq('id', user.id)
+            .maybeSingle();
+          if (profile?.nickname) {
+            autoName = profile.nickname;
+          }
+        }
+      } catch {
+        // Ignore auth autofill errors for unauthenticated guests
+      }
+
+      setFormData((prev) => ({
+        ...prev,
+        name: autoName || prev.name,
+        next_location: res.accommodations?.name || '',
+      }));
+    } catch (err) {
+      console.error('Checkin load error:', err);
+      setReservation(null);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const validateForm = () => {
@@ -91,10 +109,17 @@ export default function CheckinPage() {
     if (!formData.name.trim()) newErrors.name = '氏名を入力してください';
     if (!formData.address.trim()) newErrors.address = 'ご住所を入力してください';
     if (!formData.occupation.trim()) newErrors.occupation = 'ご職業を入力してください';
-    if (!formData.age || isNaN(Number(formData.age))) newErrors.age = '年齢を正しく入力してください';
-    if (!formData.previous_location.trim()) newErrors.previous_location = '前泊地（前日の宿泊地）を入力してください';
-    if (!formData.next_location.trim()) newErrors.next_location = '次泊地（本日の宿泊地）を入力してください';
-    
+    const ageNum = Number(formData.age);
+    if (!formData.age || Number.isNaN(ageNum) || ageNum < 0 || ageNum > 130) {
+      newErrors.age = '年齢を正しく入力してください';
+    }
+    if (!formData.previous_location.trim()) {
+      newErrors.previous_location = '前泊地（前日の宿泊地）を入力してください';
+    }
+    if (!formData.next_location.trim()) {
+      newErrors.next_location = '次泊地（本日の宿泊地）を入力してください';
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -102,39 +127,65 @@ export default function CheckinPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-    
+
     setSubmitting(true);
-    
-    // ログイン中のユーザー情報を取得
-    const { data: { user } } = await supabase.auth.getUser();
+    try {
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
 
-    const insertData = {
-      reservation_id: resId,
-      accommodation_id: reservation.accommodation_id,
-      guest_id: user?.id || null,
-      name: formData.name,
-      address: formData.address,
-      occupation: formData.occupation,
-      age: parseInt(formData.age),
-      previous_location: formData.previous_location,
-      next_location: formData.next_location
-    };
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          headers.Authorization = `Bearer ${session.access_token}`;
+        }
+      } catch {
+        // Optional auth header
+      }
 
-    const { error } = await supabase.from('guest_ledgers').insert(insertData);
+      const resp = await fetch(`/api/checkin/${encodeURIComponent(resId)}`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          address: formData.address.trim(),
+          occupation: formData.occupation.trim(),
+          age: parseInt(formData.age, 10),
+          previous_location: formData.previous_location.trim(),
+          next_location: formData.next_location.trim(),
+        }),
+      });
 
-    if (error) {
-      alert('登録に失敗しました: ' + error.message);
-      setSubmitting(false);
-    } else {
+      const json = await resp.json().catch(() => ({}));
+      if (!resp.ok || !json.success) {
+        alert('登録に失敗しました: ' + (json.error || resp.statusText));
+        setSubmitting(false);
+        return;
+      }
+
       setIsCompleted(true);
+    } catch (err: any) {
+      alert('登録に失敗しました: ' + (err.message || '通信エラー'));
+      setSubmitting(false);
     }
+  };
+
+  const formatSafeDate = (dateStr?: string | null) => {
+    if (!dateStr) return '-';
+    const d = new Date(dateStr);
+    if (Number.isNaN(d.getTime())) return '-';
+    return d.toLocaleDateString('ja-JP');
   };
 
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-[#F8FAFC] gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-blue-600" />
-        <span className="text-xs text-slate-400 font-bold uppercase tracking-widest">Loading Digital Ledger...</span>
+        <span className="text-xs text-slate-400 font-bold uppercase tracking-widest">
+          Loading Digital Ledger...
+        </span>
       </div>
     );
   }
@@ -148,7 +199,10 @@ export default function CheckinPage() {
           </div>
           <h2 className="text-lg font-bold text-slate-800">該当の予約が見つかりません</h2>
           <p className="text-xs text-slate-500">URLが正しいかご確認ください。</p>
-          <Link href="/" className="inline-block px-5 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-colors">
+          <Link
+            href="/"
+            className="inline-block px-5 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl hover:bg-slate-800 transition-colors"
+          >
             トップページへ戻る
           </Link>
         </div>
@@ -163,7 +217,7 @@ export default function CheckinPage() {
           <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-3xl flex items-center justify-center mx-auto shadow-inner">
             <CheckCircle2 className="w-10 h-10" />
           </div>
-          
+
           <div className="space-y-2">
             <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-[0.65rem] font-bold tracking-wider uppercase inline-block">
               CHECK-IN COMPLETED
@@ -172,7 +226,9 @@ export default function CheckinPage() {
               宿泊台帳の事前登録が完了しました
             </h1>
             <p className="text-slate-600 text-xs md:text-sm leading-relaxed">
-              ご入力いただいた情報は <strong className="text-slate-900">{reservation.accommodations?.name}</strong> へ安全に連携されました。当日はスムーズにチェックインいただけます。
+              ご入力いただいた情報は{' '}
+              <strong className="text-slate-900">{reservation.accommodations?.name}</strong>{' '}
+              へ安全に連携されました。当日はスムーズにチェックインいただけます。
             </p>
           </div>
 
@@ -184,7 +240,8 @@ export default function CheckinPage() {
             <div className="flex justify-between">
               <span className="text-slate-400 font-bold">日程</span>
               <span className="text-slate-800 font-mono">
-                {new Date(reservation.check_in_date).toLocaleDateString('ja-JP')} 〜 {new Date(reservation.check_out_date).toLocaleDateString('ja-JP')}
+                {formatSafeDate(reservation.check_in_date)} 〜{' '}
+                {formatSafeDate(reservation.check_out_date)}
               </span>
             </div>
             <div className="flex justify-between">
@@ -194,14 +251,14 @@ export default function CheckinPage() {
           </div>
 
           <div className="pt-2 flex flex-col sm:flex-row gap-3">
-            <Link 
-              href="/mypage" 
+            <Link
+              href="/mypage"
               className="flex-1 py-3.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs rounded-xl shadow-md transition-colors text-center"
             >
               マイページで予約を確認
             </Link>
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="flex-1 py-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs rounded-xl transition-colors text-center"
             >
               トップへ戻る
@@ -215,7 +272,6 @@ export default function CheckinPage() {
   return (
     <div className="min-h-screen bg-[#F8FAFC] py-10 px-4 font-sans text-slate-800">
       <div className="max-w-xl mx-auto space-y-6">
-        
         {/* Top Header Card */}
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 border border-blue-200 text-blue-800 text-[0.65rem] font-bold uppercase tracking-wider">
@@ -238,19 +294,25 @@ export default function CheckinPage() {
             </div>
             <div>
               <p className="text-xs text-slate-400 font-bold uppercase">宿泊先</p>
-              <h3 className="font-serif font-bold text-sm text-slate-900">{reservation.accommodations?.name}</h3>
+              <h3 className="font-serif font-bold text-sm text-slate-900">
+                {reservation.accommodations?.name}
+              </h3>
             </div>
           </div>
           <div className="text-right">
             <span className="text-[0.65rem] text-slate-400 block font-mono">宿泊人数</span>
-            <span className="font-bold text-xs text-slate-800">{reservation.guest_count} 名様</span>
+            <span className="font-bold text-xs text-slate-800">
+              {reservation.guest_count || 1} 名様
+            </span>
           </div>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden"
+        >
           <div className="p-6 md:p-8 space-y-5">
-            
             {/* 氏名 */}
             <div>
               <label className="flex items-center justify-between text-xs font-bold text-slate-700 mb-1.5">
@@ -258,13 +320,19 @@ export default function CheckinPage() {
                   <User className="w-3.5 h-3.5 text-blue-600" />
                   宿泊代表者 氏名
                 </span>
-                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">必須</span>
+                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">
+                  必須
+                </span>
               </label>
               <input
                 type="text"
                 value={formData.name}
-                onChange={e => setFormData({...formData, name: e.target.value})}
-                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${errors.name ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-slate-50 focus:bg-white'} outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
+                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${
+                  errors.name
+                    ? 'border-rose-400 bg-rose-50/20'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white'
+                } outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
                 placeholder="例: 海島 太郎"
               />
               {errors.name && <p className="text-xs text-rose-500 mt-1">{errors.name}</p>}
@@ -277,13 +345,19 @@ export default function CheckinPage() {
                   <CalendarClock className="w-3.5 h-3.5 text-blue-600" />
                   年齢
                 </span>
-                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">必須</span>
+                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">
+                  必須
+                </span>
               </label>
               <input
                 type="number"
                 value={formData.age}
-                onChange={e => setFormData({...formData, age: e.target.value})}
-                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${errors.age ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-slate-50 focus:bg-white'} outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-mono`}
+                onChange={(e) => setFormData({ ...formData, age: e.target.value })}
+                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${
+                  errors.age
+                    ? 'border-rose-400 bg-rose-50/20'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white'
+                } outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all font-mono`}
                 placeholder="例: 32"
               />
               {errors.age && <p className="text-xs text-rose-500 mt-1">{errors.age}</p>}
@@ -296,13 +370,19 @@ export default function CheckinPage() {
                   <MapPin className="w-3.5 h-3.5 text-blue-600" />
                   ご住所（都道府県・市区町村・番地）
                 </span>
-                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">必須</span>
+                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">
+                  必須
+                </span>
               </label>
               <input
                 type="text"
                 value={formData.address}
-                onChange={e => setFormData({...formData, address: e.target.value})}
-                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${errors.address ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-slate-50 focus:bg-white'} outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
+                onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${
+                  errors.address
+                    ? 'border-rose-400 bg-rose-50/20'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white'
+                } outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
                 placeholder="例: 東京都港区六本木1-2-3"
               />
               {errors.address && <p className="text-xs text-rose-500 mt-1">{errors.address}</p>}
@@ -315,16 +395,24 @@ export default function CheckinPage() {
                   <Briefcase className="w-3.5 h-3.5 text-blue-600" />
                   ご職業
                 </span>
-                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">必須</span>
+                <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">
+                  必須
+                </span>
               </label>
               <input
                 type="text"
                 value={formData.occupation}
-                onChange={e => setFormData({...formData, occupation: e.target.value})}
-                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${errors.occupation ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-slate-50 focus:bg-white'} outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
+                onChange={(e) => setFormData({ ...formData, occupation: e.target.value })}
+                className={`w-full p-3 text-xs md:text-sm rounded-xl border ${
+                  errors.occupation
+                    ? 'border-rose-400 bg-rose-50/20'
+                    : 'border-slate-200 bg-slate-50 focus:bg-white'
+                } outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
                 placeholder="例: 会社員 / 自営業 / 公務員 など"
               />
-              {errors.occupation && <p className="text-xs text-rose-500 mt-1">{errors.occupation}</p>}
+              {errors.occupation && (
+                <p className="text-xs text-rose-500 mt-1">{errors.occupation}</p>
+              )}
             </div>
 
             {/* 前泊地 & 次泊地 */}
@@ -335,37 +423,57 @@ export default function CheckinPage() {
                     <Plane className="w-3.5 h-3.5 text-slate-400" />
                     前泊地（昨日の宿泊地）
                   </span>
-                  <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">必須</span>
+                  <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">
+                    必須
+                  </span>
                 </label>
                 <input
                   type="text"
                   value={formData.previous_location}
-                  onChange={e => setFormData({...formData, previous_location: e.target.value})}
-                  className={`w-full p-3 text-xs md:text-sm rounded-xl border ${errors.previous_location ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-slate-50 focus:bg-white'} outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
+                  onChange={(e) =>
+                    setFormData({ ...formData, previous_location: e.target.value })
+                  }
+                  className={`w-full p-3 text-xs md:text-sm rounded-xl border ${
+                    errors.previous_location
+                      ? 'border-rose-400 bg-rose-50/20'
+                      : 'border-slate-200 bg-slate-50 focus:bg-white'
+                  } outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
                   placeholder="例: 自宅、〇〇ホテル"
                 />
-                {errors.previous_location && <p className="text-xs text-rose-500 mt-1">{errors.previous_location}</p>}
+                {errors.previous_location && (
+                  <p className="text-xs text-rose-500 mt-1">{errors.previous_location}</p>
+                )}
               </div>
 
               <div>
                 <label className="flex items-center justify-between text-xs font-bold text-slate-700 mb-1.5">
                   <span className="flex items-center gap-1.5">
-                    <Plane className="w-3.5 h-3.5 text-slate-400" style={{ transform: 'scaleX(-1)' }} />
+                    <Plane
+                      className="w-3.5 h-3.5 text-slate-400"
+                      style={{ transform: 'scaleX(-1)' }}
+                    />
                     次泊地（本日の宿泊地）
                   </span>
-                  <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">必須</span>
+                  <span className="text-[0.6rem] bg-rose-100 text-rose-700 px-1.5 py-0.5 rounded font-bold">
+                    必須
+                  </span>
                 </label>
                 <input
                   type="text"
                   value={formData.next_location}
-                  onChange={e => setFormData({...formData, next_location: e.target.value})}
-                  className={`w-full p-3 text-xs md:text-sm rounded-xl border ${errors.next_location ? 'border-rose-400 bg-rose-50/20' : 'border-slate-200 bg-slate-50 focus:bg-white'} outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
+                  onChange={(e) => setFormData({ ...formData, next_location: e.target.value })}
+                  className={`w-full p-3 text-xs md:text-sm rounded-xl border ${
+                    errors.next_location
+                      ? 'border-rose-400 bg-rose-50/20'
+                      : 'border-slate-200 bg-slate-50 focus:bg-white'
+                  } outline-none focus:ring-4 focus:ring-blue-100 focus:border-blue-500 transition-all`}
                   placeholder={`例: ${reservation.accommodations?.name}`}
                 />
-                {errors.next_location && <p className="text-xs text-rose-500 mt-1">{errors.next_location}</p>}
+                {errors.next_location && (
+                  <p className="text-xs text-rose-500 mt-1">{errors.next_location}</p>
+                )}
               </div>
             </div>
-
           </div>
 
           {/* Submit Action */}
@@ -375,7 +483,11 @@ export default function CheckinPage() {
               disabled={submitting}
               className="w-full py-4 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-400 text-white font-bold text-sm rounded-2xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 hover:scale-[1.01]"
             >
-              {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
+              {submitting ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-5 h-5" />
+              )}
               台帳を登録して事前チェックインを完了する
             </button>
             <p className="text-[0.7rem] text-slate-400 text-center leading-relaxed">
@@ -383,9 +495,7 @@ export default function CheckinPage() {
             </p>
           </div>
         </form>
-
       </div>
     </div>
   );
 }
-

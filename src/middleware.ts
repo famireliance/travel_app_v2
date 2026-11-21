@@ -102,7 +102,11 @@ export function middleware(req: NextRequest) {
   const isB2BHost = B2B_HOSTS.has(rawHost) || rawHost.startsWith('partner.') || rawHost.startsWith('biz.');
   const isPublicHost = PUBLIC_HOSTS.has(rawHost);
 
-  const isAdminPath = pathname === '/kira-system-panel-9f2' || pathname.startsWith('/kira-system-panel-9f2/');
+  const isManualPath = pathname === '/manual.html' || pathname === '/operation-manual.html';
+  const isAdminPath =
+    pathname === '/kira-system-panel-9f2' ||
+    pathname.startsWith('/kira-system-panel-9f2/') ||
+    isManualPath;
   const isAdminApi = pathname === '/api/admin' || pathname.startsWith('/api/admin/');
   const isB2BPath = pathname === '/biz-portal-secure-8f92a1b3' || pathname.startsWith('/biz-portal-secure-8f92a1b3/');
 
@@ -174,7 +178,7 @@ export function middleware(req: NextRequest) {
         res.cookies.set(VAULT_COOKIE_NAME, VAULT_SECRET_KEY, {
           httpOnly: true,
           secure: true,
-          sameSite: 'strict',
+          sameSite: 'lax',
           path: '/',
           maxAge: 60 * 60 * 24 * 30, // 30日間有効
         });

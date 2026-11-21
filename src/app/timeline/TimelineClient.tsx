@@ -43,7 +43,15 @@ export default function TimelineClient() {
     return diaries.filter(diary => {
       const island = ALL_ISLANDS_MASTER_DICTIONARY[diary.island_id];
       if (selectedPrefecture && island?.prefecture !== selectedPrefecture) return false;
-      if (selectedStyle && diary.companion_type !== selectedStyle) return false;
+      if (selectedStyle) {
+        if (selectedStyle === 'カップル') {
+          if (!diary.companion_type?.includes('カップル')) return false;
+        } else if (selectedStyle === '家族') {
+          if (!diary.companion_type?.includes('家族')) return false;
+        } else if (diary.companion_type !== selectedStyle) {
+          return false;
+        }
+      }
       return true;
     });
   }, [diaries, selectedPrefecture, selectedStyle]);
@@ -226,7 +234,7 @@ export default function TimelineClient() {
                               if (confirm('この投稿を不適切として通報しますか？')) {
                                 try {
                                   const { data: { session } } = await supabase.auth.getSession();
-                                  await fetch('/api/report', {
+                                  const res = await fetch('/api/report', {
                                     method: 'POST',
                                     headers: {
                                       'Content-Type': 'application/json',
@@ -234,8 +242,17 @@ export default function TimelineClient() {
                                     },
                                     body: JSON.stringify({ diary_id: diary.id, reason: 'user_reported' })
                                   });
-                                  toast.success('通報を受理しました。運営チームで確認を行います。');
-                                } catch (err) {}
+                                  if (res.status === 401) {
+                                    toast.error('通報にはログインが必要です');
+                                  } else if (!res.ok) {
+                                    const errData = await res.json().catch(() => ({}));
+                                    toast.error(errData.error || '通報の送信に失敗しました');
+                                  } else {
+                                    toast.success('通報を受理しました。運営チームで確認を行います。');
+                                  }
+                                } catch {
+                                  toast.error('通信エラーが発生しました');
+                                }
                               }
                             }}
                             className="bg-slate-50 text-slate-400 hover:bg-slate-100 px-2 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-colors pointer-events-auto"

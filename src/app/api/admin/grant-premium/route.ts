@@ -52,10 +52,18 @@ export async function POST(req: NextRequest) {
     updateData.ultimate_started_at = ultimate_started_at;
   }
 
-  const { error } = await adminClient
+  let { error } = await adminClient
     .from('user_profiles')
-    .update(updateData)
-    .eq('id', userId);
+    .upsert({ id: userId, ...updateData }, { onConflict: 'id' });
+
+  if (error && 'ultimate_started_at' in updateData) {
+    const fallbackData = { ...updateData };
+    delete fallbackData.ultimate_started_at;
+    const retry = await adminClient
+      .from('user_profiles')
+      .upsert({ id: userId, ...fallbackData }, { onConflict: 'id' });
+    error = retry.error;
+  }
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });

@@ -10,9 +10,6 @@ export async function POST(req: NextRequest) {
   if (!adminUser) {
     return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
   }
-  if (adminUser.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
   if (!SERVICE_ROLE_KEY || SERVICE_ROLE_KEY === 'REPLACE_WITH_YOUR_SERVICE_ROLE_KEY') {
     return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です。.env.local に設定してください。' }, { status: 503 });
   }
@@ -24,7 +21,7 @@ export async function POST(req: NextRequest) {
     auth: { autoRefreshToken: false, persistSession: false }
   });
 
-  const { data, error } = await adminClient.auth.admin.listUsers();
+  const { data, error } = await adminClient.auth.admin.listUsers({ page: 1, perPage: 1000 });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   const user = data.users.find(u => u.email?.toLowerCase() === email.toLowerCase());
@@ -35,7 +32,7 @@ export async function POST(req: NextRequest) {
     .from('user_profiles')
     .select('*')
     .eq('id', user.id)
-    .single();
+    .maybeSingle();
 
   // その人の島訪問数を取得
   const { data: visits } = await adminClient

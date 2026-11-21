@@ -44,13 +44,26 @@ export default function IslandDiaries({
   const fetchDiaries = async () => {
     setLoading(true);
     try {
-      const { data: diaryList, error } = await supabase
+      let diaryList: any[] | null = null;
+      const { data: visibleData, error } = await supabase
         .from('island_diaries')
         .select('*')
         .eq('island_id', islandId)
+        .eq('is_hidden', false)
         .order('created_at', { ascending: false });
 
-      if (error) throw error;
+      if (error) {
+        // Fallback if is_hidden column does not exist yet in DB
+        const { data: fallbackData, error: fallbackError } = await supabase
+          .from('island_diaries')
+          .select('*')
+          .eq('island_id', islandId)
+          .order('created_at', { ascending: false });
+        if (fallbackError) throw fallbackError;
+        diaryList = (fallbackData || []).filter((d: any) => d.is_hidden !== true);
+      } else {
+        diaryList = visibleData || [];
+      }
       
       if (diaryList && diaryList.length > 0) {
         // 投稿者のニックネームを取得

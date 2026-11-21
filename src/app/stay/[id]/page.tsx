@@ -32,7 +32,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 import BookingModal from '@/components/BookingModal';
 import WifiConnectModal from '@/components/WifiConnectModal';
-import { supabase } from '@/lib/supabase';
+import { trackFacilityEvent } from '@/lib/supabase';
 import { getRakutenTravelSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
 import Link from 'next/link';
 
@@ -217,75 +217,133 @@ export default function DedicatedInnPage() {
   const [showCertPreviewModal, setShowCertPreviewModal] = useState(false);
   const [showWifiModal, setShowWifiModal] = useState(false);
 
-  // Supabaseから該当宿の実データをロード
+  // B2B Facility公開APIから該当宿の実データをロード（DEFAULT_FALLBACK_INNはデモIDのみ使用）
   useEffect(() => {
     async function loadInnData() {
       setLoading(true);
       setNotFoundState(false);
+      setActiveImageIndex(0);
       try {
         if (!innParamId) {
-          if (!demoMode) setNotFoundState(true);
+          if (demoMode) {
+            setInn(DEFAULT_FALLBACK_INN);
+          } else {
+            setNotFoundState(true);
+          }
           setLoading(false);
           return;
         }
 
         const cleanId = innParamId.replace(/[^a-zA-Z0-9_\-]/g, '');
         if (!cleanId) {
-          if (!demoMode) setNotFoundState(true);
+          if (demoMode) {
+            setInn(DEFAULT_FALLBACK_INN);
+          } else {
+            setNotFoundState(true);
+          }
           setLoading(false);
           return;
         }
 
-        const { data: accData } = await supabase
-          .from('accommodations')
-          .select('*')
-          .or(`id.eq.${cleanId},owner_id.eq.${cleanId}`)
-          .limit(1)
-          .single();
+        // Explicit demo ID uses demo data directly without polluting real partner inns
+        if (cleanId === 'aogashimaya' || (demoMode && cleanId === 'demo')) {
+          setInn(DEFAULT_FALLBACK_INN);
+          setLoading(false);
+          return;
+        }
+
+        const resp = await fetch(
+          `/api/b2b/facility?id=${encodeURIComponent(cleanId)}&public=1`
+        );
+        const json = resp.ok ? await resp.json() : { accommodation: null };
+        const accData = json?.accommodation || null;
 
         if (accData) {
-          const photos = [
-            ...(accData.photo_exterior || []),
-            ...(accData.photo_room || []),
-            ...(accData.photo_food || []),
-            ...(accData.photo_facility || []),
-            ...(accData.photo_urls || [])
-          ].filter(Boolean);
+          const rawPhotos = [
+            ...(Array.isArray(accData.photo_exterior) ? accData.photo_exterior : []),
+            ...(Array.isArray(accData.photo_room) ? accData.photo_room : []),
+            ...(Array.isArray(accData.photo_food) ? accData.photo_food : []),
+            ...(Array.isArray(accData.photo_facility) ? accData.photo_facility : []),
+            ...(Array.isArray(accData.photo_urls) ? accData.photo_urls : []),
+          ]
+            .map((u: any) => (typeof u === 'string' ? u.trim() : ''))
+            .filter(Boolean);
+          const photos = Array.from(new Set(rawPhotos));
+
+          const realAmenities: AmenityItem[] = [
+            { name: 'エアコン・冷暖房設備', category: 'room', available: true },
+            { name: '入浴・温水シャワー設備', category: 'bath', available: true },
+            { name: 'タオル・基本バスアメニティ', category: 'bath', available: true },
+            ...(accData.has_pickup
+              ? [{ name: '港・空港往復送迎（事前予約制）', category: 'service' as const, available: true }]
+              : []),
+          ];
+
+          const fallbackPlans: PlanItem[] = accData.price_range
+            ? [
+                {
+                  id: 'plan-standard',
+                  name: 'スタンダードご宿泊プラン',
+                  price: accData.price_range,
+                  desc: 'ご希望の日程・人数に合わせてご予約リクエストを承ります。',
+                  badge: '定番',
+                  features: accData.has_pickup ? ['送迎相談可'] : [],
+                },
+              ]
+            : [];
 
           const mappedInn: InnData = {
             id: accData.id,
-            name: accData.name || DEFAULT_FALLBACK_INN.name,
-            islandId: accData.island_id || DEFAULT_FALLBACK_INN.islandId,
-            islandName: accData.island_name || DEFAULT_FALLBACK_INN.islandName,
-            catchphrase: accData.catchphrase || DEFAULT_FALLBACK_INN.catchphrase,
-            description: accData.description || DEFAULT_FALLBACK_INN.description,
-            phone: accData.phone_number || accData.phone || DEFAULT_FALLBACK_INN.phone,
-            address: accData.address || DEFAULT_FALLBACK_INN.address,
-            email: accData.email || DEFAULT_FALLBACK_INN.email,
-            lineUrl: accData.line_url || DEFAULT_FALLBACK_INN.lineUrl,
-            instagramUrl: accData.instagram_url || DEFAULT_FALLBACK_INN.instagramUrl,
-            instagramAccount: accData.instagram_account || DEFAULT_FALLBACK_INN.instagramAccount,
-            twitterUrl: accData.twitter_url || DEFAULT_FALLBACK_INN.twitterUrl,
-            websiteUrl: accData.website_url || DEFAULT_FALLBACK_INN.websiteUrl,
-            priceRange: accData.price_range || DEFAULT_FALLBACK_INN.priceRange,
-            priceNotice: accData.deposit_policy || DEFAULT_FALLBACK_INN.priceNotice,
-            features: accData.features && accData.features.length > 0 ? accData.features : DEFAULT_FALLBACK_INN.features,
-            plans: accData.plans && accData.plans.length > 0 ? accData.plans : DEFAULT_FALLBACK_INN.plans,
-            galleryImages: photos.length > 0 ? photos : DEFAULT_FALLBACK_INN.galleryImages,
-            amenities: DEFAULT_FALLBACK_INN.amenities,
-            agentReview: accData.agent_review || DEFAULT_FALLBACK_INN.agentReview,
-            checkInTime: accData.check_in_time || DEFAULT_FALLBACK_INN.checkInTime,
-            checkOutTime: accData.check_out_time || DEFAULT_FALLBACK_INN.checkOutTime,
-            sameDayCutoff: accData.same_day_cutoff || DEFAULT_FALLBACK_INN.sameDayCutoff,
-            pickupInfo: accData.has_pickup ? '無料送迎あり（事前予約制）' : DEFAULT_FALLBACK_INN.pickupInfo,
-            enableCertificate: accData.enable_certificate ?? DEFAULT_FALLBACK_INN.enableCertificate,
-            certificateMessage: accData.certificate_message || DEFAULT_FALLBACK_INN.certificateMessage,
-            wifiSsid: accData.wifi_ssid || DEFAULT_FALLBACK_INN.wifiSsid,
-            wifiPassword: accData.wifi_password || DEFAULT_FALLBACK_INN.wifiPassword,
-            wifiNotes: accData.wifi_notes || DEFAULT_FALLBACK_INN.wifiNotes
+            name: accData.name || '宿泊施設',
+            islandId: accData.island_id ? String(accData.island_id) : '',
+            islandName: accData.island_name || '離島',
+            catchphrase: accData.catchphrase || '',
+            description:
+              accData.description ||
+              `${accData.name || '当施設'}のご案内ページです。ご不明な点や空室状況はお気軽にお問い合わせください。`,
+            phone: accData.phone_number || accData.phone || '',
+            address: accData.address || accData.island_name || '詳細は施設までお問い合わせください',
+            email: accData.email || undefined,
+            lineUrl: accData.line_url || undefined,
+            instagramUrl: accData.instagram_url || undefined,
+            instagramAccount: accData.instagram_account || undefined,
+            twitterUrl: accData.twitter_url || undefined,
+            websiteUrl: accData.website_url || undefined,
+            priceRange: accData.price_range || undefined,
+            priceNotice: accData.deposit_policy || undefined,
+            features:
+              Array.isArray(accData.features) && accData.features.length > 0
+                ? accData.features
+                : [
+                    accData.has_pickup
+                      ? '港・空港からの送迎対応（事前予約制）'
+                      : '島ならではの穏やかな滞在時間',
+                    'KIRATABI Web予約リクエスト対応',
+                  ],
+            plans:
+              Array.isArray(accData.plans) && accData.plans.length > 0
+                ? accData.plans
+                : fallbackPlans,
+            galleryImages: photos,
+            amenities: realAmenities,
+            agentReview: accData.agent_review || undefined,
+            checkInTime: accData.check_in_time || '15:00〜（到着便に合わせて相談可）',
+            checkOutTime: accData.check_out_time || '10:00',
+            sameDayCutoff: accData.same_day_cutoff || undefined,
+            pickupInfo: accData.has_pickup
+              ? '無料送迎あり（事前予約制）'
+              : '現地集合（詳細は施設へお問い合わせください）',
+            enableCertificate: Boolean(accData.enable_certificate),
+            certificateMessage:
+              accData.certificate_message ||
+              `${accData.name || '当館'}へのご宿泊、誠にありがとうございました。`,
+            wifiSsid: accData.wifi_ssid || undefined,
+            wifiPassword: accData.wifi_password || undefined,
+            wifiNotes: accData.wifi_notes || undefined,
           };
 
           setInn(mappedInn);
+          trackFacilityEvent(String(accData.id), 'lp_view');
         } else if (demoMode) {
           setInn(DEFAULT_FALLBACK_INN);
         } else {
@@ -307,6 +365,7 @@ export default function DedicatedInnPage() {
   }, [innParamId, demoMode]);
 
   const handleCall = () => {
+    if (!inn.phone) return;
     toast.success('お電話口で「キラ旅を見た」とお伝えいただくと案内がスムーズです！', { icon: '📞', duration: 4000 });
     window.location.href = `tel:${inn.phone}`;
   };
@@ -433,7 +492,9 @@ export default function DedicatedInnPage() {
         <Breadcrumb 
           items={[
             { label: '全国離島マップ', href: '/map' },
-            { label: `${inn.islandName}`, href: `/island/${inn.islandId || '58'}` },
+            ...(inn.islandId
+              ? [{ label: `${inn.islandName}`, href: `/island/${inn.islandId}` }]
+              : [{ label: `${inn.islandName}`, href: '/islands' }]),
             { label: inn.name }
           ]} 
           className="mb-2" 
@@ -446,18 +507,24 @@ export default function DedicatedInnPage() {
           
           {/* Main Large Photo Display */}
           <div className="relative h-72 sm:h-96 md:h-[440px] w-full overflow-hidden bg-slate-900 group">
-            <AnimatePresence mode="wait">
-              <motion.img 
-                key={activeImageIndex}
-                initial={{ opacity: 0.4, scale: 1.03 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0.4 }}
-                transition={{ duration: 0.4 }}
-                src={inn.galleryImages[activeImageIndex] || inn.galleryImages[0]} 
-                alt={inn.name} 
-                className="w-full h-full object-cover"
-              />
-            </AnimatePresence>
+            {inn.galleryImages.length > 0 ? (
+              <AnimatePresence mode="wait">
+                <motion.img 
+                  key={activeImageIndex}
+                  initial={{ opacity: 0.4, scale: 1.03 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0.4 }}
+                  transition={{ duration: 0.4 }}
+                  src={inn.galleryImages[activeImageIndex] || inn.galleryImages[0]} 
+                  alt={inn.name} 
+                  className="w-full h-full object-cover"
+                />
+              </AnimatePresence>
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-slate-800 via-indigo-950 to-slate-900 flex items-center justify-center">
+                <BedDouble className="w-20 h-20 text-white/15" />
+              </div>
+            )}
 
             {/* Dark & Amber Ambient Overlay */}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
@@ -468,9 +535,11 @@ export default function DedicatedInnPage() {
                 <MapPin className="w-3.5 h-3.5 text-blue-400" /> {inn.islandName}
               </span>
 
-              <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white font-mono text-xs font-bold rounded-full border border-white/20 pointer-events-auto shadow-md">
-                📷 {activeImageIndex + 1} / {inn.galleryImages.length}
-              </span>
+              {inn.galleryImages.length > 0 && (
+                <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white font-mono text-xs font-bold rounded-full border border-white/20 pointer-events-auto shadow-md">
+                  📷 {activeImageIndex + 1} / {inn.galleryImages.length}
+                </span>
+              )}
             </div>
 
             {/* Bottom Title & Catchphrase Overlay */}
@@ -495,45 +564,56 @@ export default function DedicatedInnPage() {
                 {inn.name}
               </h1>
 
-              <div className="space-y-1 max-w-3xl pt-0.5">
-                {inn.catchphrase.split('\n').filter(Boolean).map((line, idx) => (
-                  <p key={idx} className="text-xs sm:text-sm text-slate-200 font-serif leading-relaxed drop-shadow-sm flex items-start gap-1.5">
-                    <span className="text-amber-400 font-bold">・</span>
-                    <span>{line}</span>
-                  </p>
-                ))}
-              </div>
+              {inn.catchphrase && (
+                <div className="space-y-1 max-w-3xl pt-0.5">
+                  {inn.catchphrase.split('\n').filter(Boolean).map((line, idx) => (
+                    <p key={idx} className="text-xs sm:text-sm text-slate-200 font-serif leading-relaxed drop-shadow-sm flex items-start gap-1.5">
+                      <span className="text-amber-400 font-bold">・</span>
+                      <span>{line}</span>
+                    </p>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
           {/* Interactive Thumbnails Bar */}
-          <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2 overflow-x-auto hide-scrollbar">
-            {inn.galleryImages.map((img, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveImageIndex(idx)}
-                className={`relative h-16 w-24 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
-                  activeImageIndex === idx 
-                    ? 'border-blue-500 ring-2 ring-blue-400/40 scale-102 shadow-sm' 
-                    : 'border-transparent opacity-70 hover:opacity-100'
-                }`}
-              >
-                <img src={img} alt={`サムネイル ${idx + 1}`} className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
+          {inn.galleryImages.length > 1 && (
+            <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2 overflow-x-auto hide-scrollbar">
+              {inn.galleryImages.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImageIndex(idx)}
+                  className={`relative h-16 w-24 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
+                    activeImageIndex === idx 
+                      ? 'border-blue-500 ring-2 ring-blue-400/40 scale-102 shadow-sm' 
+                      : 'border-transparent opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  <img src={img} alt={`サムネイル ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Quick Jump Navigation Tabs */}
         <div className="sticky top-16 z-30 bg-white/90 backdrop-blur-md rounded-2xl border border-slate-200 shadow-sm p-1.5 flex items-center justify-start sm:justify-center gap-1 overflow-x-auto hide-scrollbar">
           {[
-            { id: 'features', label: 'こだわり・魅力', icon: Sparkles },
-            { id: 'review', label: '公式滞在記', icon: Award },
-            { id: 'plans', label: '料金プラン', icon: BedDouble },
-            { id: 'sns', label: '公式SNS・島情報', icon: InstagramIcon },
-            { id: 'amenities', label: '設備・アメニティ', icon: ShieldCheck },
-            { id: 'info', label: 'アクセス・地図', icon: MapPin },
-          ].map(tab => (
+            { id: 'features', label: 'こだわり・魅力', icon: Sparkles, show: true },
+            { id: 'review', label: '公式滞在記', icon: Award, show: Boolean(inn.agentReview) },
+            { id: 'plans', label: '料金プラン', icon: BedDouble, show: true },
+            {
+              id: 'sns',
+              label: '公式SNS・島情報',
+              icon: InstagramIcon,
+              show: Boolean(inn.instagramUrl || inn.lineUrl || inn.twitterUrl || inn.websiteUrl),
+            },
+            { id: 'amenities', label: '設備・アメニティ', icon: ShieldCheck, show: true },
+            { id: 'info', label: 'アクセス・地図', icon: MapPin, show: true },
+          ]
+            .filter((tab) => tab.show)
+            .map((tab) => (
             <button
               key={tab.id}
               onClick={() => {
@@ -692,11 +772,17 @@ export default function DedicatedInnPage() {
 
                   {/* Agent Profile Card */}
                   <div className="flex flex-col sm:flex-row sm:items-center gap-4 p-4 bg-amber-50/60 rounded-2xl border border-amber-200/70">
-                    <img 
-                      src={inn.agentReview.agentAvatar} 
-                      alt={inn.agentReview.agentName}
-                      className="w-14 h-14 rounded-2xl object-cover shadow-sm ring-2 ring-amber-200 shrink-0"
-                    />
+                    {inn.agentReview.agentAvatar ? (
+                      <img 
+                        src={inn.agentReview.agentAvatar} 
+                        alt={inn.agentReview.agentName}
+                        className="w-14 h-14 rounded-2xl object-cover shadow-sm ring-2 ring-amber-200 shrink-0"
+                      />
+                    ) : (
+                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-amber-500 to-yellow-600 text-white font-bold text-lg flex items-center justify-center shadow-sm ring-2 ring-amber-200 shrink-0">
+                        {(inn.agentReview.agentName || 'K').slice(0, 1)}
+                      </div>
+                    )}
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="text-[0.65rem] font-bold text-amber-950 bg-amber-400 px-2 py-0.5 rounded-md tracking-wider uppercase">
@@ -729,7 +815,21 @@ export default function DedicatedInnPage() {
               </div>
 
               <div className="space-y-4">
-                {visiblePlans.map((plan, idx) => (
+                {visiblePlans.length === 0 ? (
+                  <div className="p-6 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-3">
+                    <p className="text-xs md:text-sm text-slate-600 font-serif">
+                      宿泊プラン・空き状況は直接施設へお問い合わせいただくか、Web予約リクエストよりご希望条件をお送りください。
+                    </p>
+                    <button
+                      onClick={() => handleOpenBooking()}
+                      className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-sm inline-flex items-center gap-1.5 transition-all"
+                    >
+                      <Calendar className="w-3.5 h-3.5" />
+                      日程を指定して予約リクエスト
+                    </button>
+                  </div>
+                ) : (
+                  visiblePlans.map((plan, idx) => (
                   <motion.div 
                     key={plan.id || idx}
                     initial={{ opacity: 0, y: 8 }}
@@ -783,7 +883,7 @@ export default function DedicatedInnPage() {
                       </button>
                     </div>
                   </motion.div>
-                ))}
+                )))}
               </div>
 
               {/* もっと見る / 折りたたみボタン (プランが3件より多い場合) */}
@@ -815,6 +915,7 @@ export default function DedicatedInnPage() {
             </div>
 
             {/* 4. 公式SNS ＆ インスタグラム情報カード */}
+            {(inn.instagramUrl || inn.lineUrl || inn.twitterUrl || inn.websiteUrl) && (
             <div id="sns" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
               <div className="border-b border-slate-100 pb-4">
                 <span className="text-[0.65rem] font-bold tracking-widest text-pink-600 uppercase block mb-1 font-mono">
@@ -856,26 +957,28 @@ export default function DedicatedInnPage() {
                   </div>
 
                   <p className="text-xs text-slate-600 font-serif leading-relaxed">
-                    本日の獲れたて地魚や天候・ヘリ就航状況、島野菜の収穫風景など、島のリアルタイムな日常をInstagramで発信中！
+                    現地の最新情報や島の日常を公式Instagramで発信中！
                   </p>
 
                   {/* Visual Instagram photo previews */}
-                  <div className="grid grid-cols-3 gap-2 pt-2">
-                    {inn.galleryImages.slice(1, 4).map((img, idx) => (
-                      <a
-                        key={idx}
-                        href={inn.instagramUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="h-24 sm:h-28 rounded-xl overflow-hidden border border-pink-100 group relative block"
-                      >
-                        <img src={img} alt="SNS写真" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                          <InstagramIcon className="w-5 h-5" />
-                        </div>
-                      </a>
-                    ))}
-                  </div>
+                  {inn.galleryImages.slice(1, 4).filter(Boolean).length > 0 && (
+                    <div className="grid grid-cols-3 gap-2 pt-2">
+                      {inn.galleryImages.slice(1, 4).filter(Boolean).map((img, idx) => (
+                        <a
+                          key={idx}
+                          href={inn.instagramUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="h-24 sm:h-28 rounded-xl overflow-hidden border border-pink-100 group relative block"
+                        >
+                          <img src={img} alt="SNS写真" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
+                            <InstagramIcon className="w-5 h-5" />
+                          </div>
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -934,6 +1037,7 @@ export default function DedicatedInnPage() {
               </div>
 
             </div>
+            )}
 
             {/* 5. Amenities Checklist (アメニティ・設備) */}
             <div id="amenities" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
@@ -1022,12 +1126,14 @@ export default function DedicatedInnPage() {
                   <span className="text-slate-800">{inn.pickupInfo}</span>
                 </div>
 
-                <div className="flex flex-col sm:flex-row py-2.5">
-                  <span className="w-36 font-bold text-slate-500">ご予約・問合せ電話</span>
-                  <a href={`tel:${inn.phone}`} className="text-blue-600 font-mono font-bold hover:underline">
-                    {inn.phone}
-                  </a>
-                </div>
+                {inn.phone && (
+                  <div className="flex flex-col sm:flex-row py-2.5">
+                    <span className="w-36 font-bold text-slate-500">ご予約・問合せ電話</span>
+                    <a href={`tel:${inn.phone}`} className="text-blue-600 font-mono font-bold hover:underline">
+                      {inn.phone}
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -1049,28 +1155,32 @@ export default function DedicatedInnPage() {
                 </p>
               </div>
 
-              {/* Direct Call Box */}
-              <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
-                <span className="text-xs text-slate-300 font-medium block">お電話でのご予約・空室確認</span>
-                <a 
-                  href={`tel:${inn.phone}`} 
-                  onClick={handleCall}
-                  className="font-mono font-extrabold text-2xl text-amber-300 block hover:text-amber-200 transition-colors"
-                >
-                  📞 {inn.phone}
-                </a>
-                <span className="text-[0.65rem] text-slate-400 block">
-                  ※「キラ旅を見た」とお伝えいただくとスムーズです
-                </span>
-              </div>
+              {inn.phone && (
+                <>
+                  {/* Direct Call Box */}
+                  <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
+                    <span className="text-xs text-slate-300 font-medium block">お電話でのご予約・空室確認</span>
+                    <a 
+                      href={`tel:${inn.phone}`} 
+                      onClick={handleCall}
+                      className="font-mono font-extrabold text-2xl text-amber-300 block hover:text-amber-200 transition-colors"
+                    >
+                      📞 {inn.phone}
+                    </a>
+                    <span className="text-[0.65rem] text-slate-400 block">
+                      ※「キラ旅を見た」とお伝えいただくとスムーズです
+                    </span>
+                  </div>
 
-              {/* Primary Call Button */}
-              <button
-                onClick={handleCall}
-                className="w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm tracking-wider flex items-center justify-center gap-2 transition-all border border-white/20 hover:scale-[1.01]"
-              >
-                <Phone className="w-4 h-4 text-amber-300" /> お電話で直接問い合わせ
-              </button>
+                  {/* Primary Call Button */}
+                  <button
+                    onClick={handleCall}
+                    className="w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm tracking-wider flex items-center justify-center gap-2 transition-all border border-white/20 hover:scale-[1.01]"
+                  >
+                    <Phone className="w-4 h-4 text-amber-300" /> お電話で直接問い合わせ
+                  </button>
+                </>
+              )}
 
               {/* Multi Contact: LINE or Email */}
               {(inn.lineUrl || inn.email) && (
@@ -1155,13 +1265,15 @@ export default function DedicatedInnPage() {
               <MessageCircle size={16} />
             </a>
           )}
-          <button
-            onClick={handleCall}
-            className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold text-xs flex items-center justify-center transition-colors"
-            title="電話する"
-          >
-            <Phone size={16} />
-          </button>
+          {inn.phone && (
+            <button
+              onClick={handleCall}
+              className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold text-xs flex items-center justify-center transition-colors"
+              title="電話する"
+            >
+              <Phone size={16} />
+            </button>
+          )}
           <button
             onClick={() => handleOpenBooking()}
             className="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs rounded-2xl shadow-md flex items-center gap-1.5 transition-transform hover:scale-102"

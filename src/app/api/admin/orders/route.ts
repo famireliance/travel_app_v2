@@ -51,17 +51,30 @@ export async function GET(req: NextRequest) {
 
   const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
 
-  // First try physical_orders, then merge/fallback with orders
-  const [{ data: physOrders }, { data: legacyOrders, error }] = await Promise.all([
-    adminClient.from('physical_orders').select('*').order('ordered_at', { ascending: false }),
-    adminClient.from('orders').select('*').order('created_at', { ascending: false }),
-  ]);
+  // First try physical_orders (ignoring missing table error), then merge/fallback with orders
+  let physOrders: any[] = [];
+  try {
+    const physRes = await adminClient
+      .from('physical_orders')
+      .select('*')
+      .order('ordered_at', { ascending: false });
+    if (!physRes.error && Array.isArray(physRes.data)) {
+      physOrders = physRes.data;
+    }
+  } catch {
+    // physical_orders does not exist in live Supabase
+  }
 
-  if (error && !physOrders) {
+  const { data: legacyOrders, error } = await adminClient
+    .from('orders')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error && physOrders.length === 0) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  const combined = [...(physOrders || []), ...(legacyOrders || [])];
+  const combined = [...physOrders, ...(legacyOrders || [])];
   const seen = new Set<string>();
   const uniqueOrders = combined.filter(o => {
     if (seen.has(o.id)) return false;
@@ -89,52 +102,66 @@ export async function PUT(req: NextRequest) {
 
   const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
 
-  // 一括更新の場合
-  if (Array.isArray(body.ids) && body.status) {
-    const { ids, status, carrier } = body;
+  try {
+    // 一括更新の場合
+    if (Array.isArray(body.ids) && body.status) {
+      const { ids, status, carrier } = body;
+      const nowIso = new Date().toISOString();
+      const updateData: any = { status };
+      if (status === 'shipped') updateData.shipped_at = nowIso;
+      if (status === 'delivered') updateData.delivered_at = nowIso;
+      if (carrier) updateData.carrier = carrier;
+
+      try {
+        await adminClient.from('physical_orders').update(updateData).in('id', ids);
+      } catch {
+        // ignore missing physical_orders table
+      }
+
+      const { error } = await adminClient.from('orders').update(updateData).in('id', ids);
+
+      if (error) {
+        // Fallback: update only status column on orders and persist shipping fields in admin_config
+        await adminClient.from('orders').update({ status }).in('id', ids);
+        for (const id of ids) {
+          shippingOv[id] = { ...(shippingOv[id] || {}), ...updateData };
+        }
+        await setFallbackJson('fallback_order_shipping', shippingOv);
+      }
+      return NextResponse.json({ success: true, message: `${ids.length}件の注文ステータスを更新しました` });
+    }
+
+    // 単一更新の場合
+    const { id, status, tracking_number, carrier, notes } = body;
+    if (!id || !status) {
+      return NextResponse.json({ error: '必須項目が不足しています' }, { status: 400 });
+    }
+
     const nowIso = new Date().toISOString();
     const updateData: any = { status };
     if (status === 'shipped') updateData.shipped_at = nowIso;
     if (status === 'delivered') updateData.delivered_at = nowIso;
-    if (carrier) updateData.carrier = carrier;
+    if (tracking_number !== undefined) updateData.tracking_number = tracking_number;
+    if (carrier !== undefined) updateData.carrier = carrier;
+    if (notes !== undefined) updateData.notes = notes;
 
-    await adminClient.from('physical_orders').update(updateData).in('id', ids);
-    const { error } = await adminClient.from('orders').update(updateData).in('id', ids);
+    try {
+      await adminClient.from('physical_orders').update(updateData).eq('id', id);
+    } catch {
+      // ignore missing physical_orders table
+    }
+
+    const { error } = await adminClient.from('orders').update(updateData).eq('id', id);
 
     if (error) {
       // Fallback: update only status column on orders and persist shipping fields in admin_config
-      await adminClient.from('orders').update({ status }).in('id', ids);
-      for (const id of ids) {
-        shippingOv[id] = { ...(shippingOv[id] || {}), ...updateData };
-      }
+      await adminClient.from('orders').update({ status }).eq('id', id);
+      shippingOv[id] = { ...(shippingOv[id] || {}), ...updateData };
       await setFallbackJson('fallback_order_shipping', shippingOv);
     }
-    return NextResponse.json({ success: true, message: `${ids.length}件の注文ステータスを更新しました` });
+
+    return NextResponse.json({ success: true, message: '注文ステータス・発送情報を更新しました' });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || '注文更新中にエラーが発生しました' }, { status: 500 });
   }
-
-  // 単一更新の場合
-  const { id, status, tracking_number, carrier, notes } = body;
-  if (!id || !status) {
-    return NextResponse.json({ error: '必須項目が不足しています' }, { status: 400 });
-  }
-
-  const nowIso = new Date().toISOString();
-  const updateData: any = { status };
-  if (status === 'shipped') updateData.shipped_at = nowIso;
-  if (status === 'delivered') updateData.delivered_at = nowIso;
-  if (tracking_number !== undefined) updateData.tracking_number = tracking_number;
-  if (carrier !== undefined) updateData.carrier = carrier;
-  if (notes !== undefined) updateData.notes = notes;
-
-  await adminClient.from('physical_orders').update(updateData).eq('id', id);
-  const { error } = await adminClient.from('orders').update(updateData).eq('id', id);
-
-  if (error) {
-    // Fallback: update only status column on orders and persist shipping fields in admin_config
-    await adminClient.from('orders').update({ status }).eq('id', id);
-    shippingOv[id] = { ...(shippingOv[id] || {}), ...updateData };
-    await setFallbackJson('fallback_order_shipping', shippingOv);
-  }
-
-  return NextResponse.json({ success: true, message: '注文ステータス・発送情報を更新しました' });
 }

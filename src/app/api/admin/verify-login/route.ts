@@ -129,19 +129,25 @@ export async function POST(req: NextRequest) {
     if (!verifiedUser) {
       const { data: dbUser } = await client
         .from('admin_users')
-        .select('id, email, password_hash, name, role, org_id')
+        .select('id, email, password_hash, name, role, org_id, admin_organizations ( name )')
         .eq('email', email.trim().toLowerCase())
         .maybeSingle();
 
       if (dbUser && dbUser.password_hash) {
         const isMatch = bcrypt.compareSync(password, dbUser.password_hash);
         if (isMatch) {
+          const orgRel = (dbUser as any).admin_organizations;
+          const orgName =
+            (Array.isArray(orgRel) ? orgRel[0]?.name : orgRel?.name) ||
+            (dbUser.org_id ? '自治体組織' : 'システム管理');
           verifiedUser = {
             id: dbUser.id,
+            userId: dbUser.id,
             email: dbUser.email,
             name: dbUser.name,
             role: dbUser.role,
-            org_id: dbUser.org_id
+            org_id: dbUser.org_id,
+            org_name: orgName,
           };
         }
       }
@@ -153,6 +159,14 @@ export async function POST(req: NextRequest) {
     }
 
     clearFailedAttempts(clientIp);
+
+    // Update last_login_at for authenticated staff account
+    if (verifiedUser.id) {
+      await client
+        .from('admin_users')
+        .update({ last_login_at: new Date().toISOString() })
+        .eq('id', verifiedUser.id);
+    }
 
     // 4. create session
     const { data: session, error: sessionErr } = await client

@@ -1,15 +1,21 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { verifyUserAuth } from '@/lib/userAuth';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
-const supabase = createClient(supabaseUrl, supabaseKey);
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 const ALLOWED_CERTIFICATE_TYPES = ['card', 'standard', 'high_quality'] as const;
 
 export async function POST(request: Request) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !supabaseKey || supabaseKey.startsWith('REPLACE')) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+    const supabase = createClient(supabaseUrl, supabaseKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+
     const auth = await verifyUserAuth(request);
     if (!auth.user) {
       return NextResponse.json({ error: auth.error || '認証が必要です' }, { status: 401 });
@@ -17,16 +23,25 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     const { islandId: rawIslandId, type = 'high_quality', imageUrl } = body;
-    const islandId = rawIslandId !== undefined && rawIslandId !== null ? String(rawIslandId) : '';
+    const rawStr = rawIslandId !== undefined && rawIslandId !== null ? String(rawIslandId).trim() : '';
     const userId = auth.user.id;
 
     if (body.userId && body.userId !== userId) {
       return NextResponse.json({ error: '不正なユーザーIDです' }, { status: 403 });
     }
 
-    if (!islandId) {
+    if (!rawStr) {
       return NextResponse.json({ error: 'Missing islandId' }, { status: 400 });
     }
+
+    // Normalize islandId via ALL_ISLANDS_MASTER_DICTIONARY so slug vs numeric ID never splits serial numbers
+    const lowerRaw = rawStr.toLowerCase();
+    const masterEntry =
+      ALL_ISLANDS_MASTER_DICTIONARY[rawStr] ||
+      Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+        (isl) => isl.slug === lowerRaw || isl.name === rawStr
+      );
+    const islandId = String(masterEntry?.id || rawStr);
 
     if (!ALLOWED_CERTIFICATE_TYPES.includes(type)) {
       return NextResponse.json({ error: '無効な証明書タイプです' }, { status: 400 });

@@ -28,13 +28,16 @@ export async function GET(req: NextRequest) {
 
     if (error) {
       const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
-      return NextResponse.json({ partners: fbPartners });
+      const sorted = [...(Array.isArray(fbPartners) ? fbPartners : [])].sort((a, b) =>
+        String(a?.contract_end || '').localeCompare(String(b?.contract_end || ''))
+      );
+      return NextResponse.json({ partners: sorted });
     }
 
     return NextResponse.json({ partners: partners || [] });
   } catch (err: any) {
     const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
-    return NextResponse.json({ partners: fbPartners });
+    return NextResponse.json({ partners: Array.isArray(fbPartners) ? fbPartners : [] });
   }
 }
 

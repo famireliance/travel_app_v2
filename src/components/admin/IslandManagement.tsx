@@ -26,6 +26,7 @@ import regionsData from '@/data/regions.json';
 
 interface IslandData {
   id: string;
+  slug?: string;
   name: string;
   region_id: string;
   prefecture: string;
@@ -208,6 +209,7 @@ export default function IslandManagement({ password }: { password: string }) {
     const meta = getVerifiedIslandPhotos(island);
     setFormData({
       id: island.id || '',
+      slug: island.slug || '',
       name: island.name || '',
       region_id: island.region_id || '',
       prefecture: island.prefecture || '',
@@ -658,7 +660,7 @@ export default function IslandManagement({ password }: { password: string }) {
                         <h4 className="font-bold text-sm text-white">{island.name}</h4>
                       </div>
                       <a
-                        href={`/island/${island.id}`}
+                        href={`https://island.kira-tabi.com/island/${island.slug || island.id}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="p-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300"
@@ -757,7 +759,7 @@ export default function IslandManagement({ password }: { password: string }) {
                       </div>
                       <div className="flex items-center gap-1 shrink-0">
                         <a
-                          href={`/island/${island.id}`}
+                          href={`https://island.kira-tabi.com/island/${island.slug || island.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={(e) => e.stopPropagation()}
@@ -795,7 +797,7 @@ export default function IslandManagement({ password }: { password: string }) {
                 </h3>
                 {selectedIsland && (
                   <a
-                    href={`/island/${selectedIsland.id}`}
+                    href={`https://island.kira-tabi.com/island/${selectedIsland.slug || selectedIsland.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-xs text-cyan-400 hover:underline flex items-center gap-1 font-bold"

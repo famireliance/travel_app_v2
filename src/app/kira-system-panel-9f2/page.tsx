@@ -229,7 +229,24 @@ export default function AdminPage() {
       if (!res.ok) throw new Error(data.error);
       toast.success(data.message || '公的証明書設定を更新しました');
       fetchOfficialIslands();
-      if (data.island) setSelectedOfficialIsland(data.island);
+      if (data.island) {
+        setSelectedOfficialIsland(data.island);
+        setOfficialForm((prev: any) => ({
+          ...prev,
+          islandId: data.island.id ?? prev.islandId,
+          official_cert_enabled: data.island.official_cert_enabled ?? prev.official_cert_enabled,
+          official_org_name: data.island.official_org_name ?? prev.official_org_name,
+          official_seal_url: data.island.official_seal_url ?? prev.official_seal_url,
+          official_cert_price: data.island.official_cert_price ?? prev.official_cert_price,
+          official_sales_start_at: data.island.official_sales_start_at
+            ? String(data.island.official_sales_start_at).substring(0, 10)
+            : prev.official_sales_start_at,
+          official_sales_end_at: data.island.official_sales_end_at
+            ? String(data.island.official_sales_end_at).substring(0, 10)
+            : prev.official_sales_end_at,
+          official_template_id: data.island.official_template_id ?? prev.official_template_id,
+        }));
+      }
     } catch (err: any) {
       toast.error(`更新エラー: ${err.message || '公的証明書設定の保存に失敗しました'}`);
     }
@@ -432,7 +449,7 @@ export default function AdminPage() {
           'x-admin-password': password,
         },
         body: JSON.stringify({
-          currentPassword: currentPasswordInput || password,
+          currentPassword: currentPasswordInput,
           newPassword
         })
       });
@@ -440,6 +457,10 @@ export default function AdminPage() {
       if (!res.ok) {
         setChangePasswordMessage(`エラー: ${data.error}`);
         return;
+      }
+      if (data.token) {
+        sessionStorage.setItem('admin_password', data.token);
+        setPassword(data.token);
       }
       setChangePasswordMessage(data.message || 'パスワードを変更しました');
       setCurrentPasswordInput('');

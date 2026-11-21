@@ -6,6 +6,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 export interface AdminUser {
   id: string;
+  userId?: string;
   email: string;
   name: string;
   role: string;
@@ -79,9 +80,13 @@ export async function validateTokenString(token: string): Promise<AdminUser | nu
             org_name: 'システム管理'
           };
         }
-        const orgName = u?.admin_organizations?.name || (u.org_id ? '自治体組織' : 'システム管理');
+        const orgRel = u?.admin_organizations;
+        const orgName =
+          (Array.isArray(orgRel) ? orgRel[0]?.name : orgRel?.name) ||
+          (u.org_id ? '自治体組織' : 'システム管理');
         return {
           id: u.id,
+          userId: u.id,
           email: u.email,
           name: u.name,
           role: u.role,
@@ -93,18 +98,6 @@ export async function validateTokenString(token: string): Promise<AdminUser | nu
       console.error('[adminAuth] DB session check failed:', err);
     }
     return null;
-  }
-
-  // Check if token matches custom admin_password in admin_config
-  const dbMasterPw = await getAdminPassword();
-  if (dbMasterPw && token === dbMasterPw) {
-    return {
-      id: 'master-admin-id',
-      email: 'admin@kira-tabi.com',
-      name: 'Master Admin',
-      role: 'super_admin',
-      org_name: 'システム管理'
-    };
   }
 
   return null;

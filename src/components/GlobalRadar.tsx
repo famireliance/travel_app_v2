@@ -2,13 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { calculateDistanceKm } from '@/lib/geo';
 import { useTravel } from '@/context/TravelContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Bell, Navigation2 } from 'lucide-react';
 import { fetchAllIslands } from '@/lib/supabase';
 
 interface RadarIsland {
   id: string;
+  slug?: string;
   name: string;
   coordinates?: string;
   distance?: number;
@@ -19,10 +20,20 @@ export default function GlobalRadar() {
   const [isVisible, setIsVisible] = useState(false);
   const { islandStatuses } = useTravel();
   const router = useRouter();
+  const pathname = usePathname();
+
+  const isRestrictedPortal =
+    pathname?.startsWith('/kira-system-panel-9f2') ||
+    pathname?.startsWith('/biz-portal-secure-8f92a1b3') ||
+    (typeof window !== 'undefined' &&
+      (window.location.hostname.startsWith('ops-vault-') ||
+        window.location.hostname.startsWith('partner.') ||
+        window.location.hostname.startsWith('biz.')));
 
   useEffect(() => {
+    if (isRestrictedPortal) return;
     // Only run if geolocation is supported
-    if (!navigator.geolocation) return;
+    if (typeof navigator === 'undefined' || !navigator.geolocation) return;
 
     let mounted = true;
 
@@ -76,9 +87,9 @@ export default function GlobalRadar() {
       mounted = false;
       clearTimeout(timer);
     };
-  }, [islandStatuses]);
+  }, [islandStatuses, isRestrictedPortal]);
 
-  if (!nearbyIsland) return null;
+  if (isRestrictedPortal || !nearbyIsland) return null;
 
   return (
     <AnimatePresence>
@@ -106,7 +117,7 @@ export default function GlobalRadar() {
               <p className="text-xs text-slate-500 mb-3 leading-relaxed">現在地から約 {nearbyIsland.distance!.toFixed(1)} kmです。チェックインして公式到達証明を発行しませんか？</p>
               <div className="flex gap-2">
                 <button 
-                  onClick={() => router.push(`/island/${nearbyIsland.id}`)}
+                  onClick={() => router.push(`/island/${nearbyIsland.slug || nearbyIsland.id}`)}
                   className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold py-2 rounded-lg transition-colors flex items-center justify-center gap-1 shadow-md shadow-blue-900/20"
                 >
                   <Navigation2 size={14} />

@@ -22,7 +22,7 @@ export async function GET(req: NextRequest) {
 
   try {
     // 1. 全ユーザー情報 & プラン取得
-    const { data: authData } = await adminClient.auth.admin.listUsers();
+    const { data: authData } = await adminClient.auth.admin.listUsers({ page: 1, perPage: 1000 });
     const totalUsers = authData?.users?.length || 0;
 
     const { data: profiles } = await adminClient
@@ -38,11 +38,12 @@ export async function GET(req: NextRequest) {
     // 2. 物理証明書オーダー集計
     let orders: any[] = [];
     try {
-      const [{ data: physOrders }, { data: dbOrders }, shippingOv] = await Promise.all([
-        adminClient.from('physical_orders').select('*').order('ordered_at', { ascending: false }),
+      const [physRes, { data: dbOrders }, shippingOv] = await Promise.all([
+        Promise.resolve(adminClient.from('physical_orders').select('*').order('ordered_at', { ascending: false })).catch(() => ({ data: null, error: true })),
         adminClient.from('orders').select('*').order('created_at', { ascending: false }),
         getFallbackJson<Record<string, any>>('fallback_order_shipping', {})
       ]);
+      const physOrders = !physRes.error && Array.isArray(physRes.data) ? physRes.data : [];
       const combined = [...(physOrders || []), ...(dbOrders || [])];
       const seen = new Set<string>();
       orders = combined.filter(o => {

@@ -1,14 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!; // Must use service role to read auth.users
-const supabase = createClient(supabaseUrl, supabaseKey);
-
-const RESEND_API_KEY = process.env.RESEND_API_KEY!;
-const FROM_EMAIL = process.env.RESEND_FROM_EMAIL || 'KIRATABI Admin <onboarding@resend.dev>';
-
 import { getAuthUser, isSuperAdmin } from '@/lib/adminAuth';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
+
+function getSupabaseAdmin() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !supabaseKey || supabaseKey.startsWith('REPLACE')) {
+    return null;
+  }
+  return createClient(supabaseUrl, supabaseKey, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+}
 
 export async function GET(request: NextRequest) {
   const user = await getAuthUser(request);
@@ -19,14 +23,31 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
   }
 
-  const [{ data: codes }, { data: history }] = await Promise.all([
+  const supabase = getSupabaseAdmin();
+  if (!supabase) {
+    return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です' }, { status: 503 });
+  }
+
+  const [codesRes, historyRes] = await Promise.all([
     supabase.from('app_promo_codes').select('id, code, reward_amount').order('created_at', { ascending: false }),
     supabase.from('newsletters').select('*, app_promo_codes(code)').order('sent_at', { ascending: false }).limit(10),
   ]);
 
+  let promoCodes = !codesRes.error && Array.isArray(codesRes.data) ? codesRes.data : null;
+  if (!promoCodes) {
+    const fbCodes = await getFallbackJson<any[]>('fallback_promo_codes', []);
+    promoCodes = Array.isArray(fbCodes) ? fbCodes : [];
+  }
+
+  let history = !historyRes.error && Array.isArray(historyRes.data) ? historyRes.data : null;
+  if (!history) {
+    const fbHistory = await getFallbackJson<any[]>('fallback_newsletters', []);
+    history = (Array.isArray(fbHistory) ? fbHistory : []).slice(0, 10);
+  }
+
   return NextResponse.json({
-    promoCodes: codes || [],
-    history: history || [],
+    promoCodes,
+    history,
   });
 }
 
@@ -44,102 +65,123 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
     }
 
+    const supabase = getSupabaseAdmin();
+    if (!supabase) {
+      return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です' }, { status: 503 });
+    }
+
     const { subject, body, targetTier, promoCodeId } = await request.json();
 
     if (!subject || !body || !targetTier) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    if (!RESEND_API_KEY) {
-      return NextResponse.json({ error: 'RESEND_API_KEY is not configured' }, { status: 500 });
+    const resendApiKey = process.env.RESEND_API_KEY;
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'KIRATABI Admin <onboarding@resend.dev>';
+
+    if (!resendApiKey || resendApiKey.startsWith('REPLACE')) {
+      return NextResponse.json({ error: 'RESEND_API_KEY が未設定のためメール配信できません' }, { status: 503 });
     }
 
-    // 2. Fetch target users
-    // auth.users holds emails, but subscription_tier is in user_profiles.
-    // We fetch user_profiles first to filter by tier.
-    let profilesQuery = supabase.from('user_profiles').select('id, subscription_tier');
-    
-    if (targetTier !== 'all') {
-      profilesQuery = profilesQuery.eq('subscription_tier', targetTier);
-    }
-    
-    const { data: profiles, error: profileError } = await profilesQuery;
-    if (profileError) {
-      throw new Error(`Failed to fetch profiles: ${profileError.message}`);
-    }
-
-    if (!profiles || profiles.length === 0) {
-      return NextResponse.json({ message: 'No users found for this target.', sentCount: 0 });
-    }
-
-    const targetUserIds = profiles.map(p => p.id);
-
-    // Fetch emails from auth.users (requires service_role)
-    const { data: authData, error: authError } = await supabase.auth.admin.listUsers({
-      perPage: 10000 // Adjust if app scales significantly
-    });
+    // 2. Fetch target users (auth.users + user_profiles, treating null/missing subscription_tier as 'free')
+    const [{ data: authData, error: authError }, { data: profiles, error: profileError }] = await Promise.all([
+      supabase.auth.admin.listUsers({ page: 1, perPage: 1000 }),
+      supabase.from('user_profiles').select('id, subscription_tier'),
+    ]);
 
     if (authError) {
       throw new Error(`Failed to fetch auth users: ${authError.message}`);
     }
+    if (profileError) {
+      throw new Error(`Failed to fetch profiles: ${profileError.message}`);
+    }
 
-    const targetUsers = authData.users.filter(u => targetUserIds.includes(u.id) && u.email);
-    const emails = targetUsers.map(u => u.email as string);
+    const tierByUserId = new Map<string, string>();
+    for (const p of profiles || []) {
+      tierByUserId.set(p.id, p.subscription_tier || 'free');
+    }
+
+    const targetUsers = (authData?.users || []).filter((u) => {
+      if (!u.email) return false;
+      const effectiveTier = tierByUserId.get(u.id) || 'free';
+      if (targetTier === 'all') return true;
+      return effectiveTier === targetTier;
+    });
+
+    const emails = targetUsers.map((u) => u.email as string);
 
     if (emails.length === 0) {
-      return NextResponse.json({ message: 'No valid email addresses found.', sentCount: 0 });
+      return NextResponse.json({ message: 'No users found for this target.', sentCount: 0 });
     }
 
     // 3. Send emails in batches of 50 via Resend BCC
     const BATCH_SIZE = 50;
     let sentCount = 0;
+    let lastResendError = '';
 
     for (let i = 0; i < emails.length; i += BATCH_SIZE) {
       const batch = emails.slice(i, i + BATCH_SIZE);
-      
+
       const resendRes = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${RESEND_API_KEY}`
+          'Authorization': `Bearer ${resendApiKey}`,
         },
         body: JSON.stringify({
-          from: FROM_EMAIL,
-          to: FROM_EMAIL, // Send to self, BCC to users to protect privacy
+          from: fromEmail,
+          to: fromEmail, // Send to self, BCC to users to protect privacy
           bcc: batch,
-          subject: subject,
+          subject,
           text: body,
-          // Optional: HTML version could be added here
-        })
+        }),
       });
 
       if (!resendRes.ok) {
-        const err = await resendRes.json();
+        const err = await resendRes.json().catch(() => ({ message: resendRes.statusText }));
+        lastResendError = err?.message || err?.error || `Resend HTTP ${resendRes.status}`;
         console.error(`Resend API Error on batch ${i}:`, err);
-        // Continue to next batch even if one fails, or choose to abort.
       } else {
         sentCount += batch.length;
       }
     }
 
-    // 4. Save delivery history
+    if (sentCount === 0) {
+      return NextResponse.json(
+        { error: `メール送信に失敗しました: ${lastResendError || 'Resend API Error'}`, sentCount: 0 },
+        { status: 502 }
+      );
+    }
+
+    // 4. Save delivery history (with admin_config fallback if newsletters table does not exist)
+    const historyRecord = {
+      id: crypto.randomUUID(),
+      subject,
+      body,
+      target_tier: targetTier,
+      sent_count: sentCount,
+      promo_code_id: promoCodeId || null,
+      sent_at: new Date().toISOString(),
+    };
+
     const { error: insertError } = await supabase.from('newsletters').insert({
       subject,
       body,
       target_tier: targetTier,
       sent_count: sentCount,
-      promo_code_id: promoCodeId || null
+      promo_code_id: promoCodeId || null,
     });
 
     if (insertError) {
-      console.error('Failed to save newsletter history:', insertError);
+      const fbHistory = await getFallbackJson<any[]>('fallback_newsletters', []);
+      const nextHistory = [historyRecord, ...(Array.isArray(fbHistory) ? fbHistory : [])].slice(0, 50);
+      await setFallbackJson('fallback_newsletters', nextHistory);
     }
 
-    return NextResponse.json({ 
-      message: 'Newsletter sent successfully', 
-      sentCount: sentCount 
+    return NextResponse.json({
+      message: 'Newsletter sent successfully',
+      sentCount,
     });
-
   } catch (error: any) {
     console.error('Newsletter sending error:', error);
     return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });

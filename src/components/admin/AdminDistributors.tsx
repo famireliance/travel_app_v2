@@ -10,6 +10,45 @@ import {
   Printer
 } from 'lucide-react';
 import StorePopModal from './StorePopModal';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+
+const STORE_ISLAND_ALIASES: Record<string, string> = {
+  ishigaki: '392',
+  ishigakijima: '392',
+  miyako: '386',
+  miyakojima: '386',
+  hachijo: '56',
+  hachijojima: '56',
+  aogashima: '58',
+  chichijima: '63',
+  hahajima: '64',
+  oshima: '49',
+  izuoshima: '49',
+  amami: '352',
+  amamioshima: '352',
+  taketomi: '393',
+  iriomote: '396',
+  yonaguni: '401',
+  yakushima: '340',
+  tanegashima: '339',
+  kumejima: '380',
+  shodoshima: '197',
+  naoshima: '195',
+  sado: '76',
+};
+
+function resolveStoreIslandSlug(rawIslandId: string): string {
+  const trimmed = String(rawIslandId || '').trim();
+  const lower = trimmed.toLowerCase();
+  if (!trimmed) return rawIslandId;
+  const direct =
+    ALL_ISLANDS_MASTER_DICTIONARY[trimmed] ||
+    (STORE_ISLAND_ALIASES[lower] ? ALL_ISLANDS_MASTER_DICTIONARY[STORE_ISLAND_ALIASES[lower]] : undefined) ||
+    Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+      (i: any) => String(i.slug || '').toLowerCase() === lower || String(i.name || '') === trimmed
+    );
+  return direct?.slug || String(direct?.id || trimmed);
+}
 
 interface DistributorStore {
   id?: string;
@@ -104,8 +143,8 @@ export default function AdminDistributors({ password }: { password: string }) {
   };
 
   const getStoreUrl = (store: DistributorStore) => {
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://island.kira-tabi.com';
-    return `${origin}/island/${store.island_id}?ref_store=${store.referral_code}`;
+    const slugOrId = resolveStoreIslandSlug(store.island_id);
+    return `https://island.kira-tabi.com/island/${encodeURIComponent(slugOrId)}?ref_store=${encodeURIComponent(store.referral_code)}`;
   };
 
   // コードごとのタイマー参照（複数アイテムを素早くコピーしたときのタイマー競合を防止）

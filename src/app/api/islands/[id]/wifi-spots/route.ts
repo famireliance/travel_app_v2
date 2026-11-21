@@ -1,13 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getWifiSpots, getCellNoteForIsland } from '@/lib/wifiStore';
+import { verifyUserAuth } from '@/lib/userAuth';
 
 export async function GET(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const { id } = await params;
     const islandId = id.toLowerCase();
+    const auth = await verifyUserAuth(req);
+    const isAuthenticated = Boolean(auth.user);
+
     const [allSpots, cellNote] = await Promise.all([
       getWifiSpots(islandId),
       getCellNoteForIsland(islandId),
@@ -17,8 +21,9 @@ export async function GET(
       name: s.name,
       location: s.location,
       ssid: s.ssid,
-      hasPassword: s.has_password,
-      password: s.has_password ? s.password : undefined,
+      has_password: Boolean(s.has_password),
+      hasPassword: Boolean(s.has_password),
+      ...(isAuthenticated && s.has_password ? { password: s.password } : {}),
       authMethod: s.auth_method,
       note: s.notes,
     }));

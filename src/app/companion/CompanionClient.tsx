@@ -16,8 +16,9 @@ type ViewMode = 'COMPANION' | 'FAIRIES';
 
 export default function CompanionClient() {
   const router = useRouter();
-  const { totalXP, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, user, allFairies } = useTravel();
-  const playerLvInfo = getPlayerLevelInfo(totalXP);
+  const { totalXP, totalPoints, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, user, allFairies } = useTravel();
+  const effectiveXP = Math.max(totalXP || 0, totalPoints || 0);
+  const playerLvInfo = getPlayerLevelInfo(effectiveXP);
   
   const [viewMode, setViewMode] = useState<ViewMode>('COMPANION');
   const [activeTab, setActiveTab] = useState<CompanionId>(selectedCompanionId);
@@ -133,11 +134,11 @@ export default function CompanionClient() {
                     <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden mb-3">
                       <div 
                         className="h-full bg-gradient-to-r from-blue-500 to-indigo-400 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                        style={{ width: `${Math.min(100, (totalXP / (playerLvInfo.level * 100)) * 100)}%` }}
+                        style={{ width: `${Math.min(100, playerLvInfo.progressPct || 0)}%` }}
                       />
                     </div>
                     <div className="flex justify-between text-xs text-slate-400">
-                      <span>累計XP: {totalXP}</span>
+                      <span>累計XP: {effectiveXP.toLocaleString()}</span>
                       <span>次のレベル・進化まで あと少し</span>
                     </div>
                   </motion.div>

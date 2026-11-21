@@ -2,13 +2,15 @@
 
 import React, { useEffect, useState, useMemo } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Loader2, BookOpen, Printer, Search, Download, ShieldCheck } from 'lucide-react';
+import { Loader2, BookOpen, Printer, Search, Download } from 'lucide-react';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 export default function BizPortalLedger() {
   const [loading, setLoading] = useState(true);
   const [ledgers, setLedgers] = useState<any[]>([]);
   const [accId, setAccId] = useState<string | null>(null);
   const [accName, setAccName] = useState<string>('');
+  const [islandName, setIslandName] = useState<string>('');
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
@@ -17,34 +19,89 @@ export default function BizPortalLedger() {
 
   async function fetchLedgers() {
     setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
+    try {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        setLoading(false);
+        return;
+      }
+
+      // Primary: read merged guest_ledgers + admin_config fallback via /api/b2b/reservations
+      const resp = await fetch('/api/b2b/reservations', {
+        headers: {
+          Authorization: `Bearer ${session.access_token}`,
+        },
+      });
+
+      if (resp.ok) {
+        const json = await resp.json();
+        if (json.accommodation) {
+          setAccId(json.accommodation.id);
+          setAccName(json.accommodation.name || '');
+          setIslandName(
+            json.accommodation.island_name ||
+              ALL_ISLANDS_MASTER_DICTIONARY[String(json.accommodation.island_id || '').trim()]
+                ?.name ||
+              ''
+          );
+          setLedgers(Array.isArray(json.ledgers) ? json.ledgers : []);
+        }
+        setLoading(false);
+        return;
+      }
+
+      // Fallback client query with .maybeSingle() and super_admin support
+      const user = session.user;
+      const { data: profile } = await supabase
+        .from('user_profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+
+      let { data: acc } = await supabase
+        .from('accommodations')
+        .select('id, name, island_id')
+        .eq('owner_id', user.id)
+        .limit(1)
+        .maybeSingle();
+
+      if (!acc && profile?.role === 'super_admin') {
+        const { data: fallbackAcc } = await supabase
+          .from('accommodations')
+          .select('id, name, island_id')
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        acc = fallbackAcc;
+      }
+
+      if (acc) {
+        setAccId(acc.id);
+        setAccName(acc.name || '');
+        setIslandName(
+          ALL_ISLANDS_MASTER_DICTIONARY[String(acc.island_id || '').trim()]?.name || ''
+        );
+        const { data: ledgerData } = await supabase
+          .from('guest_ledgers')
+          .select(
+            `
+            *,
+            reservations(check_in_date, check_out_date, guest_count)
+          `
+          )
+          .eq('accommodation_id', acc.id)
+          .order('created_at', { ascending: false });
+
+        if (ledgerData) setLedgers(ledgerData);
+      }
+    } catch (err) {
+      console.error('Failed to load ledgers:', err);
+    } finally {
       setLoading(false);
-      return;
     }
-
-    const { data: acc } = await supabase
-      .from('accommodations')
-      .select('id, name')
-      .eq('owner_id', user.id)
-      .limit(1)
-      .single();
-
-    if (acc) {
-      setAccId(acc.id);
-      setAccName(acc.name || '');
-      const { data: ledgerData } = await supabase
-        .from('guest_ledgers')
-        .select(`
-          *,
-          reservations(check_in_date, check_out_date, guest_count)
-        `)
-        .eq('accommodation_id', acc.id)
-        .order('created_at', { ascending: false });
-      
-      if (ledgerData) setLedgers(ledgerData);
-    }
-    setLoading(false);
   }
 
   const handlePrint = () => {
@@ -54,12 +111,13 @@ export default function BizPortalLedger() {
   const filteredLedgers = useMemo(() => {
     if (!searchQuery.trim()) return ledgers;
     const q = searchQuery.toLowerCase();
-    return ledgers.filter(l => 
-      (l.name && l.name.toLowerCase().includes(q)) ||
-      (l.address && l.address.toLowerCase().includes(q)) ||
-      (l.occupation && l.occupation.toLowerCase().includes(q)) ||
-      (l.previous_location && l.previous_location.toLowerCase().includes(q)) ||
-      (l.next_location && l.next_location.toLowerCase().includes(q))
+    return ledgers.filter(
+      (l) =>
+        (l.name && l.name.toLowerCase().includes(q)) ||
+        (l.address && l.address.toLowerCase().includes(q)) ||
+        (l.occupation && l.occupation.toLowerCase().includes(q)) ||
+        (l.previous_location && l.previous_location.toLowerCase().includes(q)) ||
+        (l.next_location && l.next_location.toLowerCase().includes(q))
     );
   }, [ledgers, searchQuery]);
 
@@ -69,26 +127,41 @@ export default function BizPortalLedger() {
       return;
     }
 
-    const headers = ['チェックイン日', 'チェックアウト日', '宿泊人数', '氏名', '年齢', '職業', '住所', '前泊地', '次泊地', '登録日時'];
-    const rows = filteredLedgers.map(l => [
+    const headers = [
+      'チェックイン日',
+      'チェックアウト日',
+      '宿泊人数',
+      '氏名',
+      '年齢',
+      '職業',
+      '住所',
+      '前泊地',
+      '次泊地',
+      '登録日時',
+    ];
+    const rows = filteredLedgers.map((l) => [
       l.reservations?.check_in_date || '',
       l.reservations?.check_out_date || '',
       l.reservations?.guest_count ? `${l.reservations.guest_count}名` : '',
-      l.name || '',
-      l.age ? `${l.age}歳` : '',
-      l.occupation || '',
+      `"${(l.name || '').replace(/"/g, '""')}"`,
+      l.age != null ? `${l.age}歳` : '',
+      `"${(l.occupation || '').replace(/"/g, '""')}"`,
       `"${(l.address || '').replace(/"/g, '""')}"`,
       `"${(l.previous_location || '').replace(/"/g, '""')}"`,
       `"${(l.next_location || '').replace(/"/g, '""')}"`,
-      l.created_at ? new Date(l.created_at).toLocaleString('ja-JP') : ''
+      l.created_at ? new Date(l.created_at).toLocaleString('ja-JP') : '',
     ]);
 
-    const csvContent = '\uFEFF' + [headers.join(','), ...rows.map(r => r.join(','))].join('\r\n');
+    const csvContent =
+      '\uFEFF' + [headers.join(','), ...rows.map((r) => r.join(','))].join('\r\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.setAttribute('href', url);
-    link.setAttribute('download', `宿泊台帳_${accName || 'KIRATABI'}_${new Date().toISOString().slice(0, 10)}.csv`);
+    link.setAttribute(
+      'download',
+      `宿泊台帳_${accName || 'KIRATABI'}_${new Date().toISOString().slice(0, 10)}.csv`
+    );
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -98,7 +171,9 @@ export default function BizPortalLedger() {
     return (
       <div className="flex flex-col items-center justify-center h-64 gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-        <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">Loading Ledgers...</span>
+        <span className="text-xs text-slate-400 font-bold uppercase tracking-wider">
+          Loading Ledgers...
+        </span>
       </div>
     );
   }
@@ -117,7 +192,7 @@ export default function BizPortalLedger() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <span className="text-[0.65rem] font-bold tracking-widest text-indigo-600 uppercase block mb-1">
-            RYOKAN BUSINESS ACT COMPLIANT
+            RYOKAN BUSINESS ACT COMPLIANT {islandName ? `• ${islandName}` : ''}
           </span>
           <h2 className="text-2xl font-bold text-slate-900 font-serif flex items-center gap-2">
             <BookOpen className="w-6 h-6 text-indigo-600" />
@@ -128,14 +203,14 @@ export default function BizPortalLedger() {
           </p>
         </div>
         <div className="flex gap-2 print:hidden">
-          <button 
-            onClick={handleExportCSV} 
+          <button
+            onClick={handleExportCSV}
             className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-colors"
           >
             <Download className="w-4 h-4" /> CSV出力
           </button>
-          <button 
-            onClick={handlePrint} 
+          <button
+            onClick={handlePrint}
             className="px-4 py-2.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-xs rounded-xl flex items-center gap-1.5 shadow-sm transition-colors"
           >
             <Printer className="w-4 h-4" /> 印刷
@@ -147,8 +222,8 @@ export default function BizPortalLedger() {
         <div className="p-4 border-b border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 bg-slate-50/70 print:hidden">
           <div className="relative w-full sm:w-72">
             <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="氏名・住所・職業などで検索..."
@@ -164,7 +239,9 @@ export default function BizPortalLedger() {
           <div className="p-12 text-center text-slate-500 font-medium space-y-3">
             <BookOpen className="w-12 h-12 text-slate-200 mx-auto" />
             <p className="font-bold text-slate-700 text-sm">宿泊台帳データはありません</p>
-            <p className="text-xs text-slate-400">ゲストが事前チェックインを送信すると、ここに自動反映されます。</p>
+            <p className="text-xs text-slate-400">
+              ゲストが事前チェックインを送信すると、ここに自動反映されます。
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -185,15 +262,29 @@ export default function BizPortalLedger() {
                 {filteredLedgers.map((ledger) => (
                   <tr key={ledger.id} className="hover:bg-indigo-50/30 transition-colors">
                     <td className="px-4 py-3 font-medium text-slate-900 whitespace-nowrap font-mono">
-                      {ledger.reservations?.check_in_date ? new Date(ledger.reservations.check_in_date).toLocaleDateString('ja-JP') : '-'}
+                      {ledger.reservations?.check_in_date
+                        ? new Date(ledger.reservations.check_in_date).toLocaleDateString('ja-JP')
+                        : '-'}
                     </td>
-                    <td className="px-4 py-3 font-bold text-slate-900 whitespace-nowrap">{ledger.name}</td>
-                    <td className="px-4 py-3 whitespace-nowrap font-mono">{ledger.age}歳</td>
-                    <td className="px-4 py-3 whitespace-nowrap text-slate-700">{ledger.occupation}</td>
+                    <td className="px-4 py-3 font-bold text-slate-900 whitespace-nowrap">
+                      {ledger.name}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap font-mono">
+                      {ledger.age != null ? `${ledger.age}歳` : '-'}
+                    </td>
+                    <td className="px-4 py-3 whitespace-nowrap text-slate-700">
+                      {ledger.occupation}
+                    </td>
                     <td className="px-4 py-3 text-slate-600">{ledger.address}</td>
-                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{ledger.previous_location}</td>
-                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">{ledger.next_location}</td>
-                    <td className="px-4 py-3 font-medium whitespace-nowrap">{ledger.reservations?.guest_count || '-'} 名</td>
+                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                      {ledger.previous_location}
+                    </td>
+                    <td className="px-4 py-3 text-slate-600 whitespace-nowrap">
+                      {ledger.next_location}
+                    </td>
+                    <td className="px-4 py-3 font-medium whitespace-nowrap">
+                      {ledger.reservations?.guest_count || '-'} 名
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -202,7 +293,9 @@ export default function BizPortalLedger() {
         )}
       </div>
 
-      <style dangerouslySetInnerHTML={{__html: `
+      <style
+        dangerouslySetInnerHTML={{
+          __html: `
         @media print {
           body * {
             visibility: hidden;
@@ -217,8 +310,9 @@ export default function BizPortalLedger() {
             width: 100%;
           }
         }
-      `}} />
+      `,
+        }}
+      />
     </div>
   );
 }
-

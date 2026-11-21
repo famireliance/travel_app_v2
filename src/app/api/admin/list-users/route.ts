@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
   });
 
   // Supabase Auth から全ユーザーを取得
-  const { data: authData, error: authError } = await adminClient.auth.admin.listUsers();
+  const { data: authData, error: authError } = await adminClient.auth.admin.listUsers({ page: 1, perPage: 1000 });
   if (authError) return NextResponse.json({ error: authError.message }, { status: 500 });
 
   // user_profiles & user_gamification & island_visits を一括取得

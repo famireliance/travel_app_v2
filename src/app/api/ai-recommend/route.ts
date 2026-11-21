@@ -171,7 +171,7 @@ ${islandListString}
           if (text.includes(kw)) score += 10;
         }
         if (q.includes('海') && (isl.prefecture === '沖縄県' || isl.prefecture === '鹿児島県' || isl.prefecture === '東京都')) score += 5;
-        if (q.includes('温泉') && (text.includes('温泉') || ['66', '71', '74', '330'].includes(String(isl.id)))) score += 12;
+        if (q.includes('温泉') && (text.includes('温泉') || ['49', '52', '56', '340'].includes(String(isl.id)))) score += 12;
         if (q.includes('アート') && (isl.prefecture === '香川県' || text.includes('アート') || text.includes('美術館'))) score += 12;
         if (q.includes('日帰り') && isl.day_trip) score += 8;
         return { isl, score };

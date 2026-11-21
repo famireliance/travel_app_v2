@@ -1,9 +1,15 @@
 'use client';
 
+import React, { Suspense } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { XCircle, Home, RefreshCw } from 'lucide-react';
 
-export default function OrderCancelPage() {
+function OrderCancelContent() {
+  const searchParams = useSearchParams();
+  const islandId = searchParams.get('island_id');
+  const retryHref = islandId ? `/island/${encodeURIComponent(islandId)}` : '/islands';
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center p-6">
       <div className="max-w-md w-full text-center">
@@ -19,11 +25,19 @@ export default function OrderCancelPage() {
           <Link href="/" className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-xl font-bold transition-colors">
             <Home size={18} /> トップに戻る
           </Link>
-          <Link href="/mypage" className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-3 rounded-xl font-bold transition-colors">
-            <RefreshCw size={18} /> もう一度試す
+          <Link href={retryHref} className="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 px-6 py-3 rounded-xl font-bold transition-colors">
+            <RefreshCw size={18} /> {islandId ? '島のページに戻って試す' : '島一覧からもう一度試す'}
           </Link>
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderCancelPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-900" />}>
+      <OrderCancelContent />
+    </Suspense>
   );
 }

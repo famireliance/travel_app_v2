@@ -1,214 +1,307 @@
-'use client';
-
-import React, { useEffect, useState, useMemo } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { ArrowLeft, Search, Compass, ExternalLink, Hotel } from 'lucide-react';
-import regionsData from '../../../data/regions.json';
+import React from 'react';
 import Link from 'next/link';
-import { getRakutenTravelSearchUrl } from '@/data/islandFacilitiesData';
-import MapClient from '@/components/Map/MapClient';
-import SearchModal from '@/components/SearchModal';
-import { fetchAllIslands } from '@/lib/supabase';
+import { notFound } from 'next/navigation';
+import { Metadata } from 'next';
+import regionsData from '@/data/regions.json';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
-import Breadcrumb from '@/components/Breadcrumb';
+import { getIslandDifficulty } from '@/lib/difficulty';
+import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
+import { getPrefectureByName } from '@/data/seoTaxonomies';
+import RegionMapSection from './RegionMapSection';
+import { Navigation, ArrowRight, HelpCircle, Compass, MapPin } from 'lucide-react';
 
-interface IslandData {
-  id: string;
-  name: string;
-  region_id?: string;
-  coordinates?: string;
-  prefecture?: string;
-  slug?: string;
+function findRegion(rawId: string) {
+  let decoded = rawId;
+  try {
+    decoded = decodeURIComponent(rawId);
+  } catch {}
+  return regionsData.find(
+    (r) =>
+      r.id === rawId ||
+      r.id === decoded ||
+      r.name === rawId ||
+      r.name === decoded ||
+      r.area === rawId ||
+      r.area === decoded
+  );
 }
 
-export default function RegionMap() {
-  const params = useParams();
-  const router = useRouter();
-  const rawRegionId = (params?.id as string) || '';
-  let decodedRegionId = rawRegionId;
-  try { decodedRegionId = decodeURIComponent(rawRegionId); } catch {}
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getIslandsForRegion(region: { id: string; name: string }): any[] {
+  return Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter((i) => {
+    if (i.is_conquest_target === false || i.is_published === false) return false;
+    if (region.id === 'okinawa_main') return i.region_id === 'okinawa_main' || i.region_id === 'kume';
+    if (region.id === 'kume') return i.region_id === 'kume' || String(i.id) === '382' || String(i.id) === '383';
+    return i.region_id === region.id || i.region_id === region.name;
+  });
+}
 
-  const region = useMemo(() => regionsData.find(r => 
-    r.id === rawRegionId || 
-    r.id === decodedRegionId || 
-    r.name === rawRegionId || 
-    r.name === decodedRegionId ||
-    r.area === rawRegionId ||
-    r.area === decodedRegionId
-  ), [rawRegionId, decodedRegionId]);
+export function generateStaticParams() {
+  return regionsData.map((r) => ({ id: r.id }));
+}
 
-  const initialRegionIslands = useMemo(() => {
-    if (!region) return [];
-    return Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter((i: any) => {
-      if (i.is_conquest_target === false) return false;
-      if (region.id === 'okinawa_main') return i.region_id === 'okinawa_main' || i.region_id === 'kume';
-      if (region.id === 'kume') return i.region_id === 'kume' || String(i.id) === '382' || String(i.id) === '383';
-      return i.region_id === region.id || 
-        i.region_id === region.name || 
-        i.prefecture?.includes(region.name);
-    }) as unknown as IslandData[];
-  }, [region]);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const region = findRegion(id);
+  if (!region) return {};
 
-  const [regionIslands, setRegionIslands] = useState<IslandData[]>(initialRegionIslands);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const islands = getIslandsForRegion(region);
+  const sampleNames = islands
+    .slice(0, 4)
+    .map((i) => i.name)
+    .join('・');
+  const title = `${region.name}の離島一覧（全${islands.length}島）｜行き方・フェリー・日帰り観光マップ`;
+  const description = `${region.area}エリア「${region.name}」に属する全${islands.length}島（${sampleNames}など）の位置関係マップと行き方・所要時間・日帰り可否・ATMや電波などの島内設備を比較できる完全ガイド。`;
+  const canonicalUrl = `https://island.kira-tabi.com/region/${region.id}`;
 
-  useEffect(() => {
-    setRegionIslands(initialRegionIslands);
-    if (!region) return;
-    fetchAllIslands()
-      .then(islands => {
-        const filtered = (islands || []).filter((i: any) => {
-          if (region.id === 'okinawa_main') return i.region_id === 'okinawa_main' || i.region_id === 'kume';
-          if (region.id === 'kume') return i.region_id === 'kume' || String(i.id) === '382' || String(i.id) === '383';
-          return i.region_id === region.id || 
-            i.region_id === region.name || 
-            i.prefecture?.includes(region.name);
-        });
-        if (filtered.length > 0) {
-          setRegionIslands(filtered as unknown as IslandData[]);
-        }
-      })
-      .catch(err => {
-        console.error("Failed to load map data", err);
-      });
-  }, [rawRegionId, region, initialRegionIslands]);
+  return {
+    title,
+    description,
+    alternates: { canonical: canonicalUrl },
+    keywords: [
+      region.name,
+      `${region.name} 島 一覧`,
+      `${region.name} 行き方`,
+      `${region.name} フェリー`,
+      `${region.name} 日帰り`,
+      `${region.area} 離島`,
+      '輝旅 島専科',
+    ],
+    openGraph: {
+      title: `${title} | 輝旅 島専科`,
+      description,
+      url: canonicalUrl,
+      siteName: '輝旅 島専科（KIRATABI SHIMASENKA）',
+      images: [{ url: '/og-image.png', width: 1200, height: 630 }],
+      locale: 'ja_JP',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${title} | 輝旅 島専科`,
+      description,
+      images: ['/og-image.png'],
+    },
+  };
+}
 
-  // Compute bounding box based on islands
-  let bounds: [[number, number], [number, number]] | undefined;
-  if (regionIslands.length > 0) {
-    const validCoords = regionIslands
-      .filter(i => i.coordinates)
-      .map(i => {
-        const [lat, lng] = i.coordinates!.split(',').map(parseFloat);
-        return { lat, lng };
-      })
-      .filter(c => !isNaN(c.lat) && !isNaN(c.lng));
+export default async function RegionPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const region = findRegion(id);
+  if (!region) notFound();
 
-    if (validCoords.length > 0) {
-      const lats = validCoords.map(c => c.lat);
-      const lngs = validCoords.map(c => c.lng);
-      const minLat = Math.min(...lats);
-      const maxLat = Math.max(...lats);
-      const minLng = Math.min(...lngs);
-      const maxLng = Math.max(...lngs);
-      
-      const padLat = Math.max(0.2, (maxLat - minLat) * 0.3);
-      const padLng = Math.max(0.2, (maxLng - minLng) * 0.3);
-      bounds = [[minLat - padLat, minLng - padLng], [maxLat + padLat, maxLng + padLng]];
-    }
-  }
+  const islands = getIslandsForRegion(region);
+  const canonicalUrl = `https://island.kira-tabi.com/region/${region.id}`;
+  const sampleNames = islands
+    .slice(0, 5)
+    .map((i) => i.name)
+    .join('・');
 
-  if (!region) return (
-    <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center text-slate-600 font-serif gap-4"><p>指定されたエリアは見つかりませんでした。</p><button onClick={() => router.push('/')} className="px-6 py-2 bg-blue-600 text-white rounded-xl">トップへ戻る</button></div>
-  );
+  const dayTripCount = islands.filter((i) => getIslandInfrastructure(i).day_trip).length;
+  const sameAreaRegions = regionsData.filter((r) => r.area === region.area && r.id !== region.id);
+  const mainPref = getPrefectureByName(islands[0]?.prefecture);
+
+  const faqItems = [
+    {
+      q: `${region.name}にはどのくらいの離島がありますか？`,
+      a: `輝旅 島専科では、${region.name}（${region.area}エリア）の上陸・制覇対象離島として全${islands.length}島（${sampleNames}など）を収録しています。ページ上部の地図ピンおよび下部の比較一覧表から各島の詳細を確認できます。`,
+    },
+    {
+      q: `${region.name}で日帰り観光できる島はありますか？`,
+      a:
+        dayTripCount > 0
+          ? `はい、${region.name}には連絡橋・海中道路または短時間の定期船により日帰り訪問が可能な島が約${dayTripCount}島あります。天候や最終便時刻にご注意のうえ計画してください。`
+          : `${region.name}の島々は船便の本数や航海時間の関係上、島内での宿泊を伴うゆとりある旅程が推奨されます。各島ページの航路・宿情報をご確認ください。`,
+    },
+  ];
+
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://island.kira-tabi.com/' },
+          { '@type': 'ListItem', position: 2, name: '日本全国離島一覧', item: 'https://island.kira-tabi.com/islands' },
+          { '@type': 'ListItem', position: 3, name: region.name, item: canonicalUrl },
+        ],
+      },
+      {
+        '@type': 'CollectionPage',
+        name: `${region.name}の離島一覧（全${islands.length}島）`,
+        description: `${region.area}エリア「${region.name}」の離島マップ・アクセス・設備比較ガイド。`,
+        url: canonicalUrl,
+        mainEntity: {
+          '@type': 'ItemList',
+          numberOfItems: islands.length,
+          itemListElement: islands.map((isl, idx) => ({
+            '@type': 'ListItem',
+            position: idx + 1,
+            name: isl.name,
+            url: `https://island.kira-tabi.com/island/${isl.slug || isl.id}`,
+          })),
+        },
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      },
+    ],
+  };
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] overflow-hidden fixed inset-0 flex flex-col font-sans">
-      
-      {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-[1000] px-6 lg:px-12 pt-12 lg:pt-8 pb-6 flex items-center justify-between pointer-events-none">
-        <button 
-          onClick={() => {
-            if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
-              router.back();
-            } else {
-              router.push('/map');
-            }
-          }} 
-          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
-          title="前のページに戻る"
-        >
-          <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={1.5} />
-        </button>
-        
-        <div className="text-center flex-1 mx-4 drop-shadow-md">
-          <p className="text-[0.65rem] lg:text-xs text-slate-600 font-bold tracking-[0.3em] uppercase mb-1 drop-shadow-sm">{region.enName}</p>
-          <h1 className="font-serif font-bold text-2xl lg:text-4xl text-slate-900 tracking-widest drop-shadow-sm">{region.name}</h1>
-        </div>
-        
-        <button 
-          onClick={() => setIsSearchOpen(true)}
-          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
-        >
-          <Search className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={1.5} />
-        </button>
-      </header>
+    <main className="min-h-screen bg-[#F8FAFC] pb-24 font-sans text-slate-800">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
-      {/* Breadcrumb Overlay */}
-      <div className="absolute top-28 lg:top-24 left-6 lg:left-12 z-[1000] pointer-events-auto">
-        <Breadcrumb 
-          items={[
-            { label: '日本全国離島マップ', href: '/map' },
-            { label: region.name }
-          ]} 
-          className="mb-0"
-        />
-      </div>
+      {/* 上部インタラクティブ諸島マップ */}
+      <RegionMapSection region={region} initialIslands={islands} />
 
-      {/* Map Area */}
-      <div className="flex-1 relative w-full h-full z-0">
-        <MapClient islands={regionIslands} bounds={bounds} />
-
-        {regionIslands.length === 0 && (
-          <div className="absolute inset-0 z-[1000] flex items-center justify-center p-6 bg-slate-900/30 backdrop-blur-xs pointer-events-none">
-            <div className="bg-white/95 rounded-2xl shadow-xl p-6 max-w-md text-center pointer-events-auto border border-slate-200 space-y-3">
-              <Compass className="w-10 h-10 text-blue-500 mx-auto opacity-80" />
-              <h3 className="font-serif font-bold text-slate-800 text-base">{region.name}の島データを準備中</h3>
-              <p className="text-xs text-slate-500 leading-relaxed">
-                現在、この諸島・エリアの島データを整備しています。全離島マップから他の島々をお探しいただけます。
-              </p>
-              <Link
-                href="/map"
-                className="inline-block px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-xl shadow hover:bg-blue-700 transition"
-              >
-                全国離島マップへ戻る
-              </Link>
+      {/* 下部：検索エンジン＆ユーザー向け可視ガイド・比較一覧表 */}
+      <div className="max-w-5xl mx-auto px-6 py-12 space-y-12">
+        <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-6 mb-6 border-b border-slate-100">
+            <div>
+              <div className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 mb-2">
+                <MapPin className="w-3.5 h-3.5" />
+                {region.area}エリア
+                {mainPref && (
+                  <>
+                    <span>・</span>
+                    <Link href={`/prefecture/${mainPref.slug}`} className="underline hover:text-blue-800">
+                      {mainPref.name}の離島一覧を見る
+                    </Link>
+                  </>
+                )}
+              </div>
+              <h1 className="text-2xl md:text-3xl font-serif font-bold text-slate-900">
+                {region.name}の離島一覧・行き方＆設備比較（全{islands.length}島）
+              </h1>
             </div>
+            <Link
+              href="/islands"
+              className="text-xs md:text-sm font-bold text-slate-600 hover:text-blue-600 shrink-0"
+            >
+              ← 全国481島ディレクトリへ
+            </Link>
           </div>
+
+          <p className="text-sm text-slate-600 leading-relaxed mb-8">
+            {region.name}に属する上陸対象{islands.length}島（{sampleNames}ほか）のアクセス方法・日帰り訪問の目安・冒険難易度を一覧で比較できます。島名をタップすると、フェリー時刻の目安・宿・島内ATMや売店・携帯電波・口コミ「島ノート」を確認できます。
+          </p>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs md:text-sm border-collapse">
+              <thead>
+                <tr className="border-b border-slate-200 text-slate-500 bg-slate-50/80">
+                  <th className="py-3 px-3 font-bold">島名</th>
+                  <th className="py-3 px-3 font-bold whitespace-nowrap">都道府県</th>
+                  <th className="py-3 px-3 font-bold">アクセス・特徴</th>
+                  <th className="py-3 px-3 font-bold whitespace-nowrap">訪問目安</th>
+                  <th className="py-3 px-3 font-bold whitespace-nowrap">難易度</th>
+                  <th className="py-3 px-3 font-bold text-right whitespace-nowrap">ガイド</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {islands.map((isl) => {
+                  const diff = getIslandDifficulty(isl);
+                  const infra = getIslandInfrastructure(isl);
+                  return (
+                    <tr key={isl.id} className="hover:bg-blue-50/40 transition-colors">
+                      <td className="py-3.5 px-3 font-bold whitespace-nowrap">
+                        <Link
+                          href={`/island/${isl.slug || isl.id}`}
+                          className="text-blue-700 hover:underline font-serif text-sm md:text-base"
+                        >
+                          {isl.name}
+                        </Link>
+                      </td>
+                      <td className="py-3.5 px-3 text-slate-500 whitespace-nowrap">{isl.prefecture}</td>
+                      <td className="py-3.5 px-3 text-slate-600 max-w-sm">
+                        <p className="line-clamp-2">{isl.access || isl.description}</p>
+                      </td>
+                      <td className="py-3.5 px-3 whitespace-nowrap">
+                        <span
+                          className={`inline-block px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                            infra.day_trip
+                              ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                              : 'bg-amber-50 text-amber-800 border border-amber-200'
+                          }`}
+                        >
+                          {infra.day_trip_status}
+                        </span>
+                      </td>
+                      <td className="py-3.5 px-3 whitespace-nowrap text-xs font-bold text-slate-700">
+                        {diff.stars}
+                      </td>
+                      <td className="py-3.5 px-3 text-right whitespace-nowrap">
+                        <Link
+                          href={`/island/${isl.slug || isl.id}`}
+                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-blue-700 text-white text-xs font-bold transition-colors"
+                        >
+                          詳細 <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+          <h2 className="text-lg md:text-xl font-serif font-bold text-slate-900 flex items-center gap-2 mb-5">
+            <HelpCircle className="w-5 h-5 text-blue-600" />
+            {region.name}のよくある質問
+          </h2>
+          <div className="space-y-4">
+            {faqItems.map((f, idx) => (
+              <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                <h3 className="font-bold text-slate-900 text-sm mb-1.5">Q. {f.q}</h3>
+                <p className="text-xs md:text-sm text-slate-600 leading-relaxed">A. {f.a}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 周辺諸島リンク */}
+        {sameAreaRegions.length > 0 && (
+          <section className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-slate-200">
+            <h2 className="text-lg font-serif font-bold text-slate-900 flex items-center gap-2 mb-4">
+              <Compass className="w-5 h-5 text-blue-600" />
+              {region.area}エリアの他の諸島を見る
+            </h2>
+            <div className="flex flex-wrap gap-2.5">
+              {sameAreaRegions.map((r) => (
+                <Link
+                  key={r.id}
+                  href={`/region/${r.id}`}
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-slate-50 hover:bg-blue-50 border border-slate-200 hover:border-blue-200 text-xs font-bold text-slate-700 hover:text-blue-700 transition-colors"
+                >
+                  <Navigation className="w-3.5 h-3.5 text-blue-500" />
+                  {r.name}
+                </Link>
+              ))}
+            </div>
+          </section>
         )}
       </div>
-
-      {/* Affiliate Overlay */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 lg:bottom-12 lg:left-12 lg:translate-x-0 z-[1000] pointer-events-auto w-[90%] max-w-sm">
-        <a 
-          href={getRakutenTravelSearchUrl(region.name)}
-          target="_blank"
-          rel="noopener noreferrer sponsored"
-          className="flex flex-col gap-1.5 px-4 py-3 rounded-2xl bg-white/95 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-slate-200/60 transition-transform hover:scale-102 group"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[0.6rem] font-bold text-[#BF0000] uppercase tracking-widest bg-red-50 px-2 py-0.5 rounded-full">Rakuten Travel</span>
-            <ExternalLink className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#BF0000] transition-colors" />
-          </div>
-          <p className="text-sm font-bold text-slate-800 flex items-center gap-2 font-serif">
-            <Hotel className="w-4 h-4 text-[#BF0000]" />
-            {region.name}周辺の宿・ホテルを探す
-          </p>
-        </a>
-      </div>
-
-      {/* SEO & Accessibility Island Links */}
-      <div className="sr-only">
-        <p>{region.name}（{region.area}）に属する離島（全{regionIslands.length}島）のマップ・アクセス・観光ガイド。</p>
-        <nav aria-label={`${region.name}の島一覧`}>
-          <ul>
-            {regionIslands.map((island) => (
-              <li key={island.id}>
-                <Link href={`/island/${island.slug || island.id}`}>{island.name}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      <SearchModal 
-        isOpen={isSearchOpen} 
-        onClose={() => setIsSearchOpen(false)} 
-        onSelectIsland={(islandId: string) => {
-          setIsSearchOpen(false);
-          router.push(`/island/${islandId}`);
-        }}
-      />
     </main>
   );
 }

@@ -20,11 +20,12 @@ interface RankingUser {
 
 export default function RankingPage() {
   const router = useRouter();
-  const { user, totalVisited, totalPoints, travelerName, conquestTargetCount } = useTravel();
+  const { user, totalVisited, totalXP, totalPoints, travelerName, conquestTargetCount } = useTravel();
   const [rankingType, setRankingType] = useState<'visited' | 'points'>('visited');
   const [realRanking, setRealRanking] = useState<RankingUser[]>([]);
 
-  const ALL_ISLANDS_COUNT = conquestTargetCount || 506;
+  const ALL_ISLANDS_COUNT = conquestTargetCount || 369;
+  const effectiveMyXP = Math.max(totalXP || 0, totalPoints || 0);
 
   React.useEffect(() => {
     async function fetchRanking() {
@@ -40,24 +41,28 @@ export default function RankingPage() {
     fetchRanking();
   }, []);
 
-  // 実データをそのまま使用する
-  const fullRanking = [...realRanking];
+  // 実データをそのまま使用する（自身のXPはローカルと同期した最大値を反映）
+  const fullRanking = realRanking.map(r =>
+    user && r.id === user.id
+      ? { ...r, points: Math.max(r.points ?? 0, effectiveMyXP), visited: Math.max(r.visited ?? 0, totalVisited) }
+      : { ...r, points: r.points ?? 0, visited: r.visited ?? 0 }
+  );
   
   // 実データに自分がいない場合は自分を一時的に挿入して順位を見せる（0島でも参加しているように見せる）
   const isMeInRanking = fullRanking.some(r => r.id === user?.id);
   if (user && !isMeInRanking) {
-    const myLevel = getPlayerLevelInfo(totalPoints || 0);
+    const myLevel = getPlayerLevelInfo(effectiveMyXP);
     fullRanking.push({
       id: user.id,
       username: travelerName || user.email?.split('@')[0] || '冒険者',
       visited: totalVisited,
-      points: totalPoints,
+      points: effectiveMyXP,
       title: myLevel.title || '島旅ビギナー'
     });
   }
 
   // Sort
-  fullRanking.sort((a, b) => (b[rankingType] || 0) - (a[rankingType] || 0));
+  fullRanking.sort((a, b) => (b[rankingType] ?? 0) - (a[rankingType] ?? 0));
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] pb-24 font-sans">
@@ -120,7 +125,9 @@ export default function RankingPage() {
           {fullRanking.map((p, index) => {
             const isMe = user && p.id === user.id;
             const rank = index + 1;
-            const levelInfo = getPlayerLevelInfo(p.points);
+            const safePoints = p.points ?? 0;
+            const safeVisited = p.visited ?? 0;
+            const levelInfo = getPlayerLevelInfo(safePoints);
             
             return (
               <div 
@@ -176,20 +183,20 @@ export default function RankingPage() {
                     <div className="flex flex-col gap-1">
                       <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/80' : 'text-slate-500'}`}>
                         <span className="flex items-center gap-1.5"><Compass size={14} className={rankingType === 'visited' ? 'text-blue-500' : 'text-slate-400'}/> 制覇島数</span>
-                        <span className={rankingType === 'visited' ? 'text-blue-600 text-sm' : ''}>{p.visited} 島</span>
+                        <span className={rankingType === 'visited' ? 'text-blue-600 text-sm' : ''}>{safeVisited} 島</span>
                       </div>
                       <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
-                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.visited / ALL_ISLANDS_COUNT) * 100)}%` }} />
+                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (safeVisited / ALL_ISLANDS_COUNT) * 100)}%` }} />
                       </div>
                     </div>
                     
                     <div className="flex flex-col gap-1">
                       <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/80' : 'text-slate-500'}`}>
                         <span className="flex items-center gap-1.5"><Star size={14} className={rankingType === 'points' ? 'text-amber-500' : 'text-slate-400'}/> 冒険XP</span>
-                        <span className={rankingType === 'points' ? 'text-amber-600 text-sm' : ''}>{p.points.toLocaleString()} XP</span>
+                        <span className={rankingType === 'points' ? 'text-amber-600 text-sm' : ''}>{(p.points ?? 0).toLocaleString()} XP</span>
                       </div>
                       <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
-                        <div className={`h-full rounded-full ${rankingType === 'points' ? 'bg-amber-400' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (p.points / (levelInfo.nextLevelXP || p.points || 1)) * 100)}%` }} />
+                        <div className={`h-full rounded-full ${rankingType === 'points' ? 'bg-amber-400' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (safePoints / (levelInfo.nextLevelXP || safePoints || 1)) * 100)}%` }} />
                       </div>
                     </div>
                   </div>

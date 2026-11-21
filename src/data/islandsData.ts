@@ -3,6 +3,7 @@ import { ALL_ISLANDS_MASTER_DICTIONARY } from './allIslandsMaster';
 export interface LocalIsland {
   id: string;
   name: string;
+  slug?: string;
   region_id: string;
   prefecture: string;
   difficulty: number;
@@ -11,6 +12,9 @@ export interface LocalIsland {
   access?: string;
   tags?: string[];
   spots?: { name: string; desc: string }[];
+  image_url?: string;
+  hero_image_url?: string;
+  is_conquest_target?: boolean;
 }
 
 export const FALLBACK_ISLANDS: LocalIsland[] = Object.values(ALL_ISLANDS_MASTER_DICTIONARY)
@@ -18,6 +22,7 @@ export const FALLBACK_ISLANDS: LocalIsland[] = Object.values(ALL_ISLANDS_MASTER_
   .map((island: any) => ({
     id: island.id,
     name: island.name,
+    slug: island.slug || String(island.id),
     region_id: island.region_id || 'other',
     prefecture: island.prefecture || '',
     difficulty: island.difficulty === '未設定' ? 2 : (typeof island.difficulty === 'number' ? island.difficulty : 2),
@@ -25,5 +30,8 @@ export const FALLBACK_ISLANDS: LocalIsland[] = Object.values(ALL_ISLANDS_MASTER_
     description: island.description || '',
     access: island.access || '',
     tags: island.tags || [],
-    spots: island.spots || []
+    spots: island.spots || [],
+    image_url: island.image_url,
+    hero_image_url: island.hero_image_url,
+    is_conquest_target: island.is_conquest_target,
   }));

@@ -2,8 +2,17 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { CheckCircle2, Download, Home, Loader2 } from 'lucide-react';
+import { CheckCircle2, Home, Loader2 } from 'lucide-react';
 import Link from 'next/link';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+
+const PLAN_LABELS: Record<string, string> = {
+  standard: 'スタンダード版（台紙付き）',
+  frame_simple: '簡易フレーム装飾版',
+  frame_wood: '高級木製フレーム版',
+  frame_acrylic: 'アクリル額装プレミアム版',
+  anniversary: '1周年記念 特別版',
+};
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -71,14 +80,23 @@ function SuccessContent() {
           <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-6 mb-6 space-y-3">
             <h2 className="text-lg font-bold border-b border-white/20 pb-3 mb-4">📋 ご注文内容</h2>
             <div className="grid grid-cols-2 gap-2 text-sm">
+              <span className="text-blue-300">注文番号</span>
+              <span className="font-mono text-xs font-semibold">{orderInfo.orderNumber || '—'}</span>
               <span className="text-blue-300">島名</span>
-              <span className="font-semibold">{orderInfo.islandName || '—'}</span>
+              <span className="font-semibold">
+                {(orderInfo.islandId && ALL_ISLANDS_MASTER_DICTIONARY[String(orderInfo.islandId)]?.name) ||
+                  orderInfo.islandName ||
+                  orderInfo.islandId ||
+                  '—'}
+              </span>
               <span className="text-blue-300">旅人ネーム</span>
               <span className="font-semibold">{orderInfo.travelerName || '—'}</span>
               <span className="text-blue-300">プラン</span>
-              <span className="font-semibold">{orderInfo.plan === 'premium' ? 'プレミアム額装版' : 'スタンダード版'}</span>
+              <span className="font-semibold">
+                {(PLAN_LABELS[orderInfo.plan] || PLAN_LABELS.standard) + (orderInfo.laminated ? '（ラミネート加工あり）' : '')}
+              </span>
               <span className="text-blue-300">お支払い金額</span>
-              <span className="font-semibold text-green-300">¥{(orderInfo.amount || 0).toLocaleString()}</span>
+              <span className="font-semibold text-green-300">¥{(orderInfo.amount ?? 0).toLocaleString()}</span>
               <span className="text-blue-300">シリアルNo.</span>
               <span className="font-mono text-xs font-bold text-yellow-300">{orderInfo.serialNumber}</span>
             </div>

@@ -30,12 +30,63 @@ export async function GET(req: NextRequest) {
 
     if (error) {
       const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
-      return NextResponse.json({ contacts: fbContacts });
+      return NextResponse.json({ contacts: Array.isArray(fbContacts) ? fbContacts : [] });
     }
     return NextResponse.json({ contacts: contacts || [] });
   } catch (err: any) {
     console.error('[contacts GET]', err);
-    return NextResponse.json({ error: '内部エラーが発生しました' }, { status: 500 });
+    const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
+    return NextResponse.json({ contacts: Array.isArray(fbContacts) ? fbContacts : [] });
+  }
+}
+
+export async function POST(req: NextRequest) {
+  const user = await getAuthUser(req);
+  if (!user) {
+    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+  }
+  if (user.role === 'viewer') {
+    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+  }
+
+  try {
+    const body = await req.json();
+    const { name, email, category, message } = body;
+    if (!name || !email || !message) {
+      return NextResponse.json({ error: '必須項目が不足しています' }, { status: 400 });
+    }
+
+    const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
+      auth: { autoRefreshToken: false, persistSession: false }
+    });
+
+    const record = {
+      id: crypto.randomUUID(),
+      name: String(name).trim(),
+      email: String(email).trim(),
+      category: category || 'general',
+      message: String(message).trim(),
+      status: 'unread',
+      created_at: new Date().toISOString(),
+    };
+
+    const { data, error } = await adminClient
+      .from('contacts')
+      .insert([record])
+      .select()
+      .single();
+
+    if (error) {
+      const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
+      const list = Array.isArray(fbContacts) ? fbContacts : [];
+      list.unshift(record);
+      await setFallbackJson('fallback_contacts', list);
+      return NextResponse.json({ success: true, contact: record });
+    }
+
+    return NextResponse.json({ success: true, contact: data });
+  } catch (err: any) {
+    return NextResponse.json({ error: err.message || '登録に失敗しました' }, { status: 500 });
   }
 }
 
@@ -76,12 +127,13 @@ export async function PUT(req: NextRequest) {
     if (error) {
       // Fallback to admin_config storage
       const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
-      const idx = fbContacts.findIndex((c: any) => c.id === id);
+      const list = Array.isArray(fbContacts) ? fbContacts : [];
+      const idx = list.findIndex((c: any) => String(c.id) === String(id));
       if (idx === -1) {
         return NextResponse.json({ error: '対象のお問い合わせが見つかりません' }, { status: 404 });
       }
-      fbContacts[idx] = { ...fbContacts[idx], ...updateData };
-      await setFallbackJson('fallback_contacts', fbContacts);
+      list[idx] = { ...list[idx], ...updateData };
+      await setFallbackJson('fallback_contacts', list);
     }
 
     return NextResponse.json({ success: true, message: 'お問い合わせ対応状況を更新しました' });

@@ -159,11 +159,17 @@ export default function RentalCarLandingPage() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
         <div className="relative rounded-[2rem] overflow-hidden shadow-xl border border-slate-200/80 bg-slate-900">
           <div className="relative h-[320px] sm:h-[420px] md:h-[500px] w-full">
-            <img 
-              src={service.photoUrls[activeImageIndex] || service.photoUrls[0]} 
-              alt={service.name} 
-              className="w-full h-full object-cover transition-all duration-700 brightness-95"
-            />
+            {service.photoUrls.length > 0 ? (
+              <img 
+                src={service.photoUrls[activeImageIndex] || service.photoUrls[0]} 
+                alt={service.name} 
+                className="w-full h-full object-cover transition-all duration-700 brightness-95"
+              />
+            ) : (
+              <div className="w-full h-full bg-gradient-to-br from-blue-900 via-indigo-950 to-slate-900 flex items-center justify-center">
+                <Car className="w-20 h-20 text-white/15" />
+              </div>
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/30 to-transparent" />
 
             {/* Top Badges */}
@@ -171,9 +177,11 @@ export default function RentalCarLandingPage() {
               <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white font-bold text-xs rounded-full border border-white/20 pointer-events-auto flex items-center gap-1.5 shadow-md">
                 <MapPin className="w-3.5 h-3.5 text-blue-400" /> {service.islandName}
               </span>
-              <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white font-mono text-xs font-bold rounded-full border border-white/20 pointer-events-auto shadow-md">
-                📷 {activeImageIndex + 1} / {service.photoUrls.length}
-              </span>
+              {service.photoUrls.length > 0 && (
+                <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-white font-mono text-xs font-bold rounded-full border border-white/20 pointer-events-auto shadow-md">
+                  📷 {activeImageIndex + 1} / {service.photoUrls.length}
+                </span>
+              )}
             </div>
 
             {/* Bottom Title & Catchphrases */}
@@ -208,21 +216,23 @@ export default function RentalCarLandingPage() {
           </div>
 
           {/* Thumbnails */}
-          <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2 overflow-x-auto hide-scrollbar">
-            {service.photoUrls.map((img, idx) => (
-              <button
-                key={idx}
-                onClick={() => setActiveImageIndex(idx)}
-                className={`relative h-16 w-24 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
-                  activeImageIndex === idx 
-                    ? 'border-blue-500 ring-2 ring-blue-400/40 scale-102 shadow-sm' 
-                    : 'border-transparent opacity-70 hover:opacity-100'
-                }`}
-              >
-                <img src={img} alt={`サムネイル ${idx + 1}`} className="w-full h-full object-cover" />
-              </button>
-            ))}
-          </div>
+          {service.photoUrls.length > 1 && (
+            <div className="p-3 bg-slate-50 border-t border-slate-100 flex items-center gap-2 overflow-x-auto hide-scrollbar">
+              {service.photoUrls.map((img, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImageIndex(idx)}
+                  className={`relative h-16 w-24 shrink-0 rounded-xl overflow-hidden border-2 transition-all ${
+                    activeImageIndex === idx 
+                      ? 'border-blue-500 ring-2 ring-blue-400/40 scale-102 shadow-sm' 
+                      : 'border-transparent opacity-70 hover:opacity-100'
+                  }`}
+                >
+                  <img src={img} alt={`サムネイル ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* 2-Column Main Layout */}

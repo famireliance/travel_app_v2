@@ -128,14 +128,13 @@ export default function ServiceBookingModal({
   const [guestEmail, setGuestEmail] = useState<string>('');
   const [pickupNotes, setPickupNotes] = useState<string>('');
 
-  // オプション選択ステート
-  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>(['opt_bluetooth_holder', 'opt_noc']);
-  const [pickupPlaceChoice, setPickupPlaceChoice] = useState<string>('port');
+  // オプション選択ステート（初期値は未選択にしてアクティビティ画面へのレンタカーOP混入を防止）
+  const [selectedOptionIds, setSelectedOptionIds] = useState<string[]>([]);
+  const [pickupPlaceChoice, setPickupPlaceChoice] = useState<string>(isRental ? 'port' : 'hotel');
   const [wetsuitSizes, setWetsuitSizes] = useState<string>('Mサイズ');
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [createdReservationId, setCreatedReservationId] = useState<string | null>(null);
 
   // 初期値セット
   useEffect(() => {
@@ -145,6 +144,12 @@ export default function ServiceBookingModal({
       setChosenPlanId(service.plans[0].id);
     }
   }, [selectedPlan, service]);
+
+  useEffect(() => {
+    setSelectedOptionIds([]);
+    setPickupPlaceChoice(isRental ? 'port' : 'hotel');
+    setParticipantsCount(isRental ? 1 : 2);
+  }, [service.id, isRental]);
 
   useEffect(() => {
     if (user) {
@@ -198,9 +203,9 @@ export default function ServiceBookingModal({
       const opt = availableOptions.find(o => o.id === id);
       if (opt) {
         if (opt.perDay) {
-          sum += opt.price * rentalDays;
+          sum += opt.price * Math.max(1, rentalDays) * Math.max(1, participantsCount);
         } else if (opt.id === 'opt_lunch_box' || opt.id === 'opt_wetsuit') {
-          sum += opt.price * participantsCount;
+          sum += opt.price * Math.max(1, participantsCount);
         } else {
           sum += opt.price;
         }
@@ -209,11 +214,17 @@ export default function ServiceBookingModal({
     return sum;
   }, [availableOptions, selectedOptionIds, rentalDays, participantsCount]);
 
+  // 基本プラン小計（レンタカーは 日数 × 台数、アクティビティは 人数）
+  const planBaseTotal = useMemo(() => {
+    return isRental
+      ? basePriceNum * Math.max(1, rentalDays) * Math.max(1, participantsCount)
+      : basePriceNum * Math.max(1, participantsCount);
+  }, [isRental, basePriceNum, rentalDays, participantsCount]);
+
   // 合計概算料金
   const estimatedTotalPrice = useMemo(() => {
-    const planTotal = isRental ? basePriceNum : basePriceNum * participantsCount;
-    return planTotal + optionsTotalPrice;
-  }, [isRental, basePriceNum, participantsCount, optionsTotalPrice]);
+    return planBaseTotal + optionsTotalPrice;
+  }, [planBaseTotal, optionsTotalPrice]);
 
   const toggleOption = (id: string) => {
     setSelectedOptionIds(prev => 
@@ -299,41 +310,24 @@ export default function ServiceBookingModal({
         created_at: new Date().toISOString()
       };
 
-      let newResId = `srv-${Date.now()}`;
-
-      // Supabaseに挿入（テーブルが存在する場合）
-      const { data, error } = await supabase
+      // Supabaseの service_reservations に挿入し、エラーを厳密に検査（偽の成功表示を防止）
+      const { error } = await supabase
         .from('service_reservations')
-        .insert([reservationPayload])
-        .select('id')
-        .single();
+        .insert([reservationPayload]);
 
-      if (!error && data) {
-        newResId = data.id;
-      } else {
-        // service_reservations が未作成の場合は reservations テーブルかローカル保存にフォールバック
-        console.warn('service_reservations insert fallback:', error);
-        await supabase.from('reservations').insert([{
-          accommodation_id: null,
-          guest_id: user?.id || null,
-          guest_name: guestName.trim(),
-          guest_phone: guestPhone.trim(),
-          check_in_date: startDate,
-          check_out_date: isRental ? endDate : startDate,
-          guest_count: participantsCount,
-          plan_name: `[${service.category}] ${activePlan?.name || service.name}`,
-          total_price: activePlan?.price || service.priceRange,
-          status: 'pending',
-          guest_notes: `【${isRental ? 'レンタカー' : 'アクティビティ'}予約リクエスト: ${service.name}】\n` + notesHeader
-        }]).select('id').maybeSingle();
+      if (error) {
+        throw error;
       }
 
-      setCreatedReservationId(newResId);
       setIsSuccess(true);
       toast.success('予約リクエストを送信しました！');
     } catch (err: any) {
       console.error('Reservation submission error:', err);
-      toast.error('予約送信中にエラーが発生しました。お電話でも受け付けております。');
+      toast.error(
+        service.phone
+          ? `現在Web予約の送信に失敗しました。お手数ですがお電話（${service.phone}）にて直接ご予約ください。`
+          : '予約送信中にエラーが発生しました。施設へお電話にてお問い合わせください。'
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -733,8 +727,14 @@ export default function ServiceBookingModal({
                   {/* 概算お見積りバー */}
                   <div className="p-4 bg-gradient-to-r from-slate-900 to-slate-800 text-white rounded-2xl shadow-sm space-y-2">
                     <div className="flex items-center justify-between text-xs text-slate-300">
-                      <span>基本プラン料金 ({isRental ? `${rentalDays}日間` : `${participantsCount}名`}):</span>
-                      <span className="font-mono">¥{(isRental ? basePriceNum : basePriceNum * participantsCount).toLocaleString()}</span>
+                      <span>
+                        基本プラン料金 (
+                        {isRental
+                          ? `${Math.max(1, rentalDays)}日間 × ${Math.max(1, participantsCount)}台`
+                          : `${Math.max(1, participantsCount)}名`}
+                        ):
+                      </span>
+                      <span className="font-mono">¥{planBaseTotal.toLocaleString()}</span>
                     </div>
                     {optionsTotalPrice > 0 && (
                       <div className="flex items-center justify-between text-xs text-amber-300">

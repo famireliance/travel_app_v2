@@ -102,6 +102,37 @@ const REGION_PUBLIC_WIFI_PRESETS: Record<string, { brandName: string; spots: Isl
         note: '集落散策時の通信に活用できます。'
       }
     ]
+  },
+  // 全国一般の離島（自治体フリーWi-Fi・船客待合所・宿泊施設）
+  japan_general: {
+    brandName: '自治体公衆無線LAN / 船客ターミナルFree Wi-Fi',
+    cellNote: '港・集落周辺は主要キャリア4G対応。岬・山間部・海上航路中は一部電波が弱い区間あり。',
+    spots: [
+      {
+        name: '港・フェリー船客待合所',
+        location: '定期船のりば待合ロビー・観光案内窓口',
+        ssid: 'Free_Public_Wi-Fi（各港案内掲示を確認）',
+        hasPassword: false,
+        authMethod: 'ブラウザ利用規約同意またはメール認証',
+        note: '乗船待ち時間や荒天時のフェリー運航状況確認に利用できます。'
+      },
+      {
+        name: '市町村役場・支所・離島センター',
+        location: '行政窓口ロビー・コミュニティ施設',
+        ssid: 'City_Town_Free_Wi-Fi（庁舎内掲示を確認）',
+        hasPassword: false,
+        authMethod: '利用規約同意またはSNS/メール認証',
+        note: '開庁時間中の観光情報収集や防災情報の確認に活用可能。'
+      },
+      {
+        name: '島内の宿泊施設・カフェ',
+        location: 'ホテル・民宿・ゲストハウス館内',
+        ssid: '各宿泊施設専用Wi-Fi（チェックイン時案内）',
+        hasPassword: true,
+        authMethod: 'フロント・客室案内のパスワード入力',
+        note: '大容量の写真バックアップや翌日のルート検索は宿のWi-Fi利用が推奨です。'
+      }
+    ]
   }
 };
 
@@ -112,11 +143,13 @@ export default function IslandWifiGuide({ islandId, islandName, regionId, prefec
   const [dynamicSpots, setDynamicSpots] = useState<IslandWifiSpot[] | null>(null);
   const [dynamicCellNote, setDynamicCellNote] = useState<string | null>(null);
 
-  // 地域プリセットの判定
-  let preset = REGION_PUBLIC_WIFI_PRESETS.tokyo_islands;
-  if (prefecture === '沖縄県' || regionId?.includes('yaeyama') || regionId?.includes('okinawa') || regionId?.includes('miyako')) {
+  // 地域プリセットの判定（東京都の島のみ tokyo_islands を使用し、他道府県では自治体汎用プリセットを表示）
+  let preset = REGION_PUBLIC_WIFI_PRESETS.japan_general;
+  if (prefecture === '東京都') {
+    preset = REGION_PUBLIC_WIFI_PRESETS.tokyo_islands;
+  } else if (prefecture === '沖縄県' || regionId?.includes('yaeyama') || regionId?.includes('okinawa') || regionId?.includes('miyako') || regionId === 'kerama' || regionId === 'kume' || regionId === 'daito') {
     preset = REGION_PUBLIC_WIFI_PRESETS.okinawa;
-  } else if (prefecture === '鹿児島県' || regionId?.includes('amami') || regionId?.includes('yakushima')) {
+  } else if (prefecture === '鹿児島県' || regionId?.includes('amami') || regionId === 'tokara' || regionId === 'osumi' || regionId === 'koshiki') {
     preset = REGION_PUBLIC_WIFI_PRESETS.amami;
   }
 

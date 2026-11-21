@@ -3,6 +3,8 @@
  * 各島・諸島に対応する公式船会社、運行情報Webサイト、問い合わせ電話番号の直通マッピング
  */
 
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+
 export interface FerryCompanyInfo {
   name: string;
   officialUrl: string;
@@ -170,6 +172,27 @@ export const REGION_FERRY_MAP: Record<string, FerryCompanyInfo[]> = {
       mainPorts: '那覇泊港（とまりん） ⇔ 渡嘉敷港',
     },
   ],
+  // 久米島・渡名喜諸島
+  kume: [
+    {
+      name: '久米商船（フェリー琉球・フェリー海邦）',
+      officialUrl: 'https://www.kumeline.com/',
+      statusUrl: 'https://www.kumeline.com/',
+      phone: '098-868-2686',
+      mainPorts: '那覇泊港（とまりん） ⇔ 渡名喜島 ⇔ 久米島（兼城港）',
+    },
+  ],
+  // 沖縄本島周辺離島（伊江島・伊平屋・伊是名・久高・津堅・粟国・架橋離島等）
+  okinawa_main: [
+    {
+      name: '那覇泊ふ頭ターミナル（とまりん）沖縄本島周辺航路案内',
+      officialUrl: 'https://www.tomarin.com/',
+      statusUrl: 'https://www.tomarin.com/',
+      phone: '098-861-3341',
+      mainPorts: '那覇泊港・本部港・運天港・安座真港・平敷屋港 ⇔ 沖縄本島周辺各離島',
+      notes: '伊江村営・伊平屋村営・伊是名村営・粟国村営・久高海運・神谷観光等の各島定期航路および架橋アクセス',
+    },
+  ],
 };
 
 // デフォルトの全国フェリー案内窓口（マッピングがない島向け）
@@ -189,10 +212,20 @@ const DEFAULT_FERRY_INFO: FerryCompanyInfo[] = [
  */
 export function getFerryInfoForIsland(islandId: string | number, regionId?: string, prefecture?: string): FerryCompanyInfo[] {
   const sId = String(islandId || '');
+  const masterIsland = ALL_ISLANDS_MASTER_DICTIONARY[sId];
+  const effectiveRegion = regionId || masterIsland?.region_id || '';
+  const effectivePref = prefecture || masterIsland?.prefecture || '';
 
-  // 1. regionId から検索
-  if (regionId) {
-    const lowerRegion = regionId.toLowerCase();
+  // 1. regionId（特に沖縄の非数値ID島 oujima_nago, hatenohama_kume, kamiyamajima_kerama 等を含む）から優先検索
+  if (effectiveRegion) {
+    const lowerRegion = effectiveRegion.toLowerCase();
+    if (lowerRegion === 'okinawa_main') return REGION_FERRY_MAP.okinawa_main;
+    if (lowerRegion === 'kume') return REGION_FERRY_MAP.kume;
+    if (lowerRegion === 'kerama') return REGION_FERRY_MAP.kerama;
+    if (lowerRegion === 'miyako') return REGION_FERRY_MAP.miyako;
+    if (lowerRegion === 'yaeyama') return REGION_FERRY_MAP.yaeyama;
+    if (lowerRegion === 'daito') return REGION_FERRY_MAP.daito;
+
     for (const [key, list] of Object.entries(REGION_FERRY_MAP)) {
       if (lowerRegion.includes(key)) {
         return list;
@@ -200,27 +233,40 @@ export function getFerryInfoForIsland(islandId: string | number, regionId?: stri
     }
   }
 
-  // 2. prefecture から推測
-  if (prefecture) {
-    if (prefecture.includes('東京')) {
-      if (sId === 'chichijima' || sId === 'hahajima' || sId === '63' || sId === '64' || sId.includes('ogasawara')) {
+  // 2. 非数値IDサフィックスによる沖縄諸島判定（parseInt前）
+  const lowerId = sId.toLowerCase();
+  if (lowerId.includes('_kerama')) return REGION_FERRY_MAP.kerama;
+  if (lowerId.includes('_kume')) return REGION_FERRY_MAP.kume;
+  if (lowerId.includes('_miyako') || lowerId === 'shimoji') return REGION_FERRY_MAP.miyako;
+  if (lowerId.includes('_yaeyama') || lowerId.includes('ishigaki') || lowerId.includes('iriomote') || lowerId.includes('taketomi') || lowerId.includes('hateruma')) {
+    return REGION_FERRY_MAP.yaeyama;
+  }
+  if (lowerId.includes('_okinawa') || lowerId.includes('_nago') || lowerId.includes('_ogimi')) {
+    return REGION_FERRY_MAP.okinawa_main;
+  }
+
+  // 3. prefecture から推測
+  if (effectivePref) {
+    if (effectivePref.includes('東京')) {
+      if (sId === 'chichijima' || sId === 'hahajima' || sId === '63' || sId === '64' || lowerId.includes('ogasawara')) {
         return REGION_FERRY_MAP.ogasawara;
       }
       return REGION_FERRY_MAP.izu;
     }
-    if (prefecture.includes('新潟')) return REGION_FERRY_MAP.sado;
-    if (prefecture.includes('島根')) return REGION_FERRY_MAP.oki;
-    if (prefecture.includes('長崎')) return REGION_FERRY_MAP.goto;
-    if (prefecture.includes('鹿児島')) return REGION_FERRY_MAP.amami;
-    if (prefecture.includes('沖縄')) {
-      const idNum = parseInt(sId, 10);
+    if (effectivePref.includes('新潟')) return REGION_FERRY_MAP.sado;
+    if (effectivePref.includes('島根')) return REGION_FERRY_MAP.oki;
+    if (effectivePref.includes('長崎')) return REGION_FERRY_MAP.goto;
+    if (effectivePref.includes('鹿児島')) return REGION_FERRY_MAP.amami;
+    if (effectivePref === '沖縄県' || effectivePref.includes('沖縄')) {
+      const idNum = /^\d+$/.test(sId) ? parseInt(sId, 10) : NaN;
       if (idNum === 384 || idNum === 385) return REGION_FERRY_MAP.daito;
       if (idNum >= 386 && idNum <= 391) return REGION_FERRY_MAP.miyako;
-      if ((idNum >= 392 && idNum <= 401) || sId.includes('ishigaki') || sId.includes('iriomote') || sId.includes('taketomi') || sId.includes('hateruma')) {
-        return REGION_FERRY_MAP.yaeyama;
-      }
+      if (idNum >= 392 && idNum <= 401) return REGION_FERRY_MAP.yaeyama;
+      if ((idNum >= 376 && idNum <= 379) || idNum === 432) return REGION_FERRY_MAP.kerama;
+      if (idNum === 380 || idNum === 381) return REGION_FERRY_MAP.kume;
+      return REGION_FERRY_MAP.okinawa_main;
     }
-    if (prefecture.includes('香川') || prefecture.includes('愛媛') || prefecture.includes('広島') || prefecture.includes('岡山')) {
+    if (effectivePref.includes('香川') || effectivePref.includes('愛媛') || effectivePref.includes('広島') || effectivePref.includes('岡山')) {
       return REGION_FERRY_MAP.seto;
     }
   }

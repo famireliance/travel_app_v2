@@ -162,7 +162,7 @@ export async function PUT(req: NextRequest) {
 
     if (error) {
       const fbStores = await getFallbackJson<any[]>('fallback_distributor_stores', []);
-      const idx = fbStores.findIndex((s: any) => s.id === id);
+      const idx = fbStores.findIndex((s: any) => s.id === id || s.referral_code === id);
       if (idx === -1) {
         return NextResponse.json({ error: '指定された店舗が見つかりません' }, { status: 404 });
       }
@@ -201,7 +201,7 @@ export async function DELETE(req: NextRequest) {
 
     if (error) {
       const fbStores = await getFallbackJson<any[]>('fallback_distributor_stores', []);
-      const filtered = fbStores.filter((s: any) => s.id !== id);
+      const filtered = fbStores.filter((s: any) => s.id !== id && s.referral_code !== id);
       await setFallbackJson('fallback_distributor_stores', filtered);
     }
     return NextResponse.json({ success: true, message: '店舗を削除しました' });

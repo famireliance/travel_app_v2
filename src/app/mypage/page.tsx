@@ -4,8 +4,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
-import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard, Calendar, FileText, ArrowRight } from 'lucide-react';
+import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard, Calendar, FileText, ArrowRight, UserCircle } from 'lucide-react';
 import { PlanChangeModal } from '@/components/PlanChangeModal';
+import AuthModal from '@/components/AuthModal';
 import OrderHistory from '@/components/OrderHistory';
 import ArchipelagoProgressModal from '@/components/ArchipelagoProgressModal';
 import AgentPass from '@/components/AgentPass';
@@ -20,21 +21,29 @@ import toast from 'react-hot-toast';
 
 export default function MyPage() {
   const router = useRouter();
-  const { user, islandStatuses, totalVisited, travelerName, updateTravelerName, bio, updateBio, totalPoints, conquestTargetCount, visitCounts, spotsVisited, companionChar, companionStage, collectedFairies, collectedFairyDates, allFairies, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed, setAnniversaryCertUsed } = useTravel();
+  const { user, isAuthReady, islandStatuses, totalVisited, travelerName, updateTravelerName, bio, updateBio, totalXP, totalPoints, conquestTargetCount, visitCounts, spotsVisited, companionChar, companionStage, collectedFairies, collectedFairyDates, allFairies, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed, setAnniversaryCertUsed } = useTravel();
 
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showArchipelagoModal, setShowArchipelagoModal] = useState(false);
+  const [showGuestAuthModal, setShowGuestAuthModal] = useState(true);
 
   useEffect(() => {
-    if (user === null) {
-      router.push('/');
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('subscription_success') === 'true') {
+      toast.success('サブスクリプション登録が完了しました！特典が有効になりました🎉', { duration: 5000 });
+      window.history.replaceState({}, '', '/mypage');
+    } else if (params.get('subscription_canceled') === 'true') {
+      toast('サブスクリプションの手続きをキャンセルしました。', { icon: 'ℹ️' });
+      window.history.replaceState({}, '', '/mypage');
     }
-  }, [user, router]);
+  }, []);
 
   const ALL_ISLANDS_COUNT = conquestTargetCount || 369;
   const progressPct = (totalVisited / ALL_ISLANDS_COUNT) * 100;
-  const playerLvInfo = getPlayerLevelInfo(totalPoints || 0);
+  const effectiveXP = Math.max(totalXP || 0, totalPoints || 0);
+  const playerLvInfo = getPlayerLevelInfo(effectiveXP);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [allIslandsData, setAllIslandsData] = useState<any[]>([]);
@@ -250,7 +259,7 @@ export default function MyPage() {
     return { ...fairy, unlocked };
   });
 
-  if (!isDataLoaded) {
+  if (!isAuthReady || (user && !isDataLoaded)) {
     return (
       <div className="min-h-screen bg-[#F8FAFC] animate-pulse">
         <div className="h-16 bg-white border-b border-slate-100" />
@@ -260,6 +269,62 @@ export default function MyPage() {
           <div className="h-96 bg-white rounded-3xl shadow-sm border border-slate-100" />
         </div>
       </div>
+    );
+  }
+
+  if (isAuthReady && !user) {
+    return (
+      <main className="min-h-screen bg-[#F8FAFC] pb-24 font-sans text-slate-800">
+        <header className="px-6 lg:px-12 py-4 border-b border-slate-200/60 flex items-center justify-between sticky top-0 z-40 bg-white/80 backdrop-blur-md shadow-sm">
+          <button
+            onClick={() => router.push('/')}
+            className="p-2 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-full transition-colors"
+            title="トップページに戻る"
+          >
+            <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
+          </button>
+          <h1 className="font-serif font-bold tracking-[0.2em] text-slate-900 flex items-center gap-2">
+            <MapPin className="text-blue-500 w-4 h-4" /> MY PASSPORT
+          </h1>
+          <div className="w-9" />
+        </header>
+
+        <div className="max-w-xl mx-auto px-6 mt-12">
+          <Breadcrumb items={[{ label: 'マイページ / ログイン' }]} className="mb-6" />
+          <div className="bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-slate-200 text-center space-y-6">
+            <div className="w-20 h-20 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mx-auto text-blue-600">
+              <UserCircle className="w-11 h-11" />
+            </div>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-serif font-bold text-slate-900">
+                マイパスポートへようこそ
+              </h2>
+              <p className="text-sm text-slate-600 leading-relaxed">
+                ログインまたは新規登録（無料）を行うと、全国369島の到達記録・獲得XP・発見したご当地妖精や公式証明書をクラウドに永久保存できます。
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+              <button
+                onClick={() => setShowGuestAuthModal(true)}
+                className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm shadow-lg transition-all"
+              >
+                ログイン / 無料アカウント作成
+              </button>
+              <Link
+                href="/"
+                className="px-6 py-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-colors"
+              >
+                トップへ戻る
+              </Link>
+            </div>
+          </div>
+        </div>
+
+        <AuthModal
+          isOpen={showGuestAuthModal}
+          onClose={() => setShowGuestAuthModal(false)}
+        />
+      </main>
     );
   }
 
@@ -476,7 +541,7 @@ export default function MyPage() {
               </div>
               <div className="bg-amber-50 p-4 rounded-2xl border border-amber-100 flex flex-col items-center md:items-start">
                 <div className="text-amber-700 text-[0.65rem] font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-widest"><Star size={12} className="text-amber-500"/> 獲得XP</div>
-                <div className="text-3xl font-serif font-bold text-amber-600">{(totalPoints || 0).toLocaleString()}</div>
+                <div className="text-3xl font-serif font-bold text-amber-600">{effectiveXP.toLocaleString()}</div>
               </div>
               <div className="bg-purple-50 p-4 rounded-2xl border border-purple-100 flex flex-col items-center md:items-start">
                 <div className="text-purple-700 text-[0.65rem] font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-widest"><Sparkles size={12} className="text-purple-500"/> 妖精図鑑</div>
@@ -545,7 +610,9 @@ export default function MyPage() {
             >
               <tab.icon className="w-4 h-4" />
               {tab.label}
-              <span className={`text-[0.65rem] px-2 py-0.5 rounded-full ${activeTab === tab.id ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'}`}>{tab.count}</span>
+              {tab.count !== undefined && (
+                <span className={`text-[0.65rem] px-2 py-0.5 rounded-full ${activeTab === tab.id ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-500'}`}>{tab.count}</span>
+              )}
             </button>
           ))}
         </div>
@@ -1048,8 +1115,15 @@ export default function MyPage() {
                         headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
                       });
                       const data = await res.json();
+                      if (!res.ok || data.error) {
+                        toast.error(data.error || 'お支払い管理ページを開けませんでした。');
+                        return;
+                      }
                       if (data.url) window.location.href = data.url;
-                    } catch (e) { console.error(e); }
+                    } catch (e) {
+                      console.error(e);
+                      toast.error('お支払い管理ページへの接続に失敗しました。');
+                    }
                   }}
                   className="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-bold rounded-xl transition-colors inline-flex items-center gap-2"
                 >

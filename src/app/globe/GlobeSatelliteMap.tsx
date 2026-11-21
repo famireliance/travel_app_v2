@@ -88,7 +88,7 @@ export default function GlobeSatelliteMap({
   }, [center, zoom, mounted]);
 
   const tokyoHub = { lat: 35.65, lng: 139.76, name: '東京港' };
-  const visitedIds = new Set(visitedList.map(v => v.id));
+  const visitedIds = useMemo(() => new Set(visitedList.map(v => String(v.id))), [visitedList]);
 
   // Compute arcs from Tokyo to all visited islands
   const arcsData = useMemo(() => {
@@ -118,8 +118,8 @@ export default function GlobeSatelliteMap({
   const pointsData = useMemo(() => {
     return islands.map(island => {
       const coords = getIslandCoords(island);
-      const isVisited = visitedIds.has(island.id);
-      const isSelected = selectedIsland?.id === island.id;
+      const isVisited = visitedIds.has(String(island.id));
+      const isSelected = selectedIsland && String(selectedIsland.id) === String(island.id);
       return {
         ...island,
         lat: coords.lat,
@@ -170,7 +170,7 @@ export default function GlobeSatelliteMap({
           <div class="bg-slate-900/90 p-2 rounded-lg border border-white/20 text-white font-serif text-sm backdrop-blur-md pointer-events-none shadow-xl">
             <b>${d.name}</b> (${d.prefecture})<br/>
             <span class="text-xs text-slate-400">${d.region_id}</span>
-            ${visitedIds.has(d.id) ? '<br/><span class="text-[0.65rem] text-amber-400 font-bold">到達済</span>' : ''}
+            ${visitedIds.has(String(d.id)) ? '<br/><span class="text-[0.65rem] text-amber-400 font-bold">到達済</span>' : ''}
           </div>
         `}
         onPointClick={onSelectIsland}

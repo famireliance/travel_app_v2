@@ -10,20 +10,38 @@ const MAX_BASE64_LENGTH = 7 * 1024 * 1024; // ~7MB base64 payload limit
 
 export async function POST(req: NextRequest) {
   try {
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
     const authHeader = req.headers.get('authorization');
     if (!authHeader) {
       return NextResponse.json({ error: '認証ヘッダーがありません' }, { status: 401 });
     }
-    const token = authHeader.replace('Bearer ', '');
+    const token = authHeader.replace('Bearer ', '').trim();
+    if (!token) {
+      return NextResponse.json({ error: '認証エラー' }, { status: 401 });
+    }
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
     
-    const anonClient = createClient(SUPABASE_URL, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
+    const anonClient = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
     
     if (authError || !user) {
       return NextResponse.json({ error: '認証エラー' }, { status: 401 });
     }
 
-    const { imageBase64 } = await req.json();
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+    const { imageBase64 } = body || {};
 
     if (!imageBase64 || typeof imageBase64 !== 'string' || !VALID_IMAGE_HEADER.test(imageBase64)) {
       return NextResponse.json({ error: '無効な画像データです（JPEG/PNG/WebPのみ対応）' }, { status: 400 });
@@ -46,7 +64,7 @@ export async function POST(req: NextRequest) {
 
     const fileName = `${user.id}/${uuidv4()}.${ext}`;
 
-    const adminClient = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
+    const adminClient = createClient(supabaseUrl, supabaseServiceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 

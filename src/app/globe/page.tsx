@@ -79,8 +79,8 @@ const REGION_RADARS = [
 
 export default function GlobeTrackerPage() {
   const router = useRouter();
-  const { islandStatuses, travelerName, totalXP } = useTravel();
-  const playerLvInfo = getPlayerLevelInfo(totalXP || 0);
+  const { islandStatuses, travelerName, totalXP, totalPoints } = useTravel();
+  const playerLvInfo = getPlayerLevelInfo(Math.max(totalXP || 0, totalPoints || 0));
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [visitedList, setVisitedList] = useState<any[]>([]);
@@ -116,14 +116,13 @@ export default function GlobeTrackerPage() {
 
         const visitedIds = new Set(
           Object.entries(islandStatuses)
-            .filter(([, status]) => status === 'visited' || status === 'planning')
-            .map(([id]) => id)
+            .filter(([, status]) => status === 'visited' || status === 'verified_visited')
+            .map(([id]) => String(id))
         );
 
-        let visited = allIslands.filter(i => visitedIds.has(i.id as string));
-        if (visited.length === 0 && allIslands.length > 0) {
-          visited = allIslands.slice(0, 3);
-        }
+        const visited = allIslands.filter(
+          i => visitedIds.has(String(i.id)) || (i.slug && visitedIds.has(String(i.slug)))
+        );
         setVisitedList(visited);
         if (visited.length > 0 && !selectedIsland) {
           handleSelectIsland(visited[0]);
@@ -190,23 +189,52 @@ export default function GlobeTrackerPage() {
       toast.error('録画するキャンバスが見つかりません');
       return;
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const stream = (canvas as any).captureStream(30);
-    const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-    chunksRef.current = [];
-    recorder.ondataavailable = (e) => chunksRef.current.push(e.data);
-    recorder.onstop = () => {
-      const blob = new Blob(chunksRef.current, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.download = `kiratabi-flight-${Date.now()}.webm`;
-      link.href = url;
-      link.click();
-      URL.revokeObjectURL(url);
-    };
-    recorder.start();
-    mediaRecorderRef.current = recorder;
-    setIsRecording(true);
+    if (typeof MediaRecorder === 'undefined' || typeof (canvas as any).captureStream !== 'function') {
+      toast.error('お使いのブラウザは動画録画機能に対応していません');
+      return;
+    }
+    try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const stream = (canvas as any).captureStream(30);
+      const preferredMimeTypes = [
+        'video/webm;codecs=vp9',
+        'video/webm;codecs=vp8',
+        'video/webm',
+        'video/mp4',
+      ];
+      const supportedMimeType =
+        typeof MediaRecorder.isTypeSupported === 'function'
+          ? preferredMimeTypes.find((type) => MediaRecorder.isTypeSupported(type)) || ''
+          : '';
+
+      const recorder = supportedMimeType
+        ? new MediaRecorder(stream, { mimeType: supportedMimeType })
+        : new MediaRecorder(stream);
+
+      chunksRef.current = [];
+      recorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) {
+          chunksRef.current.push(e.data);
+        }
+      };
+      recorder.onstop = () => {
+        const finalType = recorder.mimeType || supportedMimeType || 'video/mp4';
+        const ext = finalType.includes('mp4') ? 'mp4' : 'webm';
+        const blob = new Blob(chunksRef.current, { type: finalType });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.download = `kiratabi-flight-${Date.now()}.${ext}`;
+        link.href = url;
+        link.click();
+        URL.revokeObjectURL(url);
+      };
+      recorder.start();
+      mediaRecorderRef.current = recorder;
+      setIsRecording(true);
+    } catch (err) {
+      console.error('Recording error:', err);
+      toast.error('録画の開始に失敗しました');
+    }
   };
 
   const handleStopRecording = () => {
@@ -525,7 +553,7 @@ export default function GlobeTrackerPage() {
                 {/* アクションボタン：3サービス連携ハブ */}
                 <div className="space-y-2.5 pt-3">
                   <button
-                    onClick={() => router.push(`/island/${selectedIsland.id}`)}
+                    onClick={() => router.push(`/island/${selectedIsland.slug || selectedIsland.id}`)}
                     className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-slate-950 font-bold font-serif text-xs shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]"
                   >
                     <span>🏝️ この島詳細ページ＆口コミを見る</span>

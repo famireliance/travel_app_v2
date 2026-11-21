@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, Suspense } from 'react';
+import { useEffect, useRef, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { translateAuthError } from '@/lib/authHelpers';
@@ -8,8 +8,12 @@ import { translateAuthError } from '@/lib/authHelpers';
 function AuthCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const handledRef = useRef(false);
 
   useEffect(() => {
+    if (handledRef.current) return;
+    handledRef.current = true;
+
     const code = searchParams.get('code');
     const error = searchParams.get('error');
     const errorDescription = searchParams.get('error_description');

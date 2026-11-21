@@ -98,7 +98,7 @@ export async function POST(req: NextRequest) {
     await setFallbackJson(CONFIG_KEY, list);
 
     await logAuditEvent({
-      actor: { user_id: user.id, role: user.role, name: user.name, org: user.org_name || 'System' },
+      actor: { user_id: user.id, role: user.role, name: user.name, org: user.org_name || 'System', org_id: user.org_id },
       client: extractClientInfo(req),
       action: 'AGENT_REVIEW_UPSERT',
       target: {

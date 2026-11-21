@@ -16,8 +16,12 @@ const ACTION_LABELS: Record<string, { label: string; color: string }> = {
   WIFI_SPOT_CREATE: { label: 'Wi-Fi新規登録', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
   WIFI_SPOT_UPDATE: { label: 'Wi-Fi情報更新', color: 'bg-blue-50 text-blue-700 border-blue-200' },
   WIFI_SPOT_DELETE: { label: 'Wi-Fi削除', color: 'bg-red-50 text-red-700 border-red-200' },
+  WIFI_CELL_NOTE_UPDATE: { label: '電波目安更新', color: 'bg-amber-50 text-amber-700 border-amber-200' },
   CELL_NOTE_UPDATE: { label: '電波目安更新', color: 'bg-amber-50 text-amber-700 border-amber-200' },
+  AGENT_REVIEW_UPSERT: { label: '島プロ評価入稿', color: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
   ISLAND_UPDATE: { label: '島情報更新', color: 'bg-purple-50 text-purple-700 border-purple-200' },
+  ADMIN_PASSWORD_CHANGE: { label: 'スタッフPW変更', color: 'bg-rose-50 text-rose-700 border-rose-200' },
+  MASTER_PASSWORD_CHANGE: { label: 'マスターPW変更', color: 'bg-rose-50 text-rose-700 border-rose-200' },
   LOGIN: { label: '管理者ログイン', color: 'bg-slate-100 text-slate-700 border-slate-300' },
   CUSTOM_ADMIN_ACTION: { label: '管理操作', color: 'bg-slate-100 text-slate-700 border-slate-300' }
 };
@@ -119,7 +123,10 @@ export default function AdminAuditLogs({ password }: AdminAuditLogsProps) {
             <option value="WIFI_SPOT_CREATE">Wi-Fi新規登録</option>
             <option value="WIFI_SPOT_UPDATE">Wi-Fi情報更新</option>
             <option value="WIFI_SPOT_DELETE">Wi-Fi削除</option>
-            <option value="CELL_NOTE_UPDATE">電波目安更新</option>
+            <option value="WIFI_CELL_NOTE_UPDATE">電波目安更新</option>
+            <option value="AGENT_REVIEW_UPSERT">島プロ評価入稿</option>
+            <option value="ADMIN_PASSWORD_CHANGE">スタッフPW変更</option>
+            <option value="MASTER_PASSWORD_CHANGE">マスターPW変更</option>
           </select>
         </div>
       </div>
@@ -155,15 +162,15 @@ export default function AdminAuditLogs({ password }: AdminAuditLogsProps) {
                         <div className="flex flex-wrap items-center gap-3 text-xs text-slate-500">
                           <span className="flex items-center gap-1 font-medium text-slate-700">
                             <User className="w-3.5 h-3.5 text-slate-400" />
-                            {log.actor.name || 'Admin'}
-                            {log.actor.org && (
+                            {log.actor?.name || 'Admin'}
+                            {log.actor?.org && (
                               <span className="text-[10px] text-slate-400">（{log.actor.org}）</span>
                             )}
                           </span>
 
                           <span className="flex items-center gap-1 font-mono text-[11px] text-slate-400">
                             <Globe className="w-3.5 h-3.5" />
-                            {log.client.ip_address}
+                            {log.client?.ip_address || '-'}
                           </span>
 
                           <span className="flex items-center gap-1 text-[11px] text-slate-400">
@@ -192,7 +199,7 @@ export default function AdminAuditLogs({ password }: AdminAuditLogsProps) {
                     <div className="mt-4 p-4 rounded-xl bg-slate-950 text-slate-200 border border-slate-800 text-xs font-mono space-y-3">
                       <div className="flex items-center justify-between text-[11px] text-slate-400 pb-2 border-b border-slate-800">
                         <span>変更差分インスペクター (Audit Diff)</span>
-                        <span>Client: {log.client.user_agent}</span>
+                        <span>Client: {log.client?.user_agent || '-'}</span>
                       </div>
 
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

@@ -82,8 +82,14 @@ export async function POST(request: Request) {
       }
     }
 
-    const body = await request.json();
-    const { startLocation, durationDays, preferences, maxIslands, excludedIslands = [] } = body;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: 'Invalid JSON request' }, { status: 400 });
+    }
+    const { startLocation, durationDays, preferences, maxIslands, excludedIslands = [] } = body || {};
 
     const ai = getGeminiClient();
 
@@ -152,7 +158,7 @@ export async function POST(request: Request) {
               type: Type.OBJECT,
               properties: {
                 day: { type: Type.INTEGER, description: '何日目か' },
-                islandId: { type: Type.STRING, description: '島データベースに記載された正確なID（数字文字列）' },
+                islandId: { type: Type.STRING, description: '島データベースに記載された正確なID（例: "392" や "oujima_nago" などの文字列）' },
                 islandName: { type: Type.STRING, description: '島データベースに記載された正確な島名' },
                 activity: { type: Type.STRING, description: 'その島でのおすすめの過ごし方（具体的に）' },
                 transportation: { type: Type.STRING, description: '出発地・拠点または前の島からの現実的な移動手段（アクセス情報を元に具体的に）' },
@@ -186,7 +192,7 @@ ${islandsContext}
    - 1つのプラン内で巡る島は**必ず同じ諸島エリア（同一のregion_idまたは隣接する同一県内の航路圏）**に限定してください。北海道と沖縄、あるいは奄美と五島などを同一プラン内で移動する非現実的なワープは絶対禁止です。
    - 大きな島（屋久島、奄美大島、佐渡島、石垣島、宮古島、父島、福江島など）での**複数日連泊滞在**や、拠点島（例：石垣島、高松・直島、那覇など）に連泊しながら近隣離島へフェリーで渡る**現実的なアイランドホッピング**を推奨します。無理に毎日別の島へ移動する必要はありません（連泊する場合は各日の \`islandId\` と \`islandName\` にその滞在島を指定してください）。
 3. **実在のID・施設情報の遵守**:
-   - \`islandId\` には必ず上記【島データベース】の \`ID:\` の値（例: "392"）をそのまま指定してください。
+   - \`islandId\` には必ず上記【島データベース】の \`ID:\` の値（例: "392" や "oujima_nago"）をそのまま指定してください。
    - 存在しない空港・航路・施設を捏造しないでください。
 `;
 
@@ -230,12 +236,12 @@ ${islandsContext}
         },
         {
           planType: '秘境・自然ルート',
-          title: '伊豆諸島・八丈島と大島で巡る火山と黒潮の絶景温泉旅',
+          title: '伊豆諸島・八丈島と伊豆大島で巡る火山と黒潮の絶景温泉旅',
           description: '東京からアクセス抜群の伊豆諸島で、ダイナミックな火山地形と絶景露天風呂を満喫するプランです。',
           totalEstimatedBudget: '45,000円〜',
           route: buildDays([
-            { id: '74', name: '八丈島', transport: '羽田空港から飛行機で約55分（または竹芝から大型客船）', activity: '八丈富士の絶景ドライブとみはらしの湯・島寿司堪能' },
-            { id: '66', name: '大島', transport: '竹芝桟橋・熱海港から高速ジェット船でアクセス', activity: '三原山トレッキングと裏砂漠散策' },
+            { id: '56', name: '八丈島', transport: '羽田空港から飛行機で約55分（または竹芝から大型客船）', activity: '八丈富士の絶景ドライブとみはらしの湯・島寿司堪能' },
+            { id: '49', name: '伊豆大島', transport: '竹芝桟橋・熱海港から高速ジェット船でアクセス', activity: '三原山トレッキングと裏砂漠散策' },
           ]),
         },
         {
@@ -244,8 +250,8 @@ ${islandsContext}
           description: '穏やかな瀬戸内海をフェリーで渡り、世界的な現代アートとオリーブの島時間を味わう周遊ルートです。',
           totalEstimatedBudget: '48,000円〜',
           route: buildDays([
-            { id: '215', name: '直島', transport: '高松港または宇野港からフェリーでアクセス', activity: '地中美術館・ベネッセハウス周辺のアート巡り' },
-            { id: '211', name: '小豆島', transport: '高松港からフェリーまたは高速船でアクセス', activity: 'エンジェルロードと小豆島オリーブ公園散策' },
+            { id: '195', name: '直島', transport: '高松港または宇野港からフェリーでアクセス', activity: '地中美術館・ベネッセハウス周辺のアート巡り' },
+            { id: '197', name: '小豆島', transport: '高松港からフェリーまたは高速船でアクセス', activity: 'エンジェルロードと小豆島オリーブ公園散策' },
           ]),
         },
       ];
@@ -277,6 +283,7 @@ ${islandsContext}
           return {
             ...day,
             islandId: String(matched.id),
+            slug: matched.slug || String(matched.id),
             islandName: matched.name,
           };
         }

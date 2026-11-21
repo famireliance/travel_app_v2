@@ -13,6 +13,50 @@ import { syncOfflineQueue } from '@/lib/offlineSync';
 
 export type IslandStatus = 'visited' | 'planning' | 'none' | 'verified_visited';
 
+const UNIFIED_PREFECTURE_MAP: Record<string, string> = {
+  '北海道': 'hokkaido',
+  '青森県': 'tohoku', '岩手県': 'tohoku', '秋田県': 'tohoku', '宮城県': 'tohoku', '山形県': 'tohoku', '福島県': 'tohoku',
+  '茨城県': 'kanto', '栃木県': 'kanto', '群馬県': 'kanto', '埼玉県': 'kanto', '千葉県': 'kanto', '東京都': 'kanto', '神奈川県': 'kanto',
+  '新潟県': 'hokuriku', '富山県': 'hokuriku', '石川県': 'hokuriku', '福井県': 'hokuriku',
+  '山梨県': 'tokai', '長野県': 'tokai', '岐阜県': 'tokai', '静岡県': 'tokai', '愛知県': 'tokai', '三重県': 'tokai',
+  '滋賀県': 'kinki', '京都府': 'kinki', '大阪府': 'kinki', '兵庫県': 'kinki', '奈良県': 'kinki', '和歌山県': 'kinki',
+  '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
+  '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
+  '福岡県': 'kyushu', '佐賀県': 'kyushu', '長崎県': 'kyushu', '熊本県': 'kyushu', '大分県': 'kyushu', '宮崎県': 'kyushu', '鹿児島県': 'kyushu',
+  '沖縄県': 'okinawa',
+};
+
+function findMatchingFairiesForIsland(
+  fairies: IslandFairy[],
+  islandId: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  islandObj?: any
+): IslandFairy[] {
+  const masterObj = ALL_ISLANDS_MASTER_DICTIONARY[islandId];
+  const effectiveIsland = islandObj || masterObj;
+  const targetIslandName = islandObj?.name || masterObj?.name || '';
+  const cleanTargetName = targetIslandName.split('（')[0].split('(')[0].split('・').pop()?.trim() || '';
+  const pref = effectiveIsland?.prefecture || masterObj?.prefecture || '';
+  const prefRegion = pref ? UNIFIED_PREFECTURE_MAP[pref] : undefined;
+  const rId = effectiveIsland?.region_id || effectiveIsland?.region || prefRegion || 'unknown';
+
+  return fairies.filter((f) => {
+    if (f.rarity === 'SPOT_EXCLUSIVE') return false;
+    if (
+      f.island_id &&
+      (f.island_id === islandId ||
+        f.island_id === targetIslandName ||
+        (cleanTargetName && f.island_id === cleanTargetName))
+    ) {
+      return true;
+    }
+    if (!f.island_id && f.region_id && (f.region_id === rId || (prefRegion && f.region_id === prefRegion))) {
+      return true;
+    }
+    return false;
+  });
+}
+
 interface TravelContextType {
   user: User | null;
   islandStatuses: Record<string, IslandStatus>;
@@ -49,6 +93,7 @@ interface TravelContextType {
   tempCheckInDate: string | null;
   setTempCheckInDate: (date: string | null) => void;
   isDataLoaded: boolean;
+  isAuthReady: boolean;
   subscriptionTier: 'free' | 'premium' | 'ultimate';
   premiumUntil: string | null;
   ultimateStartedAt: string | null;
@@ -93,6 +138,7 @@ const TravelContext = createContext<TravelContextType>({
   tempCheckInDate: null,
   setTempCheckInDate: () => {},
   isDataLoaded: false,
+  isAuthReady: false,
   subscriptionTier: 'free',
   premiumUntil: null,
   ultimateStartedAt: null,
@@ -119,6 +165,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [newlyDiscoveredFairies, setNewlyDiscoveredFairies] = useState<IslandFairy[]>([]);
   const [lastVisitDates, setLastVisitDates] = useState<Record<string, string>>({});
   const [isDataLoaded, setIsDataLoaded] = useState(false);
+  const [isAuthReady, setIsAuthReady] = useState(false);
   const [tempCheckInPhotoUrl, setTempCheckInPhotoUrl] = useState<string | null>(null);
   const [tempCheckInDate, setTempCheckInDate] = useState<string | null>(null);
   const [subscriptionTier, setSubscriptionTier] = useState<'free' | 'premium' | 'ultimate'>('free');
@@ -149,7 +196,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         // Map database columns to the frontend IslandFairy format
         const formattedFairies = data.map(d => ({
           ...d,
-          id: d.id,
+          id: d.fairy_key || d.id,
           name: d.name,
           theme: d.theme,
           description: d.description,
@@ -171,6 +218,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       if (!isMounted) return;
       const currentUser = session?.user || null;
       setUser(currentUser);
+      setIsAuthReady(true);
       
       // ユーザーのニックネームをSupabaseから取得
       if (currentUser) {
@@ -201,6 +249,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       }
 
       loadLocalData(currentUser?.id, isMounted);
+    }).catch(() => {
+      if (isMounted) setIsAuthReady(true);
     });
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -213,6 +263,17 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         setCollectedFairies([]);
         setCollectedFairyDates({});
         setLastVisitDates({});
+        setSubscriptionTier('free');
+        setPremiumUntil(null);
+        setUltimateStartedAt(null);
+        setAnniversaryCertUsed(false);
+        setTravelerName('名無しの旅人');
+        setBio('');
+        setTotalXP(0);
+        try {
+          localStorage.removeItem('kiratabi_traveler_name');
+          localStorage.removeItem('kiratabi_total_xp');
+        } catch {}
         setIsDataLoaded(false);
       }
       const currentUser = session?.user || null;
@@ -464,21 +525,12 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     let newFairiesAdded = false;
     const currentF = [...fLocal];
     const currentD = { ...dLocal };
-    
-    const prefectureMap: Record<string, string> = {
-      '沖縄県': 'okinawa_main', '東京都': 'ogasawara', '鹿児島県': 'amami', '長崎県': 'goto', '島根県': 'oki'
-    };
 
     Object.entries(targetStatuses).forEach(([islandId, status]) => {
       if (status === 'visited' || status === 'verified_visited') {
         const islandObj = ALL_ISLANDS_MASTER_DICTIONARY[islandId];
         if (islandObj) {
-          const rId = islandObj.region_id || islandObj.region || prefectureMap[islandObj.prefecture] || 'unknown';
-          const foundFairies = allFairies.filter(f => {
-            if (f.island_id && f.island_id === islandId) return true;
-            if (!f.island_id && f.region_id === rId) return true;
-            return false;
-          });
+          const foundFairies = findMatchingFairiesForIsland(allFairies, islandId, islandObj);
           foundFairies.forEach(f => {
             if (!currentF.includes(f.id)) {
               currentF.push(f.id);
@@ -612,26 +664,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       setPendingIslandVisit({ islandId, islandObj: islandObj || { id: islandId, name: islandId } });
 
       // ご当地妖精の発見判定（ゲスト用）
-      if (isFirstVisit && islandObj) {
-        const prefectureMap: Record<string, string> = {
-          '北海道': 'hokkaido',
-          '青森県': 'tohoku', '岩手県': 'tohoku', '秋田県': 'tohoku', '宮城県': 'tohoku', '山形県': 'tohoku', '福島県': 'tohoku',
-          '茨城県': 'kanto', '栃木県': 'kanto', '群馬県': 'kanto', '埼玉県': 'kanto', '千葉県': 'kanto', '東京都': 'kanto', '神奈川県': 'kanto',
-          '新潟県': 'hokuriku', '富山県': 'hokuriku', '石川県': 'hokuriku', '福井県': 'hokuriku',
-          '山梨県': 'tokai', '長野県': 'tokai', '岐阜県': 'tokai', '静岡県': 'tokai', '愛知県': 'tokai', '三重県': 'tokai',
-          '滋賀県': 'kinki', '京都府': 'kinki', '大阪府': 'kinki', '兵庫県': 'kinki', '奈良県': 'kinki', '和歌山県': 'kinki',
-          '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
-          '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
-          '福岡県': 'kyushu', '佐賀県': 'kyushu', '長崎県': 'kyushu', '熊本県': 'kyushu', '大分県': 'kyushu', '宮崎県': 'kyushu', '鹿児島県': 'kyushu',
-        };
-        const rId = islandObj.region_id || islandObj.region || prefectureMap[islandObj.prefecture] || 'unknown';
-        
-        const foundFairies = allFairies.filter(f => {
-          if (f.island_id && f.island_id === islandId) return true;
-          if (!f.island_id && f.region_id === rId) return true;
-          return false;
-        });
-
+      if (isFirstVisit) {
+        const foundFairies = findMatchingFairiesForIsland(allFairies, islandId, islandObj);
         const reallyNewFairies = foundFairies.filter(f => !collectedFairies.includes(f.id));
         if (reallyNewFairies.length > 0) {
           setPendingFairyDiscovery(reallyNewFairies);
@@ -678,26 +712,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     }
 
     // ご当地妖精の発見判定
-    if (isFirstVisit && islandObj) {
-      const prefectureMap: Record<string, string> = {
-        '北海道': 'hokkaido',
-        '青森県': 'tohoku', '岩手県': 'tohoku', '秋田県': 'tohoku', '宮城県': 'tohoku', '山形県': 'tohoku', '福島県': 'tohoku',
-        '茨城県': 'kanto', '栃木県': 'kanto', '群馬県': 'kanto', '埼玉県': 'kanto', '千葉県': 'kanto', '東京都': 'kanto', '神奈川県': 'kanto',
-        '新潟県': 'hokuriku', '富山県': 'hokuriku', '石川県': 'hokuriku', '福井県': 'hokuriku',
-        '山梨県': 'tokai', '長野県': 'tokai', '岐阜県': 'tokai', '静岡県': 'tokai', '愛知県': 'tokai', '三重県': 'tokai',
-        '滋賀県': 'kinki', '京都府': 'kinki', '大阪府': 'kinki', '兵庫県': 'kinki', '奈良県': 'kinki', '和歌山県': 'kinki',
-        '鳥取県': 'chugoku', '島根県': 'chugoku', '岡山県': 'chugoku', '広島県': 'chugoku', '山口県': 'chugoku',
-        '徳島県': 'shikoku', '香川県': 'shikoku', '愛媛県': 'shikoku', '高知県': 'shikoku',
-        '福岡県': 'kyushu', '佐賀県': 'kyushu', '長崎県': 'kyushu', '熊本県': 'kyushu', '大分県': 'kyushu', '宮崎県': 'kyushu', '鹿児島県': 'kyushu',
-      };
-      const rId = islandObj.region_id || islandObj.region || prefectureMap[islandObj.prefecture] || 'unknown';
-      const iId = islandId;
-      
-      const foundFairies = allFairies.filter(f => {
-        if (f.island_id && f.island_id === iId) return true; // Island specific (Collab)
-        if (!f.island_id && f.region_id === rId) return true; // Region specific
-        return false;
-      });
+    if (isFirstVisit) {
+      const foundFairies = findMatchingFairiesForIsland(allFairies, islandId, islandObj);
 
       if (foundFairies.length > 0) {
         setCollectedFairies(prev => {
@@ -911,6 +927,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     tempCheckInDate,
     setTempCheckInDate,
     isDataLoaded,
+    isAuthReady,
     subscriptionTier,
     premiumUntil,
     ultimateStartedAt,
@@ -921,7 +938,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     pendingFairyDiscovery,
     setPendingFairyDiscovery,
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }), [user, islandStatuses, totalVisited, travelerName, bio, visitCounts, lastVisitDates, spotsVisited, totalXP, totalPoints, conquestTargetCount, selectedCompanionId, companionChar, companionStage, allFairies, collectedFairies, collectedFairyDates, newlyDiscoveredFairies, tempCheckInPhotoUrl, tempCheckInDate, isDataLoaded, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed, pendingIslandVisit, pendingFairyDiscovery]);
+  }), [user, islandStatuses, totalVisited, travelerName, bio, visitCounts, lastVisitDates, spotsVisited, totalXP, totalPoints, conquestTargetCount, selectedCompanionId, companionChar, companionStage, allFairies, collectedFairies, collectedFairyDates, newlyDiscoveredFairies, tempCheckInPhotoUrl, tempCheckInDate, isDataLoaded, isAuthReady, subscriptionTier, premiumUntil, ultimateStartedAt, anniversaryCertUsed, pendingIslandVisit, pendingFairyDiscovery]);
 
   return (
     <TravelContext.Provider value={contextValue}>

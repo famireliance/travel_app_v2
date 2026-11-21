@@ -52,19 +52,28 @@ export async function POST(req: NextRequest) {
 
             const periodEndUnix = (subscription as any).current_period_end || (subscription as any).trial_end || (subscription.items?.data?.[0] as any)?.current_period_end || (Date.now()/1000 + 30*24*60*60);
             const periodEnd = new Date(periodEndUnix * 1000);
-            
-            // Build update payload
-            const updatePayload: Record<string, unknown> = {
+
+            const { data: existingProfile } = await adminClient
+              .from('user_profiles')
+              .select('id, ultimate_started_at')
+              .eq('id', userId)
+              .maybeSingle();
+
+            // Build upsert payload (set ultimate_started_at on new ultimate checkout if not already set)
+            const upsertPayload: Record<string, unknown> = {
+              id: userId,
               subscription_tier: tier,
               stripe_customer_id: customerId,
               stripe_subscription_id: subscriptionId,
-              premium_until: periodEnd.toISOString()
+              premium_until: periodEnd.toISOString(),
             };
+            if (tier === 'ultimate' && !existingProfile?.ultimate_started_at) {
+              upsertPayload.ultimate_started_at = new Date().toISOString();
+            }
 
             await adminClient
               .from('user_profiles')
-              .update(updatePayload)
-              .eq('id', userId);
+              .upsert(upsertPayload, { onConflict: 'id' });
             console.log(`Updated user ${userId} to ${tier}`);
           }
         } else if (session.mode === 'payment') {
@@ -105,12 +114,23 @@ export async function POST(req: NextRequest) {
           const periodEnd = new Date(periodEndUnix * 1000);
 
           if (subscription.status === 'active' || subscription.status === 'trialing') {
+            const updateData: Record<string, unknown> = {
+              subscription_tier: tier,
+              premium_until: periodEnd.toISOString(),
+            };
+            if (tier === 'ultimate') {
+              const { data: existingSubProfile } = await adminClient
+                .from('user_profiles')
+                .select('ultimate_started_at')
+                .eq('stripe_subscription_id', subscriptionId)
+                .maybeSingle();
+              if (!existingSubProfile?.ultimate_started_at) {
+                updateData.ultimate_started_at = new Date().toISOString();
+              }
+            }
             await adminClient
               .from('user_profiles')
-              .update({
-                subscription_tier: tier,
-                premium_until: periodEnd.toISOString()
-              })
+              .update(updateData)
               .eq('stripe_subscription_id', subscriptionId);
           } else if (subscription.status === 'canceled' || subscription.status === 'unpaid') {
              await adminClient

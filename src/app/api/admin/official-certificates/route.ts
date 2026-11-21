@@ -11,6 +11,20 @@ async function verifyAuth(req: NextRequest) {
   return !!user;
 }
 
+const OFFICIAL_CERTS_CONFIG_KEY = 'official_certificates_config';
+const LEGACY_CERTS_CONFIG_KEY = 'fallback_official_certs';
+
+async function loadOfficialCertOverrides(): Promise<Record<string, any>> {
+  const [primary, legacy] = await Promise.all([
+    getFallbackJson<Record<string, any>>(OFFICIAL_CERTS_CONFIG_KEY, {}),
+    getFallbackJson<Record<string, any>>(LEGACY_CERTS_CONFIG_KEY, {}),
+  ]);
+  return {
+    ...(legacy && typeof legacy === 'object' ? legacy : {}),
+    ...(primary && typeof primary === 'object' ? primary : {}),
+  };
+}
+
 // 公的証明書の設定を取得・更新・販売期間延長を行うAPI
 export async function GET(req: NextRequest) {
   if (!await verifyAuth(req)) {
@@ -33,7 +47,7 @@ export async function GET(req: NextRequest) {
 
     const [{ data: rawIslands, error }, fbOverrides] = await Promise.all([
       query,
-      getFallbackJson<Record<string, any>>('fallback_official_certs', {})
+      loadOfficialCertOverrides()
     ]);
     if (error) throw error;
 
@@ -100,7 +114,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: '指定された島が見つかりません' }, { status: 404 });
     }
 
-    const fbOverrides = await getFallbackJson<Record<string, any>>('fallback_official_certs', {});
+    const fbOverrides = await loadOfficialCertOverrides();
     const existingOv = fbOverrides[islandId] || {};
 
     const updateData: Record<string, any> = {};
@@ -120,9 +134,9 @@ export async function PUT(req: NextRequest) {
 
     // 期間延長処理
     if (extendDays && typeof extendDays === 'number' && extendDays > 0) {
-      const rawEnd = existingOv.official_sales_end_at ?? currentIsland?.official_sales_end_at;
+      const rawEnd = existingOv.official_sales_end_at ?? currentIsland?.official_sales_end_at ?? official_sales_end_at;
       const existingEnd = rawEnd ? new Date(rawEnd) : null;
-      const baseDate = existingEnd && existingEnd.getTime() > Date.now() ? existingEnd : new Date();
+      const baseDate = existingEnd && !isNaN(existingEnd.getTime()) && existingEnd.getTime() > Date.now() ? existingEnd : new Date();
       baseDate.setDate(baseDate.getDate() + extendDays);
       updateData.official_sales_end_at = baseDate.toISOString();
     } else if (official_sales_end_at !== undefined) {
@@ -138,10 +152,10 @@ export async function PUT(req: NextRequest) {
 
     let finalIsland = updatedIsland;
     if (error) {
-      // Fallback: save in admin_config when official_* columns haven't been added to islands yet
-      const mergedOv = { ...existingOv, ...updateData };
+      // Fallback: save in admin_config (key = 'official_certificates_config') when official_* columns aren't on public.islands
+      const mergedOv = { ...existingOv, ...updateData, updated_at: new Date().toISOString() };
       fbOverrides[islandId] = mergedOv;
-      await setFallbackJson('fallback_official_certs', fbOverrides);
+      await setFallbackJson(OFFICIAL_CERTS_CONFIG_KEY, fbOverrides);
       finalIsland = {
         ...currentIsland,
         official_cert_enabled: mergedOv.official_cert_enabled ?? false,
