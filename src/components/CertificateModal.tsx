@@ -1304,7 +1304,11 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                         className={`flex-1 py-3 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1.5 ${issuedTypes.includes('high_quality') ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed' : 'bg-blue-600 border-blue-500 text-white hover:bg-blue-500'}`}
                       >
                         <Sparkles className="w-3.5 h-3.5" /> 
-                        {issuedTypes.includes('high_quality') ? '高画質版 発行済み' : '公式高画質版を発行 (Free:月1枚)'}
+                        {issuedTypes.includes('high_quality')
+                          ? '高画質版 発行済み'
+                          : subscriptionTier === 'ultimate'
+                          ? '公式高画質版を発行 (無制限)'
+                          : '公式高画質版を発行 (Free:月1枚 / Premium:月5枚)'}
                       </button>
                     </div>
                   )}
@@ -1343,7 +1347,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                     </div>
                     <h4 className="font-serif font-bold text-white text-lg">世界にひとつだけの紙証明書をお手元へ</h4>
                     <p className="text-xs text-slate-300 leading-relaxed max-w-md">
-                      高品質な厚紙・金箔押し調の印刷仕上げで、ご自宅やオフィスに飾れるオフィシャル紙証明書を郵送いたします。
+                      高品質な厚紙・金箔押し調の印刷仕上げで、ご自宅やオフィスに飾れるオフィシャル紙証明書を郵送いたします（日本国内送料無料・通常3〜7営業日以内に発送）。
                     </p>
                   </div>
                   <button
@@ -1434,27 +1438,24 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
 
                     <div className="space-y-4 pt-4 border-t border-slate-700/50">
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1">配送国 (Country)</label>
+                        <label className="block text-xs font-bold text-slate-400 mb-1">配送先地域</label>
                         <select 
                           value={recipientCountry}
                           onChange={e => setRecipientCountry(e.target.value)}
                           className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
                         >
-                          <option value="Japan">日本 (Japan)</option>
-                          <option value="USA">United States</option>
-                          <option value="Taiwan">Taiwan</option>
-                          <option value="South Korea">South Korea</option>
-                          <option value="Other">Other (International)</option>
+                          <option value="Japan">日本国内 (Japan・送料無料)</option>
                         </select>
+                        <p className="text-[11px] text-slate-400 mt-1">※現在、郵送証明書は日本国内のみ（全国送料無料・通常3〜7営業日以内に発送）承っております。</p>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-bold text-slate-400 mb-1">郵便番号 / Zip Code</label>
+                          <label className="block text-xs font-bold text-slate-400 mb-1">郵便番号</label>
                           <input 
                             type="text" 
                             value={postalCode}
                             onChange={handlePostalCodeChange}
-                            placeholder={recipientCountry === 'Japan' ? "例: 1000001 (ハイフンなし)" : "Zip Code"} 
+                            placeholder="例: 1000001 (ハイフンなし)" 
                             className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
                           />
                         </div>
@@ -1511,7 +1512,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                     <CheckCircle className="w-16 h-16 text-emerald-400 mx-auto animate-bounce" />
                     <h4 className="font-serif font-bold text-white text-2xl">ご注文受付完了！</h4>
                     <p className="text-slate-300 text-sm leading-relaxed max-w-md mx-auto">
-                      「{island.name}」の到達証明書のオーダーおよび連番シリアル発行が確定いたしました。ご指定住所宛に約3〜5営業日で発送いたします。
+                      「{island.name}」の到達証明書のオーダーおよび連番シリアル発行が確定いたしました。ご指定住所宛に通常3〜7営業日以内に発送いたします。
                     </p>
                     <div className="bg-slate-800/80 border border-amber-500/40 rounded-2xl p-4 max-w-sm mx-auto text-left space-y-2 my-4">
                       <div className="text-xs text-slate-400 flex justify-between">
@@ -1586,7 +1587,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                 輝旅 島専科 プレミアムパスポート
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 max-w-md leading-relaxed">
-                プレミアム会員なら待ち時間ゼロで高画質デジタル認定書を無制限発行。さらに特製の金箔調・公式紙証明書の郵送オーダーも承っております。
+                Premiumなら広告スキップ＆月5枚、Ultimateなら無制限発行！さらに特製の金箔調・公式紙証明書の郵送オーダー（1枚 ¥1,500〜）もどなたでもご注文いただけます。
               </p>
               <div className="mt-6 flex items-center gap-2">
                 <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>

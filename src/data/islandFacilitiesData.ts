@@ -359,7 +359,6 @@ const IKEMA_FACILITY_DATA: IslandFacilityData = {
       id: 'ikema_car',
       name: '宮古島・池間島 レンタカー（宮古空港手配）',
       type: 'car',
-      phone: '0980-72-0001',
       features: '宮古空港からのレンタカーで池間大橋を渡り車移動',
       priceRange: '¥4,000〜 / 日',
     }

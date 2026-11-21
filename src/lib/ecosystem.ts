@@ -5,11 +5,11 @@ export const ECOSYSTEM_CONFIG = {
   // 📖 輝旅ガイド（公式観光・スポット情報）
   guideBaseUrl: process.env.NEXT_PUBLIC_KIRA_TABI_GUIDE_URL || 'https://guide.kira-tabi.com',
   
-  // 🤖 AI Travel Companion（現在開発中 - ドメインやパスが変わる場合はここで変更するか環境変数を設定）
-  aiCompanionBaseUrl: process.env.NEXT_PUBLIC_AI_COMPANION_URL || 'https://ai-travel-companion-chi.vercel.app/ja/explore',
+  // 🤖 AI相棒・守護精霊ページ（island.kira-tabi.com 内部ページ）
+  aiCompanionBaseUrl: '/companion',
   
-  // ステータスフラグ（開発中の場合にUI上に「開発中/Beta」バッジを表示可能にする）
-  isAiCompanionInDevelopment: true,
+  // ステータスフラグ
+  isAiCompanionInDevelopment: false,
 };
 
 // KIRATABIガイド側に記事が存在しない小離島を親島へフォールバックさせるための辞書
@@ -67,12 +67,13 @@ export function getGuideUrl(islandName: string, dbGuideUrl?: string | null): str
 }
 
 /**
- * 島の名前から「AI Travel Companion」の相談URLを生成します
- * ※ 将来的にクエリパラメータ（?destination= など）の仕様が変わった場合もここ1箇所で修正できます。
+ * 島の名前からAI相棒・守護精霊ページ（/companion）のURLを返します
  */
-export function getAiCompanionUrl(islandName: string): string {
-  if (!islandName) return ECOSYSTEM_CONFIG.aiCompanionBaseUrl;
+export function getAiCompanionUrl(islandName?: string): string {
   const baseUrl = ECOSYSTEM_CONFIG.aiCompanionBaseUrl;
+  if (!islandName || baseUrl.startsWith('/')) {
+    return baseUrl;
+  }
   const separator = baseUrl.includes('?') ? '&' : '?';
   return `${baseUrl}${separator}destination=${encodeURIComponent(islandName)}`;
 }

@@ -241,8 +241,9 @@ export default async function Page({ params }: { params: any }) {
     withTimeout(
       supabase
         .from('accommodations')
-        .select('*')
-        .eq('island_id', internalId),
+        .select('id, island_id, name, phone_number, plan_tier, is_verified, address, website_url, description, price_range, has_pickup, photo_urls, booking_mode, photo_exterior, photo_room, photo_food, photo_facility, deposit_policy')
+        .eq('island_id', internalId)
+        .eq('is_verified', true),
       1500,
       { data: [], error: null } as any
     ),
@@ -362,6 +363,15 @@ export default async function Page({ params }: { params: any }) {
     ]
   };
 
+  const safePublicAccommodations = (accommodationsResult.data ?? []).filter((acc: any) => {
+    if (!acc || acc.is_verified !== true) return false;
+    const accName = String(acc.name || '');
+    if (accName.includes('（架空') || accName.includes('架空') || accName.includes('テスト用')) {
+      return false;
+    }
+    return true;
+  });
+
   return (
     <>
       <script
@@ -372,7 +382,7 @@ export default async function Page({ params }: { params: any }) {
         islandId={internalId} 
         initialIsland={mergedInitialIsland}
         initialDiaries={diariesResult.data ?? []} 
-        initialAccommodations={accommodationsResult.data ?? []} 
+        initialAccommodations={safePublicAccommodations} 
       />
 
       {/* SSR FAQ & 関連エリア回遊セクション（Google構造化データガイドライン準拠の可視FAQ＋内部リンク強化） */}

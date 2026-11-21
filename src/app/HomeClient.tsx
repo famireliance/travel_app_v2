@@ -1237,42 +1237,85 @@ export default function Home() {
 
       {/* Monetization / Pricing Plan Section */}
       <div id="pricing" className="bg-slate-900 py-20 px-6 lg:px-12 text-white">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-14">
             <h2 className="font-serif text-2xl lg:text-3xl tracking-widest mb-4">キラ旅 プラン表</h2>
-            <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">基本機能はすべて無料。公式到達認定書やプレミアム機能を楽しみたい旅人のための特別なプランもご用意しています。</p>
+            <p className="text-slate-400 text-sm md:text-base max-w-2xl mx-auto">
+              基本機能はすべて無料。公式高画質デジタル証明書のクラウド保存枠拡大や広告スキップ、相棒精霊の最終進化を楽しめる有料プランもご用意しています。
+            </p>
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-slate-800 rounded-2xl p-8 border border-slate-700">
-              <h3 className="text-xl font-bold mb-2 text-white">Free / 無料プラン</h3>
-              <p className="text-slate-400 text-sm mb-6 h-10">日本全国の離島巡りを楽しむための基本機能</p>
-              <div className="text-3xl font-serif mb-8">¥0<span className="text-sm text-slate-500 font-sans"> / 永遠に無料</span></div>
-              <ul className="space-y-4 text-sm text-slate-300">
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> {totalIslandsCount}島すべてへのGPSチェックイン</li>
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> ご当地妖精の収集・育成機能</li>
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> デジタル島ノート（タイムライン投稿）</li>
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0"/> 全国旅人ランキング参加</li>
-              </ul>
+          <div className="grid md:grid-cols-3 gap-6 lg:gap-8 items-stretch">
+            {/* Free Plan */}
+            <div className="bg-slate-800 rounded-2xl p-7 lg:p-8 border border-slate-700 flex flex-col justify-between">
+              <div>
+                <h3 className="text-xl font-bold mb-2 text-white">Free / 無料プラン</h3>
+                <p className="text-slate-400 text-xs sm:text-sm mb-6 min-h-[2.5rem]">日本全国の離島巡りを楽しむための基本機能</p>
+                <div className="text-3xl font-serif mb-8">¥0<span className="text-sm text-slate-400 font-sans"> / 永遠に無料</span></div>
+                <ul className="space-y-3.5 text-sm text-slate-300">
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>全{totalIslandsCount}島のGPS・写真チェックイン</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>カード版証明書・画像DL無料</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>公式高画質デジタル証明書のクラウド保存 <strong className="text-white">月1枚まで</strong></span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>島ノート写真投稿無制限・全国ランキング参加</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>ご当地妖精収集＆相棒精霊の第1〜第3形態進化（レベル到達で解放）</span></li>
+                </ul>
+              </div>
+              <button
+                onClick={() => { if (user) router.push('/mypage'); else setIsAuthOpen(true); }}
+                className="w-full mt-8 bg-slate-700 hover:bg-slate-600 text-white font-bold py-3.5 rounded-xl transition-colors text-sm"
+              >
+                {user ? 'マイページを開く' : '無料で始める'}
+              </button>
             </div>
-            <div className="bg-gradient-to-br from-blue-900 to-indigo-900 rounded-2xl p-8 border border-blue-700 relative overflow-hidden shadow-2xl">
-              <div className="absolute top-0 right-0 bg-amber-500 text-amber-950 text-xs font-bold px-4 py-1 rounded-bl-lg">おすすめ</div>
-              <h3 className="text-xl font-bold mb-2 text-white">Premium / プレミアム</h3>
-              <p className="text-blue-200 text-sm mb-6 h-10">一生の思い出を形に残す、特別なコレクション</p>
-              <div className="text-3xl font-serif mb-8 text-amber-300">¥480<span className="text-sm text-blue-300 font-sans"> / 月</span></div>
-              <ul className="space-y-4 text-sm text-blue-100">
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 無料プランの全機能</li>
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> <strong className="text-white">公式到達デジタル＆紙認定書</strong>の発行権</li>
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 広告非表示＆プレミアムUIテーマ</li>
-                <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0"/> 妖精の「伝説の進化」解放ルート</li>
-              </ul>
+
+            {/* Premium Plan */}
+            <div className="bg-gradient-to-br from-blue-900 to-indigo-900 rounded-2xl p-7 lg:p-8 border border-blue-600 relative overflow-hidden shadow-xl flex flex-col justify-between">
+              <div className="absolute top-0 right-0 bg-amber-500 text-amber-950 text-xs font-bold px-4 py-1 rounded-bl-lg">人気</div>
+              <div>
+                <h3 className="text-xl font-bold mb-2 text-white">Premium / プレミアム</h3>
+                <p className="text-blue-200 text-xs sm:text-sm mb-6 min-h-[2.5rem]">待ち時間ゼロで快適に高画質証明書をコレクション</p>
+                <div className="text-3xl font-serif mb-8 text-amber-300">¥480<span className="text-sm text-blue-200 font-sans"> / 月（税込）</span></div>
+                <ul className="space-y-3.5 text-sm text-blue-100">
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5"/> <span>無料プランの全機能</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5"/> <span>公式高画質デジタル証明書のクラウド保存 <strong className="text-white">月5枚まで</strong></span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5"/> <span>証明書発行時のPR待機スキップ（<strong className="text-white">広告非表示</strong>）</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5"/> <span>マイページでの証明書クラウドコレクション管理</span></li>
+                </ul>
+              </div>
               <button 
                 onClick={() => handleCheckout('premium')}
-                className="w-full mt-8 bg-gradient-to-r from-amber-400 to-amber-600 hover:from-amber-300 hover:to-amber-500 text-amber-950 font-bold py-4 rounded-xl shadow-lg transition-transform hover:scale-[1.02]"
+                className="w-full mt-8 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-amber-950 font-bold py-3.5 rounded-xl shadow-lg transition-transform hover:scale-[1.02] text-sm"
               >
-                プレミアムプランを選択する
+                Premiumプランを選択する
+              </button>
+            </div>
+
+            {/* Ultimate Plan */}
+            <div className="bg-gradient-to-br from-purple-950 via-indigo-950 to-slate-900 rounded-2xl p-7 lg:p-8 border-2 border-purple-500/80 relative overflow-hidden shadow-2xl flex flex-col justify-between">
+              <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs font-bold px-4 py-1 rounded-bl-lg">最上位</div>
+              <div>
+                <h3 className="text-xl font-bold mb-2 text-white">Ultimate / アルティメット</h3>
+                <p className="text-purple-200 text-xs sm:text-sm mb-6 min-h-[2.5rem]">全国制覇を目指す島旅マスターのための究極パス</p>
+                <div className="text-3xl font-serif mb-8 text-purple-300">¥980<span className="text-sm text-purple-200 font-sans"> / 月（税込）</span></div>
+                <ul className="space-y-3.5 text-sm text-purple-100">
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-purple-400 shrink-0 mt-0.5"/> <span>Premiumプランの全機能（広告非表示）</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-purple-400 shrink-0 mt-0.5"/> <span>公式高画質デジタル証明書のクラウド保存 <strong className="text-white">無制限</strong></span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-purple-400 shrink-0 mt-0.5"/> <span>相棒精霊の <strong className="text-white">最終進化（第4形態）解放</strong>（Lv.50到達時）</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5"/> <span><strong className="text-amber-300">1年継続記念・公式紙証明書の無料贈呈（年1回）</strong></span></li>
+                </ul>
+              </div>
+              <button 
+                onClick={() => handleCheckout('ultimate')}
+                className="w-full mt-8 bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-400 hover:to-indigo-400 text-white font-bold py-3.5 rounded-xl shadow-lg transition-transform hover:scale-[1.02] text-sm"
+              >
+                Ultimateプランを選択する
               </button>
             </div>
           </div>
+
+          <p className="text-center text-xs text-slate-400 mt-8 leading-relaxed">
+            ※ 特製台紙・額装付きの「公式紙証明書（郵送オーダー）」は有料プランへの加入を問わず、1枚 ¥1,500（税込・日本国内送料無料）〜 のオプション単体購入としてどなたでもお申し込みいただけます。<br />
+            ※ 有料プランはマイページよりいつでも次回更新日前の解約手続きが可能です。
+          </p>
         </div>
       </div>
 

@@ -39,17 +39,17 @@
 ## 2. 運営管理ダッシュボード ＆ 宿泊施設B2BポータルURL（ステルス保護済）
 
 > [!IMPORTANT]
-> 一般訪問者が `island.kira-tabi.com` の通常パスへアクセスしてもエッジ層で `404 Not Found` として完全遮断されます。
-> オーナー様は下記 **「① 今すぐ使える秘密鍵アンロックURL（`?vault_key=kira9f2a`）」** を開くことで、30日間有効な暗号化 `HttpOnly` Cookieがブラウザにセットされ、DNS設定前でも即座にアクセス可能です。
+> 一般訪問者が `island.kira-tabi.com`（および `*.vercel.app`）の通常パスへアクセスしてもエッジ層で `404 Not Found` として完全遮断されます。
+> **運営管理用（`?vault_key=kira9f2a`）** と **宿泊施設B2Bオーナー配布用（`?partner_key=kirab2b8f`）** は鍵・Cookieが完全分離されているため、宿泊施設様へ配布用URLをお渡ししても運営管理画面には一切アクセスできません。
 
-| システム名称 | ① 今すぐ使える秘密鍵アンロックURL（現行ドメイン） | ② DNS設定後の専用ドメインURL |
+| システム名称 | ① 今すぐ使える専用アンロックURL（現行ドメイン） | ② DNS設定後の専用ドメインURL |
 | :--- | :--- | :--- |
-| **運営管理ダッシュボード**<br>（全16タブ・写真一括登録・注文管理） | [https://island.kira-tabi.com/kira-system-panel-9f2?vault_key=kira9f2a](https://island.kira-tabi.com/kira-system-panel-9f2?vault_key=kira9f2a) | `https://ops-vault-9f2a.kira-tabi.com/` |
-| **宿泊施設B2Bポータル（ログイン）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/login?vault_key=kira9f2a](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/login?vault_key=kira9f2a) | `https://partner.kira-tabi.com/login` |
-| **宿泊施設B2B（ダッシュボード）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/dashboard?vault_key=kira9f2a](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/dashboard?vault_key=kira9f2a) | `https://partner.kira-tabi.com/dashboard` |
-| **宿泊施設B2B（施設情報編集）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/facility?vault_key=kira9f2a](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/facility?vault_key=kira9f2a) | `https://partner.kira-tabi.com/facility` |
-| **宿泊施設B2B（予約管理）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/reservations?vault_key=kira9f2a](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/reservations?vault_key=kira9f2a) | `https://partner.kira-tabi.com/reservations` |
-| **宿泊施設B2B（オンライン宿泊台帳）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/ledger?vault_key=kira9f2a](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/ledger?vault_key=kira9f2a) | `https://partner.kira-tabi.com/ledger` |
+| **運営管理ダッシュボード**<br>（全17タブ・提携宿/B2B発行・注文管理） | [https://island.kira-tabi.com/kira-system-panel-9f2?vault_key=kira9f2a](https://island.kira-tabi.com/kira-system-panel-9f2?vault_key=kira9f2a) | `https://ops-vault-9f2a.kira-tabi.com/` |
+| **宿泊施設B2Bポータル（ログイン）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/login?partner_key=kirab2b8f](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/login?partner_key=kirab2b8f) | `https://partner.kira-tabi.com/login` |
+| **宿泊施設B2B（ダッシュボード）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/dashboard?partner_key=kirab2b8f](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/dashboard?partner_key=kirab2b8f) | `https://partner.kira-tabi.com/dashboard` |
+| **宿泊施設B2B（施設情報編集）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/facility?partner_key=kirab2b8f](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/facility?partner_key=kirab2b8f) | `https://partner.kira-tabi.com/facility` |
+| **宿泊施設B2B（予約管理）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/reservations?partner_key=kirab2b8f](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/reservations?partner_key=kirab2b8f) | `https://partner.kira-tabi.com/reservations` |
+| **宿泊施設B2B（オンライン宿泊台帳）** | [https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/ledger?partner_key=kirab2b8f](https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/ledger?partner_key=kirab2b8f) | `https://partner.kira-tabi.com/ledger` |
 
 ---
 

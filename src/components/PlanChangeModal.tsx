@@ -131,7 +131,7 @@ export function PlanChangeModal({ isOpen, onClose, currentTier, onPlanChanged }:
                     <li className="flex items-start gap-2">
                       <Check size={16} className="text-blue-500 mt-0.5 shrink-0" />
                       <span>
-                        ご請求について：現在の契約期間の残り日数に応じた差額（日割り）が計算され、**次回のご請求時に合算**して引き落とされます。（本日この場での即時決済は発生しません）
+                        ご請求について：現在の契約期間の残り日数に応じた差額（日割り）が計算され、<strong>次回のご請求時に合算</strong>して引き落とされます。（本日この場での即時決済は発生しません）
                       </span>
                     </li>
                   </ul>
@@ -187,10 +187,11 @@ export function PlanChangeModal({ isOpen, onClose, currentTier, onPlanChanged }:
                     </div>
 
                     <ul className="space-y-3 mb-8 text-sm text-slate-700">
-                      <li className="flex items-start gap-2"><Check size={18} className="text-amber-500 shrink-0 mt-0.5" /> <span>公式証明書の高画質ダウンロードが無制限</span></li>
-                      <li className="flex items-start gap-2"><Check size={18} className="text-amber-500 shrink-0 mt-0.5" /> <span>相棒精霊の「第2形態」が解放可能に</span></li>
-                      <li className="flex items-start gap-2 text-slate-400"><X size={18} className="shrink-0 mt-0.5" /> <span>旅の記録（島ログ）の写真保存が無制限</span></li>
-                      <li className="flex items-start gap-2 text-slate-400"><X size={18} className="shrink-0 mt-0.5" /> <span>1周年記念の実物証明書の無料お届け</span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-amber-500 shrink-0 mt-0.5" /> <span>公式高画質デジタル証明書を<strong>月5枚まで発行・クラウド保存可能</strong>（Freeは月1枚）</span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-amber-500 shrink-0 mt-0.5" /> <span>証明書発行時のPR待機スキップ（広告非表示）</span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-amber-500 shrink-0 mt-0.5" /> <span>島ノート（旅の記録）の写真投稿無制限・相棒精霊の第1〜第3形態進化（全プラン共通・レベル到達で解放）</span></li>
+                      <li className="flex items-start gap-2 text-slate-400"><X size={18} className="shrink-0 mt-0.5" /> <span>相棒精霊の最終進化（第4形態）解放（Ultimate限定）</span></li>
+                      <li className="flex items-start gap-2 text-slate-400"><X size={18} className="shrink-0 mt-0.5" /> <span>1年継続記念・公式紙証明書の無料贈呈（Ultimate限定）</span></li>
                     </ul>
 
                     <button 
@@ -230,9 +231,11 @@ export function PlanChangeModal({ isOpen, onClose, currentTier, onPlanChanged }:
                     </div>
 
                     <ul className="space-y-3 mb-8 text-sm text-slate-700">
-                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span className="font-bold">Premiumの全機能が含まれます</span></li>
-                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span>旅の記録（島ログ）の写真保存が無制限</span></li>
-                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span className="font-bold text-purple-700">【究極特典】1年間継続すると、特別版の「1周年記念 実物証明書」を送料無料でお届け</span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span>公式高画質デジタル証明書を<strong className="text-purple-700">無制限に発行・クラウド保存可能</strong></span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span>証明書発行時のPR待機スキップ（広告非表示）</span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span>島ノート（旅の記録）の写真投稿無制限</span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span>相棒精霊の<strong className="text-purple-700">最終進化（第4形態）解放</strong>（Lv.50到達時）</span></li>
+                      <li className="flex items-start gap-2"><Check size={18} className="text-purple-600 shrink-0 mt-0.5" /> <span className="font-bold text-purple-700">【究極特典】1年継続記念・公式紙証明書の無料贈呈（年1回・日本国内送料無料）</span></li>
                     </ul>
 
                     <button 

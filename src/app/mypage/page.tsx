@@ -183,10 +183,8 @@ export default function MyPage() {
             const { data: diariesData } = await supabase.from('island_diaries').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
             setMyDiaries(diariesData || []);
             
-            if (subscriptionTier === 'premium' || subscriptionTier === 'ultimate') {
-              const { data: certsData } = await supabase.from('certificates').select('*').eq('user_id', user.id).not('image_url', 'is', null).order('created_at', { ascending: false });
-              setMyCertificates(certsData || []);
-            }
+            const { data: certsData } = await supabase.from('certificates').select('*').eq('user_id', user.id).not('image_url', 'is', null).order('created_at', { ascending: false });
+            setMyCertificates(certsData || []);
           } catch (e) { console.error(e); }
         }
       })()
@@ -338,7 +336,7 @@ export default function MyPage() {
     { id: 'history', label: 'トラベルヒストリー', icon: History, count: visitedList.length },
     { id: 'diaries', label: '島ログ', icon: BookOpen, count: myDiaries.length },
     { id: 'reservations', label: '予約・宿泊履歴', icon: Calendar, count: reservations.length > 0 ? reservations.length : undefined },
-    ...(subscriptionTier === 'premium' || subscriptionTier === 'ultimate' ? [{ id: 'certificates', label: '証明書', icon: Award, count: myCertificates.length }] : []),
+    ...(subscriptionTier === 'premium' || subscriptionTier === 'ultimate' || myCertificates.length > 0 ? [{ id: 'certificates', label: '証明書', icon: Award, count: myCertificates.length }] : []),
     { id: 'quests', label: 'クエスト・称号', icon: Award, count: specialTitles.filter(t => t.unlocked).length },
     { id: 'fairies', label: '妖精図鑑', icon: Sparkles, count: unlockedFairies.filter(f => f.unlocked).length },
     { id: 'planning', label: 'お気に入り', icon: Heart, count: planningList.length },
@@ -519,7 +517,11 @@ export default function MyPage() {
                   </p>
                 )}
                 <p className="text-xs text-slate-600 mt-1">
-                  {subscriptionTier === 'free' ? '公式証明書(高画質)の発行や、より強力な相棒精霊の解放にはプレミアムプランをご利用ください。' : 'プレミアム特典が適用されています。公式証明書が何度でも無料で発行可能です！'}
+                  {subscriptionTier === 'free'
+                    ? '無料プランでは公式高画質デジタル証明書を月1枚まで発行・クラウド保存可能です（カード版・画像DLは無料）。枠の拡大や広告スキップには有料プランをご利用ください。'
+                    : subscriptionTier === 'premium'
+                    ? 'Premium特典が適用されています（広告スキップ・公式高画質版を月5枚まで発行可能）。'
+                    : 'Ultimate特典が適用されています（広告スキップ・相棒精霊の最終進化解放・公式高画質版を無制限で発行可能）。'}
                 </p>
               </div>
               <button 

@@ -827,21 +827,32 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
         {(() => {
           const categoryType = getIslandCategoryType(island.id, island.name);
           const facilityData = getIslandFacilityDataOrDefault(island.id, island.name);
-          const accommodations = initialAccommodations && initialAccommodations.length > 0 
-            ? initialAccommodations.map((a: any) => ({
-                id: a.id,
-                name: a.name,
-                phone: a.phone_number || a.phone,
-                planTier: a.plan_tier,
-                features: a.description,
-                priceRange: a.price_range,
-                address: a.address,
-                officialWebsite: a.website_url,
-                imageUrl: a.photo_urls?.[0],
-                isSponsored: a.plan_tier === 'paid_premium' || a.plan_tier === 'paid_standard',
-                sponsoredId: a.id
-              }))
-            : facilityData.accommodations;
+          const isSafePublicAcc = (item: any) => {
+            if (!item || item.is_verified === false) return false;
+            const n = String(item.name || '');
+            if (n.includes('（架空') || n.includes('架空') || n.includes('テスト用')) return false;
+            return true;
+          };
+          const verifiedPartnerAccommodations = (initialAccommodations || [])
+            .filter(isSafePublicAcc)
+            .map((a: any) => ({
+              id: a.id,
+              name: a.name,
+              phone: a.phone_number || a.phone,
+              planTier: a.plan_tier,
+              is_verified: a.is_verified,
+              features: a.description,
+              priceRange: a.price_range,
+              address: a.address,
+              officialWebsite: a.website_url,
+              imageUrl: a.photo_exterior?.[0] || a.photo_urls?.[0],
+              isSponsored: a.plan_tier === 'paid_premium' || a.plan_tier === 'paid_standard',
+              sponsoredId: a.id,
+              isPartnerDb: true,
+            }));
+          const accommodations = verifiedPartnerAccommodations.length > 0
+            ? verifiedPartnerAccommodations
+            : (facilityData.accommodations || []).filter(isSafePublicAcc);
 
           const ferryBoats = FERRY_BOATS_DICTIONARY[island.id] || FERRY_BOATS_DICTIONARY[island.name] || [];
           const activities = ACTIVITIES_DICTIONARY[island.id] || ACTIVITIES_DICTIONARY[island.name] || ACTIVITIES_DICTIONARY['392'] || [];
@@ -916,7 +927,7 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
                       </div>
                     </div>
 
-                    {/* 特別広告枠（直契約・スポンサー枠: 初期0件） */}
+                    {/* 特別広告枠（直契約・スポンサー枠） */}
                     <div className="p-6 bg-slate-50 border-t border-slate-100 space-y-3">
                       <div className="flex items-center justify-between">
                         <span className="text-xs font-bold text-amber-700 uppercase tracking-widest flex items-center gap-1">
@@ -925,11 +936,64 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
                         <span className="text-[0.65rem] text-slate-400">※当サイト直契約・特別広告掲載枠（随時受付中）</span>
                       </div>
 
-                      <div className="p-6 rounded-2xl bg-white border border-dashed border-slate-300 text-center space-y-2">
-                        <p className="text-xs text-slate-500 font-serif">
-                          現在、{island.name}の直契約おすすめ宿枠は空枠です。<br/>大手予約サイト（楽天トラベル・じゃらん）のダイレクト検索をご利用ください。
-                        </p>
-                      </div>
+                      {verifiedPartnerAccommodations.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1">
+                          {verifiedPartnerAccommodations.map((acc: any) => (
+                            <div
+                              key={acc.id}
+                              className="p-5 rounded-2xl bg-gradient-to-br from-amber-50/80 via-white to-amber-50/30 border border-amber-300 shadow-sm space-y-3 flex flex-col justify-between"
+                            >
+                              <div className="space-y-2">
+                                <div className="flex items-start justify-between gap-2">
+                                  <div>
+                                    <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
+                                      🌟 KIRATABI 公式提携宿
+                                    </span>
+                                    <h4 className="font-serif font-bold text-slate-900 text-base">{acc.name}</h4>
+                                  </div>
+                                  {acc.priceRange && (
+                                    <span className="font-mono text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-lg shrink-0">
+                                      {acc.priceRange}
+                                    </span>
+                                  )}
+                                </div>
+                                {acc.features && (
+                                  <p className="text-xs text-slate-600 leading-relaxed font-serif line-clamp-2">
+                                    {acc.features}
+                                  </p>
+                                )}
+                              </div>
+
+                              <div className="pt-2 border-t border-amber-200/60 flex items-center justify-between gap-2">
+                                {acc.phone ? (
+                                  <a
+                                    href={`tel:${acc.phone}`}
+                                    onClick={() => trackFacilityEvent(acc.id, 'phone_call_click')}
+                                    className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
+                                  >
+                                    <Phone size={14} /> {acc.phone}
+                                  </a>
+                                ) : (
+                                  <span className="text-xs text-slate-400">Webリクエスト対応</span>
+                                )}
+                                <Link
+                                  href={`/stay/${acc.id}`}
+                                  onClick={() => trackFacilityEvent(acc.id, 'lp_view')}
+                                  className="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1 transition-colors"
+                                >
+                                  公式特設LPを見る <ArrowRight size={12} />
+                                </Link>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="p-6 rounded-2xl bg-white border border-dashed border-slate-300 text-center space-y-2">
+                          <p className="text-xs text-slate-500 font-serif">
+                            現在、{island.name}の直契約おすすめ宿枠は空枠です。<br/>大手予約サイト（楽天トラベル・じゃらん）のダイレクト検索をご利用ください。
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1035,7 +1099,7 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
                                       <span className="text-xs text-slate-400">電話番号確認中</span>
                                     )}
 
-                                    {isPaid && acc.sponsoredId && (
+                                    {(isPaid || acc.isPartnerDb) && acc.sponsoredId && (
                                       <Link
                                         href={`/stay/${acc.sponsoredId}`}
                                         onClick={() => trackFacilityEvent(acc.id, 'lp_view')}
@@ -1138,6 +1202,63 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
                               </div>
                             </div>
                           ))}
+                        </div>
+                      )}
+
+                      {verifiedPartnerAccommodations.length > 0 && (
+                        <div className="pt-2 space-y-3">
+                          <span className="text-xs font-bold text-amber-800 uppercase tracking-widest flex items-center gap-1.5">
+                            <Star className="w-4 h-4 text-amber-500 fill-amber-500" /> KIRATABI 公式提携・宿泊施設
+                          </span>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            {verifiedPartnerAccommodations.map((acc: any) => (
+                              <div
+                                key={acc.id}
+                                className="p-5 rounded-2xl bg-gradient-to-br from-amber-50/80 via-white to-amber-50/30 border border-amber-300 shadow-sm space-y-3 flex flex-col justify-between"
+                              >
+                                <div className="space-y-2">
+                                  <div className="flex items-start justify-between gap-2">
+                                    <div>
+                                      <span className="px-2 py-0.5 rounded-full bg-amber-500 text-slate-950 font-bold text-[0.6rem] tracking-wider uppercase inline-block mb-1">
+                                        🌟 KIRATABI 公式提携宿
+                                      </span>
+                                      <h4 className="font-serif font-bold text-slate-900 text-base">{acc.name}</h4>
+                                    </div>
+                                    {acc.priceRange && (
+                                      <span className="font-mono text-xs font-bold text-amber-800 bg-amber-100 px-2.5 py-1 rounded-lg shrink-0">
+                                        {acc.priceRange}
+                                      </span>
+                                    )}
+                                  </div>
+                                  {acc.features && (
+                                    <p className="text-xs text-slate-600 leading-relaxed font-serif line-clamp-2">
+                                      {acc.features}
+                                    </p>
+                                  )}
+                                </div>
+                                <div className="pt-2 border-t border-amber-200/60 flex items-center justify-between gap-2">
+                                  {acc.phone ? (
+                                    <a
+                                      href={`tel:${acc.phone}`}
+                                      onClick={() => trackFacilityEvent(acc.id, 'phone_call_click')}
+                                      className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:underline font-mono"
+                                    >
+                                      <Phone size={14} /> {acc.phone}
+                                    </a>
+                                  ) : (
+                                    <span className="text-xs text-slate-400">Webリクエスト対応</span>
+                                  )}
+                                  <Link
+                                    href={`/stay/${acc.id}`}
+                                    onClick={() => trackFacilityEvent(acc.id, 'lp_view')}
+                                    className="px-3.5 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1 transition-colors"
+                                  >
+                                    公式特設LPを見る <ArrowRight size={12} />
+                                  </Link>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       )}
 

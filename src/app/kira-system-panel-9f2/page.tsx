@@ -34,7 +34,8 @@ import {
   ClipboardList,
   BarChart3,
   Wifi,
-  ShieldCheck
+  ShieldCheck,
+  BedDouble
 } from 'lucide-react';
 
 import AdminDashboard from '@/components/admin/AdminDashboard';
@@ -52,6 +53,7 @@ import AgentReviewForm from '@/components/admin/AgentReviewForm';
 import AdminAnalytics from '@/components/admin/AdminAnalytics';
 import AdminWifiManagement from '@/components/admin/AdminWifiManagement';
 import AdminAuditLogs from '@/components/admin/AdminAuditLogs';
+import AdminAccommodations from '@/components/admin/AdminAccommodations';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -86,9 +88,9 @@ export default function AdminPage() {
   const [officialForm, setOfficialForm] = useState<any>({
     islandId: '',
     official_cert_enabled: false,
-    official_org_name: '一般社団法人 八重山ビジターズビューロー',
+    official_org_name: '',
     official_seal_url: '',
-    official_cert_price: 500,
+    official_cert_price: 3000,
     official_sales_start_at: new Date().toISOString().slice(0, 10),
     official_sales_end_at: new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
     official_template_id: 'standard_seal'
@@ -593,6 +595,7 @@ export default function AdminPage() {
 
   const NAV_ITEMS = [
     { id: 'dashboard', label: 'ダッシュボード', icon: LayoutDashboard },
+    { id: 'accommodations', label: '宿泊施設・B2B管理', icon: BedDouble },
     { id: 'analytics', label: '自治体・動態レポート', icon: BarChart3 },
     { id: 'orders', label: '発送・注文管理', icon: Package },
     { id: 'user', label: 'ユーザー・権限管理', icon: Users },
@@ -720,6 +723,11 @@ export default function AdminPage() {
         {/* 1. Dashboard Tab */}
         {activeTab === 'dashboard' && (
           <AdminDashboard password={password} onNavigateTab={setActiveTab} />
+        )}
+
+        {/* Accommodations & B2B Owner Management Tab */}
+        {activeTab === 'accommodations' && (
+          <AdminAccommodations password={password} />
         )}
 
         {/* Analytics Tab */}
@@ -970,7 +978,7 @@ export default function AdminPage() {
                             className="w-full bg-gray-900 border border-gray-800 rounded-lg p-2 text-xs text-white"
                           >
                             <option value="free">Free (無料)</option>
-                            <option value="premium">Premium (月額¥300相当)</option>
+                            <option value="premium">Premium (月額¥480)</option>
                             <option value="ultimate">Ultimate (月額¥980相当)</option>
                           </select>
                         </div>
@@ -1148,9 +1156,9 @@ export default function AdminPage() {
                         setOfficialForm({
                           islandId: is.id,
                           official_cert_enabled: is.official_cert_enabled || false,
-                          official_org_name: is.official_org_name || '一般社団法人 八重山ビジターズビューロー',
+                          official_org_name: is.official_org_name || '',
                           official_seal_url: is.official_seal_url || '',
-                          official_cert_price: is.official_cert_price || 500,
+                          official_cert_price: is.official_cert_price ?? 3000,
                           official_sales_start_at: is.official_sales_start_at ? is.official_sales_start_at.substring(0, 10) : new Date().toISOString().slice(0, 10),
                           official_sales_end_at: is.official_sales_end_at ? is.official_sales_end_at.substring(0, 10) : new Date(Date.now() + 365 * 86400000).toISOString().slice(0, 10),
                           official_template_id: is.official_template_id || 'standard_seal'
@@ -1201,14 +1209,28 @@ export default function AdminPage() {
                     </label>
                   </div>
 
-                  <div>
-                    <label className="block text-gray-400 mb-1 font-bold">公認団体・自治体名 (例: 一般社団法人 八重山ビジターズビューロー)</label>
-                    <input
-                      type="text"
-                      className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white"
-                      value={officialForm.official_org_name}
-                      onChange={e => setOfficialForm({ ...officialForm, official_org_name: e.target.value })}
-                    />
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="md:col-span-2">
+                      <label className="block text-gray-400 mb-1 font-bold">公認団体・自治体名</label>
+                      <input
+                        type="text"
+                        placeholder="〇〇観光協会 / 自治体公式"
+                        className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white"
+                        value={officialForm.official_org_name}
+                        onChange={e => setOfficialForm({ ...officialForm, official_org_name: e.target.value })}
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-gray-400 mb-1 font-bold">販売価格 (円)</label>
+                      <input
+                        type="number"
+                        min={0}
+                        step={100}
+                        className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white font-mono"
+                        value={officialForm.official_cert_price}
+                        onChange={e => setOfficialForm({ ...officialForm, official_cert_price: Number(e.target.value) })}
+                      />
+                    </div>
                   </div>
 
                   <div>

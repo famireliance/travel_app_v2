@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef, useState, useMemo } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 import { useTravel } from '@/context/TravelContext';
@@ -570,15 +571,13 @@ export default function GlobeTrackerPage() {
                       <BookOpen className="w-3.5 h-3.5 text-blue-400 group-hover:scale-110 transition-transform" />
                       <span>輝旅ガイド</span>
                     </a>
-                    <a
+                    <Link
                       href={getAiCompanionUrl(selectedIsland.name)}
-                      target="_blank"
-                      rel="noopener noreferrer"
                       className="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-amber-500/30 hover:border-amber-400 text-amber-300 font-bold text-[0.7rem] flex items-center justify-center gap-1.5 transition-all shadow-md group"
                     >
                       <Bot className="w-3.5 h-3.5 text-amber-400 group-hover:scale-110 transition-transform" />
-                      <span>AIに旅程相談</span>
-                    </a>
+                      <span>AI相棒・精霊図鑑</span>
+                    </Link>
                   </div>
                 </div>
               </div>

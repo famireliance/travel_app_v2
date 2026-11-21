@@ -61,7 +61,8 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // 2. Stripe Checkout Session の作成
+    // 2. Stripe Checkout Session の作成（STRIPE_TRIAL_DAYS が正の数値で設定されている場合のみトライアルを付与）
+    const trialDays = Number(process.env.STRIPE_TRIAL_DAYS);
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       customer: customerId, // 既存顧客なら紐付け、なければStripeが新規作成
@@ -74,7 +75,9 @@ export async function POST(req: NextRequest) {
       ],
       mode: 'subscription',
       subscription_data: {
-        trial_period_days: 90, // 3ヶ月無料トライアル設定
+        ...(Number.isFinite(trialDays) && trialDays > 0
+          ? { trial_period_days: Math.floor(trialDays) }
+          : {}),
         metadata: {
           user_id: userId,
           tier: tier,

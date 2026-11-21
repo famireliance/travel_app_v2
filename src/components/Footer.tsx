@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Compass, Ship, FileText, Mail, ShieldAlert } from 'lucide-react';
+import { Compass, FileText, Mail, ShieldAlert } from 'lucide-react';
 
 export default function Footer() {
   const pathname = usePathname();
@@ -58,7 +58,6 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
             <li><a href="https://kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Compass size={14}/> KIRATABI</a></li>
             <li><a href="https://guide.kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><FileText size={14}/> KIRATABIガイド</a></li>
-            <li><a href="https://app.kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Ship size={14}/> KIRATABI アプリ版</a></li>
           </ul>
         </div>
 

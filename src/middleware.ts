@@ -3,31 +3,23 @@ import { NextRequest, NextResponse } from 'next/server';
 /**
  * 3ホスト完全分離（ゼロトラスト・エッジ遮断）Middleware
  *
- * 1. 一般公開ホスト (island.kira-tabi.com)
+ * 1. 一般公開ホスト (island.kira-tabi.com / *.vercel.app / その他全ての非管理ホスト)
  *    - 一般訪問者・ボットからの /kira-system-panel-9f2*, /biz-portal-secure-8f92a1b3*, /api/admin/*
  *      へのアクセスをエッジ層で無条件に 404 Not Found として完全遮断する。
- *    - ただし、DNS設定完了前の緊急管理アクセス用として、秘密の鍵パラメータ (?vault_key=kira9f2a)
- *      または専用HttpOnly Cookie (__kira_vault_access) を保持する管理者ブラウザのみ通過を許可する。
+ *    - 運営マスターアンロックキー (?vault_key=...) または専用HttpOnly Cookie (__kira_vault_access)
+ *      を保持する管理者ブラウザのみ Admin と B2B の双方を通過許可する。
+ *    - 提携宿B2B招待キー (?partner_key=...) または専用HttpOnly Cookie (__kira_b2b_access) は
+ *      /biz-portal-secure-8f92a1b3* のみ通過許可し、Admin画面および /api/admin/* は絶対に通さない。
  *
  * 2. 運営管理専用ステルスホスト (ops-vault-9f2a.kira-tabi.com)
  *    - ルート (/) で運営管理ダッシュボード (/kira-system-panel-9f2) を直接配信。
- *    - このホストからのみ /api/admin/* の実行を許可。
+ *    - このホストからのみ /api/admin/* の実行を無条件許可。
  *
  * 3. 宿泊施設B2Bポータル専用ホスト (partner.kira-tabi.com / biz.kira-tabi.com)
  *    - ルート (/) およびクリーンパス (/login, /dashboard, /facility, /reservations, /ledger) で
  *      宿泊施設オーナー専用ポータル (/biz-portal-secure-8f92a1b3/*) を配信。
  *    - 運営管理ダッシュボードおよび /api/admin/* は完全 404 遮断（Same-Origin 完全分離）。
  */
-
-const PUBLIC_HOSTS = new Set(
-  [
-    'island.kira-tabi.com',
-    'www.island.kira-tabi.com',
-    process.env.NEXT_PUBLIC_PUBLIC_HOST,
-  ]
-    .filter(Boolean)
-    .map((h) => String(h).toLowerCase().trim())
-);
 
 const ADMIN_HOSTS = new Set(
   [
@@ -49,8 +41,20 @@ const B2B_HOSTS = new Set(
 );
 
 const B2B_CLEAN_SUBPATHS = ['/login', '/dashboard', '/facility', '/reservations', '/ledger'];
+
 const VAULT_COOKIE_NAME = '__kira_vault_access';
 const VAULT_SECRET_KEY = process.env.ADMIN_VAULT_KEY || 'kira9f2a';
+
+const B2B_COOKIE_NAME = '__kira_b2b_access';
+const B2B_SECRET_KEY = process.env.B2B_VAULT_KEY || 'kirab2b8f';
+
+const VAULT_COOKIE_OPTIONS = {
+  httpOnly: true,
+  secure: process.env.NODE_ENV === 'production',
+  sameSite: 'lax' as const,
+  path: '/',
+  maxAge: 60 * 60 * 24 * 30, // 30日間有効
+};
 
 function applyStrictSecurityHeaders(res: NextResponse, isAdmin: boolean): NextResponse {
   res.headers.set('X-Robots-Tag', 'noindex, nofollow, noarchive, nosnippet');
@@ -93,14 +97,22 @@ export function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const rawHost = (req.headers.get('x-forwarded-host') || req.headers.get('host') || '')
+  const forwardedHost = (req.headers.get('x-forwarded-host') || '')
+    .split(',')[0]
     .toLowerCase()
     .split(':')[0]
     .trim();
+  const directHost = (req.headers.get('host') || '')
+    .toLowerCase()
+    .split(':')[0]
+    .trim();
+  const rawHost = forwardedHost || directHost;
 
   const isAdminHost = ADMIN_HOSTS.has(rawHost) || rawHost.startsWith('ops-vault-');
   const isB2BHost = B2B_HOSTS.has(rawHost) || rawHost.startsWith('partner.') || rawHost.startsWith('biz.');
-  const isPublicHost = PUBLIC_HOSTS.has(rawHost);
+  const isLocalDevHost =
+    (rawHost === 'localhost' || rawHost === '127.0.0.1') &&
+    (!forwardedHost || forwardedHost === directHost);
 
   const isManualPath = pathname === '/manual.html' || pathname === '/operation-manual.html';
   const isAdminPath =
@@ -162,44 +174,59 @@ export function middleware(req: NextRequest) {
   }
 
   // ============================================================================
-  // 3. 一般公開ホスト (island.kira-tabi.com)
+  // 3. ローカル開発環境のみパススルー (localhost / 127.0.0.1 — 外部転送ヘッダなし)
   // ============================================================================
-  if (isPublicHost) {
-    if (isAdminPath || isAdminApi || isB2BPath) {
-      // 緊急マスターアンロックキー (?vault_key=kira9f2a) の検証
-      const queryVaultKey = searchParams.get('vault_key');
-      const cookieVaultKey = req.cookies.get(VAULT_COOKIE_NAME)?.value;
-      const hasAdminHeader = Boolean(req.headers.get('x-admin-password') || req.headers.get('authorization'));
-
-      if (queryVaultKey === VAULT_SECRET_KEY) {
-        const cleanUrl = req.nextUrl.clone();
-        cleanUrl.searchParams.delete('vault_key');
-        const res = NextResponse.redirect(cleanUrl);
-        res.cookies.set(VAULT_COOKIE_NAME, VAULT_SECRET_KEY, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'lax',
-          path: '/',
-          maxAge: 60 * 60 * 24 * 30, // 30日間有効
-        });
-        return applyStrictSecurityHeaders(res, true);
-      }
-
-      if (cookieVaultKey === VAULT_SECRET_KEY || (isAdminApi && hasAdminHeader)) {
-        return applyStrictSecurityHeaders(NextResponse.next(), isAdminPath || isAdminApi);
-      }
-
-      // 一般訪問者・スキャナー・ボットには完全 404 Not Found を返す
-      return createNotFoundResponse(req, isAdminApi);
+  if (isLocalDevHost) {
+    if (isAdminPath || isB2BPath || isAdminApi) {
+      return applyStrictSecurityHeaders(NextResponse.next(), isAdminPath || isAdminApi);
     }
     return NextResponse.next();
   }
 
   // ============================================================================
-  // 4. ローカル開発環境 (localhost) / Vercel プレビューURL (*.vercel.app)
+  // 4. 一般公開ホスト (island.kira-tabi.com / *.vercel.app / その他すべての非管理ホスト)
   // ============================================================================
-  if (isAdminPath || isB2BPath || isAdminApi) {
-    return applyStrictSecurityHeaders(NextResponse.next(), isAdminPath || isAdminApi);
+  if (isAdminPath || isAdminApi || isB2BPath) {
+    const queryVaultKey = searchParams.get('vault_key');
+    const queryPartnerKey = searchParams.get('partner_key');
+    const cookieVaultKey = req.cookies.get(VAULT_COOKIE_NAME)?.value;
+    const cookieB2BKey = req.cookies.get(B2B_COOKIE_NAME)?.value;
+
+    // 運営マスターアンロックキー (?vault_key=...) -> Admin と B2B の双方を解錠
+    if (queryVaultKey === VAULT_SECRET_KEY) {
+      if (isAdminApi) {
+        const res = NextResponse.next();
+        res.cookies.set(VAULT_COOKIE_NAME, VAULT_SECRET_KEY, VAULT_COOKIE_OPTIONS);
+        return applyStrictSecurityHeaders(res, true);
+      }
+      const cleanUrl = req.nextUrl.clone();
+      cleanUrl.searchParams.delete('vault_key');
+      const res = NextResponse.redirect(cleanUrl);
+      res.cookies.set(VAULT_COOKIE_NAME, VAULT_SECRET_KEY, VAULT_COOKIE_OPTIONS);
+      return applyStrictSecurityHeaders(res, isAdminPath);
+    }
+
+    // 提携宿パートナー招待キー (?partner_key=...) -> B2B パスのみを解錠（Admin は絶対に通さない）
+    if (isB2BPath && queryPartnerKey === B2B_SECRET_KEY) {
+      const cleanUrl = req.nextUrl.clone();
+      cleanUrl.searchParams.delete('partner_key');
+      const res = NextResponse.redirect(cleanUrl);
+      res.cookies.set(B2B_COOKIE_NAME, B2B_SECRET_KEY, VAULT_COOKIE_OPTIONS);
+      return applyStrictSecurityHeaders(res, false);
+    }
+
+    // マスターVault Cookie は Admin / Admin API / B2B 全て通過
+    if (cookieVaultKey === VAULT_SECRET_KEY) {
+      return applyStrictSecurityHeaders(NextResponse.next(), isAdminPath || isAdminApi);
+    }
+
+    // B2B パートナー Cookie は isB2BPath のみ通過（isAdminPath / isAdminApi は完全遮断）
+    if (isB2BPath && cookieB2BKey === B2B_SECRET_KEY) {
+      return applyStrictSecurityHeaders(NextResponse.next(), false);
+    }
+
+    // 一般訪問者・ボット・未解錠の *.vercel.app アクセスには完全 404 Not Found を返す
+    return createNotFoundResponse(req, isAdminApi);
   }
 
   return NextResponse.next();

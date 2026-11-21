@@ -26,6 +26,68 @@ function checkGuestRateLimit(ip: string): boolean {
   return true;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function buildSmartDictionaryRecommendations(userInput: unknown, availableIslands: any[]) {
+  const q = String(userInput || '').trim();
+  const keywords = q.split(/[\s、,・。！？!?/]+/).filter((w) => w.length >= 2);
+  const scored = availableIslands.map((isl) => {
+    const text = `${isl.name} ${isl.prefecture} ${isl.area || ''} ${isl.region_id || ''} ${isl.description || ''} ${isl.access || ''}`;
+    let score = 0;
+    for (const kw of keywords) {
+      if (text.includes(kw)) score += 10;
+    }
+    if (
+      (q.includes('海') || q.includes('ブルー') || q.includes('シュノーケル') || q.includes('ダイビング')) &&
+      (isl.prefecture === '沖縄県' || isl.prefecture === '鹿児島県' || isl.prefecture === '東京都')
+    ) {
+      score += 6;
+    }
+    if (
+      (q.includes('温泉') || q.includes('サウナ')) &&
+      (text.includes('温泉') || text.includes('サウナ') || ['49', '52', '56', '58', '195', '340'].includes(String(isl.id)))
+    ) {
+      score += 12;
+    }
+    if (
+      (q.includes('アート') || q.includes('カフェ') || q.includes('女子')) &&
+      (isl.prefecture === '香川県' || text.includes('アート') || text.includes('美術館'))
+    ) {
+      score += 12;
+    }
+    if ((q.includes('星空') || q.includes('星')) && (text.includes('星') || ['53', '393', '396', '400'].includes(String(isl.id)))) {
+      score += 12;
+    }
+    if ((q.includes('秘境') || q.includes('冒険')) && (text.includes('秘境') || text.includes('絶海') || ['58', '63', '401'].includes(String(isl.id)))) {
+      score += 12;
+    }
+    if (q.includes('日帰り') && (isl.day_trip || text.includes('日帰り'))) {
+      score += 10;
+    }
+    if ((q.includes('自然') || q.includes('世界遺産')) && (text.includes('世界自然遺産') || text.includes('固有種') || text.includes('国立公園'))) {
+      score += 8;
+    }
+    return { isl, score };
+  });
+  scored.sort((a, b) => b.score - a.score);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const picked: any[] = [];
+  const usedPrefs = new Set<string>();
+  const themes = ['王道アイランドステイ', '絶景・自然満喫', '島時間・穴場トリップ'];
+  for (const item of scored) {
+    if (picked.length >= 3) break;
+    if (!usedPrefs.has(item.isl.prefecture || '') || picked.length === 2) {
+      usedPrefs.add(item.isl.prefecture || '');
+      picked.push({
+        id: String(item.isl.id),
+        name: item.isl.name,
+        theme: themes[picked.length] || 'おすすめ離島',
+        reason: `${item.isl.prefecture}・${item.isl.area || '離島エリア'}に位置する魅力あふれる島。${String(item.isl.description || '').slice(0, 80)}（アクセス: ${item.isl.access || '定期船・航空便'}）`,
+      });
+    }
+  }
+  return picked;
+}
+
 export async function POST(req: NextRequest) {
   try {
     // Allow both authenticated users and rate-limited public visitors
@@ -68,14 +130,6 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json({ error: 'GEMINI_API_KEY is not set' }, { status: 500 });
-    }
-
-    const ai = new GoogleGenAI({ apiKey });
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let body: any;
     try {
@@ -84,12 +138,12 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid JSON request' }, { status: 400 });
     }
 
-    const { userInput, visitedIslandIds } = body;
+    const { userInput, visitedIslandIds } = body || {};
 
     // Filter available islands: exclude visited, non-conquest/landing-prohibited islands, and deduplicate by name + prefecture
     const seenKeys = new Set<string>();
     const availableIslands = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter((island) => {
-      if (visitedIslandIds && visitedIslandIds.includes(String(island.id))) return false;
+      if (visitedIslandIds && Array.isArray(visitedIslandIds) && visitedIslandIds.includes(String(island.id))) return false;
       if (island.is_conquest_target === false) return false;
       if (island.difficulty === '到達不可') return false;
       const accessStr = String(island.access || '');
@@ -109,15 +163,25 @@ export async function POST(req: NextRequest) {
       return true;
     });
 
-    // Create a concise dictionary for AI to select from (including description snippet so AI never fabricates facilities)
-    const islandListString = availableIslands
-      .map((i) => {
-        const descSnippet = String(i.description || '').replace(/\n/g, ' ').slice(0, 75);
-        return `ID:${i.id} | Name:${i.name} (${i.prefecture}) | Region:${i.region_id || ''} | Access:${i.access || ''} | Desc:${descSnippet}`;
-      })
-      .join('\n');
+    const apiKey = process.env.GEMINI_API_KEY?.trim();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let rawPlans: any[] = [];
 
-    const prompt = `
+    if (!apiKey || apiKey.startsWith('REPLACE')) {
+      // GEMINI_API_KEY 未設定時は内蔵スマート辞書マッチングへ即時フォールバック（HTTP 500にしない）
+      rawPlans = buildSmartDictionaryRecommendations(userInput, availableIslands);
+    } else {
+      const ai = new GoogleGenAI({ apiKey });
+
+      // Create a concise dictionary for AI to select from (including description snippet so AI never fabricates facilities)
+      const islandListString = availableIslands
+        .map((i) => {
+          const descSnippet = String(i.description || '').replace(/\n/g, ' ').slice(0, 75);
+          return `ID:${i.id} | Name:${i.name} (${i.prefecture}) | Region:${i.region_id || ''} | Access:${i.access || ''} | Desc:${descSnippet}`;
+        })
+        .join('\n');
+
+      const prompt = `
 あなたは日本の離島専門のプロ旅行コンシェルジュです。
 ユーザーから「こんな島に行きたい」という条件が提示されました。
 
@@ -135,65 +199,39 @@ export async function POST(req: NextRequest) {
 ${islandListString}
 `;
 
-    let rawPlans: any[] = [];
-    try {
-      const response = await generateGeminiContentWithFallback(ai, {
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                id: { type: Type.STRING, description: '選んだ島のID' },
-                name: { type: Type.STRING, description: '選んだ島の名前' },
-                theme: { type: Type.STRING, description: 'この提案のテーマ（例: リラックス、アクティブ、穴場など）' },
-                reason: { type: Type.STRING, description: '候補島リストの事実データに基づき、なぜこの島をおすすめするのかの理由（100字程度）' },
+      try {
+        const response = await generateGeminiContentWithFallback(ai, {
+          contents: prompt,
+          config: {
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: Type.ARRAY,
+              items: {
+                type: Type.OBJECT,
+                properties: {
+                  id: { type: Type.STRING, description: '選んだ島のID' },
+                  name: { type: Type.STRING, description: '選んだ島の名前' },
+                  theme: { type: Type.STRING, description: 'この提案のテーマ（例: リラックス、アクティブ、穴場など）' },
+                  reason: { type: Type.STRING, description: '候補島リストの事実データに基づき、なぜこの島をおすすめするのかの理由（100字程度）' },
+                },
+                required: ['id', 'name', 'theme', 'reason'],
               },
-              required: ['id', 'name', 'theme', 'reason'],
             },
+            temperature: 0.5,
           },
-          temperature: 0.5,
-        },
-      });
-      if (response.text) {
-        rawPlans = JSON.parse(response.text);
-      }
-    } catch {
-      // Gemini全モデルが高負荷・一時障害時のスマート辞書マッチングフォールバック
-      const q = String(userInput || '').trim();
-      const keywords = q.split(/[\s、,・。]+/).filter((w) => w.length >= 2);
-      const scored = availableIslands.map((isl) => {
-        const text = `${isl.name} ${isl.prefecture} ${isl.area || ''} ${isl.description || ''} ${isl.access || ''}`;
-        let score = 0;
-        for (const kw of keywords) {
-          if (text.includes(kw)) score += 10;
+        });
+        if (response.text) {
+          rawPlans = JSON.parse(response.text);
         }
-        if (q.includes('海') && (isl.prefecture === '沖縄県' || isl.prefecture === '鹿児島県' || isl.prefecture === '東京都')) score += 5;
-        if (q.includes('温泉') && (text.includes('温泉') || ['49', '52', '56', '340'].includes(String(isl.id)))) score += 12;
-        if (q.includes('アート') && (isl.prefecture === '香川県' || text.includes('アート') || text.includes('美術館'))) score += 12;
-        if (q.includes('日帰り') && isl.day_trip) score += 8;
-        return { isl, score };
-      });
-      scored.sort((a, b) => b.score - a.score);
-      const picked: any[] = [];
-      const usedPrefs = new Set<string>();
-      const themes = ['王道アイランドステイ', '絶景・自然満喫', '島時間・穴場トリップ'];
-      for (const item of scored) {
-        if (picked.length >= 3) break;
-        if (!usedPrefs.has(item.isl.prefecture || '') || picked.length === 2) {
-          usedPrefs.add(item.isl.prefecture || '');
-          picked.push({
-            id: String(item.isl.id),
-            name: item.isl.name,
-            theme: themes[picked.length] || 'おすすめ離島',
-            reason: `${item.isl.prefecture}・${item.isl.area || '離島エリア'}に位置する魅力あふれる島。${String(item.isl.description || '').slice(0, 80)}（アクセス: ${item.isl.access || '定期船・航空便'}）`,
-          });
-        }
+      } catch {
+        rawPlans = buildSmartDictionaryRecommendations(userInput, availableIslands);
       }
-      rawPlans = picked;
+
+      if (!Array.isArray(rawPlans) || rawPlans.length === 0) {
+        rawPlans = buildSmartDictionaryRecommendations(userInput, availableIslands);
+      }
     }
+
     const validatedPlans = (Array.isArray(rawPlans) ? rawPlans : [])
       .map((p) => {
         const directMatch = ALL_ISLANDS_MASTER_DICTIONARY[String(p.id)];
@@ -215,10 +253,11 @@ ${islandListString}
       .filter(Boolean);
 
     return NextResponse.json({ plans: validatedPlans });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('AI Recommendation Error:', error);
     return NextResponse.json(
-      { error: 'Failed to generate recommendations', details: error.message },
+      { error: 'Failed to generate recommendations', details: message },
       { status: 500 }
     );
   }

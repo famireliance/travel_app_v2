@@ -107,9 +107,9 @@ function SuccessContent() {
         <div className="bg-blue-900/40 border border-blue-500/40 rounded-2xl p-5 mb-6">
           <h3 className="font-bold mb-2 text-blue-200">📬 今後の流れ</h3>
           <ol className="text-sm text-blue-100 space-y-1 list-decimal list-inside">
-            <li>運営が注文内容を確認します（1〜2営業日）</li>
-            <li>証明書を印刷・発送します</li>
-            <li>お届けまで約3〜5営業日かかります</li>
+            <li>運営が注文内容を確認し、シリアルナンバー入り証明書を制作します</li>
+            <li>決済完了後、通常3〜7営業日以内に発送いたします（日本国内送料無料）</li>
+            <li>離島・遠隔地の場合は配送にお時間をいただく場合がございます</li>
           </ol>
         </div>
 

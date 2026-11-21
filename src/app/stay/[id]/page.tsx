@@ -8,7 +8,7 @@ import {
   Car, ShieldCheck, Star, ExternalLink, Sparkles, Check, Info, BedDouble, 
   Award, Quote, ChevronRight, ChevronDown, ChevronUp, Image as ImageIcon, 
   CheckCircle2, PhoneCall, Clock, Share2, Heart, MessageCircle, Mail, 
-  Navigation, Globe, QrCode
+  Navigation, Globe, QrCode, AlertTriangle
 } from 'lucide-react';
 
 function InstagramIcon({ className = 'w-5 h-5' }: { className?: string }) {
@@ -208,6 +208,9 @@ export default function DedicatedInnPage() {
 
   const [loading, setLoading] = useState(true);
   const [notFoundState, setNotFoundState] = useState(false);
+  const [isDemoQuery, setIsDemoQuery] = useState(false);
+  const [isPreviewQuery, setIsPreviewQuery] = useState(false);
+  const [isUnverifiedOrTest, setIsUnverifiedOrTest] = useState(false);
   const [inn, setInn] = useState<InnData>(DEFAULT_FALLBACK_INN);
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -217,15 +220,23 @@ export default function DedicatedInnPage() {
   const [showCertPreviewModal, setShowCertPreviewModal] = useState(false);
   const [showWifiModal, setShowWifiModal] = useState(false);
 
-  // B2B Facility公開APIから該当宿の実データをロード（DEFAULT_FALLBACK_INNはデモIDのみ使用）
+  // B2B Facility公開APIから該当宿の実データをロード（DEFAULT_FALLBACK_INNは ?demo=1 指定時のみ許可）
   useEffect(() => {
     async function loadInnData() {
       setLoading(true);
       setNotFoundState(false);
+      setIsUnverifiedOrTest(false);
       setActiveImageIndex(0);
+
+      const sp = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
+      const allowDemoFallback = demoMode || sp?.get('demo') === '1';
+      const hasPreview = sp?.get('preview') === '1';
+      setIsDemoQuery(allowDemoFallback);
+      setIsPreviewQuery(hasPreview);
+
       try {
         if (!innParamId) {
-          if (demoMode) {
+          if (allowDemoFallback) {
             setInn(DEFAULT_FALLBACK_INN);
           } else {
             setNotFoundState(true);
@@ -236,7 +247,7 @@ export default function DedicatedInnPage() {
 
         const cleanId = innParamId.replace(/[^a-zA-Z0-9_\-]/g, '');
         if (!cleanId) {
-          if (demoMode) {
+          if (allowDemoFallback) {
             setInn(DEFAULT_FALLBACK_INN);
           } else {
             setNotFoundState(true);
@@ -245,9 +256,13 @@ export default function DedicatedInnPage() {
           return;
         }
 
-        // Explicit demo ID uses demo data directly without polluting real partner inns
-        if (cleanId === 'aogashimaya' || (demoMode && cleanId === 'demo')) {
-          setInn(DEFAULT_FALLBACK_INN);
+        // DEFAULT_FALLBACK_INN ('aogashimaya' / 'demo') は ?demo=1 または /demo パス明示時のみ表示
+        if (cleanId === 'aogashimaya' || cleanId === 'demo') {
+          if (allowDemoFallback) {
+            setInn(DEFAULT_FALLBACK_INN);
+          } else {
+            setNotFoundState(true);
+          }
           setLoading(false);
           return;
         }
@@ -259,6 +274,13 @@ export default function DedicatedInnPage() {
         const accData = json?.accommodation || null;
 
         if (accData) {
+          const rawAccName = String(accData.name || '');
+          const unverifiedOrTest =
+            accData.is_verified === false ||
+            rawAccName.includes('（架空') ||
+            rawAccName.includes('架空') ||
+            rawAccName.includes('テスト用');
+          setIsUnverifiedOrTest(unverifiedOrTest);
           const rawPhotos = [
             ...(Array.isArray(accData.photo_exterior) ? accData.photo_exterior : []),
             ...(Array.isArray(accData.photo_room) ? accData.photo_room : []),
@@ -343,15 +365,17 @@ export default function DedicatedInnPage() {
           };
 
           setInn(mappedInn);
-          trackFacilityEvent(String(accData.id), 'lp_view');
-        } else if (demoMode) {
+          if (!unverifiedOrTest) {
+            trackFacilityEvent(String(accData.id), 'lp_view');
+          }
+        } else if (allowDemoFallback) {
           setInn(DEFAULT_FALLBACK_INN);
         } else {
           setNotFoundState(true);
         }
       } catch (err) {
         console.error('Error fetching accommodation:', err);
-        if (demoMode) {
+        if (allowDemoFallback) {
           setInn(DEFAULT_FALLBACK_INN);
         } else {
           setNotFoundState(true);
@@ -364,13 +388,24 @@ export default function DedicatedInnPage() {
     loadInnData();
   }, [innParamId, demoMode]);
 
-  const handleCall = () => {
+  const isPublicBookingBlocked = isUnverifiedOrTest && !isPreviewQuery;
+
+  const handleCall = (e?: React.MouseEvent) => {
+    if (isPublicBookingBlocked) {
+      e?.preventDefault();
+      toast.error('現在この施設ページは準備中（非公開・テスト用）です。');
+      return;
+    }
     if (!inn.phone) return;
     toast.success('お電話口で「キラ旅を見た」とお伝えいただくと案内がスムーズです！', { icon: '📞', duration: 4000 });
     window.location.href = `tel:${inn.phone}`;
   };
 
   const handleOpenBooking = (plan?: PlanItem) => {
+    if (isPublicBookingBlocked) {
+      toast.error('現在この施設ページは準備中（非公開・テスト用）のため予約リクエストは送信できません。');
+      return;
+    }
     setSelectedPlanForModal(plan || null);
     setShowBookingModal(true);
   };
@@ -405,7 +440,7 @@ export default function DedicatedInnPage() {
     );
   }
 
-  if (notFoundState && !demoMode) {
+  if (notFoundState && !isDemoQuery) {
     return (
       <main className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center px-4 py-12 font-sans text-slate-800">
         <div className="max-w-lg w-full bg-white rounded-3xl p-8 shadow-sm border border-slate-200 text-center space-y-6">
@@ -499,6 +534,33 @@ export default function DedicatedInnPage() {
           ]} 
           className="mb-2" 
         />
+
+        {/* Unverified / Test Accommodation Safety Notice */}
+        {isUnverifiedOrTest && (
+          <div
+            className={`p-5 rounded-3xl border-2 shadow-sm flex items-start gap-3.5 ${
+              isPreviewQuery
+                ? 'bg-blue-50 border-blue-300 text-blue-950'
+                : 'bg-amber-50 border-amber-400 text-amber-950'
+            }`}
+          >
+            <AlertTriangle
+              className={`w-6 h-6 shrink-0 mt-0.5 ${
+                isPreviewQuery ? 'text-blue-600' : 'text-amber-600'
+              }`}
+            />
+            <div className="space-y-1">
+              <h2 className="font-bold text-sm md:text-base">
+                現在この施設ページは準備中（非公開・テスト用）です
+              </h2>
+              <p className="text-xs leading-relaxed opacity-90">
+                {isPreviewQuery
+                  ? '【オーナー・管理者プレビューモード（?preview=1）】公開前の確認用として表示しています。一般公開画面では予約送信・電話発信は自動的にブロックされます。'
+                  : '本施設ページは現在公開準備中または検証用データのため、一般のWeb予約リクエストおよびお電話でのお申し込みは受け付けておりません。'}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* ============================================================ */}
         {/* HERO SECTION: Magazine-style Immersive Gallery & Title Card */}
@@ -822,10 +884,15 @@ export default function DedicatedInnPage() {
                     </p>
                     <button
                       onClick={() => handleOpenBooking()}
-                      className="px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-sm inline-flex items-center gap-1.5 transition-all"
+                      disabled={isPublicBookingBlocked}
+                      className={`px-5 py-2.5 font-bold text-xs rounded-xl shadow-sm inline-flex items-center gap-1.5 transition-all ${
+                        isPublicBookingBlocked
+                          ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                          : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white'
+                      }`}
                     >
                       <Calendar className="w-3.5 h-3.5" />
-                      日程を指定して予約リクエスト
+                      {isPublicBookingBlocked ? '準備中（予約受付停止中）' : '日程を指定して予約リクエスト'}
                     </button>
                   </div>
                 ) : (
@@ -876,10 +943,15 @@ export default function DedicatedInnPage() {
                     <div className="flex justify-end pt-1">
                       <button
                         onClick={() => handleOpenBooking(plan)}
-                        className="px-4 py-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all hover:scale-102"
+                        disabled={isPublicBookingBlocked}
+                        className={`px-4 py-2 font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all ${
+                          isPublicBookingBlocked
+                            ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                            : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white hover:scale-102'
+                        }`}
                       >
                         <Calendar className="w-3.5 h-3.5" />
-                        このプランで予約リクエスト
+                        {isPublicBookingBlocked ? '準備中（予約受付停止中）' : 'このプランで予約リクエスト'}
                       </button>
                     </div>
                   </motion.div>
@@ -1155,77 +1227,91 @@ export default function DedicatedInnPage() {
                 </p>
               </div>
 
-              {inn.phone && (
+              {isPublicBookingBlocked ? (
+                <div className="p-4 rounded-2xl bg-amber-500/15 border border-amber-400/50 space-y-2 text-amber-100">
+                  <p className="text-xs font-bold flex items-center gap-1.5 text-amber-300">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    現在この施設ページは準備中（非公開・テスト用）です
+                  </p>
+                  <p className="text-[11px] leading-relaxed text-slate-300">
+                    公開準備中または検証用データのため、現在Web予約リクエストおよびお電話での受付を停止しております。
+                  </p>
+                </div>
+              ) : (
                 <>
-                  {/* Direct Call Box */}
-                  <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
-                    <span className="text-xs text-slate-300 font-medium block">お電話でのご予約・空室確認</span>
-                    <a 
-                      href={`tel:${inn.phone}`} 
-                      onClick={handleCall}
-                      className="font-mono font-extrabold text-2xl text-amber-300 block hover:text-amber-200 transition-colors"
-                    >
-                      📞 {inn.phone}
-                    </a>
-                    <span className="text-[0.65rem] text-slate-400 block">
-                      ※「キラ旅を見た」とお伝えいただくとスムーズです
-                    </span>
+                  {inn.phone && (
+                    <>
+                      {/* Direct Call Box */}
+                      <div className="p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/15 space-y-2">
+                        <span className="text-xs text-slate-300 font-medium block">お電話でのご予約・空室確認</span>
+                        <a 
+                          href={`tel:${inn.phone}`} 
+                          onClick={handleCall}
+                          className="font-mono font-extrabold text-2xl text-amber-300 block hover:text-amber-200 transition-colors"
+                        >
+                          📞 {inn.phone}
+                        </a>
+                        <span className="text-[0.65rem] text-slate-400 block">
+                          ※「キラ旅を見た」とお伝えいただくとスムーズです
+                        </span>
+                      </div>
+
+                      {/* Primary Call Button */}
+                      <button
+                        onClick={handleCall}
+                        className="w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm tracking-wider flex items-center justify-center gap-2 transition-all border border-white/20 hover:scale-[1.01]"
+                      >
+                        <Phone className="w-4 h-4 text-amber-300" /> お電話で直接問い合わせ
+                      </button>
+                    </>
+                  )}
+
+                  {/* Multi Contact: LINE or Email */}
+                  {(inn.lineUrl || inn.email) && (
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      {inn.lineUrl && (
+                        <a
+                          href={inn.lineUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="py-2.5 px-3 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
+                        >
+                          <MessageCircle className="w-4 h-4" /> LINEで聞く
+                        </a>
+                      )}
+                      {inn.email && (
+                        <a
+                          href={`mailto:${inn.email}?subject=${encodeURIComponent(`【宿泊のお問い合わせ】${inn.name}`)}`}
+                          className="py-2.5 px-3 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors border border-white/20"
+                        >
+                          <Mail className="w-4 h-4" /> メール送信
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="relative flex items-center py-1">
+                    <div className="flex-grow border-t border-white/10"></div>
+                    <span className="shrink-0 mx-3 text-[0.6rem] text-slate-400 font-mono font-bold uppercase">OR</span>
+                    <div className="flex-grow border-t border-white/10"></div>
                   </div>
 
-                  {/* Primary Call Button */}
-                  <button
-                    onClick={handleCall}
-                    className="w-full py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-sm tracking-wider flex items-center justify-center gap-2 transition-all border border-white/20 hover:scale-[1.01]"
-                  >
-                    <Phone className="w-4 h-4 text-amber-300" /> お電話で直接問い合わせ
-                  </button>
+                  {/* Web Request */}
+                  <div className="space-y-3">
+                    <div className="text-center">
+                      <h4 className="font-serif font-bold text-base text-white">Web予約リクエスト</h4>
+                      <p className="text-[0.65rem] text-amber-200/80 mt-0.5">宿オーナーが内容確認後、承認メッセージが届きます。</p>
+                    </div>
+
+                    <button
+                      onClick={() => handleOpenBooking()}
+                      className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-400 text-white font-bold text-sm tracking-wider flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(59,130,246,0.35)] transition-all hover:scale-[1.02] border border-blue-400/40"
+                    >
+                      <Calendar className="w-5 h-5 text-amber-300" /> Webからリクエストを送る
+                    </button>
+                  </div>
                 </>
               )}
-
-              {/* Multi Contact: LINE or Email */}
-              {(inn.lineUrl || inn.email) && (
-                <div className="grid grid-cols-2 gap-2 pt-1">
-                  {inn.lineUrl && (
-                    <a
-                      href={inn.lineUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="py-2.5 px-3 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
-                    >
-                      <MessageCircle className="w-4 h-4" /> LINEで聞く
-                    </a>
-                  )}
-                  {inn.email && (
-                    <a
-                      href={`mailto:${inn.email}?subject=${encodeURIComponent(`【宿泊のお問い合わせ】${inn.name}`)}`}
-                      className="py-2.5 px-3 bg-white/15 hover:bg-white/25 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors border border-white/20"
-                    >
-                      <Mail className="w-4 h-4" /> メール送信
-                    </a>
-                  )}
-                </div>
-              )}
-
-              <div className="relative flex items-center py-1">
-                <div className="flex-grow border-t border-white/10"></div>
-                <span className="shrink-0 mx-3 text-[0.6rem] text-slate-400 font-mono font-bold uppercase">OR</span>
-                <div className="flex-grow border-t border-white/10"></div>
-              </div>
-
-              {/* Web Request */}
-              <div className="space-y-3">
-                <div className="text-center">
-                  <h4 className="font-serif font-bold text-base text-white">Web予約リクエスト</h4>
-                  <p className="text-[0.65rem] text-amber-200/80 mt-0.5">宿オーナーが内容確認後、承認メッセージが届きます。</p>
-                </div>
-
-                <button
-                  onClick={() => handleOpenBooking()}
-                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500 hover:from-blue-500 hover:to-indigo-400 text-white font-bold text-sm tracking-wider flex items-center justify-center gap-2 shadow-[0_0_25px_rgba(59,130,246,0.35)] transition-all hover:scale-[1.02] border border-blue-400/40"
-                >
-                  <Calendar className="w-5 h-5 text-amber-300" /> Webからリクエストを送る
-                </button>
-              </div>
 
               {/* Google Maps quick link */}
               <div className="pt-2 text-center text-xs text-slate-400 flex items-center justify-center gap-1.5 font-serif">
@@ -1254,7 +1340,7 @@ export default function DedicatedInnPage() {
           <span className="font-mono font-bold text-amber-700 text-sm">{inn.priceRange || '料金はお問い合わせ'}</span>
         </div>
         <div className="flex items-center gap-2">
-          {inn.lineUrl && (
+          {!isPublicBookingBlocked && inn.lineUrl && (
             <a
               href={inn.lineUrl}
               target="_blank"
@@ -1265,7 +1351,7 @@ export default function DedicatedInnPage() {
               <MessageCircle size={16} />
             </a>
           )}
-          {inn.phone && (
+          {!isPublicBookingBlocked && inn.phone && (
             <button
               onClick={handleCall}
               className="p-3 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-2xl font-bold text-xs flex items-center justify-center transition-colors"
@@ -1276,17 +1362,22 @@ export default function DedicatedInnPage() {
           )}
           <button
             onClick={() => handleOpenBooking()}
-            className="px-5 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold text-xs rounded-2xl shadow-md flex items-center gap-1.5 transition-transform hover:scale-102"
+            disabled={isPublicBookingBlocked}
+            className={`px-5 py-3 font-bold text-xs rounded-2xl shadow-md flex items-center gap-1.5 transition-transform ${
+              isPublicBookingBlocked
+                ? 'bg-slate-200 text-slate-500 cursor-not-allowed'
+                : 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:scale-102'
+            }`}
           >
             <Calendar size={14} />
-            予約リクエスト
+            {isPublicBookingBlocked ? '準備中（非公開）' : '予約リクエスト'}
           </button>
         </div>
       </div>
 
       {/* Booking Modal */}
       <BookingModal 
-        isOpen={showBookingModal} 
+        isOpen={showBookingModal && !isPublicBookingBlocked} 
         onClose={() => setShowBookingModal(false)} 
         innName={inn.name} 
         accommodationId={inn.id}
