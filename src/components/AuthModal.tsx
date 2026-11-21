@@ -114,7 +114,10 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
           options: { emailRedirectTo: `${window.location.origin}/auth/callback` }
         });
         if (error) throw error;
-        setMessage({ text: '✉️ ログインリンクを送信しました！メールのリンクをクリックしてください。', type: 'success' });
+        setMessage({
+          text: '✉️ ログインリンクを送信しました！\nメール内のリンクをタップすると自動的にログインします（迷惑メールフォルダもご確認ください）。',
+          type: 'success',
+        });
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {

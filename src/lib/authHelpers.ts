@@ -1,14 +1,22 @@
 export function translateAuthError(errorMsg: string): string {
-  const msg = errorMsg.toLowerCase();
-  
-  if (msg.includes('token has expired or is invalid')) {
-    return '認証リンクの有効期限が切れているか、無効です。再度ログインをお試しください。';
+  const msg = (errorMsg || '').toLowerCase();
+
+  if (
+    msg.includes('token has expired or is invalid') ||
+    msg.includes('invalid or has expired') ||
+    msg.includes('otp_expired') ||
+    msg.includes('flow state')
+  ) {
+    return '認証リンクの有効期限が切れているか、既に使用済みです。もう一度マジックリンクを送信してください。';
   }
-  if (msg.includes('email rate limit exceeded')) {
-    return 'メール送信の上限に達しました。しばらく時間をおいてから再度お試しください。';
+  if (msg.includes('email rate limit exceeded') || msg.includes('over_email_send_rate_limit')) {
+    return '短時間にメール送信が集中しました。1分ほど時間をおいてから再度お試しください。';
   }
   if (msg.includes('invalid login credentials')) {
     return 'メールアドレスまたはパスワードが正しくありません。';
+  }
+  if (msg.includes('email not confirmed')) {
+    return 'メールアドレスの確認が完了していません。受信トレイの確認メール、またはマジックリンクからログインしてください。';
   }
   if (msg.includes('user already registered')) {
     return 'このメールアドレスは既に登録されています。';
@@ -23,9 +31,8 @@ export function translateAuthError(errorMsg: string): string {
     return 'ユーザーが見つかりません。新規登録をお願いします。';
   }
   if (msg.includes('for security purposes, you can only request this')) {
-    return 'セキュリティ上の理由により、再リクエストは一定時間後に行ってください。';
+    return 'セキュリティ上の理由により、再リクエストは数十秒ほど待ってから行ってください。';
   }
-  
-  // マッチしない場合は元のエラー（または一般的なエラー）を返す
+
   return '認証中にエラーが発生しました。再度お試しください。';
 }

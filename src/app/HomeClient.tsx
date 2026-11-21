@@ -114,7 +114,7 @@ export default function Home() {
     // メール確認リンクから戻ってきた場合の通知
     const params = new URLSearchParams(window.location.search);
     if (params.get('auth_success')) {
-      setAuthNotification({ text: '✅ メールアドレスが確認されました！ようこそ、kiratabiへ！', type: 'success' });
+      setAuthNotification({ text: '✅ メール認証が完了し、ログインしました！ようこそ、KIRATABIへ！', type: 'success' });
       window.history.replaceState({}, '', '/');
       setTimeout(() => setAuthNotification(null), 6000);
     } else if (params.get('auth_error')) {
