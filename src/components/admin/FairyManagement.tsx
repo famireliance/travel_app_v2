@@ -60,8 +60,14 @@ export default function FairyManagement({ password }: { password: string }) {
       const res = await fetch(`/api/admin/fairies?search=${encodeURIComponent(search)}`, {
         headers: { 'x-admin-password': password }
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const rawText = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+      }
+      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
       setFairies(data.data || []);
     } catch (err: any) {
       toast.error(`妖精データの取得に失敗しました: ${err.message}`);
@@ -115,8 +121,14 @@ export default function FairyManagement({ password }: { password: string }) {
         headers: { 'Content-Type': 'application/json', 'x-admin-password': password },
         body: JSON.stringify(isNew ? payload : { id: selectedFairy.id, ...payload })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const rawText = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+      }
+      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
       toast.success(data.message || '保存しました');
       fetchFairies();
       setSelectedFairy(null);
@@ -135,8 +147,14 @@ export default function FairyManagement({ password }: { password: string }) {
         method: 'DELETE',
         headers: { 'x-admin-password': password }
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const rawText = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+      }
+      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
       toast.success(data.message || '削除しました');
       if (selectedFairy?.id === fairy.id) setSelectedFairy(null);
       fetchFairies();
@@ -165,8 +183,14 @@ export default function FairyManagement({ password }: { password: string }) {
         body: JSON.stringify({ islandName, keyword })
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const rawText = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+      }
+      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
 
       const f = data.fairy;
       const keySlug = `${islandName.toLowerCase().replace(/[^a-z0-9]/g, '')}-${Date.now().toString(36)}`;
@@ -211,8 +235,14 @@ export default function FairyManagement({ password }: { password: string }) {
         headers: { 'x-admin-password': password },
         body
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const rawText = await res.text();
+      let data: any;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+      }
+      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
 
       setFormData(prev => ({ ...prev, custom_photo_url: data.url }));
       toast.success('画像をアップロードしました', { id: toastId });

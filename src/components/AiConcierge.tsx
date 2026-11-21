@@ -59,8 +59,15 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
         }),
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to fetch recommendations');
+      const rawText = await res.text();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let data: any;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('現在AIコンシェルジュへのアクセスが集中しています。数秒おいてもう一度お試しください。');
+      }
+      if (!res.ok) throw new Error(data?.error || 'おすすめ離島の取得に失敗しました');
 
       // Map AI returned IDs to real local DB objects to prevent hallucination
       const verifiedPlans = data.plans.map((p: AiPlan) => {

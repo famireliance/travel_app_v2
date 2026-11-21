@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
 import { GoogleGenAI, Type, Schema } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import regionsData from '@/data/regions.json';
 import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
+
+export const maxDuration = 60;
 
 // Helper to initialize Gemini conditionally so the app doesn't crash if API key is missing
 const getGeminiClient = () => {
@@ -227,52 +228,67 @@ export async function POST(request: Request) {
         excludedSet,
       });
     } else {
-      // Fetch islands from Supabase to provide context to the AI, falling back to ALL_ISLANDS_MASTER_DICTIONARY
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      let dbIslands: any[] | null = null;
-      try {
-        const { data } = await supabase
-          .from('islands')
-          .select('id, name, prefecture, access, region_id, is_conquest_target')
-          .eq('is_published', true);
-        dbIslands = data;
-      } catch {
-        dbIslands = null;
-      }
-
+      // Use authoritative in-memory ALL_ISLANDS_MASTER_DICTIONARY directly (0ms latency)
       const masterIslands = Object.values(ALL_ISLANDS_MASTER_DICTIONARY);
-      const sourceIslands = dbIslands && dbIslands.length > 0 ? dbIslands : masterIslands;
 
       // Filter out excluded islands, non-conquest islands, and deduplicate by name + prefecture
       const seenKeys = new Set<string>();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const validIslands = sourceIslands.filter((i: any) => {
+      const validIslands = masterIslands.filter((i: any) => {
         const idStr = String(i.id);
         if (excludedSet.has(idStr)) return false;
-        const master = ALL_ISLANDS_MASTER_DICTIONARY[idStr];
-        if (i.is_conquest_target === false || master?.is_conquest_target === false) return false;
-        if (master?.difficulty === '到達不可') return false;
-        const accessStr = String(i.access || master?.access || '');
+        if (i.is_conquest_target === false) return false;
+        if (i.difficulty === '到達不可') return false;
+        const accessStr = String(i.access || '');
         if (accessStr.includes('上陸禁止') || accessStr.includes('上陸不可') || accessStr.includes('立入禁止')) {
           return false;
         }
-        const name = i.name || master?.name || '';
-        const pref = i.prefecture || master?.prefecture || '';
+        const name = i.name || '';
+        const pref = i.prefecture || '';
         const dedupKey = `${name}__${pref}`;
         if (seenKeys.has(dedupKey)) return false;
         seenKeys.add(dedupKey);
         return true;
       });
 
-      // Create a compact string of islands including region_id / archipelago name for the AI prompt
+      // Pre-rank and select up to 135 candidate islands across all archipelagos (~6KB prompt for fast 2-4s inference)
+      const qRaw = `${startLocation || ''} ${preferences || ''}`.trim();
+      const qWords = qRaw.split(/[\s、,・。！？!?/]+/).filter((w) => w.length >= 2);
+      const regionCounts = new Map<string, number>();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const islandsContext = validIslands
+      const compactIslands = validIslands
+        .map((isl: any) => {
+          const hay = `${isl.name} ${isl.prefecture} ${isl.area || ''} ${isl.access || ''} ${isl.description || ''}`;
+          let s = isl.is_uninhabited ? 0 : 4;
+          for (const w of qWords) {
+            if (hay.includes(w)) s += 15;
+          }
+          if (qRaw.includes('東京') && isl.prefecture === '東京都') s += 10;
+          if ((qRaw.includes('大阪') || qRaw.includes('関西') || qRaw.includes('神戸')) && ['兵庫県', '香川県', '岡山県', '和歌山県'].includes(isl.prefecture)) s += 10;
+          if ((qRaw.includes('福岡') || qRaw.includes('九州')) && ['福岡県', '長崎県', '鹿児島県', '熊本県'].includes(isl.prefecture)) s += 10;
+          if ((qRaw.includes('沖縄') || qRaw.includes('那覇')) && isl.prefecture === '沖縄県') s += 12;
+          return { isl, s };
+        })
+        .sort((a, b) => b.s - a.s)
+        .filter(({ isl, s }) => {
+          const rId = String(isl.region_id || 'other');
+          const c = regionCounts.get(rId) || 0;
+          if (s >= 12 || c < 4) {
+            regionCounts.set(rId, c + 1);
+            return true;
+          }
+          return false;
+        })
+        .slice(0, 135)
+        .map((x) => x.isl);
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const islandsContext = compactIslands
         .map((i: any) => {
-          const master = ALL_ISLANDS_MASTER_DICTIONARY[String(i.id)];
-          const regionId = i.region_id || master?.region_id || '';
+          const regionId = i.region_id || '';
           const regionName = REGION_NAME_MAP[regionId] || regionId || 'その他';
-          const access = i.access || master?.access || '定期船・航空便';
-          return `ID:${i.id} | ${i.name}(${i.prefecture} / 諸島:${regionName}[${regionId}]) | アクセス:${access}`;
+          const access = String(i.access || '定期船・航空便').slice(0, 55);
+          return `ID:${i.id} | ${i.name}(${i.prefecture}/${regionName}[${regionId}]) | ${access}`;
         })
         .join('\n');
 

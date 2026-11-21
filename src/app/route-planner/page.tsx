@@ -62,10 +62,17 @@ export default function RoutePlannerPage() {
         })
       });
 
-      const data = await res.json();
-      
+      const rawText = await res.text();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let data: any;
+      try {
+        data = JSON.parse(rawText);
+      } catch {
+        throw new Error('現在AIコンシェルジュへのアクセスが集中しています。数秒おいてもう一度お試しください。');
+      }
+
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to generate route');
+        throw new Error(data?.error || 'ルートの作成に失敗しました。もう一度お試しください。');
       }
 
       setResult(data);

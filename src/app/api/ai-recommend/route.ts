@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
 
 // Vercel config
-export const maxDuration = 30; // max execution time
+export const maxDuration = 60; // max execution time
 
 // In-memory rate limit for unauthenticated guest visitors (15 requests per 10 minutes per IP)
 const guestRateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -173,10 +173,37 @@ export async function POST(req: NextRequest) {
     } else {
       const ai = new GoogleGenAI({ apiKey });
 
-      // Create a concise dictionary for AI to select from (including description snippet so AI never fabricates facilities)
-      const islandListString = availableIslands
+      // Pre-rank and select top 130 candidate islands (~7KB prompt) for fast 1.5-3s Gemini inference
+      const qStr = String(userInput || '').trim();
+      const qWords = qStr.split(/[\s、,・。！？!?/]+/).filter((w) => w.length >= 2);
+      const regionQuota = new Map<string, number>();
+      const candidateIslands = [...availableIslands]
+        .map((isl) => {
+          const hay = `${isl.name} ${isl.prefecture} ${isl.area || ''} ${isl.description || ''} ${isl.access || ''}`;
+          let s = 0;
+          for (const w of qWords) {
+            if (hay.includes(w)) s += 15;
+          }
+          if (isl.day_trip && qStr.includes('日帰り')) s += 10;
+          if (!isl.is_uninhabited) s += 3;
+          return { isl, s };
+        })
+        .sort((a, b) => b.s - a.s)
+        .filter(({ isl, s }) => {
+          const reg = String(isl.region_id || 'other');
+          const count = regionQuota.get(reg) || 0;
+          if (s > 5 || count < 4) {
+            regionQuota.set(reg, count + 1);
+            return true;
+          }
+          return false;
+        })
+        .slice(0, 130)
+        .map((x) => x.isl);
+
+      const islandListString = candidateIslands
         .map((i) => {
-          const descSnippet = String(i.description || '').replace(/\n/g, ' ').slice(0, 75);
+          const descSnippet = String(i.description || '').replace(/\n/g, ' ').slice(0, 65);
           return `ID:${i.id} | Name:${i.name} (${i.prefecture}) | Region:${i.region_id || ''} | Access:${i.access || ''} | Desc:${descSnippet}`;
         })
         .join('\n');

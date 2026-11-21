@@ -17,7 +17,7 @@ function mapWmoCodeToWeather(code: number): { description: string; icon: string;
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const lat = searchParams.get('lat');
-  const lon = searchParams.get('lon');
+  const lon = searchParams.get('lon') || searchParams.get('lng');
   const apiKey = process.env.OPENWEATHER_API_KEY;
 
   if (!lat || !lon) {

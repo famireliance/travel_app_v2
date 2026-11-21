@@ -3,6 +3,8 @@ import { GoogleGenAI } from '@google/genai';
 import { getAuthUser } from '@/lib/adminAuth';
 import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
 
+export const maxDuration = 60;
+
 export async function POST(request: NextRequest) {
   // Admin authentication required
   const user = await getAuthUser(request);
