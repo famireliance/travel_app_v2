@@ -22,9 +22,6 @@ import {
 } from 'lucide-react';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
-const B2B_PORTAL_INVITE_URL =
-  'https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/login?partner_key=kirab2b8f';
-
 interface AccommodationRow {
   id: string;
   island_id: string;
@@ -94,6 +91,7 @@ function generateInitialPassword(): string {
 
 export default function AdminAccommodations({ password }: { password: string }) {
   const [accommodations, setAccommodations] = useState<AccommodationRow[]>([]);
+  const [portalInviteUrl, setPortalInviteUrl] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -145,6 +143,9 @@ export default function AdminAccommodations({ password }: { password: string }) 
         return;
       }
       setAccommodations(data.accommodations || []);
+      if (typeof data.portalInviteUrl === 'string' && data.portalInviteUrl) {
+        setPortalInviteUrl(data.portalInviteUrl);
+      }
     } catch {
       toast.error('通信エラーにより宿泊施設一覧を取得できませんでした');
     } finally {
@@ -200,19 +201,23 @@ export default function AdminAccommodations({ password }: { password: string }) 
   }, [accommodations, statusFilter, tableSearch]);
 
   const handleCopyInviteLink = (customEmail?: string | null, innName?: string) => {
+    if (!portalInviteUrl) {
+      toast.error('招待URLを取得中です。少し待ってから再度お試しください');
+      return;
+    }
     if (customEmail && innName) {
       const inviteText = [
         `【KIRATABI B2B宿泊施設ポータル ご案内】`,
         `対象施設: ${innName}`,
-        `ログインURL: ${B2B_PORTAL_INVITE_URL}`,
+        `ログインURL: ${portalInviteUrl}`,
         `ログインID: ${customEmail}`,
       ].join('\n');
       navigator.clipboard.writeText(inviteText);
       toast.success('オーナー向け招待案内文（専用キー付きURL＋ID）をコピーしました');
       return;
     }
-    navigator.clipboard.writeText(B2B_PORTAL_INVITE_URL);
-    toast.success('B2Bポータル招待URL（?partner_key=kirab2b8f）をコピーしました');
+    navigator.clipboard.writeText(portalInviteUrl);
+    toast.success('B2Bポータル招待URLをコピーしました');
   };
 
   const handleBulkHideTestInns = async () => {
@@ -519,7 +524,9 @@ export default function AdminAccommodations({ password }: { password: string }) 
             <KeyRound className="w-3.5 h-3.5" />
             提携宿オーナー専用 B2Bポータル招待リンク（Admin権限から完全分離された専用キー）
           </p>
-          <p className="font-mono text-[11px] text-gray-400 break-all">{B2B_PORTAL_INVITE_URL}</p>
+          <p className="font-mono text-[11px] text-gray-400 break-all">
+            {portalInviteUrl || '認証済みサーバーから専用招待リンクを取得中...'}
+          </p>
         </div>
         <button
           type="button"

@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     }
 
     const resendApiKey = process.env.RESEND_API_KEY;
-    const fromEmail = process.env.RESEND_FROM_EMAIL || 'KIRATABI Admin <onboarding@resend.dev>';
+    const fromEmail = process.env.RESEND_FROM_EMAIL || 'KIRATABI <noreply@kira-tabi.com>';
 
     if (!resendApiKey || resendApiKey.startsWith('REPLACE')) {
       return NextResponse.json({ error: 'RESEND_API_KEY が未設定のためメール配信できません' }, { status: 503 });

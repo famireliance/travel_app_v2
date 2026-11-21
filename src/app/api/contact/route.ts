@@ -98,8 +98,9 @@ export async function POST(req: NextRequest) {
       const safeCategoryLabel = escapeHtml(categoryLabel);
       const safeMessage = escapeHtml(message);
 
+      const fromEmail = process.env.RESEND_FROM_EMAIL || 'KIRATABI <noreply@kira-tabi.com>';
       const emailBody = {
-        from: 'KIRATABI <noreply@kira-tabi.com>',
+        from: fromEmail,
         to: toEmails,
         reply_to: email,
         subject: `[KIRATABI お問い合わせ] ${categoryLabel} - ${name}様より`,

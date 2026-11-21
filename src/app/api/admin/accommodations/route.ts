@@ -24,6 +24,22 @@ function isTestAccommodationName(name: unknown): boolean {
   return str.includes('架空') || str.includes('テスト用');
 }
 
+function buildB2BPortalInviteUrl(): string {
+  const b2bKey = process.env.B2B_VAULT_KEY || 'kirab2b8f';
+  const configuredB2BHost = (
+    process.env.B2B_HOST ||
+    process.env.NEXT_PUBLIC_B2B_HOST ||
+    (process.env.STRICT_DOMAIN_ISOLATION === 'true' ? 'partner.kira-tabi.com' : '')
+  ).trim();
+  const requireB2BHostKey = process.env.B2B_OPEN_HOST !== 'true';
+  if (configuredB2BHost) {
+    return requireB2BHostKey
+      ? `https://${configuredB2BHost}/login?partner_key=${encodeURIComponent(b2bKey)}`
+      : `https://${configuredB2BHost}/login`;
+  }
+  return `https://island.kira-tabi.com/biz-portal-secure-8f92a1b3/login?partner_key=${encodeURIComponent(b2bKey)}`;
+}
+
 function getIslandInfo(islandId: unknown): { name: string; prefecture: string } {
   if (!islandId) return { name: '', prefecture: '' };
   const key = String(islandId).trim();
@@ -168,7 +184,10 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  return NextResponse.json({ accommodations: enriched });
+  return NextResponse.json({
+    accommodations: enriched,
+    portalInviteUrl: buildB2BPortalInviteUrl(),
+  });
 }
 
 export async function POST(req: NextRequest) {
