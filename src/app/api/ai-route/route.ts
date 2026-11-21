@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenAI, Type, Schema } from '@google/genai';
+import { GoogleGenAI } from '@google/genai';
 import { createClient } from '@supabase/supabase-js';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import regionsData from '@/data/regions.json';
@@ -279,7 +279,7 @@ export async function POST(request: Request) {
           }
           return false;
         })
-        .slice(0, 135)
+        .slice(0, 85)
         .map((x) => x.isl);
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -287,76 +287,44 @@ export async function POST(request: Request) {
         .map((i: any) => {
           const regionId = i.region_id || '';
           const regionName = REGION_NAME_MAP[regionId] || regionId || 'その他';
-          const access = String(i.access || '定期船・航空便').slice(0, 55);
+          const access = String(i.access || '定期船・航空便').slice(0, 50);
           return `ID:${i.id} | ${i.name}(${i.prefecture}/${regionName}[${regionId}]) | ${access}`;
         })
         .join('\n');
 
-      const responseSchema: Schema = {
-        type: Type.ARRAY,
-        description: 'コンセプトの異なる3つの独立したツアープランのリスト',
-        items: {
-          type: Type.OBJECT,
-          properties: {
-            planType: { type: Type.STRING, description: 'プランのタイプ（例: 王道・定番ルート、秘境・穴場ルート、テーマ特化ルート）' },
-            title: { type: Type.STRING, description: 'ルートの魅力的なタイトル' },
-            description: { type: Type.STRING, description: 'ルートの概要とアピールポイント（2〜3文）' },
-            totalEstimatedBudget: { type: Type.STRING, description: '予算の目安（例: 50,000円〜）' },
-            route: {
-              type: Type.ARRAY,
-              items: {
-                type: Type.OBJECT,
-                properties: {
-                  day: { type: Type.INTEGER, description: '何日目か' },
-                  islandId: { type: Type.STRING, description: '島データベースに記載された正確なID（例: "392" や "oujima_nago" などの文字列）' },
-                  islandName: { type: Type.STRING, description: '島データベースに記載された正確な島名' },
-                  activity: { type: Type.STRING, description: 'その島でのおすすめの過ごし方（具体的に）' },
-                  transportation: { type: Type.STRING, description: '出発地・拠点または前の島からの現実的な移動手段（アクセス情報を元に具体的に）' },
-                },
-                required: ['day', 'islandId', 'islandName', 'activity', 'transportation'],
-              },
-            },
-          },
-          required: ['planType', 'title', 'description', 'totalEstimatedBudget', 'route'],
-        },
-      };
-
       const prompt = `
-あなたは日本の離島専門の超一流トラベルプランナーAI「島巡りコンシェルジュ」です。
-ユーザーから以下の要望を受け取りました。
-
+あなたは日本の離島専門のトラベルプランナーAI「島巡りコンシェルジュ」です。
 【出発地/拠点】: ${startLocation || '指定なし'}
 【日数】: ${durationDays} 日間
 【希望・テーマ】: ${preferences || '特になし'}
 【最大訪問島数】: ${maxIslands || 3} 島以内
 
-以下の全国島データベースから、現実的で魅力的な離島旅行・アイランドホッピングルートを提案してください。
-データベースには各島の「諸島エリア（region_id）」と「アクセス情報」が記載されています。これらを元に、物理的に移動可能なルートのみを構築してください。
+以下の島リストから、現実的な離島ルートを3案（必ず異なる諸島エリア）作成し、純粋なJSON配列のみを出力してください。
 
 【島データベース】
 ${islandsContext}
 
-【プラン作成の厳格なルール（絶対遵守）】
-1. **必ず3つの異なるエリア・コンセプトのプランを提案すること**: 「王道ルート」「秘境・自然ルート」「テーマ特化ルート」など、3つのプランで異なる諸島エリアを取り上げてください。
-2. **現実的な滞在とアイランドホッピング**:
-   - 1つのプラン内で巡る島は**必ず同じ諸島エリア（同一のregion_idまたは隣接する同一県内の航路圏）**に限定してください。北海道と沖縄、あるいは奄美と五島などを同一プラン内で移動する非現実的なワープは絶対禁止です。
-   - 大きな島（屋久島、奄美大島、佐渡島、石垣島、宮古島、父島、福江島など）での**複数日連泊滞在**や、拠点島（例：石垣島、高松・直島、那覇など）に連泊しながら近隣離島へフェリーで渡る**現実的なアイランドホッピング**を推奨します。無理に毎日別の島へ移動する必要はありません（連泊する場合は各日の \`islandId\` と \`islandName\` にその滞在島を指定してください）。
-3. **実在のID・施設情報の遵守**:
-   - \`islandId\` には必ず上記【島データベース】の \`ID:\` の値（例: "392" や "oujima_nago"）をそのまま指定してください。
-   - 存在しない空港・航路・施設を捏造しないでください。
+【絶対遵守ルール】
+1. 1つのプラン内で巡る島は必ず同一の諸島エリア（同一region_idまたは隣接航路圏）に限定し、連泊滞在も活用すること。
+2. islandIdには必ず上記リストの ID: の値（例: "392" や "oujima_nago"）を指定し、存在しない施設・航路は捏造しないこと。
+3. 以下のJSON配列構造のみを出力すること:
+[{"planType":"王道・定番ルート","title":"...","description":"...","totalEstimatedBudget":"55,000円〜","route":[{"day":1,"islandId":"392","islandName":"石垣島","activity":"...","transportation":"..."}]}]
 `;
 
       try {
         const response = await generateGeminiContentWithFallback(ai, {
           contents: prompt,
+          perModelTimeoutMs: 11000,
+          maxTotalMs: 20000,
           config: {
             responseMimeType: 'application/json',
-            responseSchema: responseSchema,
-            temperature: 0.6,
+            temperature: 0.5,
           },
         });
         if (response.text) {
-          rawRouteData = JSON.parse(response.text);
+          const cleaned = response.text.replace(/```json/gi, '').replace(/```/g, '').trim();
+          const parsed = JSON.parse(cleaned);
+          rawRouteData = Array.isArray(parsed) ? parsed : Array.isArray(parsed?.plans) ? parsed.plans : [];
         }
       } catch {
         rawRouteData = buildSmartDictionaryRoutes({
