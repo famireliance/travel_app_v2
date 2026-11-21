@@ -31,9 +31,38 @@ export default function MyPage() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
-    if (params.get('subscription_success') === 'true') {
+    if (params.get('subscription_activated') === '1') {
       toast.success('サブスクリプション登録が完了しました！特典が有効になりました🎉', { duration: 5000 });
       window.history.replaceState({}, '', '/mypage');
+      return;
+    }
+    if (params.get('subscription_success') === 'true') {
+      const checkoutSessionId = params.get('session_id');
+      window.history.replaceState({}, '', '/mypage');
+      if (checkoutSessionId) {
+        (async () => {
+          try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.access_token) {
+              const res = await fetch('/api/subscription/verify', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: `Bearer ${session.access_token}`,
+                },
+                body: JSON.stringify({ sessionId: checkoutSessionId }),
+              });
+              if (res.ok) {
+                window.location.replace('/mypage?subscription_activated=1');
+                return;
+              }
+            }
+          } catch {}
+          toast.success('サブスクリプション登録が完了しました！特典が有効になりました🎉', { duration: 5000 });
+        })();
+      } else {
+        toast.success('サブスクリプション登録が完了しました！特典が有効になりました🎉', { duration: 5000 });
+      }
     } else if (params.get('subscription_canceled') === 'true') {
       toast('サブスクリプションの手続きをキャンセルしました。', { icon: 'ℹ️' });
       window.history.replaceState({}, '', '/mypage');

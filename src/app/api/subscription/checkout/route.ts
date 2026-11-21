@@ -83,7 +83,7 @@ export async function POST(req: NextRequest) {
           tier: tier,
         }
       },
-      success_url: `${origin}/mypage?subscription_success=true`,
+      success_url: `${origin}/mypage?subscription_success=true&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/mypage?subscription_canceled=true`,
       locale: 'ja',
       // クーポン利用を許可（プロモーションコードをチェックアウト時に入力可能）

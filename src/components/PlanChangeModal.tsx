@@ -73,9 +73,14 @@ export function PlanChangeModal({ isOpen, onClose, currentTier, onPlanChanged }:
         }
       });
       const data = await res.json();
+      if (!res.ok || data.error) {
+        setErrorMsg(data.error || 'お支払い管理ページを開けませんでした。');
+        return;
+      }
       if (data.url) window.location.href = data.url;
     } catch (e) {
       console.error(e);
+      setErrorMsg('お支払い管理ページへの接続に失敗しました。');
     }
   };
 

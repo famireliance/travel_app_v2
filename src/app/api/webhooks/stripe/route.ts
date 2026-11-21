@@ -101,7 +101,13 @@ export async function POST(req: NextRequest) {
       case 'customer.subscription.updated':
       case 'invoice.payment_succeeded': {
         const dataObj = event.data.object as any;
-        const subscriptionId = event.type === 'invoice.payment_succeeded' ? dataObj.subscription : dataObj.id;
+        const rawSub =
+          event.type === 'invoice.payment_succeeded'
+            ? dataObj.subscription ||
+              dataObj.parent?.subscription_details?.subscription ||
+              dataObj.lines?.data?.[0]?.parent?.subscription_item_details?.subscription
+            : dataObj.id;
+        const subscriptionId = typeof rawSub === 'string' ? rawSub : rawSub?.id;
 
         if (subscriptionId) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId) as Stripe.Subscription;

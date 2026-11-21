@@ -792,12 +792,28 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateTravelerName = async (name: string) => {
-    setTravelerName(name);
-    localStorage.setItem('kiratabi_traveler_name', name);
+    const trimmed = name.trim();
+    if (!trimmed) return;
+    setTravelerName(trimmed);
+    localStorage.setItem('kiratabi_traveler_name', trimmed);
     if (user) {
       try {
-        await supabase.from('user_profiles').update({ nickname: name }).eq('id', user.id);
-      } catch(e) { console.error('Failed to update nickname in DB', e); }
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session?.access_token) {
+          await fetch('/api/user/profile', {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session.access_token}`,
+            },
+            body: JSON.stringify({ nickname: trimmed }),
+          });
+        } else {
+          await supabase.from('user_profiles').update({ nickname: trimmed }).eq('id', user.id);
+        }
+      } catch (e) {
+        console.error('Failed to update nickname in DB', e);
+      }
     }
   };
 
