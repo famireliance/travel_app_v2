@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Sparkles, Send, MapPin, X, Loader2, ArrowRight, Star } from 'lucide-react';
+import { Bot, Sparkles, Send, MapPin, X, Loader2, ArrowRight, Star, BedDouble, Car, Crown } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { getRakutenTravelSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
@@ -238,6 +238,44 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
                           </div>
                         )}
                       </div>
+
+                      {(plan as any).conciergeGuide && (
+                        <div className="mt-3 pt-3 border-t border-slate-100 space-y-2 text-xs">
+                          {Array.isArray((plan as any).conciergeGuide.partners) &&
+                            (plan as any).conciergeGuide.partners.map((pt: any) => (
+                              <div
+                                key={pt.id}
+                                className="bg-amber-50 border border-amber-200 rounded-xl px-3 py-2 flex items-center justify-between gap-2"
+                              >
+                                <div>
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-800 mr-1.5">
+                                    <Crown className="w-3 h-3" /> {pt.badge}
+                                  </span>
+                                  <span className="font-bold text-slate-900">{pt.name}</span>
+                                  {pt.perkText && (
+                                    <span className="text-[11px] text-amber-900 ml-1.5">（{pt.perkText}）</span>
+                                  )}
+                                </div>
+                                <a
+                                  href={pt.url}
+                                  target={pt.isInternal ? undefined : '_blank'}
+                                  rel={pt.isInternal ? undefined : 'noopener noreferrer sponsored'}
+                                  className="text-[11px] font-bold text-indigo-700 hover:underline shrink-0"
+                                >
+                                  詳細 →
+                                </a>
+                              </div>
+                            ))}
+                          <p className="text-[11px] text-slate-600 flex items-start gap-1.5 leading-relaxed">
+                            <BedDouble className="w-3.5 h-3.5 text-rose-500 shrink-0 mt-0.5" />
+                            <span><strong className="text-slate-700">宿：</strong>{(plan as any).conciergeGuide.stayTip}</span>
+                          </p>
+                          <p className="text-[11px] text-slate-600 flex items-start gap-1.5 leading-relaxed">
+                            <Car className="w-3.5 h-3.5 text-blue-500 shrink-0 mt-0.5" />
+                            <span><strong className="text-slate-700">移動：</strong>{(plan as any).conciergeGuide.mobilityTip}</span>
+                          </p>
+                        </div>
+                      )}
                     </div>
                     <div className="flex flex-col items-stretch md:items-end justify-center gap-2 shrink-0 md:pl-4 md:border-l border-slate-100">
                       <Link 
@@ -248,13 +286,13 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
                         島を詳しく見る <ArrowRight className="w-4 h-4" />
                       </Link>
                       {plan.name && (
-                        <div className="flex items-center justify-end gap-1.5">
+                        <div className="flex flex-wrap items-center justify-end gap-1.5">
                           <span className="text-[10px] font-bold text-slate-400">PR</span>
                           <a
                             href={getRakutenTravelSearchUrl(plan.name, plan.prefecture)}
                             target="_blank"
                             rel="noopener noreferrer sponsored"
-                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors"
+                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-rose-600 hover:bg-rose-500 text-white transition-colors"
                           >
                             楽天で宿検索
                           </a>
@@ -262,10 +300,20 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
                             href={getJalanSearchUrl(plan.name, plan.prefecture)}
                             target="_blank"
                             rel="noopener noreferrer sponsored"
-                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-colors"
+                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition-colors"
                           >
                             じゃらん
                           </a>
+                          {(plan as any).conciergeGuide?.mobilityLinks?.[0]?.url && (
+                            <a
+                              href={(plan as any).conciergeGuide.mobilityLinks[0].url}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 transition-colors"
+                            >
+                              レンタカー
+                            </a>
+                          )}
                         </div>
                       )}
                     </div>

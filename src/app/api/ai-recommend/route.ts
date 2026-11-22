@@ -3,6 +3,7 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { createClient } from '@supabase/supabase-js';
 import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
+import { enrichRecommendPlansWithMonetization } from '@/lib/conciergeRecommendations';
 
 // Vercel config
 export const maxDuration = 60; // max execution time
@@ -285,7 +286,12 @@ ${islandListString}
       })
       .filter(Boolean);
 
-    return NextResponse.json({ plans: validatedPlans });
+    const enrichedPlans = await enrichRecommendPlansWithMonetization(
+      validatedPlans,
+      String(userInput || '')
+    );
+
+    return NextResponse.json({ plans: enrichedPlans });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     console.error('AI Recommendation Error:', error);

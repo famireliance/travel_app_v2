@@ -4,6 +4,7 @@ import { createClient } from '@supabase/supabase-js';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import regionsData from '@/data/regions.json';
 import { generateGeminiContentWithFallback } from '@/lib/geminiHelper';
+import { enrichRoutePlansWithMonetization } from '@/lib/conciergeRecommendations';
 
 export const maxDuration = 60;
 
@@ -313,8 +314,8 @@ ${islandsContext}
 【絶対遵守ルール】
 1. 1つのプラン内で巡る島は必ず同一の諸島エリア（同一region_idまたは隣接航路圏）に限定し、連泊滞在も活用すること。
 2. islandIdには必ず上記リストの ID: の値（例: "392" や "oujima_nago"）を指定し、存在しない施設・航路は捏造しないこと。
-3. 以下のJSON配列構造のみを出力すること:
-[{"planType":"王道・定番ルート","title":"...","description":"...","totalEstimatedBudget":"55,000円〜","route":[{"day":1,"islandId":"392","islandName":"石垣島","activity":"...","transportation":"..."}]}]
+3. 以下のJSON配列構造のみを出力すること（stayHintにはその島でおすすめの宿泊エリアや宿タイプを1文で添えること）:
+[{"planType":"王道・定番ルート","title":"...","description":"...","totalEstimatedBudget":"55,000円〜","route":[{"day":1,"islandId":"392","islandName":"石垣島","activity":"...","transportation":"...","stayHint":"石垣港離島ターミナル周辺のホテルやリゾート宿"}]}]
 `;
 
       try {
@@ -403,7 +404,12 @@ ${islandsContext}
       };
     });
 
-    return NextResponse.json(validatedRouteData);
+    const enrichedRouteData = await enrichRoutePlansWithMonetization(
+      validatedRouteData,
+      `${startLocation || ''} ${preferences || ''}`
+    );
+
+    return NextResponse.json(enrichedRouteData);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'An error occurred while generating the route.';
     console.error('AI Route API Error:', error);
