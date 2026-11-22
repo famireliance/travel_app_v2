@@ -266,7 +266,7 @@ export default function ShareCardModal({
         ctx.fillStyle = '#e2e8f0';
         drawAutoFitText(`📅 到達日: ${formattedDate}`, startX, boxY + 76, summaryMaxW, 28, 20, 'sans-serif');
         drawAutoFitText(`👤 旅人名: ${travelerName || '島旅トラベラー'}`, startX, boxY + 146, summaryMaxW, 28, 20, 'sans-serif');
-        drawAutoFitText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / ${conquestTargetCount || 369} 島`, startX, boxY + 216, summaryMaxW, 28, 20, 'sans-serif');
+        drawAutoFitText(`🏝️ 制覇実績: ${Math.max(totalVisited || 1, 1)} / ${conquestTargetCount || 417} 島`, startX, boxY + 216, summaryMaxW, 28, 20, 'sans-serif');
         drawAutoFitText(`⭐ 獲得XP: +${totalPoints > 0 ? totalPoints : 100} pt`, startX, boxY + 286, summaryMaxW, 28, 20, 'sans-serif');
 
         // 右側の本格・二重枠本朱官印「輝旅島専 / 公式到達 / 認定之印」

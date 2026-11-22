@@ -73,16 +73,30 @@ export default function FairyCard({ fairy, isRevealed, onClick, onZoom }: FairyC
 
           {/* イラスト表示領域（リッチティザーシルエット対応） */}
           <div className="flex-1 relative bg-slate-900 w-full flex items-center justify-center p-2 overflow-hidden">
-            {isRevealed && fairy.visual.imageUrl ? (
-              <div className="relative w-full h-full">
-                <Image
-                  src={fairy.visual.imageUrl}
-                  alt={fairy.name}
-                  fill
-                  className="object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                />
-              </div>
+            {isRevealed ? (
+              fairy.visual.imageUrl ? (
+                <div className="relative w-full h-full">
+                  <Image
+                    src={fairy.visual.imageUrl}
+                    alt={fairy.name}
+                    fill
+                    className="object-contain drop-shadow-md transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                  />
+                </div>
+              ) : (
+                <div className={`relative w-full h-full rounded-lg bg-gradient-to-br ${fairy.visual.colorFrom} ${fairy.visual.colorTo} flex flex-col items-center justify-center p-3 overflow-hidden`}>
+                  <div className="absolute inset-0 bg-slate-950/35" />
+                  <span className="relative z-10 text-5xl sm:text-6xl drop-shadow-xl transition-transform duration-300 group-hover:scale-110">
+                    {fairy.visual.icon}
+                  </span>
+                  {resolvedIslandName && (
+                    <span className="relative z-10 mt-2 px-2 py-0.5 rounded-full bg-black/45 border border-white/20 text-[9px] font-bold text-white/90 truncate max-w-full">
+                      {resolvedIslandName}
+                    </span>
+                  )}
+                </div>
+              )
             ) : (
               <FairyTeaserSilhouette fairy={fairy} size="md" />
             )}

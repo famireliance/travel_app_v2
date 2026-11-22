@@ -264,7 +264,18 @@ export default async function Page({ params }: { params: any }) {
   }
 
   const mergedInitialIsland = masterEntry
-    ? { ...masterEntry, ...(islandResult.data || {}), id: internalId }
+    ? {
+        ...masterEntry,
+        ...(islandResult.data || {}),
+        id: internalId,
+        hero_image_url: islandResult.data?.hero_image_url || masterEntry.hero_image_url || '',
+        practical_info: {
+          ...(masterEntry.practical_info || {}),
+          ...(islandResult.data?.practical_info && typeof islandResult.data.practical_info === 'object'
+            ? islandResult.data.practical_info
+            : {}),
+        },
+      }
     : islandResult.data;
 
   const islandName = islandResult.data?.name || masterEntry?.name || '未知の島';
@@ -428,7 +439,7 @@ export default async function Page({ params }: { params: any }) {
                 href="/islands"
                 className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-700 text-xs font-bold transition-colors"
               >
-                全国481島ディレクトリ
+                全国529島ディレクトリ
               </Link>
               {FEATURE_SEO_LIST.slice(0, 5).map((feat) => (
                 <Link

@@ -7,9 +7,9 @@ import regionsData from '@/data/regions.json';
 import { MapPin, Sparkles, Navigation } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: '輝旅 島専科（KIRATABI SHIMASENKA）| 日本全国481島の離島観光・行き方・制覇ガイド',
+  title: '輝旅 島専科（KIRATABI SHIMASENKA）| 日本全国529島の離島観光・行き方・制覇ガイド',
   description:
-    '日本全国の有人離島・主要離島（全481島収録・制覇対象369島）の行き方・フェリー航路・日帰り可否・ATMや売店・携帯電波などの実用情報を完全網羅。GPS・写真チェックインで公式到達証明書を発行しよう。',
+    '日本全国の有人離島・観光無人島（全529島収録・制覇対象417島）の行き方・フェリー航路・日帰り可否・ATMや売店・携帯電波などの実用情報を完全網羅。GPS・写真チェックインで公式到達証明書を発行しよう。',
   alternates: {
     canonical: 'https://island.kira-tabi.com',
   },
@@ -24,7 +24,7 @@ const homeFaqJsonLd = {
       name: '輝旅 島専科（KIRATABI SHIMASENKA）とはどのようなサイトですか？',
       acceptedAnswer: {
         '@type': 'Answer',
-        text: '日本全国の離島（全481島収録・上陸制覇対象369島）の行き方・フェリー航路・日帰り可否・ATMや売店・携帯電波などの実用情報を網羅した日本最大級の離島専門ガイド＆到達記録プラットフォームです。現地GPSや写真の位置情報で公式到達証明書を無料発行できます。',
+        text: '日本全国の有人離島・観光無人島（全529島収録・上陸制覇対象417島）の行き方・フェリー航路・日帰り可否・ATMや売店・携帯電波などの実用情報を網羅した日本最大級の離島専門ガイド＆到達記録プラットフォームです。現地GPSや写真の位置情報で公式到達証明書を無料発行できます。',
       },
     },
     {

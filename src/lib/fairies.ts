@@ -655,7 +655,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/art.png",
+      "imageUrl": "/fairies/card_shuri_1786436795247.jpg",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -689,7 +689,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/angel_card_1786438076583.jpg",
+      "imageUrl": "/fairies/card_manzamo_1786436737294.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -757,7 +757,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/ao_nobg_1786442035434.jpg",
+      "imageUrl": "/fairies/ao_card_1786442060485.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -791,7 +791,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "EARTH",
     "visual": {
       "icon": "🪨",
-      "imageUrl": "/fairies/miyabi.png",
+      "imageUrl": "/fairies/toriike_card_1786459487027.jpg",
       "colorFrom": "from-amber-600",
       "colorTo": "to-orange-900",
       "shadowColor": "shadow-amber-700/50",
@@ -825,7 +825,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/oribi.png",
+      "imageUrl": "/fairies/sunayama_card_1786459184575.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -842,7 +842,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/remo.png",
+      "imageUrl": "/fairies/card_kabira_1786436768958.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -927,7 +927,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/rin.png",
+      "imageUrl": "/fairies/yonaguni_horse.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -978,7 +978,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/shimaenaga.jpg",
+      "imageUrl": "/fairies/kuikku_card_1786442013208.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -995,7 +995,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/shisa.jpg",
+      "imageUrl": "/fairies/kume_card_1786462181336.jpg",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -1063,7 +1063,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/tida.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1505,7 +1504,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/oshima_card_1786466726632.jpg",
+      "imageUrl": "/fairies/amami_card_1786463001546.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1539,7 +1538,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/tokine.png",
+      "imageUrl": "/fairies/yaku_card_1786438111327.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1573,7 +1572,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/ushima.png",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -1607,7 +1605,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/yonaguni_horse.jpg",
+      "imageUrl": "/fairies/tsushima_card_1786595569169.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1641,7 +1639,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/zou.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1658,7 +1655,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/art.png",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1675,7 +1671,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/hateruma_cross.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1692,7 +1687,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/mika.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1709,7 +1703,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/miyabi.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1726,7 +1719,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/pinai_card_1786442996839.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1743,7 +1735,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/oribi.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1760,7 +1751,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/card_kabira_original_1786437047289.jpg",
+      "imageUrl": "/fairies/oribi.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1777,7 +1768,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/angel_nobg_1786438041423.jpg",
+      "imageUrl": "/fairies/angel_card_1786438076583.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1794,7 +1785,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/remo.png",
+      "imageUrl": "/fairies/art.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1811,7 +1802,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/remo.png",
+      "imageUrl": "/fairies/remo.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1828,7 +1819,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/rin.png",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1845,7 +1835,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "EARTH",
     "visual": {
       "icon": "🪨",
-      "imageUrl": "/fairies/shimaenaga.jpg",
+      "imageUrl": "/fairies/ushima.jpg",
       "colorFrom": "from-amber-600",
       "colorTo": "to-orange-900",
       "shadowColor": "shadow-amber-700/50",
@@ -1879,7 +1869,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/chacha.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1896,7 +1885,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/shisa.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1913,7 +1901,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/tida.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1930,7 +1917,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/tsubaki.png",
+      "imageUrl": "/fairies/oshima_card_1786466726632.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -1947,7 +1934,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/tokine.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -1981,7 +1967,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/ushima.png",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -1998,7 +1983,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/yonaguni_horse.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2032,7 +2016,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/zou.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2049,7 +2032,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/art.png",
+      "imageUrl": "/fairies/hachijo_card_1786466117124.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2066,7 +2049,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/mika.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2083,7 +2065,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/miyabi.png",
+      "imageUrl": "/fairies/fairy_ogasawara_whale_1784442239837.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2100,7 +2082,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/oribi.png",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -2151,7 +2132,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/shirayuri_card_1786442239484.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2185,7 +2165,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/amami_card_1786463001546.jpg",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -2202,7 +2181,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "EARTH",
     "visual": {
       "icon": "🪨",
-      "imageUrl": "/fairies/octo_nobg_1786593330280.jpg",
       "colorFrom": "from-amber-600",
       "colorTo": "to-orange-900",
       "shadowColor": "shadow-amber-700/50",
@@ -2219,7 +2197,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/remo.png",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2236,7 +2213,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/rin.png",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2253,7 +2229,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/shimaenaga.jpg",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -2270,7 +2245,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/amami_rabbit_card_1786439174408.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2287,7 +2261,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/shisa.jpg",
+      "imageUrl": "/fairies/tama.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2304,7 +2278,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/tama.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2321,7 +2294,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/bat_nobg_1786594788108.jpg",
+      "imageUrl": "/fairies/bat_card_1786594860803.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2338,7 +2311,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/tida.jpg",
+      "imageUrl": "/fairies/tokine.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2372,7 +2345,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/sefa_v2_card_1786460961026.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2389,7 +2361,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/tokine.png",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2406,7 +2377,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/ayamaru_card_1786463081046.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2423,7 +2393,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/iriomote_cat_card_1786439105304.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2457,7 +2426,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/ushima.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2474,7 +2442,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/ameri_card_1786441891081.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2491,7 +2458,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/yonaguni_horse.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2508,7 +2474,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/zou.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2525,7 +2490,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/yaku_card_1786438111327.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2627,7 +2591,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/hachijo_card_1786466117124.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2644,7 +2607,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/magu.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2661,7 +2623,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/hokuri_card_1786595418078.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2678,7 +2639,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/yuki.png",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2695,7 +2655,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/air_card_fixed_1786593412175.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2712,7 +2671,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/art.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2729,7 +2687,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/fairy_shimaenaga_1784442212371.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2746,7 +2703,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/maehama_card_1786459151246.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2763,7 +2719,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/mika.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2780,7 +2735,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "EARTH",
     "visual": {
       "icon": "🪨",
-      "imageUrl": "/fairies/ryu.png",
+      "imageUrl": "/fairies/shuri_dragon_nobg_1786437454664.jpg",
       "colorFrom": "from-amber-600",
       "colorTo": "to-orange-900",
       "shadowColor": "shadow-amber-700/50",
@@ -2797,7 +2752,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/guru.jpg",
+      "imageUrl": "/fairies/maehama_card_1786459151246.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2814,7 +2769,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/miyabi.png",
+      "imageUrl": "/fairies/iriomote_cat_card_1786439105304.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2831,7 +2786,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/fairy_ruri_1784439901297.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2848,7 +2802,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/kanto_card_1786595381305.jpg",
+      "imageUrl": "/fairies/amami_rabbit_card_1786439174408.jpg",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2865,7 +2819,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/tamatori_card_1786442453131.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2882,7 +2835,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "NATURE",
     "visual": {
       "icon": "🌿",
-      "imageUrl": "/fairies/kuikku_card_1786442013208.jpg",
+      "imageUrl": "/fairies/tsubaki.jpg",
       "colorFrom": "from-green-400",
       "colorTo": "to-emerald-600",
       "shadowColor": "shadow-green-500/50",
@@ -2899,7 +2852,7 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/kume_card_1786462181336.jpg",
+      "imageUrl": "/fairies/megi_card_1786465521404.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2916,7 +2869,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/fairy_shisa_1786432760134.jpg",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",
@@ -2933,7 +2885,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "FIRE",
     "visual": {
       "icon": "🔥",
-      "imageUrl": "/fairies/oribi.png",
       "colorFrom": "from-orange-400",
       "colorTo": "to-red-600",
       "shadowColor": "shadow-orange-500/50",
@@ -2950,7 +2901,6 @@ export const FAIRIES_MASTER: IslandFairy[] = [
     "attribute": "WATER",
     "visual": {
       "icon": "💧",
-      "imageUrl": "/fairies/kodama.png",
       "colorFrom": "from-blue-400",
       "colorTo": "to-cyan-600",
       "shadowColor": "shadow-blue-500/50",

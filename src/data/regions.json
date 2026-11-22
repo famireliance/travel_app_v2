@@ -5,7 +5,7 @@
     "enName": "HOKKAIDO ISLANDS",
     "area": "北海道地方",
     "visited": 0,
-    "total": 6,
+    "total": 7,
     "hero_image_url": ""
   },
   {
@@ -14,7 +14,7 @@
     "enName": "SANRIKU ISLANDS",
     "area": "東北地方",
     "visited": 0,
-    "total": 2,
+    "total": 3,
     "hero_image_url": ""
   },
   {
@@ -23,7 +23,7 @@
     "enName": "OSHIKA",
     "area": "東北地方",
     "visited": 0,
-    "total": 10,
+    "total": 12,
     "hero_image_url": ""
   },
   {
@@ -32,7 +32,7 @@
     "enName": "IZU ISLANDS",
     "area": "関東地方",
     "visited": 0,
-    "total": 9,
+    "total": 11,
     "hero_image_url": ""
   },
   {
@@ -50,7 +50,7 @@
     "enName": "KANTO OTHERS",
     "area": "関東地方",
     "visited": 0,
-    "total": 3,
+    "total": 8,
     "hero_image_url": ""
   },
   {
@@ -68,7 +68,7 @@
     "enName": "AICHI SANTO",
     "area": "東海地方",
     "visited": 0,
-    "total": 11,
+    "total": 13,
     "hero_image_url": ""
   },
   {
@@ -86,7 +86,7 @@
     "enName": "AWAJI ISLANDS",
     "area": "近畿地方",
     "visited": 0,
-    "total": 4,
+    "total": 7,
     "hero_image_url": ""
   },
   {
@@ -104,7 +104,7 @@
     "enName": "KASAOKA",
     "area": "中国地方",
     "visited": 0,
-    "total": 32,
+    "total": 35,
     "hero_image_url": ""
   },
   {
@@ -113,7 +113,7 @@
     "enName": "HAGI",
     "area": "中国地方",
     "visited": 0,
-    "total": 7,
+    "total": 10,
     "hero_image_url": ""
   },
   {
@@ -140,7 +140,7 @@
     "enName": "SUO OSHIMA",
     "area": "中国地方",
     "visited": 0,
-    "total": 13,
+    "total": 18,
     "hero_image_url": ""
   },
   {
@@ -149,7 +149,7 @@
     "enName": "KUTSUNA",
     "area": "四国地方",
     "visited": 0,
-    "total": 9,
+    "total": 10,
     "hero_image_url": ""
   },
   {
@@ -158,7 +158,7 @@
     "enName": "KAMIJIMA",
     "area": "四国地方",
     "visited": 0,
-    "total": 22,
+    "total": 28,
     "hero_image_url": ""
   },
   {
@@ -176,7 +176,7 @@
     "enName": "SHIWAKU ISLANDS",
     "area": "四国地方",
     "visited": 0,
-    "total": 14,
+    "total": 16,
     "hero_image_url": ""
   },
   {
@@ -194,7 +194,7 @@
     "enName": "TOKUSHIMA",
     "area": "四国地方",
     "visited": 0,
-    "total": 5,
+    "total": 6,
     "hero_image_url": ""
   },
   {
@@ -212,7 +212,7 @@
     "enName": "AMAKUSA",
     "area": "九州地方",
     "visited": 0,
-    "total": 12,
+    "total": 14,
     "hero_image_url": ""
   },
   {
@@ -230,7 +230,7 @@
     "enName": "BUNGO",
     "area": "九州地方",
     "visited": 0,
-    "total": 5,
+    "total": 7,
     "hero_image_url": ""
   },
   {
@@ -248,7 +248,7 @@
     "enName": "GENKAI",
     "area": "九州地方",
     "visited": 0,
-    "total": 15,
+    "total": 16,
     "hero_image_url": ""
   },
   {
@@ -284,7 +284,7 @@
     "enName": "MINAMI NAKA",
     "area": "九州地方",
     "visited": 0,
-    "total": 2,
+    "total": 4,
     "hero_image_url": ""
   },
   {
@@ -347,7 +347,7 @@
     "enName": "SATSUMA",
     "area": "九州地方",
     "visited": 0,
-    "total": 2,
+    "total": 3,
     "hero_image_url": ""
   },
   {
@@ -374,7 +374,7 @@
     "enName": "MIYAKO",
     "area": "沖縄地方",
     "visited": 0,
-    "total": 8,
+    "total": 9,
     "hero_image_url": ""
   },
   {
@@ -392,7 +392,7 @@
     "enName": "YAEYAMA ISLANDS",
     "area": "沖縄地方",
     "visited": 0,
-    "total": 11,
+    "total": 13,
     "hero_image_url": ""
   },
   {

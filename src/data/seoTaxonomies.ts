@@ -10,7 +10,7 @@ export interface PrefectureSeoEntry {
 }
 
 export const PREFECTURE_SEO_LIST: PrefectureSeoEntry[] = [
-  { slug: 'okinawa', name: '沖縄県', shortName: '沖縄', area: '沖縄', hubAccess: '那覇空港・泊港（とまりん）・石垣港離島ターミナル・宮古空港・平敷屋港・運天港', leadText: '沖縄本島周辺離島・慶良間諸島・久米島・宮古列島・八重山諸島・大東諸島まで、ケラマブルーやサンゴ礁の絶景ビーチが広がる全71の上陸対象離島を完全網羅。橋で車で行ける島から高速船15分の日帰り離島、日本最西端・最南端の島まで比較できます。' },
+  { slug: 'okinawa', name: '沖縄県', shortName: '沖縄', area: '沖縄', hubAccess: '那覇空港・泊港（とまりん）・石垣港離島ターミナル・宮古空港・平敷屋港・運天港', leadText: '沖縄本島周辺離島・慶良間諸島・久米島・宮古列島・八重山諸島・大東諸島まで、ケラマブルーやサンゴ礁の絶景ビーチが広がる上陸対象離島を完全網羅。橋で車で行ける島から高速船15分の日帰り離島、バラス島・幻の島などの人気上陸無人島、日本最西端・最南端の島まで比較できます。' },
   { slug: 'nagasaki', name: '長崎県', shortName: '長崎', area: '九州', hubAccess: '長崎港・佐世保港・博多港・福岡空港・対馬空港・福江空港・壱岐空港', leadText: '五島列島・壱岐・対馬・九十九島・平戸諸島など日本有数の多島美と潜伏キリシタン世界遺産の島々が集まる長崎県の離島一覧。各島のフェリー航路・日帰り可否・島内インフラを比較できます。' },
   { slug: 'kagoshima', name: '鹿児島県', shortName: '鹿児島', area: '九州', hubAccess: '鹿児島港（本港区・新港区）・鹿児島空港・奄美空港・屋久島空港・種子島空港', leadText: '世界自然遺産の屋久島・奄美大島・徳之島をはじめ、種子島、与論島、沖永良部島、トカラ列島（十島村）、三島村、甑島列島まで個性豊かな南西諸島・薩南諸島の離島ガイド。' },
   { slug: 'ehime', name: '愛媛県', shortName: '愛媛', area: '四国・瀬戸内', hubAccess: '松山観光港・三津浜港・今治港・宇和島港・しまなみ海道', leadText: 'しまなみ海道（芸予諸島）・忽那諸島・宇和海諸島など、サイクリングや柑橘の島旅、猫の島として知られる青島まで瀬戸内・宇和海の穏やかな離島を網羅しています。' },
@@ -38,8 +38,23 @@ export const PREFECTURE_SEO_LIST: PrefectureSeoEntry[] = [
   { slug: 'wakayama', name: '和歌山県', shortName: '和歌山', area: '関西', hubAccess: '加太港・串本（くしもと大橋）', leadText: 'ラピュタの世界観のような砲台跡が残る無人の友ヶ島（沖ノ島）や、本州最南端の潮岬と橋で結ばれる紀伊大島など和歌山の島旅ガイド。' },
   { slug: 'miyazaki', name: '宮崎県', shortName: '宮崎', area: '九州', hubAccess: '目井津港（日南）・島野浦港（延岡）・青島（弥生橋）', leadText: '鬼の洗濯板に囲まれた亜熱帯植物の島・青島や、サンゴ群落と漁業の島・島野浦島、野生サルが暮らす幸島など日向灘の離島一覧。' },
   { slug: 'yamagata', name: '山形県', shortName: '山形', area: '東北・日本海', hubAccess: '酒田港（定期船とびしま）', leadText: '鳥海山の恵みとウミネコ繁殖地・天然記念物のタブノキ林が広がる山形県唯一の有人離島「飛島」への行き方・宿泊・設備ガイド。' },
-  { slug: 'shizuoka', name: '静岡県', shortName: '静岡', area: '東海・伊豆', hubAccess: '熱海港（高速船約30分）', leadText: '首都圏から最も近いリゾートアイランド「初島」。熱海港から船でわずか30分で海鮮丼・絶景露天風呂・グランピングを楽しめる日帰り＆宿泊ガイド。' },
+  { slug: 'shizuoka', name: '静岡県', shortName: '静岡', area: '東海・伊豆', hubAccess: '熱海港（高速船約30分）・沼津・堂ヶ島・弁天島', leadText: '首都圏から最も近いリゾートアイランド「初島」をはじめ、専用船で渡る駿河湾の淡島、トンボロ現象で歩いて渡れる西伊豆・三四郎島、浜名湖の弁天島まで静岡県の観光島ガイド。' },
+  { slug: 'chiba', name: '千葉県', shortName: '千葉', area: '関東・房総', hubAccess: '太海（鴨川市・手漕ぎ渡し舟）・館山湾', leadText: '千葉県唯一の有人観光島で二丁櫓の渡し舟で渡る名勝「仁右衛門島」や、砂州で歩いて渡れるシュノーケリングの名所「館山・沖ノ島」など房総半島の離島ガイド。' },
+  { slug: 'fukui', name: '福井県', shortName: '福井', area: '北陸・若狭湾', hubAccess: '東尋坊・三国・敦賀色ヶ浜渡船', leadText: '東尋坊沖に浮かび朱塗りの橋で渡る神秘の島「雄島」や、「北陸のハワイ」と称される透明度の高い無人ビーチ島「水島」など福井県の観光島ガイド。' },
+  { slug: 'aomori', name: '青森県', shortName: '青森', area: '東北', hubAccess: 'JR鮫駅（八戸市）', leadText: '国の天然記念物・ウミネコ繁殖地として約3万〜4万羽が飛来する八戸市の神聖な観光島「蕪島」へのアクセス・散策ガイド。' },
+  { slug: 'iwate', name: '岩手県', shortName: '岩手', area: '東北・三陸', hubAccess: '大槌・山田湾・陸前高田沿岸', leadText: '三陸復興国立公園のリアス海岸に浮かぶ景勝島・椿島をはじめとする岩手県沿岸の島々をご案内します。' },
 ];
+
+function cleanPrimaryIslandName(rawName?: string): string {
+  if (!rawName) return '';
+  const withoutParens = String(rawName).replace(/（.*?）|\(.*?\)/g, '').trim();
+  if (withoutParens.includes('・')) {
+    const parts = withoutParens.split('・').map((s) => s.trim()).filter(Boolean);
+    const nonGroup = parts.find((p) => !p.endsWith('諸島') && !p.endsWith('列島') && !p.endsWith('群島') && !p.endsWith('湾'));
+    return nonGroup || parts[parts.length - 1];
+  }
+  return withoutParens;
+}
 
 export function getPrefectureBySlug(slug: string): PrefectureSeoEntry | undefined {
   return PREFECTURE_SEO_LIST.find((p) => p.slug === slug);
@@ -106,8 +121,9 @@ export const FEATURE_SEO_LIST: FeatureSeoEntry[] = [
     leadText: '国立公園指定海域や世界的なダイビング・シュノーケリングスポットとして実証された、息をのむ透明度を誇る日本の絶景ビーチ離島です。',
     matcher: (i) =>
       i.is_conquest_target !== false &&
-      ['座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '伊良部島', '下地島', '池間島', '来間島', '波照間島', '水納島', 'ハテの浜', '与論島', '柏島', '神津島', '式根島', '父島'].some((n) =>
-        String(i.name || '').includes(n)
+      i.is_published !== false &&
+      ['座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '伊良部島', '下地島', '池間島', '来間島', 'ユニの浜', 'バラス島', '浜島', '波照間島', '水納島', 'ハテの浜', '与論島', '柏島', '神津島', '式根島', '父島', '南島'].includes(
+        cleanPrimaryIslandName(i.name)
       ),
   },
   {
@@ -116,11 +132,13 @@ export const FEATURE_SEO_LIST: FeatureSeoEntry[] = [
     shortLabel: '満天の星空・保護区',
     description: '国際ダークスカイ協会「星空保護区」認定の西表石垣国立公園・神津島や、南十字星が輝く波照間島・小笠原など、街灯のない絶海の夜空を楽しめる離島一覧。',
     leadText: '周囲を海に囲まれ光害が極めて少ない離島は、日本最高峰の天然プラネタリウム。国際星空保護区や南十字星観測地として名高い島々を紹介します。',
-    matcher: (i) =>
-      i.is_conquest_target !== false &&
-      ['波照間島', '神津島', '石垣島', '西表島', '竹富島', '小浜島', '黒島', '青ヶ島', '父島', '母島', '粟島'].some((n) =>
-        String(i.name || '').includes(n)
-      ),
+    matcher: (i) => {
+      if (i.is_conquest_target === false || i.is_published === false) return false;
+      const cn = cleanPrimaryIslandName(i.name);
+      if (cn === '黒島') return i.prefecture === '沖縄県';
+      if (cn === '粟島') return i.prefecture === '新潟県';
+      return ['波照間島', '神津島', '石垣島', '西表島', '竹富島', '小浜島', '青ヶ島', '父島', '母島', '与那国島'].includes(cn);
+    },
   },
   {
     slug: 'retreat',

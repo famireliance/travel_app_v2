@@ -24,7 +24,7 @@ export default function RankingPage() {
   const [rankingType, setRankingType] = useState<'visited' | 'points'>('visited');
   const [realRanking, setRealRanking] = useState<RankingUser[]>([]);
 
-  const ALL_ISLANDS_COUNT = conquestTargetCount || 369;
+  const ALL_ISLANDS_COUNT = conquestTargetCount || 417;
   const effectiveMyXP = Math.max(totalXP || 0, totalPoints || 0);
 
   React.useEffect(() => {

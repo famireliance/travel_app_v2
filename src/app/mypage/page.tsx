@@ -70,7 +70,7 @@ export default function MyPage() {
     }
   }, []);
 
-  const ALL_ISLANDS_COUNT = conquestTargetCount || 369;
+  const ALL_ISLANDS_COUNT = conquestTargetCount || 417;
   const progressPct = (totalVisited / ALL_ISLANDS_COUNT) * 100;
   const effectiveXP = Math.max(totalXP || 0, totalPoints || 0);
   const playerLvInfo = getPlayerLevelInfo(effectiveXP);
@@ -348,7 +348,7 @@ export default function MyPage() {
                 マイパスポートへようこそ
               </h2>
               <p className="text-sm text-slate-600 leading-relaxed">
-                ログインまたは新規登録（無料）を行うと、全国369島の到達記録・獲得XP・発見したご当地妖精や公式証明書をクラウドに永久保存できます。
+                ログインまたは新規登録（無料）を行うと、全国417島の到達記録・獲得XP・発見したご当地妖精や公式証明書をクラウドに永久保存できます。
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">

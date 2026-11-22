@@ -187,7 +187,7 @@ export default function StorePopModal({ isOpen, onClose, store }: StorePopModalP
                   </h1>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-bold text-amber-600 block">全国481島・有人離島完全網羅</span>
+                  <span className="text-xs font-bold text-amber-600 block">全国529島・有人離島＆観光島完全網羅</span>
                   <span className="text-[10px] text-slate-400 font-mono">island.kira-tabi.com</span>
                 </div>
               </div>

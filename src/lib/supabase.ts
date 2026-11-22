@@ -80,6 +80,11 @@ export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
             coordinates: master.coordinates,
             description: row.description || master.description || '',
             access: row.access || master.access || '',
+            hero_image_url: row.hero_image_url || master.hero_image_url || '',
+            practical_info:
+              row.practical_info && typeof row.practical_info === 'object'
+                ? { ...(master.practical_info || {}), ...row.practical_info }
+                : master.practical_info || {},
             tags: (Array.isArray(row.tags) && row.tags.length > 0) ? row.tags : (master.tags || []),
             is_conquest_target: true,
             is_published: true,
@@ -99,6 +104,7 @@ export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
             spots: master.spots || [],
             image_url: master.image_url || '',
             hero_image_url: master.hero_image_url || master.image_url || '',
+            practical_info: master.practical_info || {},
             popularity_score: 0,
             is_published: true,
             is_conquest_target: true,

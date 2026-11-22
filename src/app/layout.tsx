@@ -24,10 +24,10 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://island.kira-tabi.com'),
   title: {
-    default: '輝旅 島専科（KIRATABI SHIMASENKA）| 日本全国の離島観光・行き方・制覇ガイド（全481島）',
+    default: '輝旅 島専科（KIRATABI SHIMASENKA）| 日本全国の離島観光・行き方・制覇ガイド（全529島）',
     template: '%s | 輝旅 島専科（KIRATABI SHIMASENKA）',
   },
-  description: '日本全国の離島（全481島・上陸制覇対象369島）の行き方・フェリー航路・日帰り可否・ATMや電波などの実用設備情報を完全網羅。GPS・写真チェックインで公式到達証明書も発行できる日本最大級の離島専門ガイド。',
+  description: '日本全国の有人離島・観光無人島（全529島・上陸制覇対象417島）の行き方・フェリー航路・日帰り可否・ATMや電波などの実用設備情報を完全網羅。GPS・写真チェックインで公式到達証明書も発行できる日本最大級の離島専門ガイド。',
   keywords: ['離島', '日本の島', '離島一覧', '沖縄 離島', '離島 旅行', '離島 日帰り', 'フェリー', '島旅', '離島制覇', '到達証明書', 'キラ旅', '輝旅 島専科', 'KIRATABI SHIMASENKA'],
   robots: {
     index: true,
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: '輝旅 島専科（KIRATABI SHIMASENKA）| 日本全国の離島観光・行き方・制覇ガイド',
-    description: '日本全国481島の行き方・フェリー・日帰り可否・島内設備を網羅。GPS・写真チェックインで公式到達証明書を発行しよう。',
+    description: '日本全国529島（有人離島・観光無人島）の行き方・フェリー・日帰り可否・島内設備を網羅。GPS・写真チェックインで公式到達証明書を発行しよう。',
     url: 'https://island.kira-tabi.com',
     siteName: '輝旅 島専科（KIRATABI SHIMASENKA）',
     images: [{ url: '/og-image.png', width: 1200, height: 630, alt: '輝旅 島専科 - 日本全国の離島観光・制覇ガイド' }],
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: '輝旅 島専科（KIRATABI SHIMASENKA）| 日本全国の離島観光・行き方・制覇ガイド',
-    description: '日本全国481島の行き方・フェリー・日帰り可否・島内設備を網羅。GPSチェックインで公式到達証明書を発行しよう。',
+    description: '日本全国529島（有人離島・観光無人島）の行き方・フェリー・日帰り可否・島内設備を網羅。GPSチェックインで公式到達証明書を発行しよう。',
     images: ['/og-image.png'],
   },
   manifest: '/manifest.json',

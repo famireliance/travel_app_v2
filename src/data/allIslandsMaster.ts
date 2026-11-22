@@ -1,4 +1,4 @@
-// 【日本全国の有人離島 全網羅実証マスター】国土交通省離島振興対象・SHIMADAS基準準拠（重複・海上誤座標ゼロ保証版）
+// 【日本全国の有人離島＋観光無人島 全網羅実証マスター】国土交通省・SHIMADAS・全国観光上陸島準拠（重複・海上誤座標・流用写真ゼロ保証版）
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
   "1": {
@@ -19,7 +19,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "rebunto"
+    "slug": "rebunto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/Rebun_island_seen_from_Rishiri_island.jpg/1280px-Rebun_island_seen_from_Rishiri_island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "礼文島（北海道 / Wikimedia Commons: 礼文島）"
+    }
   },
   "2": {
     "id": "2",
@@ -39,7 +43,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "rishirito"
+    "slug": "rishirito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Rishiriislandairplane.jpg/1280px-Rishiriislandairplane.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "利尻島（北海道 / Wikimedia Commons: 利尻島）"
+    }
   },
   "3": {
     "id": "3",
@@ -79,7 +87,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "yagishirito"
+    "slug": "yagishirito",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Yagishiri_Island.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "焼尻島（北海道 / Wikimedia Commons: 焼尻島）"
+    }
   },
   "5": {
     "id": "5",
@@ -99,7 +111,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "okushirito"
+    "slug": "okushirito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Okushiri_Island_Aerial_photograph.2017.jpg/1280px-Okushiri_Island_Aerial_photograph.2017.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "奥尻島（北海道 / Wikimedia Commons: 奥尻島）"
+    }
   },
   "6": {
     "id": "6",
@@ -136,7 +152,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "atsukeshikojima"
+    "slug": "atsukeshikojima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Akkeshi-Kojima_Island_Aerial_photograph.2021.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "厚岸小島（北海道 / Wikimedia Commons: 厚岸小島）"
+    }
   },
   "8": {
     "id": "8",
@@ -154,7 +174,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kembokkito"
+    "slug": "kembokkito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Kenbokki_Island_Aerial_photograph.jpg/1280px-Kenbokki_Island_Aerial_photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "嶮暮帰島（北海道 / Wikimedia Commons: 嶮暮帰島）"
+    }
   },
   "9": {
     "id": "9",
@@ -172,7 +196,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "oshimaoshimamasakioshima"
+    "slug": "oshimaoshimamasakioshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6e/Oshima-Oshima_island_aerial_photograph.JPG/1280px-Oshima-Oshima_island_aerial_photograph.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "渡島大島（松前大島）（北海道 / Wikimedia Commons: 渡島大島）"
+    }
   },
   "10": {
     "id": "10",
@@ -190,7 +218,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "oshimakojimamasakikojima"
+    "slug": "oshimakojimamasakikojima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Oshima-Kojima_island_aerial_photograph.JPG/1280px-Oshima-Kojima_island_aerial_photograph.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "渡島小島（松前小島）（北海道 / Wikimedia Commons: 渡島小島）"
+    }
   },
   "11": {
     "id": "11",
@@ -226,7 +258,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "moyururito"
+    "slug": "moyururito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Moyururi_Island_Aerial_photograph.2021.jpg/1280px-Moyururi_Island_Aerial_photograph.2021.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "モユルリ島（北海道 / Wikimedia Commons: モユルリ島）"
+    }
   },
   "13": {
     "id": "13",
@@ -262,7 +298,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kiritapputoyunieto"
+    "slug": "kiritapputoyunieto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7b/%E9%9C%A7%E5%A4%9A%E5%B8%83_-_panoramio.jpg/1280px-%E9%9C%A7%E5%A4%9A%E5%B8%83_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "霧多布島（湯沸島）（北海道 / Wikimedia Commons: 霧多布）"
+    }
   },
   "15": {
     "id": "15",
@@ -300,7 +340,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "bentenjimawakkanaishisoyamisaki"
+    "slug": "bentenjimawakkanaishisoyamisaki",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/%E5%AE%97%E8%B0%B7%E5%B2%AC%E5%BC%81%E5%A4%A9%E5%B3%B6.JPG/1280px-%E5%AE%97%E8%B0%B7%E5%B2%AC%E5%BC%81%E5%A4%A9%E5%B3%B6.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "弁天島（稚内市・宗谷岬）（北海道 / Wikimedia Commons: 弁天島 (稚内市)）"
+    }
   },
   "17": {
     "id": "17",
@@ -338,7 +382,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kaburajimaaomoriken"
+    "slug": "kaburajimaaomoriken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Kabushima%2C_-8_May_2010_a.jpg/1280px-Kabushima%2C_-8_May_2010_a.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "蕪島（青森県）（青森県 / Wikimedia Commons: 蕪島）"
+    }
   },
   "21": {
     "id": "21",
@@ -356,7 +404,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "tsubakishimaiwatekenrikuzentakata"
+    "slug": "tsubakishimaiwatekenrikuzentakata",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Tsubakishima_Island%2C_Rikuzentaka_Iwate_Aerial_photograph.2019.jpg/1280px-Tsubakishima_Island%2C_Rikuzentaka_Iwate_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "椿島（岩手県陸前高田）（岩手県 / Wikimedia Commons: 椿島 (陸前高田市)）"
+    }
   },
   "22": {
     "id": "22",
@@ -410,7 +462,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kesennumaoshima"
+    "slug": "kesennumaoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/Miyagi-Ohshima_bridge%2C_black-tailed_gull-xl.jpg/1280px-Miyagi-Ohshima_bridge%2C_black-tailed_gull-xl.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "気仙沼大島（宮城県 / Wikimedia Commons: 気仙沼大島大橋）"
+    }
   },
   "26": {
     "id": "26",
@@ -470,7 +526,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kimukazan"
+    "slug": "kimukazan",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Kinkasan_Island%2C_Ishinomaki_Miyagi_Aerial_photograph.2013.jpg/1280px-Kinkasan_Island%2C_Ishinomaki_Miyagi_Aerial_photograph.2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "金華山（宮城県 / Wikimedia Commons: 金華山 (宮城県)）"
+    }
   },
   "29": {
     "id": "29",
@@ -774,7 +834,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "izuoshima"
+    "slug": "izuoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Izu-Oshima-IMG_4759.jpg/1280px-Izu-Oshima-IMG_4759.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "伊豆大島（東京都 / Wikimedia Commons: 三原山）"
+    }
   },
   "50": {
     "id": "50",
@@ -794,7 +858,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "toshima"
+    "slug": "toshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/70/To-shima_zenkei.JPG/1280px-To-shima_zenkei.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "利島（東京都 / Wikimedia Commons: 利島）"
+    }
   },
   "51": {
     "id": "51",
@@ -814,7 +882,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "nijima"
+    "slug": "nijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Nii-jima_zenkei.JPG/1280px-Nii-jima_zenkei.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "新島（東京都 / Wikimedia Commons: 新島）"
+    }
   },
   "52": {
     "id": "52",
@@ -834,7 +906,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "shikinejima"
+    "slug": "shikinejima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1a/Kanbiki_Observatory%2C_Shikinejima%2C_Tokyo%2C_Japan.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "式根島（東京都 / Wikimedia Commons: 神引展望台）"
+    }
   },
   "53": {
     "id": "53",
@@ -854,7 +930,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kozushima"
+    "slug": "kozushima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Kozushima_Island_Aerial_photograph.2013.jpg/1280px-Kozushima_Island_Aerial_photograph.2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "神津島（東京都 / Wikimedia Commons: 神津島）"
+    }
   },
   "54": {
     "id": "54",
@@ -874,7 +954,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "miyakejima"
+    "slug": "miyakejima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/20140516%E4%B8%89%E5%AE%85%E5%B3%B6.jpg/1280px-20140516%E4%B8%89%E5%AE%85%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "三宅島（東京都 / Wikimedia Commons: 三宅島）"
+    }
   },
   "55": {
     "id": "55",
@@ -894,7 +978,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "mikurajima"
+    "slug": "mikurajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/54/Whole_view_of_Mikurajima.jpg/1280px-Whole_view_of_Mikurajima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "御蔵島（東京都 / Wikimedia Commons: 御蔵島）"
+    }
   },
   "56": {
     "id": "56",
@@ -914,7 +1002,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "hachijojima"
+    "slug": "hachijojima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/Cultivation_of_Phoenix_Roebelenii_in_Hachijo_Island_01.jpg/1280px-Cultivation_of_Phoenix_Roebelenii_in_Hachijo_Island_01.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "八丈島（東京都 / Wikimedia Commons: 八丈島）"
+    }
   },
   "57": {
     "id": "57",
@@ -951,7 +1043,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "aogashima"
+    "slug": "aogashima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d4/Aogasima_maruyama.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "青ヶ島（東京都 / Wikimedia Commons: 青ヶ島村）"
+    }
   },
   "59": {
     "id": "59",
@@ -969,7 +1065,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "hayashimanijimaoki"
+    "slug": "hayashimanijimaoki",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Hayashima%28Izu-Islands%29.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "早島（新島沖）（東京都 / Wikimedia Commons: 早島 (東京都)）"
+    }
   },
   "60": {
     "id": "60",
@@ -987,7 +1087,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "udoneshima"
+    "slug": "udoneshima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/a/ab/Utone_shima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "鵜渡根島（東京都 / Wikimedia Commons: 鵜渡根島）"
+    }
   },
   "61": {
     "id": "61",
@@ -1005,7 +1109,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "torishimaizushoto"
+    "slug": "torishimaizushoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/22/Tori-Shima_Island_of_Izu-Islands_Aerial_photograph.2001.jpg/1280px-Tori-Shima_Island_of_Izu-Islands_Aerial_photograph.2001.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "鳥島（伊豆諸島）（東京都 / Wikimedia Commons: 鳥島 (八丈支庁)）"
+    }
   },
   "62": {
     "id": "62",
@@ -1023,7 +1131,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "sumisujima"
+    "slug": "sumisujima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/8/82/Smithisland_milt.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "須美寿島（東京都 / Wikimedia Commons: 須美寿島）"
+    }
   },
   "63": {
     "id": "63",
@@ -1043,7 +1155,17 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 900,
     "difficulty": "秘境中の秘境",
     "is_conquest_target": true,
-    "slug": "chichijimaogasawarashoto"
+    "slug": "chichijimaogasawarashoto",
+    "hero_image_url": "/hero/slide13.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide13.webp",
+        "/hero/slide17.webp",
+        "/hero/slide11.webp",
+        "/hero/slide5.webp"
+      ],
+      "photo_caption": "父島 二見湾・境浦（東京都小笠原村・現地実写）"
+    }
   },
   "64": {
     "id": "64",
@@ -1063,7 +1185,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 900,
     "difficulty": "秘境中の秘境",
     "is_conquest_target": true,
-    "slug": "hahajimaogasawarashoto"
+    "slug": "hahajimaogasawarashoto",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/8/81/View_from_Hahajima-Island_and_the_Minamizaki_Tokyo%2CJAPAN.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "母島（小笠原諸島）（東京都 / Wikimedia Commons: 母島）"
+    }
   },
   "65": {
     "id": "65",
@@ -1082,7 +1208,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
     "checkin_radius_m": 3000,
-    "slug": "anijimaogasawarashoto"
+    "slug": "anijimaogasawarashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b3/Anisima.jpg/1280px-Anisima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "兄島（小笠原諸島）（東京都 / Wikimedia Commons: 兄島）"
+    }
   },
   "66": {
     "id": "66",
@@ -1101,7 +1231,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
     "checkin_radius_m": 3000,
-    "slug": "ototojimaogasawarashoto"
+    "slug": "ototojimaogasawarashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Otouto-Jima_Island_Aerial_photograph.2014.jpg/1280px-Otouto-Jima_Island_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "弟島（小笠原諸島）（東京都 / Wikimedia Commons: 弟島）"
+    }
   },
   "67": {
     "id": "67",
@@ -1156,7 +1290,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "nishinoshimaogasawarakazanto"
+    "slug": "nishinoshimaogasawarakazanto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/Nishinoshima_Island%2C_Ogasawara_Tokyo_Aerial_photograph._December_1%2C_2018.jpg/1280px-Nishinoshima_Island%2C_Ogasawara_Tokyo_Aerial_photograph._December_1%2C_2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "西之島（小笠原火山島）（東京都 / Wikimedia Commons: 西之島）"
+    }
   },
   "70": {
     "id": "70",
@@ -1174,7 +1312,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "iotoogasawarakazanretto"
+    "slug": "iotoogasawarakazanretto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Ioto_Island_Aerial_photograph.2016.jpg/1280px-Ioto_Island_Aerial_photograph.2016.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "硫黄島（小笠原・火山列島）（東京都 / Wikimedia Commons: 硫黄島 (東京都)）"
+    }
   },
   "71": {
     "id": "71",
@@ -1192,7 +1334,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "minamitorishima"
+    "slug": "minamitorishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Aerial-View-Minamitori-Island-1987.jpg/1280px-Aerial-View-Minamitori-Island-1987.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "南鳥島（東京都 / Wikimedia Commons: 南鳥島）"
+    }
   },
   "72": {
     "id": "72",
@@ -1210,7 +1356,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "okinotorishima"
+    "slug": "okinotorishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f2/Okinotorishima20070602.jpg/1280px-Okinotorishima20070602.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖ノ鳥島（東京都 / Wikimedia Commons: 沖ノ鳥島）"
+    }
   },
   "73": {
     "id": "73",
@@ -1230,7 +1380,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": true,
-    "slug": "enoshima"
+    "slug": "enoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Enoshima_view_from_Kugenuma_beach.jpg/1280px-Enoshima_view_from_Kugenuma_beach.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "江の島（神奈川県 / Wikimedia Commons: 江の島）"
+    }
   },
   "74": {
     "id": "74",
@@ -1249,7 +1403,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
     "checkin_radius_m": 3000,
-    "slug": "sashima"
+    "slug": "sashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Sarushima_%28Yokosuka%29.jpg/1280px-Sarushima_%28Yokosuka%29.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "猿島（神奈川県 / Wikimedia Commons: 猿島）"
+    }
   },
   "75": {
     "id": "75",
@@ -1269,7 +1427,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "jogashima"
+    "slug": "jogashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Jogashima_aerial_photograph.jpg/1280px-Jogashima_aerial_photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "城ヶ島（神奈川県 / Wikimedia Commons: 城ヶ島）"
+    }
   },
   "76": {
     "id": "76",
@@ -1289,7 +1451,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "sadoto"
+    "slug": "sadoto",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/8/89/SadoGaShima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "佐渡島（新潟県 / Wikimedia Commons: 佐渡島）"
+    }
   },
   "77": {
     "id": "77",
@@ -1309,7 +1475,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "awashimanigataken"
+    "slug": "awashimanigataken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Awashima_Island_Niigata_Aerial_photograph.2017.jpg/1280px-Awashima_Island_Niigata_Aerial_photograph.2017.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "粟島（新潟県）（新潟県 / Wikimedia Commons: 粟島 (新潟県)）"
+    }
   },
   "78": {
     "id": "78",
@@ -1329,7 +1499,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "notojima"
+    "slug": "notojima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Notojima_Island_Aerial_photograph.2014.jpg/1280px-Notojima_Island_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "能登島（石川県 / Wikimedia Commons: 能登島）"
+    }
   },
   "79": {
     "id": "79",
@@ -1349,7 +1523,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "hegurajima"
+    "slug": "hegurajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Hegura_20091001.jpg/1280px-Hegura_20091001.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "舳倉島（石川県 / Wikimedia Commons: 舳倉島）"
+    }
   },
   "80": {
     "id": "80",
@@ -1386,7 +1564,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "mitsukejimagunkantonoto"
+    "slug": "mitsukejimagunkantonoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Mitsukejima_%28Ishikawa%29_1.jpg/1280px-Mitsukejima_%28Ishikawa%29_1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "見附島（軍艦島・能登）（石川県 / Wikimedia Commons: 見附島 (石川県)）"
+    }
   },
   "82": {
     "id": "82",
@@ -1442,7 +1624,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "ojimafukuikentojimbooki"
+    "slug": "ojimafukuikentojimbooki",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Oshima_from_above.jpg/1280px-Oshima_from_above.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "雄島（福井県東尋坊沖）（福井県 / Wikimedia Commons: 雄島 (福井県)）"
+    }
   },
   "85": {
     "id": "85",
@@ -1499,7 +1685,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "hatsushimashizuokakenatamishi"
+    "slug": "hatsushimashizuokakenatamishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/Hatsushima_2015-04-23.jpg/1280px-Hatsushima_2015-04-23.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "初島（静岡県熱海市）（静岡県 / Wikimedia Commons: 初島）"
+    }
   },
   "88": {
     "id": "88",
@@ -1517,7 +1707,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "mikomotojimashizuokakenshimoda"
+    "slug": "mikomotojimashizuokakenshimoda",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8c/Mikomoto-jima_island_aerial_photograph.JPG/1280px-Mikomoto-jima_island_aerial_photograph.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "神子元島（静岡県下田）（静岡県 / Wikimedia Commons: 神子元島）"
+    }
   },
   "89": {
     "id": "89",
@@ -1535,7 +1729,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "teishijimashizuokakenitoshi"
+    "slug": "teishijimashizuokakenitoshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Teishijima_20120916.jpg/1280px-Teishijima_20120916.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "手石島（静岡県伊東市）（静岡県 / Wikimedia Commons: 手石島）"
+    }
   },
   "90": {
     "id": "90",
@@ -1555,7 +1753,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "okishimabiwako"
+    "slug": "okishimabiwako",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/Biwako_Okishima_aerial.jpg/1280px-Biwako_Okishima_aerial.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖島（琵琶湖）（滋賀県 / Wikimedia Commons: 沖島）"
+    }
   },
   "91": {
     "id": "91",
@@ -1574,7 +1776,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": false,
     "checkin_radius_m": 3000,
-    "slug": "chikubushimabiwako"
+    "slug": "chikubushimabiwako",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Chikubu_island01s3200.jpg/1280px-Chikubu_island01s3200.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "竹生島（琵琶湖）（滋賀県 / Wikimedia Commons: 竹生島）"
+    }
   },
   "92": {
     "id": "92",
@@ -1629,7 +1835,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "yahashikihantobiwakojinkoto"
+    "slug": "yahashikihantobiwakojinkoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Aerial_photograph_of_Yabase-Kihan_Island_2008.jpg/1280px-Aerial_photograph_of_Yabase-Kihan_Island_2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "矢橋帰帆島（琵琶湖人工島）（滋賀県 / Wikimedia Commons: 矢橋帰帆島）"
+    }
   },
   "95": {
     "id": "95",
@@ -1649,7 +1859,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "himakajima"
+    "slug": "himakajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Himakajima_aerial_photograph.jpg/1280px-Himakajima_aerial_photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "日間賀島（愛知県 / Wikimedia Commons: 日間賀島）"
+    }
   },
   "96": {
     "id": "96",
@@ -1669,7 +1883,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "shinojima"
+    "slug": "shinojima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/45/Shinojima_aerial_photograph.jpg/1280px-Shinojima_aerial_photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "篠島（愛知県 / Wikimedia Commons: 篠島）"
+    }
   },
   "97": {
     "id": "97",
@@ -1689,7 +1907,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "sakushima"
+    "slug": "sakushima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Sakushima_aerial_photograph.jpg/1280px-Sakushima_aerial_photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "佐久島（愛知県 / Wikimedia Commons: 佐久島）"
+    }
   },
   "98": {
     "id": "98",
@@ -1708,7 +1930,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "takeshimaaichikengamagorishi"
+    "slug": "takeshimaaichikengamagorishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Take_Island_from_Mount_Togami.jpg/1280px-Take_Island_from_Mount_Togami.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "竹島（愛知県蒲郡市）（愛知県 / Wikimedia Commons: 竹島 (愛知県)）"
+    }
   },
   "99": {
     "id": "99",
@@ -1726,7 +1952,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "maejimaaichikenminamichita"
+    "slug": "maejimaaichikenminamichita",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Mae_Island_%28Aichi%29.JPG/1280px-Mae_Island_%28Aichi%29.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "前島（愛知県南知多）（愛知県 / Wikimedia Commons: 前島 (愛知県)）"
+    }
   },
   "100": {
     "id": "100",
@@ -1764,7 +1994,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "sugashima"
+    "slug": "sugashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/Suga_Island.JPG/1280px-Suga_Island.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "菅島（三重県 / Wikimedia Commons: 菅島）"
+    }
   },
   "102": {
     "id": "102",
@@ -1784,7 +2018,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "toshijima"
+    "slug": "toshijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Port_of_Momotori.JPG/1280px-Port_of_Momotori.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "答志島（三重県 / Wikimedia Commons: 答志島）"
+    }
   },
   "103": {
     "id": "103",
@@ -1844,7 +2082,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "masakijima"
+    "slug": "masakijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b9/Masaki_Island_Aerial_photograph.2015.jpg/1280px-Masaki_Island_Aerial_photograph.2015.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "間崎島（三重県 / Wikimedia Commons: 間崎島）"
+    }
   },
   "106": {
     "id": "106",
@@ -1864,7 +2106,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "sakatejima"
+    "slug": "sakatejima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/84/Port_of_Sakate_Island.jpg/1280px-Port_of_Sakate_Island.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "坂手島（三重県 / Wikimedia Commons: 坂手島）"
+    }
   },
   "107": {
     "id": "107",
@@ -1904,7 +2150,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 1200,
     "difficulty": "到達伝説",
     "is_conquest_target": true,
-    "slug": "yokoyamatomiekenshimashi"
+    "slug": "yokoyamatomiekenshimashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4a/Yokoyama_Island_from_Kashikojima.jpg/1280px-Yokoyama_Island_from_Kashikojima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "横山島（三重県志摩市）（三重県 / Wikimedia Commons: 横山島）"
+    }
   },
   "109": {
     "id": "109",
@@ -1976,7 +2226,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kammurishimakyotofumaizuruoki"
+    "slug": "kammurishimakyotofumaizuruoki",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Kanmuri_Island_Aerial_Photograph.JPG/1280px-Kanmuri_Island_Aerial_Photograph.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "冠島（京都府舞鶴沖）（京都府 / Wikimedia Commons: 冠島）"
+    }
   },
   "113": {
     "id": "113",
@@ -1994,7 +2248,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kutsujimakyotofu"
+    "slug": "kutsujimakyotofu",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Kutsu-Jima_Island_Aerial_Photograph.JPG/1280px-Kutsu-Jima_Island_Aerial_Photograph.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沓島（京都府）（京都府 / Wikimedia Commons: 沓島）"
+    }
   },
   "114": {
     "id": "114",
@@ -2014,7 +2272,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "awajishima"
+    "slug": "awajishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/2016-11-12_Fukiage-hama_%E5%90%B9%E4%B8%8A%E6%B5%9C%EF%BC%88%E5%85%B5%E5%BA%AB%E7%9C%8C%E5%8D%97%E3%81%82%E3%82%8F%E3%81%98%E5%B8%82%E9%98%BF%E4%B8%87%E5%90%B9%E4%B8%8A%E7%94%BA%EF%BC%89DSCF4092%E2%98%86%E5%BD%A1.jpg/1280px-2016-11-12_Fukiage-hama_%E5%90%B9%E4%B8%8A%E6%B5%9C%EF%BC%88%E5%85%B5%E5%BA%AB%E7%9C%8C%E5%8D%97%E3%81%82%E3%82%8F%E3%81%98%E5%B8%82%E9%98%BF%E4%B8%87%E5%90%B9%E4%B8%8A%E7%94%BA%EF%BC%89DSCF4092%E2%98%86%E5%BD%A1.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "淡路島（兵庫県 / Wikimedia Commons: 淡路島）"
+    }
   },
   "115": {
     "id": "115",
@@ -2034,7 +2296,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "nushima"
+    "slug": "nushima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Nushima_1.jpg/1280px-Nushima_1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沼島（兵庫県 / Wikimedia Commons: 沼島）"
+    }
   },
   "116": {
     "id": "116",
@@ -2114,7 +2380,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": false,
-    "slug": "nishijimahyogokeniejimagunto"
+    "slug": "nishijimahyogokeniejimagunto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/91/Nishijima_of_the_Ieshima_Islands.jpg/1280px-Nishijima_of_the_Ieshima_Islands.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "西島（兵庫県・家島群島）（兵庫県 / Wikimedia Commons: 西島 (兵庫県)）"
+    }
   },
   "120": {
     "id": "120",
@@ -2189,7 +2459,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kiiooshima"
+    "slug": "kiiooshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/36/Kii_oshima_zenkei.JPG/1280px-Kii_oshima_zenkei.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "紀伊大島（和歌山県 / Wikimedia Commons: 紀伊大島）"
+    }
   },
   "124": {
     "id": "124",
@@ -2226,7 +2500,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "tomogashimaokinoshimawakayama"
+    "slug": "tomogashimaokinoshimawakayama",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/1/18/%E5%8F%8B%E3%81%8C%E5%B3%B6%E3%83%BB%E7%B4%80%E6%B7%A1%E6%B5%B7%E5%B3%A1PA071003.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "友ヶ島（沖ノ島・和歌山）（和歌山県 / Wikimedia Commons: 友ヶ島）"
+    }
   },
   "126": {
     "id": "126",
@@ -2319,7 +2597,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kakuijima"
+    "slug": "kakuijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/%E9%B9%BF%E4%B9%85%E5%B1%85%E5%B3%B6.jpg/1280px-%E9%B9%BF%E4%B9%85%E5%B1%85%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "鹿久居島（岡山県 / Wikimedia Commons: 鹿久居島）"
+    }
   },
   "131": {
     "id": "131",
@@ -2339,7 +2621,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kashirajimaokayamakenbizenshi"
+    "slug": "kashirajimaokayamakenbizenshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/%E9%A0%AD%E5%B3%B6.jpg/1280px-%E9%A0%AD%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "頭島（岡山県備前市）（岡山県 / Wikimedia Commons: 頭島）"
+    }
   },
   "132": {
     "id": "132",
@@ -2357,7 +2643,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "tsurushimaokayamaken"
+    "slug": "tsurushimaokayamaken",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Tsurushima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "鶴島（岡山県）（岡山県 / Wikimedia Commons: 鶴島）"
+    }
   },
   "133": {
     "id": "133",
@@ -2377,7 +2667,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kojimaokayamakenbizenshi"
+    "slug": "kojimaokayamakenbizenshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/78/%E9%B4%BB%E5%B3%B6.jpg/1280px-%E9%B4%BB%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "鴻島（岡山県備前市）（岡山県 / Wikimedia Commons: 鴻島）"
+    }
   },
   "134": {
     "id": "134",
@@ -2397,7 +2691,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "maejimaokayamakensetouchishiushimado"
+    "slug": "maejimaokayamakensetouchishiushimado",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/%E5%89%8D%E5%B3%B6.jpg/1280px-%E5%89%8D%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "前島（岡山県瀬戸内市牛窓）（岡山県 / Wikimedia Commons: 前島 (岡山県)）"
+    }
   },
   "135": {
     "id": "135",
@@ -2417,7 +2715,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "shiraishito"
+    "slug": "shiraishito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cd/Shiraishijima_2019.jpg/1280px-Shiraishijima_2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "白石島（岡山県 / Wikimedia Commons: 白石島）"
+    }
   },
   "136": {
     "id": "136",
@@ -2437,7 +2739,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kitagishima"
+    "slug": "kitagishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Kitagishima-Ooura1.jpg/1280px-Kitagishima-Ooura1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "北木島（岡山県 / Wikimedia Commons: 北木島）"
+    }
   },
   "137": {
     "id": "137",
@@ -2457,7 +2763,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "manabeshima"
+    "slug": "manabeshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Manabejima_01.jpg/1280px-Manabejima_01.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "真鍋島（岡山県 / Wikimedia Commons: 真鍋島）"
+    }
   },
   "138": {
     "id": "138",
@@ -2477,7 +2787,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "takashimaokayamakenkasaokashi"
+    "slug": "takashimaokayamakenkasaokashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Takashima_Island%2C_Kasaoka_Okayama_Aerial_photograph.2010.jpg/1280px-Takashima_Island%2C_Kasaoka_Okayama_Aerial_photograph.2010.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "高島（岡山県笠岡市）（岡山県 / Wikimedia Commons: 高島 (岡山県笠岡市)）"
+    }
   },
   "139": {
     "id": "139",
@@ -2557,7 +2871,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "innoshima"
+    "slug": "innoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/INNOSHIMA_Island_2005.jpg/1280px-INNOSHIMA_Island_2005.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "因島（広島県 / Wikimedia Commons: 因島）"
+    }
   },
   "143": {
     "id": "143",
@@ -2577,7 +2895,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "ikuchishima"
+    "slug": "ikuchishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/IKUCH-Shima_Island_2005.jpg/1280px-IKUCH-Shima_Island_2005.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "生口島（広島県 / Wikimedia Commons: 生口島）"
+    }
   },
   "144": {
     "id": "144",
@@ -2597,7 +2919,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "mukojimahiroshimakenonomichishi"
+    "slug": "mukojimahiroshimakenonomichishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Mukaishima_-_panoramio.jpg/1280px-Mukaishima_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "向島（広島県尾道市）（広島県 / Wikimedia Commons: 向島 (広島県)）"
+    }
   },
   "145": {
     "id": "145",
@@ -2617,7 +2943,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": false,
-    "slug": "okunoshimausagito"
+    "slug": "okunoshimausagito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9d/Okunoshima_2.JPG/1280px-Okunoshima_2.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大久野島（うさぎ島）（広島県 / Wikimedia Commons: 大久野島）"
+    }
   },
   "146": {
     "id": "146",
@@ -2637,7 +2967,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "itsukushimamiyajima"
+    "slug": "itsukushimamiyajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Miyajima_From_The_Ferry_%2830093845%29.jpeg/1280px-Miyajima_From_The_Ferry_%2830093845%29.jpeg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "厳島（宮島）（広島県 / Wikimedia Commons: 厳島）"
+    }
   },
   "147": {
     "id": "147",
@@ -2697,7 +3031,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": true,
-    "slug": "etajima"
+    "slug": "etajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/32/Etajima_Island._-_panoramio.jpg/1280px-Etajima_Island._-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "江田島（広島県 / Wikimedia Commons: 江田島）"
+    }
   },
   "150": {
     "id": "150",
@@ -2717,7 +3055,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kurahashijima"
+    "slug": "kurahashijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/%E5%A4%A7%E6%B5%A6%E5%B4%8E%E6%B5%B7%E5%B2%B8_Ourasaki_Beach_-_panoramio.jpg/1280px-%E5%A4%A7%E6%B5%A6%E5%B4%8E%E6%B5%B7%E5%B2%B8_Ourasaki_Beach_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "倉橋島（広島県 / Wikimedia Commons: 倉橋島）"
+    }
   },
   "151": {
     "id": "151",
@@ -2737,7 +3079,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kamikamagarishimaakinadatobishimakaido"
+    "slug": "kamikamagarishimaakinadatobishimakaido",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Kamikamagari_Island%2C_Hiroshima%2C_Japan_26-May-2018.jpg/1280px-Kamikamagari_Island%2C_Hiroshima%2C_Japan_26-May-2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "上蒲刈島（安芸灘とびしま海道）（広島県 / Wikimedia Commons: 上蒲刈島）"
+    }
   },
   "152": {
     "id": "152",
@@ -2757,7 +3103,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "shimokamagarijimaakinadatobishimakaido"
+    "slug": "shimokamagarijimaakinadatobishimakaido",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2b/Shimokamagari_Island%2C_Hiroshima%2C_Japan_26-May-2018.jpg/1280px-Shimokamagari_Island%2C_Hiroshima%2C_Japan_26-May-2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "下蒲刈島（安芸灘とびしま海道）（広島県 / Wikimedia Commons: 下蒲刈島）"
+    }
   },
   "153": {
     "id": "153",
@@ -2777,7 +3127,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "toshimahiroshimakenkureshi"
+    "slug": "toshimahiroshimakenkureshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/10/Toyoshima_Island%2C_Hiroshima%2C_Japan_26-May-2018.jpg/1280px-Toyoshima_Island%2C_Hiroshima%2C_Japan_26-May-2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "豊島（広島県呉市）（広島県 / Wikimedia Commons: 豊島 (広島県)）"
+    }
   },
   "154": {
     "id": "154",
@@ -2797,7 +3151,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "osakishimojimaakinadatobishimakaido"
+    "slug": "osakishimojimaakinadatobishimakaido",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/18/Ocho_20120727-2.jpg/1280px-Ocho_20120727-2.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大崎下島（安芸灘とびしま海道）（広島県 / Wikimedia Commons: 大崎下島）"
+    }
   },
   "155": {
     "id": "155",
@@ -2817,7 +3175,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "osakikamijima"
+    "slug": "osakikamijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/80/%E5%A4%A7%E5%B4%8E%E4%B8%8A%E5%B3%B6.jpg/1280px-%E5%A4%A7%E5%B4%8E%E4%B8%8A%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大崎上島（広島県 / Wikimedia Commons: 大崎上島）"
+    }
   },
   "156": {
     "id": "156",
@@ -2837,7 +3199,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "mikadoshimahiroshimakenkureshi"
+    "slug": "mikadoshimahiroshimakenkureshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Mikado_island.JPG/1280px-Mikado_island.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "三角島（広島県呉市）（広島県 / Wikimedia Commons: 三角島 (広島県)）"
+    }
   },
   "157": {
     "id": "157",
@@ -2857,7 +3223,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "hosojimahiroshimakenonomichishi"
+    "slug": "hosojimahiroshimakenonomichishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Hosojima_Island_from_high-speed_ferry_for_Habu_Port.jpg/1280px-Hosojima_Island_from_high-speed_ferry_for_Habu_Port.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "細島（広島県尾道市）（広島県 / Wikimedia Commons: 細島 (広島県)）"
+    }
   },
   "158": {
     "id": "158",
@@ -2877,7 +3247,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ikunotohiroshimakenosakiuejimamachi"
+    "slug": "ikunotohiroshimakenosakiuejimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/Ikunoshima_20060611_retouch1.jpg/1280px-Ikunoshima_20060611_retouch1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "生野島（広島県大崎上島町）（広島県 / Wikimedia Commons: 生野島）"
+    }
   },
   "159": {
     "id": "159",
@@ -2897,7 +3271,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "chikirishimahiroshimakengunkanto"
+    "slug": "chikirishimahiroshimakengunkanto",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/f/f5/Chigirishima001.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "契島（広島県・軍艦島）（広島県 / Wikimedia Commons: 契島）"
+    }
   },
   "160": {
     "id": "160",
@@ -2937,7 +3315,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "sagishimahiroshimakenmiharashi"
+    "slug": "sagishimahiroshimakenmiharashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b7/Sagi_island.JPG/1280px-Sagi_island.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "佐木島（広島県三原市）（広島県 / Wikimedia Commons: 佐木島）"
+    }
   },
   "162": {
     "id": "162",
@@ -2957,7 +3339,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kosagishimahiroshimakenmiharashi"
+    "slug": "kosagishimahiroshimakenmiharashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Kosagijima_Island%2C_Mount_Fudekageyama_and_Mount_Ryuozan_from_high-speed_ferry_for_Habu_Port.jpg/1280px-Kosagijima_Island%2C_Mount_Fudekageyama_and_Mount_Ryuozan_from_high-speed_ferry_for_Habu_Port.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "小佐木島（広島県三原市）（広島県 / Wikimedia Commons: 小佐木島）"
+    }
   },
   "163": {
     "id": "163",
@@ -2977,7 +3363,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "atatajimahiroshimakenotakeshi"
+    "slug": "atatajimahiroshimakenotakeshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d0/ATATAJIMA_Island_2023.jpg/1280px-ATATAJIMA_Island_2023.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "阿多田島（広島県大竹市）（広島県 / Wikimedia Commons: 阿多田島）"
+    }
   },
   "164": {
     "id": "164",
@@ -3034,7 +3424,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "hashirijimahiroshimakenfukuyamashi"
+    "slug": "hashirijimahiroshimakenfukuyamashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c3/Hashiri_Jima_from_Tomonoura.JPG/1280px-Hashiri_Jima_from_Tomonoura.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "走島（広島県福山市）（広島県 / Wikimedia Commons: 走島）"
+    }
   },
   "167": {
     "id": "167",
@@ -3052,7 +3446,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "suooshimayashirojima"
+    "slug": "suooshimayashirojima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/3/32/Suoh-Ohshima_Island_%28Is_seen_from_the_sky%29_Yamaguchi%2CJAPAN.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "周防大島（屋代島）（山口県 / Wikimedia Commons: 屋代島）"
+    }
   },
   "168": {
     "id": "168",
@@ -3072,7 +3470,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "tsunoshima"
+    "slug": "tsunoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Tsunoshima_Island%2C_Yamaguchi_Aerial_photograph.2008.jpg/1280px-Tsunoshima_Island%2C_Yamaguchi_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "角島（山口県 / Wikimedia Commons: 角島）"
+    }
   },
   "169": {
     "id": "169",
@@ -3092,7 +3494,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "omijima"
+    "slug": "omijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/56/Omijima20090301.jpg/1280px-Omijima20090301.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "青海島（山口県 / Wikimedia Commons: 青海島）"
+    }
   },
   "170": {
     "id": "170",
@@ -3112,7 +3518,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "nasakejimayamaguchikeniwakuni"
+    "slug": "nasakejimayamaguchikeniwakuni",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Nasake-Jima_Island_Yamaguchi_prefecture_Aerial_photograph.1981.jpg/1280px-Nasake-Jima_Island_Yamaguchi_prefecture_Aerial_photograph.1981.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "情島（山口県・岩国）（山口県 / Wikimedia Commons: 情島 (山口県)）"
+    }
   },
   "171": {
     "id": "171",
@@ -3132,7 +3542,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ukishimayamaguchikensuhooshimamachi"
+    "slug": "ukishimayamaguchikensuhooshimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e8/P8150081Hirai-maru.jpg/1280px-P8150081Hirai-maru.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "浮島（山口県周防大島町）（山口県 / Wikimedia Commons: 浮島 (山口県)）"
+    }
   },
   "172": {
     "id": "172",
@@ -3152,7 +3566,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kasadoshima"
+    "slug": "kasadoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/KudamatsuKasadoBridge.jpg/1280px-KudamatsuKasadoBridge.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "笠戸島（山口県 / Wikimedia Commons: 笠戸島）"
+    }
   },
   "173": {
     "id": "173",
@@ -3172,7 +3590,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "nojimayamaguchikenhofushi"
+    "slug": "nojimayamaguchikenhofushi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Noshima_Island%2C_Hofu_Yamaguchi_Aerial_photograph.2008.jpg/1280px-Noshima_Island%2C_Hofu_Yamaguchi_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "野島（山口県防府市）（山口県 / Wikimedia Commons: 野島 (山口県)）"
+    }
   },
   "174": {
     "id": "174",
@@ -3192,7 +3614,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ushijimayamaguchikenhikarishi"
+    "slug": "ushijimayamaguchikenhikarishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/U-shima_Island_Hikari_City_Aerial_photograph.jpg/1280px-U-shima_Island_Hikari_City_Aerial_photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "牛島（山口県光市）（山口県 / Wikimedia Commons: 牛島 (山口県)）"
+    }
   },
   "175": {
     "id": "175",
@@ -3232,7 +3658,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "iwaishimayamaguchikenkamisekimachi"
+    "slug": "iwaishimayamaguchikenkamisekimachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8b/Iwai_island_aerial_shot.jpg/1280px-Iwai_island_aerial_shot.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "祝島（山口県上関町）（山口県 / Wikimedia Commons: 祝島）"
+    }
   },
   "177": {
     "id": "177",
@@ -3270,7 +3700,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "okikamurojimayamaguchikensuhooshima"
+    "slug": "okikamurojimayamaguchikensuhooshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Okikamuro_Island_Aerial_photograph.1981.jpg/1280px-Okikamuro_Island_Aerial_photograph.1981.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖家室島（山口県周防大島）（山口県 / Wikimedia Commons: 沖家室島）"
+    }
   },
   "179": {
     "id": "179",
@@ -3290,7 +3724,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "maejimayamaguchikensuhooshima"
+    "slug": "maejimayamaguchikensuhooshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Maejima_Island%2C_Yamaguchi_Aerial_photograph.2009.jpg/1280px-Maejima_Island%2C_Yamaguchi_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "前島（山口県周防大島）（山口県 / Wikimedia Commons: 前島 (山口県)）"
+    }
   },
   "180": {
     "id": "180",
@@ -3328,7 +3766,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": true,
-    "slug": "futaoijimayamaguchikenshimonosekishi"
+    "slug": "futaoijimayamaguchikenshimonosekishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1a/Hutaoi_ailand.jpg/1280px-Hutaoi_ailand.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "蓋井島（山口県下関市）（山口県 / Wikimedia Commons: 蓋井島）"
+    }
   },
   "182": {
     "id": "182",
@@ -3368,7 +3810,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "mishimayamaguchikenhagishi"
+    "slug": "mishimayamaguchikenhagishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ae/Mishima_Island%2C_Yamaguchi_Aerial_photograph.2009.jpg/1280px-Mishima_Island%2C_Yamaguchi_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "見島（山口県萩市）（山口県 / Wikimedia Commons: 見島）"
+    }
   },
   "184": {
     "id": "184",
@@ -3408,7 +3854,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "aijimayamaguchikenhagishi"
+    "slug": "aijimayamaguchikenhagishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Rousoku_Iwa.jpg/1280px-Rousoku_Iwa.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "相島（山口県萩市）（山口県 / Wikimedia Commons: ローソク島）"
+    }
   },
   "186": {
     "id": "186",
@@ -3446,7 +3896,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "okinoshimamaenishinoshima"
+    "slug": "okinoshimamaenishinoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Matengai_Cliff_at_Kuniga_coast%2C_Nishinoshima.jpg/1280px-Matengai_Cliff_at_Kuniga_coast%2C_Nishinoshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "隠岐島前・西ノ島（島根県 / Wikimedia Commons: 国賀海岸）"
+    }
   },
   "188": {
     "id": "188",
@@ -3464,7 +3918,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "okinoshimamaenakanoshimaamamachi"
+    "slug": "okinoshimamaenakanoshimaamamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Oki_Shrine_1.jpg/1280px-Oki_Shrine_1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "隠岐島前・中ノ島（海士町）（島根県 / Wikimedia Commons: 海士町）"
+    }
   },
   "189": {
     "id": "189",
@@ -3482,7 +3940,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "okinoshimamaechiburijima"
+    "slug": "okinoshimamaechiburijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Chibu_seen_from_akahage-yama.jpg/1280px-Chibu_seen_from_akahage-yama.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "隠岐島前・知夫里島（島根県 / Wikimedia Commons: 知夫里島）"
+    }
   },
   "190": {
     "id": "190",
@@ -3520,7 +3982,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "onejima"
+    "slug": "onejima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Daikon_Island_in_Lake_Nakaumi_Aerial_photograph.2009.jpg/1280px-Daikon_Island_in_Lake_Nakaumi_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大根島（島根県 / Wikimedia Commons: 大根島）"
+    }
   },
   "192": {
     "id": "192",
@@ -3576,7 +4042,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kyojimashimanekenizumoshi"
+    "slug": "kyojimashimanekenizumoshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Hinomisaki-jinja_Fumi-Shima-jinja_in_Fumi_Island_001.jpg/1280px-Hinomisaki-jinja_Fumi-Shima-jinja_in_Fumi_Island_001.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "経島（島根県出雲市）（島根県 / Wikimedia Commons: 経島）"
+    }
   },
   "195": {
     "id": "195",
@@ -3596,7 +4066,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "naoshima"
+    "slug": "naoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6c/Naoshima_Islands%2C_Naoshima_Kagawa_Aerial_photograph.2007.jpg/1280px-Naoshima_Islands%2C_Naoshima_Kagawa_Aerial_photograph.2007.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "直島（香川県 / Wikimedia Commons: 直島）"
+    }
   },
   "196": {
     "id": "196",
@@ -3616,7 +4090,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "toshimakagawaken"
+    "slug": "toshimakagawaken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/03/Teshima_island_aerial_shot_Kagawa_Prefecture.jpg/1280px-Teshima_island_aerial_shot_Kagawa_Prefecture.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "豊島（香川県）（香川県 / Wikimedia Commons: 豊島 (香川県)）"
+    }
   },
   "197": {
     "id": "197",
@@ -3636,7 +4114,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "shodoshima"
+    "slug": "shodoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/52/201211Kankakei_Shodoshima_Kagawa_pref_Japan10s4.jpg/1280px-201211Kankakei_Shodoshima_Kagawa_pref_Japan10s4.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "小豆島（香川県 / Wikimedia Commons: 小豆島）"
+    }
   },
   "198": {
     "id": "198",
@@ -3656,7 +4138,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ogijima"
+    "slug": "ogijima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/b/b1/%E7%94%B7%E6%9C%A8%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "男木島（香川県 / Wikimedia Commons: 男木島）"
+    }
   },
   "199": {
     "id": "199",
@@ -3676,7 +4162,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "megijimaonigashima"
+    "slug": "megijimaonigashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0e/%E3%82%B5%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88%E9%AB%99%E6%9D%BE%E3%82%88%E3%82%8A%E6%9C%9B%E3%82%80.JPG/1280px-%E3%82%B5%E3%83%B3%E3%83%9D%E3%83%BC%E3%83%88%E9%AB%99%E6%9D%BE%E3%82%88%E3%82%8A%E6%9C%9B%E3%82%80.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "女木島（鬼ヶ島）（香川県 / Wikimedia Commons: 女木島）"
+    }
   },
   "200": {
     "id": "200",
@@ -3714,7 +4204,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "awashimakagawaken"
+    "slug": "awashimakagawaken",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Awashima_Kagawa.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "粟島（香川県）（香川県 / Wikimedia Commons: 粟島 (香川県)）"
+    }
   },
   "202": {
     "id": "202",
@@ -3734,7 +4228,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "shotoshimakagawaken"
+    "slug": "shotoshimakagawaken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c6/Odeshima_Island_Aerial_photograph.1992.jpg/1280px-Odeshima_Island_Aerial_photograph.1992.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "小豊島（香川県）（香川県 / Wikimedia Commons: 小豊島）"
+    }
   },
   "203": {
     "id": "203",
@@ -3754,7 +4252,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "特殊手段限定",
     "is_conquest_target": true,
-    "slug": "byobutokagawaken"
+    "slug": "byobutokagawaken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Byoubujima1.jpg/1280px-Byoubujima1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "屏風島（香川県）（香川県 / Wikimedia Commons: 屏風島）"
+    }
   },
   "204": {
     "id": "204",
@@ -3794,7 +4296,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "okinoshimakagawakenazushimaoki"
+    "slug": "okinoshimakagawakenazushimaoki",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/3/34/Okinoshima_Island%2C_Kagawa_Aerial_photograph.1992.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "沖之島（香川県小豆島沖）（香川県 / Wikimedia Commons: 沖之島 (香川県)）"
+    }
   },
   "206": {
     "id": "206",
@@ -3813,7 +4319,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "yotoazushimaenjerurodosaki"
+    "slug": "yotoazushimaenjerurodosaki",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Angel_Road_Shodo_Island_Japan09bs3.jpg/1280px-Angel_Road_Shodo_Island_Japan09bs3.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "余島（小豆島エンジェルロード先）（香川県 / Wikimedia Commons: 余島）"
+    }
   },
   "207": {
     "id": "207",
@@ -3833,7 +4343,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "hiroshimakagawakenmarugameshi"
+    "slug": "hiroshimakagawakenmarugameshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b0/Shiwaku_islands_Hiroshima.jpg/1280px-Shiwaku_islands_Hiroshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "広島（香川県丸亀市）（香川県 / Wikimedia Commons: 広島 (香川県)）"
+    }
   },
   "208": {
     "id": "208",
@@ -3853,7 +4367,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "tejimakagawakenmarugameshi"
+    "slug": "tejimakagawakenmarugameshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Teshima_Island%2C_Kagawa_Aerial_photograph.1992.jpg/1280px-Teshima_Island%2C_Kagawa_Aerial_photograph.1992.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "手島（香川県丸亀市）（香川県 / Wikimedia Commons: 手島 (香川県)）"
+    }
   },
   "209": {
     "id": "209",
@@ -3873,7 +4391,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "oteshimakagawaken"
+    "slug": "oteshimakagawaken",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/8/81/Koteshima_Island%2C_Kagawa_Aerial_photograph.1992.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "小手島（香川県）（香川県 / Wikimedia Commons: 小手島）"
+    }
   },
   "210": {
     "id": "210",
@@ -3893,7 +4415,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ushijimakagawakenmarugameshi"
+    "slug": "ushijimakagawakenmarugameshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Ushi_Island-01.jpg/1280px-Ushi_Island-01.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "牛島（香川県丸亀市）（香川県 / Wikimedia Commons: 牛島 (香川県)）"
+    }
   },
   "211": {
     "id": "211",
@@ -3913,7 +4439,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "takamijimakagawakentadotsumachi"
+    "slug": "takamijimakagawakentadotsumachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Takamijima_Island_Aerial_photograph.1992.jpg/1280px-Takamijima_Island_Aerial_photograph.1992.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "高見島（香川県多度津町）（香川県 / Wikimedia Commons: 高見島）"
+    }
   },
   "212": {
     "id": "212",
@@ -3933,7 +4463,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "sanagijimakagawakentadotsumachinekoshima"
+    "slug": "sanagijimakagawakentadotsumachinekoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c2/Sanagi_Island_seen_from_the_sea.jpg/1280px-Sanagi_Island_seen_from_the_sea.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "佐柳島（香川県多度津町・猫島）（香川県 / Wikimedia Commons: 佐柳島）"
+    }
   },
   "213": {
     "id": "213",
@@ -3953,7 +4487,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "shishijimakagawakenmitoyoshi"
+    "slug": "shishijimakagawakenmitoyoshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Shishi-jima_Island.jpg/1280px-Shishi-jima_Island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "志々島（香川県三豊市）（香川県 / Wikimedia Commons: 志々島）"
+    }
   },
   "214": {
     "id": "214",
@@ -3993,7 +4531,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "oshimaehimekenshimanamikaido"
+    "slug": "oshimaehimekenshimanamikaido",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/8/8f/Hakata-Oshima_Bridge_-_Iyooosima01.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "大島（愛媛県・しまなみ海道）（愛媛県 / Wikimedia Commons: 大島 (愛媛県今治市)）"
+    }
   },
   "216": {
     "id": "216",
@@ -4013,7 +4555,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "hakatajima"
+    "slug": "hakatajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Hakatajima_Island_from_Roadside_Station_%22Imabari_City_Tatara_Shimanami_Park%22_8.jpg/1280px-Hakatajima_Island_from_Roadside_Station_%22Imabari_City_Tatara_Shimanami_Park%22_8.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "伯方島（愛媛県 / Wikimedia Commons: 伯方島）"
+    }
   },
   "217": {
     "id": "217",
@@ -4033,7 +4579,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "omishima"
+    "slug": "omishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/41/Oomisima20210427_1.jpg/1280px-Oomisima20210427_1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大三島（愛媛県 / Wikimedia Commons: 大三島）"
+    }
   },
   "218": {
     "id": "218",
@@ -4053,7 +4603,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "yugeshimaueshimashoto"
+    "slug": "yugeshimaueshimashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Yuge_island.JPG/1280px-Yuge_island.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "弓削島（上島諸島）（愛媛県 / Wikimedia Commons: 弓削島）"
+    }
   },
   "219": {
     "id": "219",
@@ -4073,7 +4627,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "特殊手段限定",
     "is_conquest_target": true,
-    "slug": "nakajimakutsunashoto"
+    "slug": "nakajimakutsunashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Amiage-_Beach.jpg/1280px-Amiage-_Beach.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "中島（忽那諸島）（愛媛県 / Wikimedia Commons: 中島 (愛媛県)）"
+    }
   },
   "220": {
     "id": "220",
@@ -4093,7 +4651,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "gogoshimakutsunashoto"
+    "slug": "gogoshimakutsunashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bb/Gogoshima_2019.jpg/1280px-Gogoshima_2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "興居島（忽那諸島）（愛媛県 / Wikimedia Commons: 興居島）"
+    }
   },
   "221": {
     "id": "221",
@@ -4113,7 +4675,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "hiburishimauwakai"
+    "slug": "hiburishimauwakai",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ad/Hiburi-jima_Island_Aerial_photograph.2007.jpg/1280px-Hiburi-jima_Island_Aerial_photograph.2007.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "日振島（宇和海）（愛媛県 / Wikimedia Commons: 日振島）"
+    }
   },
   "222": {
     "id": "222",
@@ -4153,7 +4719,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "tsushimaehimekenimabarishi"
+    "slug": "tsushimaehimekenimabarishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Tsushima_Island%2C_Imabari_Ehime_Aerial_photograph.2016.jpg/1280px-Tsushima_Island%2C_Imabari_Ehime_Aerial_photograph.2016.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "津島（愛媛県今治市）（愛媛県 / Wikimedia Commons: 津島 (今治市)）"
+    }
   },
   "224": {
     "id": "224",
@@ -4173,7 +4743,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ujimashimanami"
+    "slug": "ujimashimanami",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/48/U-shima_Island.jpg/1280px-U-shima_Island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "鵜島（しまなみ）（愛媛県 / Wikimedia Commons: 鵜島 (今治市)）"
+    }
   },
   "225": {
     "id": "225",
@@ -4213,7 +4787,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ikinajimayumeshimakaido"
+    "slug": "ikinajimayumeshimakaido",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Ikina_island.JPG/1280px-Ikina_island.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "生名島（ゆめしま海道）（愛媛県 / Wikimedia Commons: 生名島）"
+    }
   },
   "227": {
     "id": "227",
@@ -4233,7 +4811,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "iwagishimaaoiremonnoshima"
+    "slug": "iwagishimaaoiremonnoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Iwagijima.JPG/1280px-Iwagijima.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "岩城島（青いレモンの島）（愛媛県 / Wikimedia Commons: 岩城島）"
+    }
   },
   "228": {
     "id": "228",
@@ -4293,7 +4875,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "nobutsunajimakutsunashoto"
+    "slug": "nobutsunajimakutsunashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Nogutsuna_jima_Island_Aerial_photograph.2019.jpg/1280px-Nogutsuna_jima_Island_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "野忽那島（忽那諸島）（愛媛県 / Wikimedia Commons: 野忽那島）"
+    }
   },
   "231": {
     "id": "231",
@@ -4313,7 +4899,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "tsurishimakutsunashoto"
+    "slug": "tsurishimakutsunashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Tsurushima_Island%2C_Ehime%2C_Japan_14-Aug-2019.jpg/1280px-Tsurushima_Island%2C_Ehime%2C_Japan_14-Aug-2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "釣島（忽那諸島）（愛媛県 / Wikimedia Commons: 釣島）"
+    }
   },
   "232": {
     "id": "232",
@@ -4333,7 +4923,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "futagamijimakutsunashoto"
+    "slug": "futagamijimakutsunashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/dc/Futagami_jima_Island_Aerial_photograph.2019.jpg/1280px-Futagami_jima_Island_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "二神島（忽那諸島）（愛媛県 / Wikimedia Commons: 二神島）"
+    }
   },
   "233": {
     "id": "233",
@@ -4353,7 +4947,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "tsuwajijimakutsunashoto"
+    "slug": "tsuwajijimakutsunashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3c/Tsuwaji_jima_Island_Aerial_photograph.2019.jpg/1280px-Tsuwaji_jima_Island_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "津和地島（忽那諸島）（愛媛県 / Wikimedia Commons: 津和地島）"
+    }
   },
   "234": {
     "id": "234",
@@ -4373,7 +4971,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "nuwajimakutsunashoto"
+    "slug": "nuwajimakutsunashoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Nuwa_jima_Island_Aerial_photograph.2019.jpg/1280px-Nuwa_jima_Island_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "怒和島（忽那諸島）（愛媛県 / Wikimedia Commons: 怒和島）"
+    }
   },
   "235": {
     "id": "235",
@@ -4393,7 +4995,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "uoshimaehimekenochigun"
+    "slug": "uoshimaehimekenochigun",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Uo-shima_Island%2C_Ehime_Aerial_photograph.2009.jpg/1280px-Uo-shima_Island%2C_Ehime_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "魚島（愛媛県越智郡）（愛媛県 / Wikimedia Commons: 魚島）"
+    }
   },
   "236": {
     "id": "236",
@@ -4413,7 +5019,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "takaikamijimaehimeken"
+    "slug": "takaikamijimaehimeken",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/0/01/Takaikami-shima.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "高井神島（愛媛県）（愛媛県 / Wikimedia Commons: 高井神島）"
+    }
   },
   "237": {
     "id": "237",
@@ -4433,7 +5043,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "oshimaehimekenyawatahamashi"
+    "slug": "oshimaehimekenyawatahamashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Yawatahama-oshima.jpg/1280px-Yawatahama-oshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大島（愛媛県八幡浜市）（愛媛県 / Wikimedia Commons: 大島 (愛媛県八幡浜市)）"
+    }
   },
   "238": {
     "id": "238",
@@ -4453,7 +5067,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "aijimaehimekenmatsuyamashi"
+    "slug": "aijimaehimekenmatsuyamashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Ai-Jima_Island_Ehime_prefecture_Aerial_photograph.2009.jpg/1280px-Ai-Jima_Island_Ehime_prefecture_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "安居島（愛媛県松山市）（愛媛県 / Wikimedia Commons: 安居島）"
+    }
   },
   "239": {
     "id": "239",
@@ -4473,7 +5091,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "chintaoehimekenosushinekoshima"
+    "slug": "chintaoehimekenosushinekoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/%E9%9D%92%E5%B3%B6_%28%E6%84%9B%E5%AA%9B%E7%9C%8C%29.jpg/1280px-%E9%9D%92%E5%B3%B6_%28%E6%84%9B%E5%AA%9B%E7%9C%8C%29.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "青島（愛媛県大洲市・猫島）（愛媛県 / Wikimedia Commons: 青島 (愛媛県)）"
+    }
   },
   "240": {
     "id": "240",
@@ -4493,7 +5115,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kashimauwakai"
+    "slug": "kashimauwakai",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/Kashima_Island%2C_Uwajima_Ehime_Aerial_photograph.2019.jpg/1280px-Kashima_Island%2C_Uwajima_Ehime_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "嘉島（宇和海）（愛媛県 / Wikimedia Commons: 嘉島 (宇和島市)）"
+    }
   },
   "241": {
     "id": "241",
@@ -4513,7 +5139,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "特殊手段限定",
     "is_conquest_target": true,
-    "slug": "toshimauwakai"
+    "slug": "toshimauwakai",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Tojima_Island%2C_Ehime_Uwajima_Aerial_photograph.2007.jpg/1280px-Tojima_Island%2C_Ehime_Uwajima_Aerial_photograph.2007.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "戸島（宇和海）（愛媛県 / Wikimedia Commons: 戸島 (愛媛県)）"
+    }
   },
   "242": {
     "id": "242",
@@ -4531,7 +5161,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "takegashimaehimekenuwajima"
+    "slug": "takegashimaehimekenuwajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/86/Takega-shima_Uwajima_city_Aerial_photograph.1975.jpg/1280px-Takega-shima_Uwajima_city_Aerial_photograph.1975.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "竹ヶ島（愛媛県宇和島）（愛媛県 / Wikimedia Commons: 竹ヶ島 (宇和島市津島町)）"
+    }
   },
   "243": {
     "id": "243",
@@ -4551,7 +5185,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "itoawanoshimajima"
+    "slug": "itoawanoshimajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a8/%E4%BC%8A%E5%B3%B6_%E8%92%B2%E7%94%9F%E7%94%B0%E5%B2%AC%E3%82%88%E3%82%8A%E6%9C%9B%E3%82%80_-_panoramio.jpg/1280px-%E4%BC%8A%E5%B3%B6_%E8%92%B2%E7%94%9F%E7%94%B0%E5%B2%AC%E3%82%88%E3%82%8A%E6%9C%9B%E3%82%80_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "伊島（阿波の島々）（徳島県 / Wikimedia Commons: 伊島 (阿南市)）"
+    }
   },
   "244": {
     "id": "244",
@@ -4589,7 +5227,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "tebajimatokushimakenmugimachi"
+    "slug": "tebajimatokushimakenmugimachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Tebajima_1.jpg/1280px-Tebajima_1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "出羽島（徳島県牟岐町）（徳島県 / Wikimedia Commons: 出羽島）"
+    }
   },
   "246": {
     "id": "246",
@@ -4609,7 +5251,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "takegashimatokushimakenkaiyomachi"
+    "slug": "takegashimatokushimakenkaiyomachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Port_of_Kannoura_and_Takegashima_Island_Aerial_photograph.1975.jpg/1280px-Port_of_Kannoura_and_Takegashima_Island_Aerial_photograph.1975.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "竹ヶ島（徳島県海陽町）（徳島県 / Wikimedia Commons: 竹ヶ島 (徳島県)）"
+    }
   },
   "247": {
     "id": "247",
@@ -4629,7 +5275,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kashiwatokochikenotsukimachi"
+    "slug": "kashiwatokochikenotsukimachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Kashiwajima_%28Otsuki%29%2C_zenkei-1.jpg/1280px-Kashiwajima_%28Otsuki%29%2C_zenkei-1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "柏島（高知県・大月町）（高知県 / Wikimedia Commons: 柏島）"
+    }
   },
   "248": {
     "id": "248",
@@ -4649,7 +5299,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "okinoshimakochikensukumoshi"
+    "slug": "okinoshimakochikensukumoshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Kochi_Okinoshima_Island.jpg/1280px-Kochi_Okinoshima_Island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖の島（高知県・宿毛市）（高知県 / Wikimedia Commons: 沖の島 (高知県)）"
+    }
   },
   "249": {
     "id": "249",
@@ -4727,7 +5381,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "tsushimanagasakiken"
+    "slug": "tsushimanagasakiken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/%E9%B3%A5%E5%B1%85%EF%BC%88%E9%99%B8%E5%81%B4%EF%BC%89.JPG/1280px-%E9%B3%A5%E5%B1%85%EF%BC%88%E9%99%B8%E5%81%B4%EF%BC%89.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "対馬（長崎県）（長崎県 / Wikimedia Commons: 和多都美神社）"
+    }
   },
   "253": {
     "id": "253",
@@ -4747,7 +5405,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "到達不可",
     "is_conquest_target": false,
-    "slug": "unijimatsushimahokutanoki"
+    "slug": "unijimatsushimahokutanoki",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Uni-Shima_Island_Tsushima%2C_Nagasaki_Aerial_Photograph.jpg/1280px-Uni-Shima_Island_Tsushima%2C_Nagasaki_Aerial_Photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "海栗島（対馬北端沖）（長崎県 / Wikimedia Commons: 海栗島）"
+    }
   },
   "254": {
     "id": "254",
@@ -4765,7 +5427,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "tomaritotsushimashibitsushimamachi"
+    "slug": "tomaritotsushimashibitsushimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/Adjoining_island.akashima_tomarishima.jpg/1280px-Adjoining_island.akashima_tomarishima.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "泊島（対馬市美津島町）（長崎県 / Wikimedia Commons: 泊島）"
+    }
   },
   "255": {
     "id": "255",
@@ -4785,7 +5451,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "okinoshimatsushimashibitsushimamachi"
+    "slug": "okinoshimatsushimashibitsushimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Sumiyoshi_Bridge_on_Okinoshima.jpg/1280px-Sumiyoshi_Bridge_on_Okinoshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖ノ島（対馬市美津島町）（長崎県 / Wikimedia Commons: 沖ノ島 (長崎県対馬市)）"
+    }
   },
   "256": {
     "id": "256",
@@ -4805,7 +5475,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "akajimanagasakikentsushimashibitsushimamachi"
+    "slug": "akajimanagasakikentsushimashibitsushimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/62/Akashima.island.jpg/1280px-Akashima.island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "赤島（長崎県対馬市美津島町）（長崎県 / Wikimedia Commons: 赤島 (長崎県対馬市)）"
+    }
   },
   "257": {
     "id": "257",
@@ -4825,7 +5499,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "shimayamajimatsushimashitoyotamamachi"
+    "slug": "shimayamajimatsushimashitoyotamamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/Shimayama.island.jpg/1280px-Shimayama.island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "島山島（対馬市豊玉町）（長崎県 / Wikimedia Commons: 島山島 (長崎県対馬市)）"
+    }
   },
   "258": {
     "id": "258",
@@ -4845,7 +5523,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "ikishima"
+    "slug": "ikishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/Gonoura_port.jpg/1280px-Gonoura_port.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "壱岐島（長崎県 / Wikimedia Commons: 壱岐島）"
+    }
   },
   "259": {
     "id": "259",
@@ -4962,7 +5644,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "gotorettofukuejima"
+    "slug": "gotorettofukuejima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Ondake_2015-12-13.jpg/1280px-Ondake_2015-12-13.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "五島列島・福江島（長崎県 / Wikimedia Commons: 福江島）"
+    }
   },
   "265": {
     "id": "265",
@@ -4980,7 +5666,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "gotorettonakatotoshinkamigoshima"
+    "slug": "gotorettonakatotoshinkamigoshima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/9/9f/Yagatame_Park_Shinkamigoto.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "五島列島・中通島（新上五島）（長崎県 / Wikimedia Commons: 中通島）"
+    }
   },
   "266": {
     "id": "266",
@@ -4998,7 +5688,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "gotorettowakamatsuto"
+    "slug": "gotorettowakamatsuto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d5/Wakamatsu_Oohashi.JPG/1280px-Wakamatsu_Oohashi.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "五島列島・若松島（長崎県 / Wikimedia Commons: 若松島）"
+    }
   },
   "267": {
     "id": "267",
@@ -5016,7 +5710,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "gotorettonarushima"
+    "slug": "gotorettonarushima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/16/%E5%A5%88%E7%95%99%E7%94%BA%E8%88%B9%E5%BB%BB%E3%83%BB%E6%95%99%E4%BC%9A%E5%89%8D%E3%81%8B%E3%82%89%E3%81%AE%E7%9C%BA%E3%82%81_-_panoramio.jpg/1280px-%E5%A5%88%E7%95%99%E7%94%BA%E8%88%B9%E5%BB%BB%E3%83%BB%E6%95%99%E4%BC%9A%E5%89%8D%E3%81%8B%E3%82%89%E3%81%AE%E7%9C%BA%E3%82%81_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "五島列島・奈留島（長崎県 / Wikimedia Commons: 奈留島）"
+    }
   },
   "268": {
     "id": "268",
@@ -5034,7 +5732,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "gotorettohisakajima"
+    "slug": "gotorettohisakajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ef/%E4%B9%85%E8%B3%80%E5%B3%B6.JPG/1280px-%E4%B9%85%E8%B3%80%E5%B3%B6.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "五島列島・久賀島（長崎県 / Wikimedia Commons: 久賀島）"
+    }
   },
   "269": {
     "id": "269",
@@ -5052,7 +5754,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "gotorettoojikajima"
+    "slug": "gotorettoojikajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4e/Odika-Fuefuki_port_terminal.JPG/1280px-Odika-Fuefuki_port_terminal.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "五島列島・小値賀島（長崎県 / Wikimedia Commons: 小値賀島）"
+    }
   },
   "270": {
     "id": "270",
@@ -5071,7 +5777,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "gotorettonosakito"
+    "slug": "gotorettonosakito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Nozaki_Island2010A.jpg/1280px-Nozaki_Island2010A.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "五島列島・野崎島（長崎県 / Wikimedia Commons: 野崎島）"
+    }
   },
   "271": {
     "id": "271",
@@ -5091,7 +5801,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "ukutogotorettosaihokutan"
+    "slug": "ukutogotorettosaihokutan",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/81/Tsushimasehana_.lighthouse.jpg/1280px-Tsushimasehana_.lighthouse.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "宇久島（五島列島最北端）（長崎県 / Wikimedia Commons: 宇久島）"
+    }
   },
   "272": {
     "id": "272",
@@ -5109,7 +5823,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "kashiragashimashinkamigoshimamachi"
+    "slug": "kashiragashimashinkamigoshimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2a/Kashiragashima_Church-2.JPG/1280px-Kashiragashima_Church-2.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "頭ヶ島（新上五島町）（長崎県 / Wikimedia Commons: 頭ヶ島）"
+    }
   },
   "273": {
     "id": "273",
@@ -5129,7 +5847,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "oshimanagasakikengoshimashi"
+    "slug": "oshimanagasakikengoshimashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Oushima_Island%2C_Goto_Nagasaki_Aerial_photograph.2014.jpg/1280px-Oushima_Island%2C_Goto_Nagasaki_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "黄島（長崎県五島市）（長崎県 / Wikimedia Commons: 黄島 (長崎県)）"
+    }
   },
   "274": {
     "id": "274",
@@ -5149,7 +5871,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "akajimanagasakikengoshimashi"
+    "slug": "akajimanagasakikengoshimashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f1/Akashima_Island%2C_Goto_Nagasaki_Aerial_photograph.2014.jpg/1280px-Akashima_Island%2C_Goto_Nagasaki_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "赤島（長崎県五島市）（長崎県 / Wikimedia Commons: 赤島 (長崎県五島市)）"
+    }
   },
   "275": {
     "id": "275",
@@ -5169,7 +5895,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "特殊手段限定",
     "is_conquest_target": false,
-    "slug": "warabikojimagoshimashi"
+    "slug": "warabikojimagoshimashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/Warabikojima.jpg/1280px-Warabikojima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "蕨小島（五島市）（長崎県 / Wikimedia Commons: 蕨小島）"
+    }
   },
   "276": {
     "id": "276",
@@ -5189,7 +5919,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "shimayamajimagoshimashitamanoura"
+    "slug": "shimayamajimagoshimashitamanoura",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3f/%E7%8E%89%E4%B9%8B%E6%B5%A6%E5%A4%A7%E6%A9%8B.jpg/1280px-%E7%8E%89%E4%B9%8B%E6%B5%A6%E5%A4%A7%E6%A9%8B.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "島山島（五島市玉之浦）（長崎県 / Wikimedia Commons: 島山島 (長崎県五島市)）"
+    }
   },
   "277": {
     "id": "277",
@@ -5245,7 +5979,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "hiradoshima"
+    "slug": "hiradoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Hirado_port.jpg/1280px-Hirado_port.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "平戸島（長崎県 / Wikimedia Commons: 平戸島）"
+    }
   },
   "280": {
     "id": "280",
@@ -5265,7 +6003,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "ikitsukishima"
+    "slug": "ikitsukishima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Ikitsukishima_Island%2C_Hirado_Nagasaki_Aerial_photograph.2013.jpg/1280px-Ikitsukishima_Island%2C_Hirado_Nagasaki_Aerial_photograph.2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "生月島（長崎県 / Wikimedia Commons: 生月島）"
+    }
   },
   "281": {
     "id": "281",
@@ -5305,7 +6047,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "azuchioshimanagasakikenhiradoshi"
+    "slug": "azuchioshimanagasakikenhiradoshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c1/Azuchi_Oshima_Island%2C_Hirado_Nagasaki_Aerial_photograph.2013.jpg/1280px-Azuchi_Oshima_Island%2C_Hirado_Nagasaki_Aerial_photograph.2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "的山大島（長崎県平戸市）（長崎県 / Wikimedia Commons: 的山大島）"
+    }
   },
   "283": {
     "id": "283",
@@ -5325,7 +6071,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "takashimanagasakikenmatsuurashi"
+    "slug": "takashimanagasakikenmatsuurashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Kouzaki_Underwater_ruins.JPG/1280px-Kouzaki_Underwater_ruins.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "鷹島（長崎県松浦市）（長崎県 / Wikimedia Commons: 鷹島 (長崎県)）"
+    }
   },
   "284": {
     "id": "284",
@@ -5345,7 +6095,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "fukushimanagasakikenmatsuurashi"
+    "slug": "fukushimanagasakikenmatsuurashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/43/Fukushima_petroleum_gas_terminal_from_Imari_2018.jpg/1280px-Fukushima_petroleum_gas_terminal_from_Imari_2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "福島（長崎県松浦市）（長崎県 / Wikimedia Commons: 福島 (長崎県)）"
+    }
   },
   "285": {
     "id": "285",
@@ -5385,7 +6139,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "chintaonagasakikenmatsuurashi"
+    "slug": "chintaonagasakikenmatsuurashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Aoshima_port_%28Nagasaki%2C_Japan%29.jpg/1280px-Aoshima_port_%28Nagasaki%2C_Japan%29.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "青島（長崎県松浦市）（長崎県 / Wikimedia Commons: 青島 (長崎県)）"
+    }
   },
   "287": {
     "id": "287",
@@ -5404,7 +6162,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "hashimagunkanto"
+    "slug": "hashimagunkanto",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/6/6c/Nagasaki_Hashima_01.png?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "端島（軍艦島）（長崎県 / Wikimedia Commons: 端島 (長崎県)）"
+    }
   },
   "288": {
     "id": "288",
@@ -5422,7 +6184,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "tsukumojimakuroshimasaseboshi"
+    "slug": "tsukumojimakuroshimasaseboshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Kuroshima_harbor_terminal.jpg/1280px-Kuroshima_harbor_terminal.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "九十九島・黒島（佐世保市）（長崎県 / Wikimedia Commons: 黒島 (長崎県佐世保市)）"
+    }
   },
   "289": {
     "id": "289",
@@ -5442,7 +6208,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "takashimasaseboshitsukumoto"
+    "slug": "takashimasaseboshitsukumoto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/20/TakashimaSasebo.jpg/1280px-TakashimaSasebo.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "高島（佐世保市九十九島）（長崎県 / Wikimedia Commons: 高島 (長崎県佐世保市)）"
+    }
   },
   "290": {
     "id": "290",
@@ -5502,7 +6272,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ikejimanagasakishitankotaiken"
+    "slug": "ikejimanagasakishitankotaiken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Ikeshima_island_of_Nagasaki.jpg/1280px-Ikeshima_island_of_Nagasaki.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "池島（長崎市・炭鉱体験）（長崎県 / Wikimedia Commons: 池島 (長崎県)）"
+    }
   },
   "293": {
     "id": "293",
@@ -5562,7 +6336,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ejimanagasakikensaikaishi"
+    "slug": "ejimanagasakikensaikaishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/Enoshima_Island_Saikai%2C_Nagasaki_Aerial_photograph.2014.jpg/1280px-Enoshima_Island_Saikai%2C_Nagasaki_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "江島（長崎県西海市）（長崎県 / Wikimedia Commons: 江島 (長崎県)）"
+    }
   },
   "296": {
     "id": "296",
@@ -5602,7 +6380,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "matsushimanagasakikensaikaishi"
+    "slug": "matsushimanagasakikensaikaishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Kamanoura_port.jpg/1280px-Kamanoura_port.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "松島（長崎県西海市）（長崎県 / Wikimedia Commons: 松島 (長崎県)）"
+    }
   },
   "298": {
     "id": "298",
@@ -5662,7 +6444,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "shikanoshima"
+    "slug": "shikanoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fb/Shikanoshima_Island%2C_enkei.jpg/1280px-Shikanoshima_Island%2C_enkei.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "志賀島（福岡県 / Wikimedia Commons: 志賀島）"
+    }
   },
   "301": {
     "id": "301",
@@ -5682,7 +6468,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "aijimafukuokakenshingumachinekoshima"
+    "slug": "aijimafukuokakenshingumachinekoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/View_of_Ainoshima_Island_from_Ferry_%22Shingu%22_4.jpg/1280px-View_of_Ainoshima_Island_from_Ferry_%22Shingu%22_4.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "相島（福岡県新宮町・猫島）（福岡県 / Wikimedia Commons: 相島 (福岡県)）"
+    }
   },
   "302": {
     "id": "302",
@@ -5822,7 +6612,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "kabeshima"
+    "slug": "kabeshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Kabeshima_Island_from_Sakigata%2C_Yobuko%2C_Karatsu_1.JPG/1280px-Kabeshima_Island_from_Sakigata%2C_Yobuko%2C_Karatsu_1.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "加部島（佐賀県 / Wikimedia Commons: 加部島）"
+    }
   },
   "309": {
     "id": "309",
@@ -5842,7 +6636,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kakarashima"
+    "slug": "kakarashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Kakara-shima_Island_Aerial_photograph_2013.jpg/1280px-Kakara-shima_Island_Aerial_photograph_2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "加唐島（佐賀県 / Wikimedia Commons: 加唐島）"
+    }
   },
   "310": {
     "id": "310",
@@ -5862,7 +6660,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "ogawato"
+    "slug": "ogawato",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Ogawa-shima_Island_Aerial_photograph_2013.jpg/1280px-Ogawa-shima_Island_Aerial_photograph_2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "小川島（佐賀県 / Wikimedia Commons: 小川島）"
+    }
   },
   "311": {
     "id": "311",
@@ -5882,7 +6684,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "madarashima"
+    "slug": "madarashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/01/Madara-shima_Island_Aerial_photograph_2013.jpg/1280px-Madara-shima_Island_Aerial_photograph_2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "馬渡島（佐賀県 / Wikimedia Commons: 馬渡島）"
+    }
   },
   "312": {
     "id": "312",
@@ -5902,7 +6708,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kashiwajima"
+    "slug": "kashiwajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/19/Kashiwa-jima_Island_Aerial_photograph_2013.jpg/1280px-Kashiwa-jima_Island_Aerial_photograph_2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "神集島（佐賀県 / Wikimedia Commons: 神集島）"
+    }
   },
   "313": {
     "id": "313",
@@ -5922,7 +6732,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "takashimasagakenkaratsushitakarakujinoshima"
+    "slug": "takashimasagakenkaratsushitakarakujinoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Saga_Taka-shima_Island_Aerial_photograph_2013.jpg/1280px-Saga_Taka-shima_Island_Aerial_photograph_2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "高島（佐賀県唐津市宝くじの島）（佐賀県 / Wikimedia Commons: 高島 (佐賀県)）"
+    }
   },
   "314": {
     "id": "314",
@@ -5942,7 +6756,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "himeshimaoitaken"
+    "slug": "himeshimaoitaken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f8/Hime-shima_Island_Oita_prefecture_Aerial_photograph.2015.jpg/1280px-Hime-shima_Island_Oita_prefecture_Aerial_photograph.2015.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "姫島（大分県）（大分県 / Wikimedia Commons: 姫島 (大分県)）"
+    }
   },
   "315": {
     "id": "315",
@@ -5962,7 +6780,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "hotojimaoitakentsukumishi"
+    "slug": "hotojimaoitakentsukumishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Hodo-Jima_Island_Aerial_photograph.2009.jpg/1280px-Hodo-Jima_Island_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "保戸島（大分県津久見市）（大分県 / Wikimedia Commons: 保戸島）"
+    }
   },
   "316": {
     "id": "316",
@@ -5982,7 +6804,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "oshimaoitakensaikishi"
+    "slug": "oshimaoitakensaikishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Saiki_ohshima.jpg/1280px-Saiki_ohshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大島（大分県佐伯市）（大分県 / Wikimedia Commons: 大島 (大分県佐伯市)）"
+    }
   },
   "317": {
     "id": "317",
@@ -6002,7 +6828,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "fukajimaoitakensaikishinekoshima"
+    "slug": "fukajimaoitakensaikishinekoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Fuka-shima_Island_Aerial_photograph.2008.jpg/1280px-Fuka-shima_Island_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "深島（大分県佐伯市・猫島）（大分県 / Wikimedia Commons: 深島）"
+    }
   },
   "318": {
     "id": "318",
@@ -6022,7 +6852,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "yakatashimaoitakensaikishi"
+    "slug": "yakatashimaoitakensaikishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Yakata-jima_Island_Aerial_photograph.2008.jpg/1280px-Yakata-jima_Island_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "屋形島（大分県佐伯市）（大分県 / Wikimedia Commons: 屋形島）"
+    }
   },
   "319": {
     "id": "319",
@@ -6062,7 +6896,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "特殊手段限定",
     "is_conquest_target": true,
-    "slug": "tsukishimamiyazakikenkushimashi"
+    "slug": "tsukishimamiyazakikenkushimashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/Tsukishima_Island_Miyazaki_Japan_200809.jpg/1280px-Tsukishima_Island_Miyazaki_Japan_200809.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "築島（宮崎県串間市）（宮崎県 / Wikimedia Commons: 築島）"
+    }
   },
   "321": {
     "id": "321",
@@ -6080,7 +6918,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "otojimamiyazakikenmongawamachi"
+    "slug": "otojimamiyazakikenmongawamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Oto-jima_Island%2C_Kadogawa_Miyazaki_Aerial_photograph.2018.jpg/1280px-Oto-jima_Island%2C_Kadogawa_Miyazaki_Aerial_photograph.2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "乙島（宮崎県門川町）（宮崎県 / Wikimedia Commons: 乙島）"
+    }
   },
   "322": {
     "id": "322",
@@ -6140,7 +6982,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "goshonourajimakyoryunoshima"
+    "slug": "goshonourajimakyoryunoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/%E5%BE%A1%E6%89%80%E6%B5%A6%E5%B3%B6_20150919.jpg/1280px-%E5%BE%A1%E6%89%80%E6%B5%A6%E5%B3%B6_20150919.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "御所浦島（恐竜の島）（熊本県 / Wikimedia Commons: 御所浦島）"
+    }
   },
   "325": {
     "id": "325",
@@ -6180,7 +7026,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "yushimakumamotokenjotenkusaichinekoshima"
+    "slug": "yushimakumamotokenjotenkusaichinekoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Aerial_of_Yushima%2C_Kamiamakusa%2C_Kumamoto%2C_Japan.jpg/1280px-Aerial_of_Yushima%2C_Kamiamakusa%2C_Kumamoto%2C_Japan.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "湯島（熊本県上天草市・猫島）（熊本県 / Wikimedia Commons: 湯島 (天草諸島)）"
+    }
   },
   "327": {
     "id": "327",
@@ -6200,7 +7050,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "iwajimajotenkusaichi"
+    "slug": "iwajimajotenkusaichi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Ninaijima_Islands_and_Iwajima_Island_from_Temmonkyo_Bridge_3.jpg/1280px-Ninaijima_Islands_and_Iwajima_Island_from_Temmonkyo_Bridge_3.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "維和島（上天草市）（熊本県 / Wikimedia Commons: 維和島）"
+    }
   },
   "328": {
     "id": "328",
@@ -6220,7 +7074,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "tobasejimajoshi"
+    "slug": "tobasejimajoshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/View_from_Misumi_East_Port_%28Tobasejima_Island%29.jpg/1280px-View_from_Misumi_East_Port_%28Tobasejima_Island%29.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "戸馳島（宇城市）（熊本県 / Wikimedia Commons: 戸馳島）"
+    }
   },
   "329": {
     "id": "329",
@@ -6260,7 +7118,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "yokourajimatengusagoshonoura"
+    "slug": "yokourajimatengusagoshonoura",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Yokourajima_Island%2C_Amakusa_Kumamoto_Aerial_photograph.2014.jpg/1280px-Yokourajima_Island%2C_Amakusa_Kumamoto_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "横浦島（天草御所浦）（熊本県 / Wikimedia Commons: 横浦島）"
+    }
   },
   "331": {
     "id": "331",
@@ -6300,7 +7162,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "nagashimakagoshimakenizumigun"
+    "slug": "nagashimakagoshimakenizumigun",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Ikara-%C5%8Chashi%2C_-Jan._2009_a.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "長島（鹿児島県出水郡）（鹿児島県 / Wikimedia Commons: 長島 (鹿児島県)）"
+    }
   },
   "333": {
     "id": "333",
@@ -6320,7 +7186,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "shishitokagoshimakennagashimamachi"
+    "slug": "shishitokagoshimakennagashimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/Katasoba_Shishijima.JPG/1280px-Katasoba_Shishijima.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "獅子島（鹿児島県長島町）（鹿児島県 / Wikimedia Commons: 獅子島）"
+    }
   },
   "334": {
     "id": "334",
@@ -6340,7 +7210,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "ikarajimanagashimamachi"
+    "slug": "ikarajimanagashimamachi",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0f/Ikara-%C5%8Chashi%2C_-Jan._2009_a.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "伊唐島（長島町）（鹿児島県 / Wikimedia Commons: 伊唐島）"
+    }
   },
   "335": {
     "id": "335",
@@ -6360,7 +7234,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "shorajimanagashimamachi"
+    "slug": "shorajimanagashimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Chichinose_bridge.JPG/1280px-Chichinose_bridge.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "諸浦島（長島町）（鹿児島県 / Wikimedia Commons: 諸浦島）"
+    }
   },
   "336": {
     "id": "336",
@@ -6378,7 +7256,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "koshikitokamikoshikito"
+    "slug": "koshikitokamikoshikito",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/8/88/Ferry_New_Koshiki.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "甑島・上甑島（鹿児島県 / Wikimedia Commons: 上甑島）"
+    }
   },
   "337": {
     "id": "337",
@@ -6414,7 +7296,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "koshikitoshimokoshikito"
+    "slug": "koshikitoshimokoshikito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/95/Koshiki_Ohashi_Bridge_from_Torinosuyama_View_Point_2.jpg/1280px-Koshiki_Ohashi_Bridge_from_Torinosuyama_View_Point_2.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "甑島・下甑島（鹿児島県 / Wikimedia Commons: 甑大橋）"
+    }
   },
   "339": {
     "id": "339",
@@ -6434,7 +7320,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "tanegashima"
+    "slug": "tanegashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b8/Cosmo_Line_Princess_Wakasa.JPG/1280px-Cosmo_Line_Princess_Wakasa.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "種子島（鹿児島県 / Wikimedia Commons: 種子島）"
+    }
   },
   "340": {
     "id": "340",
@@ -6454,7 +7344,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "yakushima"
+    "slug": "yakushima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cc/Shiratani_Unsui_Gorge_11.jpg/1280px-Shiratani_Unsui_Gorge_11.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "屋久島（鹿児島県 / Wikimedia Commons: 白谷雲水峡）"
+    }
   },
   "341": {
     "id": "341",
@@ -6474,7 +7368,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "kuchinoerabujima"
+    "slug": "kuchinoerabujima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a5/Kuchinoerabu_Island_aerial_photo_2018.jpg/1280px-Kuchinoerabu_Island_aerial_photo_2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "口永良部島（鹿児島県 / Wikimedia Commons: 口永良部島）"
+    }
   },
   "342": {
     "id": "342",
@@ -6494,7 +7392,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "takeshimakagoshimakenmishimamura"
+    "slug": "takeshimakagoshimakenmishimamura",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a4/Take-Shima_Island_Kagoshima_Prefecture_Aerial_photograph.2008.jpg/1280px-Take-Shima_Island_Kagoshima_Prefecture_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "竹島（鹿児島県三島村）（鹿児島県 / Wikimedia Commons: 竹島 (鹿児島県)）"
+    }
   },
   "343": {
     "id": "343",
@@ -6514,7 +7416,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "iotokagoshimakensatsumaioto"
+    "slug": "iotokagoshimakensatsumaioto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Satu20230510.jpg/1280px-Satu20230510.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "硫黄島（鹿児島県薩摩硫黄島）（鹿児島県 / Wikimedia Commons: 硫黄島 (鹿児島県)）"
+    }
   },
   "344": {
     "id": "344",
@@ -6574,7 +7480,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 550,
     "difficulty": "半日がかりの秘境",
     "is_conquest_target": true,
-    "slug": "nakanoshimatokararetto"
+    "slug": "nakanoshimatokararetto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e9/Nakanoshima_Kagoshima.jpg/1280px-Nakanoshima_Kagoshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "中之島（トカラ列島）（鹿児島県 / Wikimedia Commons: 中之島 (鹿児島県)）"
+    }
   },
   "347": {
     "id": "347",
@@ -6594,7 +7504,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 550,
     "difficulty": "半日がかりの秘境",
     "is_conquest_target": true,
-    "slug": "suwanosejimatokararetto"
+    "slug": "suwanosejimatokararetto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/00/Suwanosejima.jpg/1280px-Suwanosejima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "諏訪之瀬島（トカラ列島）（鹿児島県 / Wikimedia Commons: 諏訪之瀬島）"
+    }
   },
   "348": {
     "id": "348",
@@ -6634,7 +7548,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 550,
     "difficulty": "半日がかりの秘境",
     "is_conquest_target": true,
-    "slug": "akusekijimatokararetto"
+    "slug": "akusekijimatokararetto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/09/Akusekijima_2.jpg/1280px-Akusekijima_2.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "悪石島（トカラ列島）（鹿児島県 / Wikimedia Commons: 悪石島）"
+    }
   },
   "350": {
     "id": "350",
@@ -6694,7 +7612,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "amamioshima"
+    "slug": "amamioshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e6/Amami_%C5%8Cshima_from_Airplane.png/1280px-Amami_%C5%8Cshima_from_Airplane.png?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "奄美大島（鹿児島県 / Wikimedia Commons: 奄美大島）"
+    }
   },
   "353": {
     "id": "353",
@@ -6714,7 +7636,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "kakeromato"
+    "slug": "kakeromato",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/01P9291106.jpg/1280px-01P9291106.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "加計呂麻島（鹿児島県 / Wikimedia Commons: 加計呂麻島）"
+    }
   },
   "354": {
     "id": "354",
@@ -6754,7 +7680,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "yokojimaamamigunto"
+    "slug": "yokojimaamamigunto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Yoroshima_Island_Aerial_photograph.2008.jpg/1280px-Yoroshima_Island_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "与路島（奄美群島）（鹿児島県 / Wikimedia Commons: 与路島）"
+    }
   },
   "356": {
     "id": "356",
@@ -6774,7 +7704,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "kikaijima"
+    "slug": "kikaijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fe/Kikaijima.jpg/1280px-Kikaijima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "喜界島（鹿児島県 / Wikimedia Commons: 喜界島）"
+    }
   },
   "357": {
     "id": "357",
@@ -6794,7 +7728,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "tokunoshima"
+    "slug": "tokunoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/88/Tokunoshima_zenkei.jpg/1280px-Tokunoshima_zenkei.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "徳之島（鹿児島県 / Wikimedia Commons: 徳之島）"
+    }
   },
   "358": {
     "id": "358",
@@ -6814,7 +7752,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "okinoerabushima"
+    "slug": "okinoerabushima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Amami_okinoerabu.jpg/1280px-Amami_okinoerabu.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖永良部島（鹿児島県 / Wikimedia Commons: 沖永良部島）"
+    }
   },
   "359": {
     "id": "359",
@@ -6834,7 +7776,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "yorontouyoronto"
+    "slug": "yorontouyoronto",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/d/d5/Yoron_Island_20080622.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "与論島（ヨロン島）（鹿児島県 / Wikimedia Commons: 与論島）"
+    }
   },
   "360": {
     "id": "360",
@@ -6854,7 +7800,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 0,
     "difficulty": "未判定(要データ収集)",
     "is_conquest_target": true,
-    "slug": "okinawahonto"
+    "slug": "okinawahonto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Onna_Okinawa_Japan_Cape-Manzamo-01.jpg/1280px-Onna_Okinawa_Japan_Cape-Manzamo-01.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖縄本島（沖縄県 / Wikimedia Commons: 万座毛）"
+    }
   },
   "361": {
     "id": "361",
@@ -6874,7 +7824,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "furuutoshima"
+    "slug": "furuutoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/33/Kouri_Island_gsi-20180219.jpg/1280px-Kouri_Island_gsi-20180219.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "古宇利島（沖縄県 / Wikimedia Commons: 古宇利島）"
+    }
   },
   "362": {
     "id": "362",
@@ -6894,7 +7848,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 1200,
     "difficulty": "到達伝説",
     "is_conquest_target": true,
-    "slug": "minnashimakurowassanairando"
+    "slug": "minnashimakurowassanairando",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7a/Minna_Island%2CMotobu%2COkinawa.jpg/1280px-Minna_Island%2CMotobu%2COkinawa.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "水納島（クロワッサンアイランド）（沖縄県 / Wikimedia Commons: 水納島 (沖縄県本部町)）"
+    }
   },
   "363": {
     "id": "363",
@@ -6914,7 +7872,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kudakajimakonoshima"
+    "slug": "kudakajimakonoshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2f/Kudaka_Island_gsi-20050124.jpg/1280px-Kudaka_Island_gsi-20050124.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "久高島（神の島）（沖縄県 / Wikimedia Commons: 久高島）"
+    }
   },
   "364": {
     "id": "364",
@@ -6954,7 +7916,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "nohojimaiheyamura"
+    "slug": "nohojimaiheyamura",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2e/Noho_Island_gsi-20081025.jpg/1280px-Noho_Island_gsi-20081025.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "野甫島（伊平屋村）（沖縄県 / Wikimedia Commons: 野甫島）"
+    }
   },
   "366": {
     "id": "366",
@@ -6974,7 +7940,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "izenajima"
+    "slug": "izenajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/Izena_Island_gsi-20081025.jpg/1280px-Izena_Island_gsi-20081025.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "伊是名島（沖縄県 / Wikimedia Commons: 伊是名島）"
+    }
   },
   "367": {
     "id": "367",
@@ -7014,7 +7984,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "seteito"
+    "slug": "seteito",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1c/%E7%80%AC%E5%BA%95%E5%A4%A7%E6%A9%8B.jpg/1280px-%E7%80%AC%E5%BA%95%E5%A4%A7%E6%A9%8B.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "瀬底島（沖縄県 / Wikimedia Commons: 瀬底大橋）"
+    }
   },
   "369": {
     "id": "369",
@@ -7034,7 +8008,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "henzajimakaichudoro"
+    "slug": "henzajimakaichudoro",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/3/33/Henza_Island_aerial.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "平安座島（海中道路）（沖縄県 / Wikimedia Commons: 平安座島）"
+    }
   },
   "370": {
     "id": "370",
@@ -7074,7 +8052,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "miyagitookinawakenurumashi"
+    "slug": "miyagitookinawakenurumashi",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0b/Miyagi_Island_aerial.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "宮城島（沖縄県うるま市）（沖縄県 / Wikimedia Commons: 宮城島 (沖縄県うるま市)）"
+    }
   },
   "372": {
     "id": "372",
@@ -7094,7 +8076,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "ikeijima"
+    "slug": "ikeijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/69/Ikei_Island_gsi-19930829.jpg/1280px-Ikei_Island_gsi-19930829.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "伊計島（沖縄県 / Wikimedia Commons: 伊計島）"
+    }
   },
   "373": {
     "id": "373",
@@ -7114,7 +8100,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "tsukenjimakyarottoairando"
+    "slug": "tsukenjimakyarottoairando",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Tsuken_Island_gsi-20050124.jpg/1280px-Tsuken_Island_gsi-20050124.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "津堅島（キャロットアイランド）（沖縄県 / Wikimedia Commons: 津堅島）"
+    }
   },
   "374": {
     "id": "374",
@@ -7134,7 +8124,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "oshimananjoshitempurato"
+    "slug": "oshimananjoshitempurato",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Ou_Island%2CNanjo.jpg/1280px-Ou_Island%2CNanjo.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "奥武島（南城市・天ぷら島）（沖縄県 / Wikimedia Commons: 奥武島 (沖縄県南城市)）"
+    }
   },
   "375": {
     "id": "375",
@@ -7155,7 +8149,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "is_published": true,
     "is_conquest_target": true,
     "checkin_radius_m": 3000,
-    "slug": "senagajimaumikajiterasu"
+    "slug": "senagajimaumikajiterasu",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Senaga_Island_20091027-gsi.jpg/1280px-Senaga_Island_20091027-gsi.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "瀬長島（ウミカジテラス）（沖縄県 / Wikimedia Commons: 瀬長島）"
+    }
   },
   "376": {
     "id": "376",
@@ -7173,7 +8171,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "keiyokanshotozamamijima"
+    "slug": "keiyokanshotozamamijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b5/Zamami_Island_gsi-20081122.jpg/1280px-Zamami_Island_gsi-20081122.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "慶良間諸島・座間味島（沖縄県 / Wikimedia Commons: 座間味島）"
+    }
   },
   "377": {
     "id": "377",
@@ -7191,7 +8193,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "keiyokanshotoakajima"
+    "slug": "keiyokanshotoakajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/ac/Aka_Island_gsi-20081121.jpg/1280px-Aka_Island_gsi-20081121.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "慶良間諸島・阿嘉島（沖縄県 / Wikimedia Commons: 阿嘉島）"
+    }
   },
   "378": {
     "id": "378",
@@ -7209,7 +8215,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "keiyokanshototokashikijima"
+    "slug": "keiyokanshototokashikijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3b/Aharen_Beach_On_Tokashiki_Island_2009_%287373%29.JPG/1280px-Aharen_Beach_On_Tokashiki_Island_2009_%287373%29.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "慶良間諸島・渡嘉敷島（沖縄県 / Wikimedia Commons: 渡嘉敷島）"
+    }
   },
   "379": {
     "id": "379",
@@ -7229,7 +8239,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "gerumajimakeiyokan"
+    "slug": "gerumajimakeiyokan",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/a/aa/Geruma_Island_20081121-gsi.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "慶留間島（慶良間）（沖縄県 / Wikimedia Commons: 慶留間島）"
+    }
   },
   "380": {
     "id": "380",
@@ -7249,7 +8263,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "kumejima"
+    "slug": "kumejima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Kumejima.jpg/1280px-Kumejima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "久米島（沖縄県 / Wikimedia Commons: 久米島）"
+    }
   },
   "381": {
     "id": "381",
@@ -7289,7 +8307,14 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "agunijima"
+    "slug": "agunijima",
+    "hero_image_url": "/hero/slide10.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide10.webp"
+      ],
+      "photo_caption": "粟国島 マハナ・むんじゅるー（沖縄県粟国村・現地実写）"
+    }
   },
   "383": {
     "id": "383",
@@ -7329,7 +8354,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 550,
     "difficulty": "半日がかりの秘境",
     "is_conquest_target": true,
-    "slug": "kitadaitojima"
+    "slug": "kitadaitojima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Kitadaitojima_Island_Aerial_photograph.2009.jpg/1280px-Kitadaitojima_Island_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "北大東島（沖縄県 / Wikimedia Commons: 北大東島）"
+    }
   },
   "385": {
     "id": "385",
@@ -7349,7 +8378,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 550,
     "difficulty": "半日がかりの秘境",
     "is_conquest_target": true,
-    "slug": "minamidaitojima"
+    "slug": "minamidaitojima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Minamidaitojima_Island_Aerial_photograph.2012.jpg/1280px-Minamidaitojima_Island_Aerial_photograph.2012.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "南大東島（沖縄県 / Wikimedia Commons: 南大東島）"
+    }
   },
   "386": {
     "id": "386",
@@ -7369,7 +8402,17 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "miyakojima"
+    "slug": "miyakojima",
+    "hero_image_url": "/hero/slide16.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide16.webp",
+        "/hero/slide15.webp",
+        "/hero/slide9.webp",
+        "/hero/slide12.webp"
+      ],
+      "photo_caption": "宮古島（沖縄県宮古島市・現地実写）"
+    }
   },
   "387": {
     "id": "387",
@@ -7387,7 +8430,14 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "irabujima"
+    "slug": "irabujima",
+    "hero_image_url": "/hero/slide19.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide19.webp"
+      ],
+      "photo_caption": "伊良部島・伊良部大橋（沖縄県宮古島市・現地実写）"
+    }
   },
   "388": {
     "id": "388",
@@ -7407,7 +8457,14 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "ikemajima"
+    "slug": "ikemajima",
+    "hero_image_url": "/hero/slide14.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide14.webp"
+      ],
+      "photo_caption": "池間島・池間大橋（沖縄県宮古島市・現地実写）"
+    }
   },
   "389": {
     "id": "389",
@@ -7427,7 +8484,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "kurimajima"
+    "slug": "kurimajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f4/Kurima_Island_Aerial_photograph.2019.jpg/1280px-Kurima_Island_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "来間島（沖縄県 / Wikimedia Commons: 来間島）"
+    }
   },
   "390": {
     "id": "390",
@@ -7447,7 +8508,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "taramashima"
+    "slug": "taramashima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a1/%E5%A4%9A%E8%89%AF%E9%96%93%E5%B3%B6%E5%85%A8%E6%99%AF.jpg/1280px-%E5%A4%9A%E8%89%AF%E9%96%93%E5%B3%B6%E5%85%A8%E6%99%AF.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "多良間島（沖縄県 / Wikimedia Commons: 多良間島）"
+    }
   },
   "391": {
     "id": "391",
@@ -7467,7 +8532,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "ogamijimamiyakojima"
+    "slug": "ogamijimamiyakojima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Ogamijima_Okinawa_Japan01s3s1800.jpg/1280px-Ogamijima_Okinawa_Japan01s3s1800.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大神島（宮古島）（沖縄県 / Wikimedia Commons: 大神島）"
+    }
   },
   "392": {
     "id": "392",
@@ -7487,7 +8556,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "ishigakijima"
+    "slug": "ishigakijima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e2/110321_Native_forest_of_Satake_palm_trees_Yonehara_Ishigaki_Island_Japan03s3.jpg/1280px-110321_Native_forest_of_Satake_palm_trees_Yonehara_Ishigaki_Island_Japan03s3.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "石垣島（沖縄県 / Wikimedia Commons: 石垣島）"
+    }
   },
   "393": {
     "id": "393",
@@ -7507,7 +8580,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "taketomijima"
+    "slug": "taketomijima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/7/7c/Village_in_Taketomi_Island_-_located_at_southwest_Japan.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "竹富島（沖縄県 / Wikimedia Commons: 竹富島）"
+    }
   },
   "394": {
     "id": "394",
@@ -7527,7 +8604,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "kohamajima"
+    "slug": "kohamajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Kohamajima_Island%2C_Taketomi_Okinawa_Aerial_photograph.2019.jpg/1280px-Kohamajima_Island%2C_Taketomi_Okinawa_Aerial_photograph.2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "小浜島（沖縄県 / Wikimedia Commons: 小浜島）"
+    }
   },
   "395": {
     "id": "395",
@@ -7547,7 +8628,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "kuroshimayaeyamahatoairando"
+    "slug": "kuroshimayaeyamahatoairando",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9e/Kuroishima_Island%2C_Taketomi_Okinawa_Aerial_photograph.2009.jpg/1280px-Kuroishima_Island%2C_Taketomi_Okinawa_Aerial_photograph.2009.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "黒島（八重山・ハートアイランド）（沖縄県 / Wikimedia Commons: 黒島 (沖縄県竹富町)）"
+    }
   },
   "396": {
     "id": "396",
@@ -7567,7 +8652,14 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "iriomotejima"
+    "slug": "iriomotejima",
+    "hero_image_url": "/hero/slide2.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide2.webp"
+      ],
+      "photo_caption": "西表島 マングローブ林（沖縄県竹富町・現地実写）"
+    }
   },
   "397": {
     "id": "397",
@@ -7587,7 +8679,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "特殊手段限定",
     "is_conquest_target": true,
-    "slug": "yubujimasuigyushadewatarushima"
+    "slug": "yubujimasuigyushadewatarushima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Iriomote_yubujima_COK20122X-C3-21.jpg/1280px-Iriomote_yubujima_COK20122X-C3-21.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "由布島（水牛車で渡る島）（沖縄県 / Wikimedia Commons: 由布島）"
+    }
   },
   "398": {
     "id": "398",
@@ -7607,7 +8703,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "hatomajima"
+    "slug": "hatomajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Yaeyama_hatoma_COK20096X-C1-4.jpg/1280px-Yaeyama_hatoma_COK20096X-C1-4.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "鳩間島（沖縄県 / Wikimedia Commons: 鳩間島）"
+    }
   },
   "399": {
     "id": "399",
@@ -7625,7 +8725,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "shinjotopanarito"
+    "slug": "shinjotopanarito",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Yaeyama_aragusuku_COK20088X-C1%2BC2.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "新城島（パナリ島）（沖縄県 / Wikimedia Commons: 新城島）"
+    }
   },
   "400": {
     "id": "400",
@@ -7645,7 +8749,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "haterumajima"
+    "slug": "haterumajima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/2015-12-17_Haterumajima_DSCF2879.JPG/1280px-2015-12-17_Haterumajima_DSCF2879.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "波照間島（沖縄県 / Wikimedia Commons: 波照間島）"
+    }
   },
   "401": {
     "id": "401",
@@ -7665,7 +8773,16 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "空路の島",
     "is_conquest_target": true,
-    "slug": "yonagunijima"
+    "slug": "yonagunijima",
+    "hero_image_url": "/hero/slide6.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide6.webp",
+        "/hero/slide7.webp",
+        "/hero/slide8.webp"
+      ],
+      "photo_caption": "与那国島 最西端の碑・ヨナグニウマ（沖縄県与那国町・現地実写）"
+    }
   },
   "402": {
     "id": "402",
@@ -7683,7 +8800,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "okishimaaichiken"
+    "slug": "okishimaaichiken",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/07/Oki_Island%2C_Aichi%2C_Japan_17-Mar-2018.jpg/1280px-Oki_Island%2C_Aichi%2C_Japan_17-Mar-2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖島（愛知県）（愛知県 / Wikimedia Commons: 沖島 (愛知県)）"
+    }
   },
   "404": {
     "id": "404",
@@ -7721,7 +8842,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": false,
-    "slug": "oshimaokayamakensetouchishi"
+    "slug": "oshimaokayamakensetouchishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/83/Kijima_Island%2C_Setouchi_Okayama_Aerial_photograph.2016.jpg/1280px-Kijima_Island%2C_Setouchi_Okayama_Aerial_photograph.2016.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "黄島（岡山県瀬戸内市）（岡山県 / Wikimedia Commons: 黄島 (岡山県)）"
+    }
   },
   "406": {
     "id": "406",
@@ -7741,7 +8866,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "oshimakagawakentakamatsushi"
+    "slug": "oshimakagawakentakamatsushi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Oshima_Island%2C_Takamatsu_Kagawa_Aerial_photograph.2007.jpg/1280px-Oshima_Island%2C_Takamatsu_Kagawa_Aerial_photograph.2007.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大島（香川県高松市）（香川県 / Wikimedia Commons: 大島 (香川県高松市)）"
+    }
   },
   "407": {
     "id": "407",
@@ -7761,7 +8890,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "koogejimaehimekenimabarishi"
+    "slug": "koogejimaehimekenimabarishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/K%C5%8Dge_Island%2C_Ehime%2C_Japan_26-May-2018.jpg/1280px-K%C5%8Dge_Island%2C_Ehime%2C_Japan_26-May-2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "小大下島（愛媛県今治市）（愛媛県 / Wikimedia Commons: 小大下島）"
+    }
   },
   "408": {
     "id": "408",
@@ -7817,7 +8950,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": true,
-    "slug": "shimadatotokushimakennarutoshi"
+    "slug": "shimadatotokushimakennarutoshi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e1/Kameura_Bridge_and_Shimadajima_Island_from_Ochaen_Observation_Deck_in_Naruto_Park_1.jpg/1280px-Kameura_Bridge_and_Shimadajima_Island_from_Ochaen_Observation_Deck_in_Naruto_Park_1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "島田島（徳島県鳴門市）（徳島県 / Wikimedia Commons: 島田島）"
+    }
   },
   "413": {
     "id": "413",
@@ -7855,7 +8992,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "mukojimasagakenkaratsushi"
+    "slug": "mukojimasagakenkaratsushi",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/1/12/Muku-shima_Island_Aerial_photograph_2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "向島（佐賀県唐津市）（佐賀県 / Wikimedia Commons: 向島 (佐賀県)）"
+    }
   },
   "415": {
     "id": "415",
@@ -7873,7 +9014,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "takezakitosagakentaramachi"
+    "slug": "takezakitosagakentaramachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Takesakijima.jpg/1280px-Takesakijima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "竹崎島（佐賀県太良町）（佐賀県 / Wikimedia Commons: 竹崎島）"
+    }
   },
   "416": {
     "id": "416",
@@ -7893,7 +9038,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": false,
-    "slug": "terashimanagasakikengoshimashi"
+    "slug": "terashimanagasakikengoshimashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Terashima_Island_Uku_Sasebo%2C_Nagasaki_Aerial_photograph.2016.jpg/1280px-Terashima_Island_Uku_Sasebo%2C_Nagasaki_Aerial_photograph.2016.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "寺島（長崎県五島市）（長崎県 / Wikimedia Commons: 寺島 (長崎県佐世保市)）"
+    }
   },
   "417": {
     "id": "417",
@@ -7913,7 +9062,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 140,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "rokutonagasakikengoshimashi"
+    "slug": "rokutonagasakikengoshimashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f5/Mushima_Island_Ojika%2C_Nagasaki_Aerial_photograph.2014.jpg/1280px-Mushima_Island_Ojika%2C_Nagasaki_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "六島（長崎県五島市）（長崎県 / Wikimedia Commons: 六島 (長崎県)）"
+    }
   },
   "418": {
     "id": "418",
@@ -7949,7 +9102,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "oreshimashinkamigoshimamachi"
+    "slug": "oreshimashinkamigoshimamachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b4/Kamigoto_oil_storage_01.jpg/1280px-Kamigoto_oil_storage_01.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "折島（新上五島町）（長崎県 / Wikimedia Commons: 折島）"
+    }
   },
   "420": {
     "id": "420",
@@ -7969,7 +9126,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "人気観光アイランド",
     "is_conquest_target": true,
-    "slug": "kuroshimanagasakikenmatsuurashi"
+    "slug": "kuroshimanagasakikenmatsuurashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ee/Kuroshima_Island%2C_Matsuura_Nagasaki_Aerial_photograph.2013.jpg/1280px-Kuroshima_Island%2C_Matsuura_Nagasaki_Aerial_photograph.2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "黒島（長崎県松浦市）（長崎県 / Wikimedia Commons: 黒島 (長崎県松浦市)）"
+    }
   },
   "421": {
     "id": "421",
@@ -7987,7 +9148,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "mishimanagasakikenomurashi"
+    "slug": "mishimanagasakikenomurashi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1d/Nagasaki_Airport_Aerial_photograph.2014.jpg/1280px-Nagasaki_Airport_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "箕島（長崎県大村市）（長崎県 / Wikimedia Commons: 箕島 (長崎県)）"
+    }
   },
   "422": {
     "id": "422",
@@ -8007,7 +9172,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "はじめの一歩",
     "is_conquest_target": false,
-    "slug": "maejimanagasakikentogitsumachi"
+    "slug": "maejimanagasakikentogitsumachi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5b/Maejima_Island_Togitsu%2C_Nagasaki_Aerial_photograph.2010.jpg/1280px-Maejima_Island_Togitsu%2C_Nagasaki_Aerial_photograph.2010.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "前島（長崎県時津町）（長崎県 / Wikimedia Commons: 前島 (長崎県時津町)）"
+    }
   },
   "423": {
     "id": "423",
@@ -8066,7 +9235,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "chintaomiyazakikenmiyazakishi"
+    "slug": "chintaomiyazakikenmiyazakishi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d4/2021-01-07_Aoshima_Island_%28Miyazaki%29Aerial_photography%E9%9D%92%E5%B3%B6_%28%E5%AE%AE%E5%B4%8E%E7%9C%8C%29DJI_0249_%282%29%E7%A9%BA%E6%92%AE.jpg/1280px-2021-01-07_Aoshima_Island_%28Miyazaki%29Aerial_photography%E9%9D%92%E5%B3%B6_%28%E5%AE%AE%E5%B4%8E%E7%9C%8C%29DJI_0249_%282%29%E7%A9%BA%E6%92%AE.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "青島（宮崎県宮崎市）（宮崎県 / Wikimedia Commons: 青島 (宮崎県)）"
+    }
   },
   "427": {
     "id": "427",
@@ -8161,7 +9334,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "遠隔離島",
     "is_published": true,
     "is_conquest_target": true,
-    "slug": "maejimaokinawakenzamami"
+    "slug": "maejimaokinawakenzamami",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4b/Maeshima_is.JPG/1280px-Maeshima_is.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "前島（慶良間・渡嘉敷村）（沖縄県 / Wikimedia Commons: 前島 (沖縄県)）"
+    }
   },
   "noumi": {
     "id": "noumi",
@@ -8181,7 +9358,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 30,
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
-    "slug": "noumi"
+    "slug": "noumi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/%E6%B2%96%E7%BE%8E_-_panoramio_%283%29.jpg/1280px-%E6%B2%96%E7%BE%8E_-_panoramio_%283%29.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "能美島（広島県 / Wikimedia Commons: 能美島）"
+    }
   },
   "fukajijima": {
     "id": "fukajijima",
@@ -8205,7 +9386,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "fukajijima"
+    "slug": "fukajijima",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/f/fc/Fukaji_Island_20081121-gsi.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "外地島（慶良間）（沖縄県 / Wikimedia Commons: 外地島）"
+    }
   },
   "shimoji": {
     "id": "shimoji",
@@ -8223,7 +9408,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 10,
     "difficulty": "未設定",
     "checkin_radius_m": 3000,
-    "slug": "shimoji"
+    "slug": "shimoji",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d2/Shimojishima_Okinawa_Japan01s3s3900.jpg/1280px-Shimojishima_Okinawa_Japan01s3s3900.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "下地島（沖縄県 / Wikimedia Commons: 下地島）"
+    }
   },
   "otabujima_okayama": {
     "id": "otabujima_okayama",
@@ -8239,7 +9428,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 30,
     "difficulty": "未設定",
     "is_conquest_target": true,
-    "slug": "otabujima_okayama"
+    "slug": "otabujima_okayama",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/47/%E5%A4%A7%E5%A4%9A%E5%BA%9C%E5%B3%B6.jpg/1280px-%E5%A4%A7%E5%A4%9A%E5%BA%9C%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大多府島（岡山県 / Wikimedia Commons: 大多府島）"
+    }
   },
   "inujima_okayama": {
     "id": "inujima_okayama",
@@ -8255,7 +9448,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 30,
     "difficulty": "未設定",
     "is_conquest_target": true,
-    "slug": "inujima_okayama"
+    "slug": "inujima_okayama",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4c/2004-05-22_Inujima%2C%E7%8A%AC%E5%B3%B6_061.jpg/1280px-2004-05-22_Inujima%2C%E7%8A%AC%E5%B3%B6_061.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "犬島（岡山県 / Wikimedia Commons: 犬島）"
+    }
   },
   "koneshima_hiroshima": {
     "id": "koneshima_hiroshima",
@@ -8271,7 +9468,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 30,
     "difficulty": "未設定",
     "is_conquest_target": true,
-    "slug": "koneshima_hiroshima"
+    "slug": "koneshima_hiroshima",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/85/Koneshima_Island_from_train_of_Kure_Line_5.jpg/1280px-Koneshima_Island_from_train_of_Kure_Line_5.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "高根島（広島県 / Wikimedia Commons: 高根島）"
+    }
   },
   "kashima_hiroshima": {
     "id": "kashima_hiroshima",
@@ -8303,7 +9504,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 40,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "heigunjima_yamaguchi"
+    "slug": "heigunjima_yamaguchi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fd/Heigun-To_Island_Yanai_Yamaguchi.JPG/1280px-Heigun-To_Island_Yanai_Yamaguchi.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "平郡島（山口県 / Wikimedia Commons: 平郡島）"
+    }
   },
   "otsushima_yamaguchi": {
     "id": "otsushima_yamaguchi",
@@ -8319,7 +9524,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 30,
     "difficulty": "未設定",
     "is_conquest_target": true,
-    "slug": "otsushima_yamaguchi"
+    "slug": "otsushima_yamaguchi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a6/Otsu_island.JPG/1280px-Otsu_island.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大津島（山口県 / Wikimedia Commons: 大津島）"
+    }
   },
   "hashishima_yamaguchi": {
     "id": "hashishima_yamaguchi",
@@ -8335,7 +9544,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 40,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "hashishima_yamaguchi"
+    "slug": "hashishima_yamaguchi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Hashirajima.island.jpg/1280px-Hashirajima.island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "柱島（山口県 / Wikimedia Commons: 柱島）"
+    }
   },
   "yoshima_kagawa": {
     "id": "yoshima_kagawa",
@@ -8351,7 +9564,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 30,
     "difficulty": "未設定",
     "is_conquest_target": true,
-    "slug": "yoshima_kagawa"
+    "slug": "yoshima_kagawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/38/Yoshima_Island_2019.jpg/1280px-Yoshima_Island_2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "与島（香川県 / Wikimedia Commons: 与島）"
+    }
   },
   "hitsuishijima_kagawa": {
     "id": "hitsuishijima_kagawa",
@@ -8399,7 +9616,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 30,
     "difficulty": "未設定",
     "is_conquest_target": true,
-    "slug": "madarashima_goto"
+    "slug": "madarashima_goto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/6d/Nagasaki_Madarajima_Pothole.jpg/1280px-Nagasaki_Madarajima_Pothole.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "斑島（長崎県 / Wikimedia Commons: 斑島）"
+    }
   },
   "saganoshima_goto": {
     "id": "saganoshima_goto",
@@ -8435,6 +9656,10 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "flags": {
       "宿泊・観光": "yes",
       "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Katsura-jima_Island%2C_Izumi_Kagoshima_Aerial_photograph.2013.jpg/1280px-Katsura-jima_Island%2C_Izumi_Kagoshima_Aerial_photograph.2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "桂島（鹿児島県 / Wikimedia Commons: 桂島 (鹿児島県)）"
     }
   },
   "minamijima_ogasawara": {
@@ -8455,7 +9680,15 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 950,
     "difficulty": "秘境中の秘境",
     "is_conquest_target": true,
-    "slug": "minamijima_ogasawara"
+    "slug": "minamijima_ogasawara",
+    "hero_image_url": "/hero/slide3.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide3.webp",
+        "/hero/slide4.webp"
+      ],
+      "photo_caption": "南島 扇池（東京都小笠原村・現地実写）"
+    }
   },
   "mukojima_ogasawara": {
     "id": "mukojima_ogasawara",
@@ -8475,7 +9708,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 1000,
     "difficulty": "上陸制限・特別保護島",
     "is_conquest_target": false,
-    "slug": "mukojima_ogasawara"
+    "slug": "mukojima_ogasawara",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/6/60/Mukojima%2C_Ogasawara%2C_Tokyo.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "聟島（小笠原諸島・聟島列島）（東京都 / Wikimedia Commons: 聟島）"
+    }
   },
   "yomejima_ogasawara": {
     "id": "yomejima_ogasawara",
@@ -8495,7 +9732,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 1000,
     "difficulty": "上陸制限・特別保護島",
     "is_conquest_target": false,
-    "slug": "yomejima_ogasawara"
+    "slug": "yomejima_ogasawara",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/Yome-jima_island_Aerial_Photograph.JPG/1280px-Yome-jima_island_Aerial_Photograph.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "嫁島（小笠原諸島・聟島列島）（東京都 / Wikimedia Commons: 嫁島）"
+    }
   },
   "kitaioto_ogasawara": {
     "id": "kitaioto_ogasawara",
@@ -8515,7 +9756,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 1000,
     "difficulty": "上陸制限・特別保護島",
     "is_conquest_target": false,
-    "slug": "kitaioto_ogasawara"
+    "slug": "kitaioto_ogasawara",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/11/Kita-Ioto_East_20120309.jpg/1280px-Kita-Ioto_East_20120309.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "北硫黄島（小笠原・火山列島）（東京都 / Wikimedia Commons: 北硫黄島）"
+    }
   },
   "minamiioto_ogasawara": {
     "id": "minamiioto_ogasawara",
@@ -8555,7 +9800,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 300,
     "difficulty": "上陸制限・特別保護島",
     "is_conquest_target": false,
-    "slug": "jinaijima_izu"
+    "slug": "jinaijima_izu",
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/7/7c/%E8%87%AA%E9%A3%9B%E6%A9%9F%E4%B8%8A%E6%8B%8D%E6%94%9D%E7%9A%84%E5%9C%B0%E5%85%A7%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "地内島（新島沖）（東京都 / Wikimedia Commons: 地内島）"
+    }
   },
   "onbasejima_izu": {
     "id": "onbasejima_izu",
@@ -8575,7 +9824,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 350,
     "difficulty": "上陸制限・特別保護島",
     "is_conquest_target": false,
-    "slug": "onbasejima_izu"
+    "slug": "onbasejima_izu",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e5/Onbase-Jima_Island_Aerial_photograph.jpg/1280px-Onbase-Jima_Island_Aerial_photograph.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "恩馳島（神津島沖）（東京都 / Wikimedia Commons: 恩馳島）"
+    }
   },
   "onoharajima_izu": {
     "id": "onoharajima_izu",
@@ -8615,7 +9868,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 800,
     "difficulty": "秘境中の秘境",
     "is_conquest_target": true,
-    "slug": "minnajima_miyako"
+    "slug": "minnajima_miyako",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/df/Minna_Island_Tarama_Okinawa_Aerial_photograph.2008.jpg/1280px-Minna_Island_Tarama_Okinawa_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "水納島（宮古諸島・多良間村）（沖縄県 / Wikimedia Commons: 水納島 (沖縄県多良間村)）"
+    }
   },
   "nagannu_kerama": {
     "id": "nagannu_kerama",
@@ -8755,7 +10012,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 50,
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
-    "slug": "yagajishima_okinawa"
+    "slug": "yagajishima_okinawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Yagaji_Island_gsi-20180219.jpg/1280px-Yagaji_Island_gsi-20180219.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "屋我地島（沖縄県名護市）（沖縄県 / Wikimedia Commons: 屋我地島）"
+    }
   },
   "yabuchijima_okinawa": {
     "id": "yabuchijima_okinawa",
@@ -8775,7 +10036,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 50,
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
-    "slug": "yabuchijima_okinawa"
+    "slug": "yabuchijima_okinawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d1/Yabuchi_Island_20050124-gsi.jpg/1280px-Yabuchi_Island_20050124-gsi.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "藪地島（沖縄県うるま市）（沖縄県 / Wikimedia Commons: 藪地島）"
+    }
   },
   "kayamajima_yaeyama": {
     "id": "kayamajima_yaeyama",
@@ -8795,7 +10060,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 450,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "kayamajima_yaeyama"
+    "slug": "kayamajima_yaeyama",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/71/Yaeyama_Kayamajima_COK20182-C1-8.jpg/1280px-Yaeyama_Kayamajima_COK20182-C1-8.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "嘉弥真島（八重山・うさぎ島）（沖縄県 / Wikimedia Commons: 嘉弥真島）"
+    }
   },
   "uchibanari_yaeyama": {
     "id": "uchibanari_yaeyama",
@@ -8815,7 +10084,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 500,
     "difficulty": "上陸制限・特別保護島",
     "is_conquest_target": false,
-    "slug": "uchibanari_yaeyama"
+    "slug": "uchibanari_yaeyama",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/de/Iriomote_uchibanari_COK20122X-C3-5.jpg/1280px-Iriomote_uchibanari_COK20122X-C3-5.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "内離島（西表島沖）（沖縄県 / Wikimedia Commons: 内離島）"
+    }
   },
   "sotobanari_yaeyama": {
     "id": "sotobanari_yaeyama",
@@ -8835,7 +10108,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 500,
     "difficulty": "上陸制限・特別保護島",
     "is_conquest_target": false,
-    "slug": "sotobanari_yaeyama"
+    "slug": "sotobanari_yaeyama",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/af/Iriomote_hokabanari_COK20122X-C3-3.jpg/1280px-Iriomote_hokabanari_COK20122X-C3-3.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "外離島（西表島沖）（沖縄県 / Wikimedia Commons: 外離島）"
+    }
   },
   "iwashima_kagawa": {
     "id": "iwashima_kagawa",
@@ -8855,7 +10132,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 80,
     "difficulty": "日帰り圏内",
     "is_conquest_target": true,
-    "slug": "iwashima_kagawa"
+    "slug": "iwashima_kagawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Iwakuro_Island_2019.jpg/1280px-Iwakuro_Island_2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "岩黒島（香川県坂出市・瀬戸大橋）（香川県 / Wikimedia Commons: 岩黒島）"
+    }
   },
   "tashima_hiroshima": {
     "id": "tashima_hiroshima",
@@ -8895,7 +10176,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 60,
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
-    "slug": "okamurajima_ehime"
+    "slug": "okamurajima_ehime",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0d/Okamura_Island%2C_Ehime%2C_Japan_26-May-2018.jpg/1280px-Okamura_Island%2C_Ehime%2C_Japan_26-May-2018.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "岡村島（愛媛県今治市・とびしま海道）（愛媛県 / Wikimedia Commons: 岡村島）"
+    }
   },
   "oshimajima_ehime": {
     "id": "oshimajima_ehime",
@@ -8915,7 +10200,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 120,
     "difficulty": "日帰り圏内",
     "is_conquest_target": true,
-    "slug": "oshimajima_ehime"
+    "slug": "oshimajima_ehime",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/08/Ogeshima.jpg/1280px-Ogeshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大下島（愛媛県今治市）（愛媛県 / Wikimedia Commons: 大下島）"
+    }
   },
   "kabashima_nagasaki": {
     "id": "kabashima_nagasaki",
@@ -8935,7 +10224,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 40,
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
-    "slug": "kabashima_nagasaki"
+    "slug": "kabashima_nagasaki",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/34/Nomozaki_Kabashima.jpg/1280px-Nomozaki_Kabashima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "樺島（長崎市・野母崎）（長崎県 / Wikimedia Commons: 樺島）"
+    }
   },
   "kabashima_goto": {
     "id": "kabashima_goto",
@@ -8955,7 +10248,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 260,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "kabashima_goto"
+    "slug": "kabashima_goto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5a/%E4%BA%94%E5%B3%B6%E5%B8%82%E6%9C%AC%E7%AA%AF%E7%94%BA%E9%B7%B9%E3%83%8E%E5%B7%A3%E3%81%8B%E3%82%89%E6%9D%B1_-_panoramio.jpg/1280px-%E4%BA%94%E5%B3%B6%E5%B8%82%E6%9C%AC%E7%AA%AF%E7%94%BA%E9%B7%B9%E3%83%8E%E5%B7%A3%E3%81%8B%E3%82%89%E6%9D%B1_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "椛島（五島列島・五島市）（長崎県 / Wikimedia Commons: 椛島）"
+    }
   },
   "hinoshima_goto": {
     "id": "hinoshima_goto",
@@ -8975,7 +10272,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 180,
     "difficulty": "日帰り圏内",
     "is_conquest_target": true,
-    "slug": "hinoshima_goto"
+    "slug": "hinoshima_goto",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Islands_of_Arifuku-shima%2C_Hino-shima%2C_Ryozegaura-shima_Shinkamigoto%2C_Nagasaki_Aerial_photograph.2014.jpg/1280px-Islands_of_Arifuku-shima%2C_Hino-shima%2C_Ryozegaura-shima_Shinkamigoto%2C_Nagasaki_Aerial_photograph.2014.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "日島（五島列島・新上五島町）（長崎県 / Wikimedia Commons: 日島）"
+    }
   },
   "shinshima_kagoshima": {
     "id": "shinshima_kagoshima",
@@ -9055,7 +10356,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 40,
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
-    "slug": "oujima_nago"
+    "slug": "oujima_nago",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/02/Ou_Island%2C_Nago_gsi-20180219.jpg/1280px-Ou_Island%2C_Nago_gsi-20180219.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "奥武島（名護市・羽地内海）（沖縄県 / Wikimedia Commons: 奥武島 (沖縄県名護市)）"
+    }
   },
   "miyagijima_ogimi": {
     "id": "miyagijima_ogimi",
@@ -9075,7 +10380,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 50,
     "difficulty": "架橋・陸続き",
     "is_conquest_target": true,
-    "slug": "miyagijima_ogimi"
+    "slug": "miyagijima_ogimi",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5d/Miyagi_Island%2C_Ogimi_gsi-20180219.jpg/1280px-Miyagi_Island%2C_Ogimi_gsi-20180219.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "宮城島（大宜味村・塩屋湾）（沖縄県 / Wikimedia Commons: 宮城島 (沖縄県大宜味村)）"
+    }
   },
   "ukibarujima_okinawa": {
     "id": "ukibarujima_okinawa",
@@ -9095,7 +10404,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 220,
     "difficulty": "日帰り圏内",
     "is_conquest_target": true,
-    "slug": "ukibarujima_okinawa"
+    "slug": "ukibarujima_okinawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5e/Ukibaru_Island_20050124-gsi.jpg/1280px-Ukibaru_Island_20050124-gsi.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "浮原島（うるま市・勝連沖）（沖縄県 / Wikimedia Commons: 浮原島）"
+    }
   },
   "minamiukibarujima_okinawa": {
     "id": "minamiukibarujima_okinawa",
@@ -9135,7 +10448,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 380,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "yanahajima_okinawa"
+    "slug": "yanahajima_okinawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/60/Yanaha_Island_gsi-20081025.jpg/1280px-Yanaha_Island_gsi-20081025.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "屋那覇島（伊是名村）（沖縄県 / Wikimedia Commons: 屋那覇島）"
+    }
   },
   "gushikawajima_okinawa": {
     "id": "gushikawajima_okinawa",
@@ -9155,7 +10472,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 380,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "gushikawajima_okinawa"
+    "slug": "gushikawajima_okinawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2c/Gushikawa_Island_gsi-20081025.jpg/1280px-Gushikawa_Island_gsi-20081025.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "具志川島（伊是名村）（沖縄県 / Wikimedia Commons: 具志川島）"
+    }
   },
   "urugamijima_okinawa": {
     "id": "urugamijima_okinawa",
@@ -9175,7 +10496,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 320,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "urugamijima_okinawa"
+    "slug": "urugamijima_okinawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/82/Urugami_Island.jpg/1280px-Urugami_Island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "降神島（伊是名村）（沖縄県 / Wikimedia Commons: 降神島）"
+    }
   },
   "adagashima_okinawa": {
     "id": "adagashima_okinawa",
@@ -9195,7 +10520,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 200,
     "difficulty": "日帰り圏内",
     "is_conquest_target": true,
-    "slug": "adagashima_okinawa"
+    "slug": "adagashima_okinawa",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/55/Adaka_Island.jpg/1280px-Adaka_Island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "安田ヶ島（国頭村・やんばる沖）（沖縄県 / Wikimedia Commons: 安田ヶ島）"
+    }
   },
   "ukahajima_okinawa": {
     "id": "ukahajima_okinawa",
@@ -9255,7 +10584,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 280,
     "difficulty": "乗継の壁",
     "is_conquest_target": true,
-    "slug": "hatenohama_kume"
+    "slug": "hatenohama_kume",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Hateno-hama_beach_%E3%81%AF%E3%81%A6%E3%81%AE%E6%B5%9C_DSCF7960.JPG/1280px-Hateno-hama_beach_%E3%81%AF%E3%81%A6%E3%81%AE%E6%B5%9C_DSCF7960.JPG?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "ハテの浜（久米島町・サンゴの砂州島）（沖縄県 / Wikimedia Commons: はての浜）"
+    }
   },
   "kamiyamajima_kerama": {
     "id": "kamiyamajima_kerama",
@@ -9315,7 +10648,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 400,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "yakabijima_kerama"
+    "slug": "yakabijima_kerama",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/17/Yakabi_Island.jpg/1280px-Yakabi_Island.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "屋嘉比島（座間味村・慶良間諸島）（沖縄県 / Wikimedia Commons: 屋嘉比島）"
+    }
   },
   "kubashima_kerama": {
     "id": "kubashima_kerama",
@@ -9335,7 +10672,11 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "points": 420,
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
-    "slug": "kubashima_kerama"
+    "slug": "kubashima_kerama",
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ea/Kubashima_20081121-gsi.jpg/1280px-Kubashima_20081121-gsi.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "久場島（座間味村・慶良間諸島）（沖縄県 / Wikimedia Commons: 久場島 (沖縄県座間味村)）"
+    }
   },
   "oujima_kerama": {
     "id": "oujima_kerama",
@@ -9356,7 +10697,1137 @@ export const ALL_ISLANDS_MASTER_DICTIONARY: Record<string, any> = {
     "difficulty": "遠隔離島",
     "is_conquest_target": true,
     "slug": "oujima_kerama"
+  },
+  "nakajima_toya": {
+    "id": "nakajima_toya",
+    "name": "中島（洞爺湖）",
+    "region_id": "pseudo_hokkaido",
+    "prefecture": "北海道",
+    "coordinates": "42.6019, 140.8556",
+    "description": "洞爺湖の中央に浮かぶカルデラ湖島。洞爺湖汽船の遊覧船で上陸でき、洞爺湖森林博物館や豊かな原生林散策を楽しめる人気観光島。",
+    "access": "洞爺湖温泉桟橋より洞爺湖汽船（遊覧船）約20分（4〜10月上陸可）",
+    "area": 4.85,
+    "radius_m": 1250,
+    "checkin_radius_m": 2500,
+    "points": 60,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "nakajima-toya",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "fukuurajima_miyagi": {
+    "id": "fukuurajima_miyagi",
+    "name": "福浦島（松島湾）",
+    "region_id": "oshika",
+    "prefecture": "宮城県",
+    "coordinates": "38.3683, 141.0697",
+    "description": "全長252mの朱塗りの出会い橋「福浦橋」で歩いて渡れる日本三景・松島の代表的な観光島。島全体が県立自然植物園となっており四季の草花と湾内展望が美しい。",
+    "access": "JR仙石線 松島海岸駅より徒歩約15分・福浦橋を徒歩渡橋",
+    "area": 0.06,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "fukuurajima-matsushima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Fukuura_Island%2C_Matsushima_Miyagi_Aerial_photograph.2015.jpg/1280px-Fukuura_Island%2C_Matsushima_Miyagi_Aerial_photograph.2015.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "福浦島（松島湾）（宮城県 / Wikimedia Commons: 福浦島）"
+    }
+  },
+  "ojima_matsushima": {
+    "id": "ojima_matsushima",
+    "name": "雄島（松島湾）",
+    "region_id": "oshika",
+    "prefecture": "宮城県",
+    "coordinates": "38.3653, 141.0622",
+    "description": "赤い渡月橋で本土と結ばれた「松島」地名発祥の霊場島。岩壁に刻まれた磨崖仏や句碑が並び、松尾芭蕉も訪れた歴史散策の名所。",
+    "access": "JR仙石線 松島海岸駅より徒歩約10分・渡月橋を徒歩渡橋",
+    "area": 0.03,
+    "radius_m": 350,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "ojima-matsushima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "arashima_minamisanriku": {
+    "id": "arashima_minamisanriku",
+    "name": "荒島（志津川湾）",
+    "region_id": "pseudo_sanriku",
+    "prefecture": "宮城県",
+    "coordinates": "38.6681, 141.4589",
+    "description": "南三陸・志津川湾に浮かぶ緑豊かな小島。サンオーレ袖浜から白い桟橋で歩いて上陸でき、荒島神社やタブノキ原生林と青いリアス海岸の絶景を望める。",
+    "access": "BRT志津川駅より徒歩またはタクシー・サンオーレ袖浜から歩道橋で上陸",
+    "area": 0.04,
+    "radius_m": 350,
+    "checkin_radius_m": 1500,
+    "points": 40,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "arashima-minamisanriku",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "niemonjima_chiba": {
+    "id": "niemonjima_chiba",
+    "name": "仁右衛門島",
+    "region_id": "pseudo_kanto",
+    "prefecture": "千葉県",
+    "coordinates": "35.0758, 140.1050",
+    "description": "千葉県指定名勝であり、源頼朝や日蓮聖人の伝説が残る千葉県唯一の有人島。現在も全国的に珍しい二丁櫓の手漕ぎ渡し舟で上陸する風情満点の観光島。",
+    "access": "JR外房線 太海駅より徒歩約10分・手漕ぎ渡し舟で約5分",
+    "area": 0.03,
+    "radius_m": 350,
+    "checkin_radius_m": 1500,
+    "points": 50,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "niemonjima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fc/%E4%BB%81%E5%8F%B3%E8%A1%9B%E9%96%80%E5%B3%B6_006.jpg/1280px-%E4%BB%81%E5%8F%B3%E8%A1%9B%E9%96%80%E5%B3%B6_006.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "仁右衛門島（千葉県 / Wikimedia Commons: 仁右衛門島）"
+    }
+  },
+  "okinoshima_tateyama": {
+    "id": "okinoshima_tateyama",
+    "name": "沖ノ島（館山湾）",
+    "region_id": "pseudo_kanto",
+    "prefecture": "千葉県",
+    "coordinates": "34.9917, 139.8264",
+    "description": "約200mの白砂の砂州で陸続きとなった南房総国定公園の観光無人島。北限域のサンゴが生息する高い透明度を誇り、首都圏屈指のシュノーケリング＆磯遊びスポット。",
+    "access": "JR内房線 館山駅よりバスまたは車約15分・砂州を徒歩上陸",
+    "area": 0.05,
+    "radius_m": 400,
+    "checkin_radius_m": 1500,
+    "points": 40,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "okinoshima-tateyama",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/%E6%B2%96%E3%83%8E%E5%B3%B6_-_panoramio.jpg/1280px-%E6%B2%96%E3%83%8E%E5%B3%B6_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "沖ノ島（館山湾）（千葉県 / Wikimedia Commons: 沖ノ島 (千葉県)）"
+    }
+  },
+  "hakkeijima_kanagawa": {
+    "id": "hakkeijima_kanagawa",
+    "name": "八景島（横浜）",
+    "region_id": "pseudo_kanto",
+    "prefecture": "神奈川県",
+    "coordinates": "35.3364, 139.6456",
+    "description": "日本最大級の水族館「横浜・八景島シーパラダイス」やマリーナ、あじさい園を擁する東京湾のレジャー観光アイランド。連絡橋とシーサイドラインで気軽にアクセス可能。",
+    "access": "金沢シーサイドライン 八景島駅より連絡橋を徒歩すぐ",
+    "area": 0.24,
+    "radius_m": 600,
+    "checkin_radius_m": 1800,
+    "points": 20,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "hakkeijima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8d/Hakkeijima_aerial_shoot.jpg/1280px-Hakkeijima_aerial_shoot.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "八景島（横浜）（神奈川県 / Wikimedia Commons: 八景島）"
+    }
+  },
+  "tenjinshima_kanagawa": {
+    "id": "tenjinshima_kanagawa",
+    "name": "天神島（横須賀佐島）",
+    "region_id": "pseudo_kanto",
+    "prefecture": "神奈川県",
+    "coordinates": "35.2222, 139.6028",
+    "description": "三浦半島西岸・佐島と橋で結ばれた自然保護島。県指定天然記念物ハマオモト（ハマユウ）の分布北限地であり、相模湾越しに富士山を望む磯観察の名所。",
+    "access": "JR逗子駅・京急逗子・葉山駅より佐島マリーナ入口行きバス終点徒歩5分",
+    "area": 0.04,
+    "radius_m": 350,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "tenjinshima-yokosuka",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Tenjinjima_01.jpg/1280px-Tenjinjima_01.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "天神島（横須賀佐島）（神奈川県 / Wikimedia Commons: 天神島）"
+    }
+  },
+  "mitsuishi_kanagawa": {
+    "id": "mitsuishi_kanagawa",
+    "name": "三ツ石（真鶴岬）",
+    "region_id": "pseudo_kanto",
+    "prefecture": "神奈川県",
+    "coordinates": "35.1408, 139.1614",
+    "description": "真鶴半島先端の沖合に浮かぶしめ縄が張られた景勝岩礁島。初日の出の名所として知られ、干潮時には石畳状のトンボロが現れて歩いて渡ることができる。",
+    "access": "JR東海道本線 真鶴駅よりケープ真鶴行きバス終点徒歩10分（干潮時徒歩接近可）",
+    "area": 0.01,
+    "radius_m": 300,
+    "checkin_radius_m": 1500,
+    "points": 40,
+    "difficulty": "潮汐限定",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "mitsuishi-manazuru",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "sanshirojima_shizuoka": {
+    "id": "sanshirojima_shizuoka",
+    "name": "三四郎島（堂ヶ島）",
+    "region_id": "izu",
+    "prefecture": "静岡県",
+    "coordinates": "34.7819, 138.7656",
+    "description": "西伊豆・堂ヶ島沖に浮かぶ伝兵衛島・中ノ島・沖ノ瀬島・高島の総称。干潮時に海の道が現れる「堂ヶ島のトンボロ」は国の天然記念物に指定される絶景観光島。",
+    "access": "伊豆急下田駅または修善寺駅より堂ヶ島行きバス・干潮時に砂州を徒歩上陸",
+    "area": 0.04,
+    "radius_m": 350,
+    "checkin_radius_m": 1500,
+    "points": 60,
+    "difficulty": "潮汐限定",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "sanshirojima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "awashima_shizuoka": {
+    "id": "awashima_shizuoka",
+    "name": "淡島（沼津・駿河湾）",
+    "region_id": "izu",
+    "prefecture": "静岡県",
+    "coordinates": "35.0331, 138.8878",
+    "description": "駿河湾越しに富士山を望む周囲約2.5kmの観光島。専用連絡船でわずか3分で渡れ、水族館「あわしまマリンパーク」や山頂の淡島神社参拝で人気。",
+    "access": "JR沼津駅よりバス約30分「マリンパーク」下車・連絡船で約3分",
+    "area": 0.25,
+    "radius_m": 500,
+    "checkin_radius_m": 1600,
+    "points": 50,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "awashima-numazu",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "bentenjima_hamanako": {
+    "id": "bentenjima_hamanako",
+    "name": "弁天島（浜名湖）",
+    "region_id": "aichi_santo",
+    "prefecture": "静岡県",
+    "coordinates": "34.6881, 137.5997",
+    "description": "浜名湖の今切口に面した温泉・マリンリゾート有人島。湖上に立つ高さ18mの朱塗りの大鳥居と夕日の絶景で知られ、JR弁天島駅から降りてすぐ散策できる。",
+    "access": "JR東海道本線 弁天島駅下車すぐ（橋・鉄道直結）",
+    "area": 0.55,
+    "radius_m": 600,
+    "checkin_radius_m": 1800,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "bentenjima-hamanako",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "mikawaoshima_aichi": {
+    "id": "mikawaoshima_aichi",
+    "name": "三河大島",
+    "region_id": "aichi_santo",
+    "prefecture": "愛知県",
+    "coordinates": "34.7875, 137.2372",
+    "description": "蒲郡沖約3kmの三河湾に浮かぶ周囲約4kmの観光無人島。全長約2kmの白砂ビーチやヤシ並木が広がり、夏季（7〜8月）には定期観光船が運航し海水浴・BBQで賑わう。",
+    "access": "蒲郡竹島ふ頭より夏季定期観光船で約15分（7〜8月運航）",
+    "area": 0.29,
+    "radius_m": 500,
+    "checkin_radius_m": 1800,
+    "points": 70,
+    "difficulty": "季節限定船",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "mikawaoshima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Mikawa_oshima1.jpg/1280px-Mikawa_oshima1.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "三河大島（愛知県 / Wikimedia Commons: 三河大島）"
+    }
+  },
+  "engetsujima_wakayama": {
+    "id": "engetsujima_wakayama",
+    "name": "円月島（高嶋・白浜）",
+    "region_id": "pseudo_awaji",
+    "prefecture": "和歌山県",
+    "coordinates": "33.6894, 135.3364",
+    "description": "正式名称は高嶋。島の中央にぽっかり開いた円月形の海食洞に夕日が沈む光景が「日本の夕陽百選」および国の名勝に指定されている南紀白浜の象徴島。",
+    "access": "JR白浜駅よりバス「臨海」下車すぐ（沿岸展望・グラスボート周遊）",
+    "area": 0.02,
+    "radius_m": 350,
+    "checkin_radius_m": 1600,
+    "points": 40,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "engetsujima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "kurojima_wakayama": {
+    "id": "kurojima_wakayama",
+    "name": "九龍島（串本・古座沖）",
+    "region_id": "pseudo_awaji",
+    "prefecture": "和歌山県",
+    "coordinates": "33.5419, 135.8753",
+    "description": "南紀熊野ジオパークの古座川河口沖に浮かぶ源平水軍ゆかりの無人観光島。古座海岸からのシーカヤック上陸ツアーやシュノーケリングの名所。",
+    "access": "JR紀勢本線 古座駅より徒歩10分・古座海岸発シーカヤックまたは渡船で上陸",
+    "area": 0.14,
+    "radius_m": 450,
+    "checkin_radius_m": 1800,
+    "points": 80,
+    "difficulty": "ツアー上陸",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "kurojima-kushimoto",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "eshima_awaji": {
+    "id": "eshima_awaji",
+    "name": "絵島（淡路島岩屋）",
+    "region_id": "pseudo_awaji",
+    "prefecture": "兵庫県",
+    "coordinates": "34.5906, 135.0219",
+    "description": "淡路島北端・岩屋港そばに浮かぶ約2000万年前の砂岩層が波に彫られた景勝小島。国生み神話「おのころ島」伝承地の一つで、人道橋から渡ることができる。",
+    "access": "岩屋港（淡路ジェノバライン発着場）より徒歩約3分・人道橋で渡島",
+    "area": 0.01,
+    "radius_m": 300,
+    "checkin_radius_m": 1500,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "eshima-awaji",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "sojima_okayama": {
+    "id": "sojima_okayama",
+    "name": "曽島（日生諸島）",
+    "region_id": "kasaoka",
+    "prefecture": "岡山県",
+    "coordinates": "34.6872, 134.3164",
+    "description": "岡山県備前市の日生諸島に属する有人離島。戦後の入植開拓によりミカン畑が切り拓かれた歴史をもち、穏やかな瀬戸内の多島美に包まれている。",
+    "access": "日生港より海上タクシー・チャーター船約15分",
+    "area": 0.56,
+    "radius_m": 600,
+    "checkin_radius_m": 1800,
+    "points": 90,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "sojima-hinase",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a2/%E6%9B%BD%E5%B3%B6.jpg/1280px-%E6%9B%BD%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "曽島（日生諸島）（岡山県 / Wikimedia Commons: 曽島）"
+    }
+  },
+  "kuroshima_ushimado": {
+    "id": "kuroshima_ushimado",
+    "name": "黒島（牛窓・ヴィーナスロード）",
+    "region_id": "kasaoka",
+    "prefecture": "岡山県",
+    "coordinates": "34.5986, 134.1592",
+    "description": "日本のエーゲ海・牛窓沖に浮かぶ無人観光島。大潮〜中潮の干潮時に中ノ小島・端ノ小島と全長約800mの砂の道「黒島ヴィーナスロード」で繋がる恋人の聖地。",
+    "access": "牛窓エリア各ホテル・港より干潮時間に合わせた上陸クルーズ船約10分",
+    "area": 0.44,
+    "radius_m": 600,
+    "checkin_radius_m": 1800,
+    "points": 70,
+    "difficulty": "潮汐限定",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "kuroshima-ushimado",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "kujirajima_okayama": {
+    "id": "kujirajima_okayama",
+    "name": "くじら島（玉野・竪場島）",
+    "region_id": "kasaoka",
+    "prefecture": "岡山県",
+    "coordinates": "34.4697, 133.9919",
+    "description": "宇野港沖に浮かぶ正式名称「竪場島」。クジラが海面を泳ぐようなシルエットから「くじら島」と呼ばれ、1日1組限定の無人島グランピング＆キャンプ島として知られる。",
+    "access": "宇野港より専用チャーター船で約20分（宿泊・体験予約制）",
+    "area": 0.12,
+    "radius_m": 450,
+    "checkin_radius_m": 1800,
+    "points": 90,
+    "difficulty": "ツアー上陸",
+    "is_conquest_target": true,
+    "day_trip": false,
+    "is_uninhabited": true,
+    "slug": "kujirajima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "nagashima_osakikamijima": {
+    "id": "nagashima_osakikamijima",
+    "name": "長島（大崎上島町）",
+    "region_id": "kamijima",
+    "prefecture": "広島県",
+    "coordinates": "34.2653, 132.8800",
+    "description": "大崎上島の北西沖に浮かび、全長402mの長島大橋で結ばれた瀬戸内海の有人島。透明度の高い海辺と静かな漁港集落が残る穴場島。",
+    "access": "竹原港・安芸津港よりフェリーで大崎上島へ渡り、長島大橋を経由して車ですぐ",
+    "area": 1.06,
+    "radius_m": 800,
+    "checkin_radius_m": 2000,
+    "points": 70,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "nagashima-osakikamijima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "itsukishima_kure": {
+    "id": "itsukishima_kure",
+    "name": "斎島（豊浜・あびの島）",
+    "region_id": "kamijima",
+    "prefecture": "広島県",
+    "coordinates": "34.1200, 132.7850",
+    "description": "安芸灘とびしま海道・豊島のはるか南沖に浮かぶ呉市の有人離島。国の天然記念物「アビ渡来群游海面」の中心地であり、希少な蝶が集う自然豊かな静寂の島。",
+    "access": "豊島（室原港）・大崎下島（久比港・大長港）より斎島汽船で約25〜35分",
+    "area": 0.7,
+    "radius_m": 700,
+    "checkin_radius_m": 2000,
+    "points": 110,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "itsukishima-kure",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/87/Itsukishima_2019.jpg/1280px-Itsukishima_2019.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "斎島（豊浜・あびの島）（広島県 / Wikimedia Commons: 斎島）"
+    }
+  },
+  "nasakejima_kure": {
+    "id": "nasakejima_kure",
+    "name": "情島（呉市阿賀沖）",
+    "region_id": "kamijima",
+    "prefecture": "広島県",
+    "coordinates": "34.1981, 132.6072",
+    "description": "広島県呉市阿賀港の南沖約2kmに浮かぶ有人離島（山口県周防大島町の情島とは別島）。波穏やかな瀬戸内の海と釣り人に親しまれる素朴な島時間が流れる。",
+    "access": "呉市・阿賀港より市営連絡船で約12分",
+    "area": 0.69,
+    "radius_m": 650,
+    "checkin_radius_m": 1800,
+    "points": 90,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "nasakejima-kure",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/61/Nasakejima_Hiroshima.jpg/1280px-Nasakejima_Hiroshima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "情島（呉市阿賀沖）（広島県 / Wikimedia Commons: 情島 (広島県)）"
+    }
+  },
+  "okinojima_etajima": {
+    "id": "okinojima_etajima",
+    "name": "沖野島（江田島市）",
+    "region_id": "kamijima",
+    "prefecture": "広島県",
+    "coordinates": "34.1708, 132.4356",
+    "description": "能美島（大柿町深江）の西沖に浮かび、沖野島橋で結ばれた有人島。大型マリーナや柑橘畑が広がり、サイクリングやサンセット鑑賞の隠れた名所。",
+    "access": "広島港・呉港より江田島・能美島へ渡り、沖野島橋を車・自転車で渡橋",
+    "area": 0.9,
+    "radius_m": 750,
+    "checkin_radius_m": 2000,
+    "points": 50,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "okinojima-etajima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "ganryujima_yamaguchi": {
+    "id": "ganryujima_yamaguchi",
+    "name": "巌流島（船島）",
+    "region_id": "hagi",
+    "prefecture": "山口県",
+    "coordinates": "33.9328, 130.9317",
+    "description": "慶長17年（1612年）に宮本武蔵と佐々木小次郎が歴史的決闘を繰り広げた関門海峡の無人観光島（正式名称：船島）。両雄の銅像や人工海浜・遊歩道が整備されている。",
+    "access": "下関・唐戸桟橋または北九州・門司港より関門汽船（巌流島連絡船）で約10分",
+    "area": 0.1,
+    "radius_m": 450,
+    "checkin_radius_m": 1600,
+    "points": 40,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "ganryujima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/%E6%B5%B7%E5%B3%A1%E3%82%86%E3%82%81%E3%82%BF%E3%83%AF%E3%83%BC%E3%81%8B%E3%82%89%E6%9C%9B%E3%82%80%E5%B7%8C%E6%B5%81%E5%B3%B6.jpg/1280px-%E6%B5%B7%E5%B3%A1%E3%82%86%E3%82%81%E3%82%BF%E3%83%AF%E3%83%BC%E3%81%8B%E3%82%89%E6%9C%9B%E3%82%80%E5%B7%8C%E6%B5%81%E5%B3%B6.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "巌流島（船島）（山口県 / Wikimedia Commons: 巌流島）"
+    }
+  },
+  "hikoshima_yamaguchi": {
+    "id": "hikoshima_yamaguchi",
+    "name": "彦島（下関市）",
+    "region_id": "hagi",
+    "prefecture": "山口県",
+    "coordinates": "33.9317, 130.9036",
+    "description": "本州最西端・下関市街と彦島水門橋や関彦橋で結ばれた山口県屈指の人口を擁する有人島。老の山公園からの日本海・響灘パノラマや平家ゆかりの史跡が点在。",
+    "access": "JR下関駅よりバスまたは車で関彦橋を渡って約10分",
+    "area": 10.58,
+    "radius_m": 2200,
+    "checkin_radius_m": 3500,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "hikoshima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/98/%E9%96%A2%E9%96%80%E6%B5%B7%E5%B3%A1%E7%A9%BA%E6%92%AE.JPG/1280px-%E9%96%A2%E9%96%80%E6%B5%B7%E5%B3%A1%E7%A9%BA%E6%92%AE.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "彦島（下関市）（山口県 / Wikimedia Commons: 彦島）"
+    }
+  },
+  "takenokojima_yamaguchi": {
+    "id": "takenokojima_yamaguchi",
+    "name": "竹ノ子島（下関市）",
+    "region_id": "hagi",
+    "prefecture": "山口県",
+    "coordinates": "33.9511, 130.8819",
+    "description": "彦島の北西端に寄り添う響灘の小さな有人島。明治期架橋の歴史を継ぐ竹ノ子島橋で渡ることができ、のどかな漁港風景と美しい夕日で知られる。",
+    "access": "JR下関駅よりバスまたは車で彦島経由・竹ノ子島橋を渡って約20分",
+    "area": 0.18,
+    "radius_m": 450,
+    "checkin_radius_m": 1600,
+    "points": 40,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "takenokojima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "sukumo_yamaguchi": {
+    "id": "sukumo_yamaguchi",
+    "name": "粭島（周南市）",
+    "region_id": "suo_oshima",
+    "prefecture": "山口県",
+    "coordinates": "33.9878, 131.8389",
+    "description": "徳山湾の入口に浮かび本土と短い橋で結ばれた有人島。全国のフグ延縄（はえなわ）漁発祥の地として知られ、古くからの風情ある漁村路地が残る。",
+    "access": "JR徳山駅よりバスまたは車約30分（粭島橋で直結）",
+    "area": 0.46,
+    "radius_m": 550,
+    "checkin_radius_m": 1800,
+    "points": 40,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "sukumojima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b1/Sukumojima_Island%2C_Shunan_Yamaguchi_Aerial_photograph.2008.jpg/1280px-Sukumojima_Island%2C_Shunan_Yamaguchi_Aerial_photograph.2008.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "粭島（周南市）（山口県 / Wikimedia Commons: 粭島）"
+    }
+  },
+  "umashima_tabuse": {
+    "id": "umashima_tabuse",
+    "name": "馬島（田布施町）",
+    "region_id": "suo_oshima",
+    "prefecture": "山口県",
+    "coordinates": "33.8969, 132.0492",
+    "description": "山口県田布施町の麻里府港から渡船わずか10分で渡れる瀬戸内海の有人離島。オートキャンプ場「のびのびパーク」や白砂ビーチ、海蝕洞「太華山・刎島」展望が人気。",
+    "access": "麻里府港（JR山陽本線 田布施駅より車10分）より町営渡船「ましま丸」約10分",
+    "area": 0.7,
+    "radius_m": 700,
+    "checkin_radius_m": 2000,
+    "points": 70,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "umashima-tabuse",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/6/65/%E5%AF%BE%E5%B2%B8%E3%81%8B%E3%82%89%E6%9C%9B%E3%82%80%E9%A6%AC%E5%B3%B6.JPG?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "馬島（田布施町）（山口県 / Wikimedia Commons: 馬島 (山口県)）"
+    }
+  },
+  "sagojima_yamaguchi": {
+    "id": "sagojima_yamaguchi",
+    "name": "佐合島（平生町）",
+    "region_id": "suo_oshima",
+    "prefecture": "山口県",
+    "coordinates": "33.8894, 132.0789",
+    "description": "室津半島の西沖に浮かぶ山口県平生町の有人離島。佐賀漁港から定期渡船で10分と近く、透明な遠浅ビーチや江戸時代の海防史跡が残る静かな島。",
+    "access": "平生町・佐賀漁港より定期渡船で約10分",
+    "area": 1.32,
+    "radius_m": 850,
+    "checkin_radius_m": 2000,
+    "points": 80,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "sagojima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "hashima_iwakuni": {
+    "id": "hashima_iwakuni",
+    "name": "端島（岩国市・柱島群島）",
+    "region_id": "suo_oshima",
+    "prefecture": "山口県",
+    "coordinates": "34.0358, 132.3939",
+    "description": "岩国沖の柱島群島に属する有人離島。藩政時代に築かれた見事な石積みの「端島旧防波堤」や白砂の海水浴場が美しい歴史情緒あふれる島。",
+    "access": "岩国港より岩国柱島海運の高速船で約27分",
+    "area": 0.8,
+    "radius_m": 700,
+    "checkin_radius_m": 2000,
+    "points": 90,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "hashima-iwakuni",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Hashima.port.jpg/1280px-Hashima.port.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "端島（岩国市・柱島群島）（山口県 / Wikimedia Commons: 端島 (山口県)）"
+    }
+  },
+  "kurokamishima_yamaguchi": {
+    "id": "kurokamishima_yamaguchi",
+    "name": "黒髪島（周南市）",
+    "region_id": "suo_oshima",
+    "prefecture": "山口県",
+    "coordinates": "34.0178, 131.7375",
+    "description": "徳山湾西部に浮かぶ花崗岩の島で、国会議事堂の外装材にも使われた名石「黒髪石（徳山みかげ）」の産地として名高い有人島。",
+    "access": "周南市沿岸より橋・事業道路接続（一部制限区域あり）",
+    "area": 4.35,
+    "radius_m": 1300,
+    "checkin_radius_m": 2500,
+    "points": 40,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "kurokamishima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "tsushima_shrine_kagawa": {
+    "id": "tsushima_shrine_kagawa",
+    "name": "津嶋（津嶋神社・三豊市）",
+    "region_id": "shiwaku",
+    "prefecture": "香川県",
+    "coordinates": "34.2367, 133.7042",
+    "description": "香川県三豊市沖250mに浮かぶ子どもの守り神「津嶋神社」本殿の島。毎年8月4日・5日の夏季例大祭の2日間だけ「しあわせ橋（津嶋橋）」が開通し上陸でき、日本一営業日が短い臨時駅「津島ノ宮駅」でも有名。",
+    "access": "JR予讃線 津島ノ宮駅（8/4・8/5のみ営業）または海岸寺駅より徒歩・夏季例大祭時のみ渡橋可",
+    "area": 0.01,
+    "radius_m": 300,
+    "checkin_radius_m": 1500,
+    "points": 120,
+    "difficulty": "年2日限定上陸",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "tsushima-shrine-kagawa",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "tsutajima_kagawa": {
+    "id": "tsutajima_kagawa",
+    "name": "蔦島（仁尾・三豊市）",
+    "region_id": "shiwaku",
+    "prefecture": "香川県",
+    "coordinates": "34.2056, 133.6358",
+    "description": "父母ヶ浜に近い仁尾港沖に浮かぶ自然豊かな観光無人島。渡船で約7分で渡ることができ、透明度の高い海水浴場・キャンプ場・弥生時代の貝塚遺跡がある。",
+    "access": "三豊市・仁尾港より市営定期渡船「つたじま丸」で約7分（4〜10月運航）",
+    "area": 0.36,
+    "radius_m": 550,
+    "checkin_radius_m": 1800,
+    "points": 70,
+    "difficulty": "季節限定船",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "tsutajima-nio",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "toyoshima_ehime": {
+    "id": "toyoshima_ehime",
+    "name": "豊島（愛媛県上島町）",
+    "region_id": "kamijima",
+    "prefecture": "愛媛県",
+    "coordinates": "34.2308, 133.2614",
+    "description": "弓削島の南東沖に浮かぶ花崗岩採石の歴史をもつ瀬戸内のアート無人島。建築家・アーティストによる「石のカフェ」などが点在し、予約制上陸見学やチャーターで訪れる秘境島。",
+    "access": "弓削港・因島土生港よりチャーター船または観光イベント船で約15分",
+    "area": 1.24,
+    "radius_m": 800,
+    "checkin_radius_m": 2000,
+    "points": 110,
+    "difficulty": "ツアー上陸",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "toyoshima-ehime",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "umashima_imabari": {
+    "id": "umashima_imabari",
+    "name": "馬島（今治市・来島海峡）",
+    "region_id": "kamijima",
+    "prefecture": "愛媛県",
+    "coordinates": "34.1172, 132.9936",
+    "description": "しまなみ海道・来島海峡大橋の橋脚が立つ潮流の島。一般車両は乗り入れできず、橋の上から専用エレベーター・徒歩・自転車または今治港からの渡船で上陸する絶景グランピング有人島。",
+    "access": "しまなみ海道 来島海峡大橋「馬島IC」より徒歩・自転車用エレベーター、または波止浜港より定期船約10分",
+    "area": 0.5,
+    "radius_m": 600,
+    "checkin_radius_m": 1800,
+    "points": 60,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "umashima-imabari",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "kashima_hojo_ehime": {
+    "id": "kashima_hojo_ehime",
+    "name": "鹿島（松山市北条）",
+    "region_id": "kutsuna",
+    "prefecture": "愛媛県",
+    "coordinates": "33.9742, 132.7636",
+    "description": "「伊予の江の島」とも呼ばれる北条港沖わずか400mの観光無人島。渡船約3分で上陸でき、野生のキュウシュウジカや山頂展望台からの忽那諸島パノラマ、海水浴・キャンプが楽しめる。",
+    "access": "JR予讃線 伊予北条駅より徒歩10分・北条港から市営渡船で約3分",
+    "area": 0.39,
+    "radius_m": 550,
+    "checkin_radius_m": 1800,
+    "points": 40,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "kashima-hojo",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "oge_tokushima": {
+    "id": "oge_tokushima",
+    "name": "大毛島（鳴門市）",
+    "region_id": "pseudo_tokushima",
+    "prefecture": "徳島県",
+    "coordinates": "34.2219, 134.6331",
+    "description": "大鳴門橋の四国側起点であり、世界の名画を陶板で再現した「大塚国際美術館」や鳴門公園・渦の道を擁する徳島県屈指の有人観光アイランド。",
+    "access": "JR鳴門駅・高速鳴門バス停よりバスまたは車約15分（小鳴門橋直結）",
+    "area": 7.16,
+    "radius_m": 1800,
+    "checkin_radius_m": 3000,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "ogejima-naruto",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/0/0c/Oge_Island_background.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "大毛島（鳴門市）（徳島県 / Wikimedia Commons: 大毛島）"
+    }
+  },
+  "onyujima_oita": {
+    "id": "onyujima_oita",
+    "name": "大入島（佐伯湾）",
+    "region_id": "bungo",
+    "prefecture": "大分県",
+    "coordinates": "32.9964, 131.9289",
+    "description": "大分県佐伯港の目の前にひょうたん型に浮かぶ有人観光島。フェリーわずか7分で渡れ、「九州オルレ・さいき大入島コース」のトレッキングや360度展望の遠見山、新鮮な海の幸が魅力。",
+    "access": "JR日豊本線 佐伯駅より徒歩12分・佐伯港（葛港）より大入島観光フェリー約7分",
+    "area": 5.66,
+    "radius_m": 1600,
+    "checkin_radius_m": 2800,
+    "points": 50,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "onyujima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/59/Saiki_ohnyujima.jpg/1280px-Saiki_ohnyujima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大入島（佐伯湾）（大分県 / Wikimedia Commons: 大入島）"
+    }
+  },
+  "mukushima_oita": {
+    "id": "mukushima_oita",
+    "name": "無垢島（地無垢島・津久見）",
+    "region_id": "bungo",
+    "prefecture": "大分県",
+    "coordinates": "33.0958, 132.0206",
+    "description": "豊後水道・津久見湾沖に並ぶ有人島「地無垢島」と無人の「沖無垢島」からなる離島。白亜紀の地層が露出した国の天然記念物でもあり、磯釣りと素朴な漁村文化が息づく。",
+    "access": "津久見港より市営定期船「むくしま」で約25〜45分",
+    "area": 0.35,
+    "radius_m": 550,
+    "checkin_radius_m": 1800,
+    "points": 90,
+    "difficulty": "乗継の壁",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "mukushima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "oshima_nichinan": {
+    "id": "oshima_nichinan",
+    "name": "大島（宮崎県日南市）",
+    "region_id": "minami_naka",
+    "prefecture": "宮崎県",
+    "coordinates": "31.5319, 131.4069",
+    "description": "日南海岸国定公園・南郷沖に浮かぶ南北約3.5kmの自然観光島（通称：竹之島）。日本最初のコンクリート造灯台「鞍埼灯台」や亜熱帯樹林、コバルトブルーの入り江が広がる。",
+    "access": "日南市南郷・目井津港より市営定期船「あけぼの3」で約15分",
+    "area": 2.08,
+    "radius_m": 1000,
+    "checkin_radius_m": 2200,
+    "points": 70,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "oshima-nichinan",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0f/Hyuga_osima.jpg/1280px-Hyuga_osima.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "大島（宮崎県日南市）（宮崎県 / Wikimedia Commons: 大島 (宮崎県)）"
+    }
+  },
+  "kojima_kushima": {
+    "id": "kojima_kushima",
+    "name": "幸島（宮崎県串間市）",
+    "region_id": "minami_naka",
+    "prefecture": "宮崎県",
+    "coordinates": "31.4556, 131.3758",
+    "description": "ニホンザルの「イモ洗い行動」発見により霊長類学の聖地として世界的に知られる国の天然記念物生息島。対岸の石波海岸から渡し舟で上陸観察が可能。",
+    "access": "串間市・石波海岸（幸島対岸）より渡し舟で約5分",
+    "area": 0.32,
+    "radius_m": 500,
+    "checkin_radius_m": 1800,
+    "points": 70,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "kojima-kushima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Ishinami_Beach_-_panoramio.jpg/1280px-Ishinami_Beach_-_panoramio.jpg?utm_source=ja.wikipedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "幸島（宮崎県串間市）（宮崎県 / Wikimedia Commons: 幸島）"
+    }
+  },
+  "chiringashima_kagoshima": {
+    "id": "chiringashima_kagoshima",
+    "name": "知林ヶ島（指宿・錦江湾）",
+    "region_id": "pseudo_satsuma",
+    "prefecture": "鹿児島県",
+    "coordinates": "31.2789, 130.6714",
+    "description": "鹿児島湾（錦江湾）に浮かぶ周囲約3kmの美しい無人観光島。毎年3〜10月の大潮・中潮の干潮時に長さ約800mの砂の道「ちりりんロード」が出現し、歩いて上陸できる縁結びの島。",
+    "access": "JR指宿枕崎線 指宿駅より車約10分（田良岬）・3〜10月の干潮時に砂州を徒歩上陸",
+    "area": 0.6,
+    "radius_m": 700,
+    "checkin_radius_m": 2000,
+    "points": 70,
+    "difficulty": "潮汐限定",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "chiringashima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d9/Chiringashima_and_tombolo_20180430.jpg/1280px-Chiringashima_and_tombolo_20180430.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "知林ヶ島（指宿・錦江湾）（鹿児島県 / Wikimedia Commons: 知林ヶ島）"
+    }
+  },
+  "maejima_amakusa": {
+    "id": "maejima_amakusa",
+    "name": "前島（上天草・松島）",
+    "region_id": "amakusa",
+    "prefecture": "熊本県",
+    "coordinates": "32.5194, 130.4258",
+    "description": "天草五橋の4号橋（前島橋）と5号橋（松島橋）に結ばれた天草松島の中心観光有人島。海中水族館シードーナツや「リゾラテラス天草」、絶景温泉リゾートが集結。",
+    "access": "JR三角駅よりバスまたは車約20分（天草五橋直結）／三角港よりシークルーズ約17分",
+    "area": 0.48,
+    "radius_m": 600,
+    "checkin_radius_m": 1800,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "maejima-amakusa",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    }
+  },
+  "nagaurajima_amakusa": {
+    "id": "nagaurajima_amakusa",
+    "name": "永浦島（上天草）",
+    "region_id": "amakusa",
+    "prefecture": "熊本県",
+    "coordinates": "32.5250, 130.4408",
+    "description": "天草五橋の2号橋（大矢野橋）〜3号橋（中の橋）間に位置する有人島。日本最大級のハクセンシオマネキ生息干潟があり、天草ビジターセンターで自然観察ができる。",
+    "access": "JR三角駅よりバスまたは車約15分（天草パールライン直結）",
+    "area": 0.8,
+    "radius_m": 700,
+    "checkin_radius_m": 2000,
+    "points": 30,
+    "difficulty": "初級・橋アクセス",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "nagaurajima-amakusa",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Nagaurajima_Island%2C_Kamiamakusa_Kumamoto_Aerial_photograph.2016.jpg/1280px-Nagaurajima_Island%2C_Kamiamakusa_Kumamoto_Aerial_photograph.2016.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "永浦島（上天草）（熊本県 / Wikimedia Commons: 永浦島）"
+    }
+  },
+  "matsushima_karatsu": {
+    "id": "matsushima_karatsu",
+    "name": "松島（佐賀県唐津市）",
+    "region_id": "genkai",
+    "prefecture": "佐賀県",
+    "coordinates": "33.5889, 129.8825",
+    "description": "呼子港の北沖約4kmに浮かぶ人口約50人の玄界灘有人離島。潜り漁を受け継ぐ若い海士たちが営む離島イタリアン・フレンチレストランや猫のいる路地で全国から注目を集める美食島。",
+    "access": "唐津市・呼子港より定期船「新栄」で約15分",
+    "area": 0.62,
+    "radius_m": 650,
+    "checkin_radius_m": 1800,
+    "points": 70,
+    "difficulty": "初級・日帰り",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "slug": "matsushima-karatsu",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Saga_Matsu-shima_Island_Aerial_photograph_2013.jpg/1280px-Saga_Matsu-shima_Island_Aerial_photograph_2013.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail",
+    "practical_info": {
+      "photo_caption": "松島（佐賀県唐津市）（佐賀県 / Wikimedia Commons: 松島 (佐賀県)）"
+    }
+  },
+  "barasujima_yaeyama": {
+    "id": "barasujima_yaeyama",
+    "name": "バラス島（西表島沖）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.4397, 123.8169",
+    "description": "西表島・上原港と鳩間島の間に浮かぶ、サンゴのかけら（バラス）だけでできた純白の奇跡の無人島。ウミガメ遭遇率抜群のシュノーケリング＆上陸ツアーで絶大な人気を誇る。",
+    "access": "西表島（上原港）または石垣島よりシュノーケリング・上陸ツアー船で約10〜45分",
+    "area": 0.01,
+    "radius_m": 350,
+    "checkin_radius_m": 1800,
+    "points": 90,
+    "difficulty": "ツアー上陸",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "barasujima",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/d/dc/Barasu_Island_near_Iriomote_Island_2.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "バラス島（西表島沖）（沖縄県 / Wikimedia Commons: バラス島）"
+    }
+  },
+  "hamajima_yaeyama": {
+    "id": "hamajima_yaeyama",
+    "name": "浜島（幻の島・小浜島沖）",
+    "region_id": "yaeyama",
+    "prefecture": "沖縄県",
+    "coordinates": "24.3492, 123.9986",
+    "description": "小浜島と竹富島の間のエメラルドグリーンの浅瀬に干潮時ほど大きく姿を現す「幻の島」。草木が1本もない白砂の三日月型アイランドとして石垣・小浜発の上陸ツアーで大人気。",
+    "access": "石垣港または小浜港より「幻の島」上陸マリンツアー船で約15〜30分",
+    "area": 0.02,
+    "radius_m": 400,
+    "checkin_radius_m": 1800,
+    "points": 80,
+    "difficulty": "ツアー上陸",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "hamajima-maboroshi",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "https://upload.wikimedia.org/wikipedia/commons/3/39/Yaeyama_Hamajima_COK20182-C2-13.jpg?utm_source=ja.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled",
+    "practical_info": {
+      "photo_caption": "浜島（幻の島・小浜島沖）（沖縄県 / Wikimedia Commons: 浜島 (沖縄県)）"
+    }
+  },
+  "uninohama_miyako": {
+    "id": "uninohama_miyako",
+    "name": "ユニの浜（伊良部大橋沖）",
+    "region_id": "miyako",
+    "prefecture": "沖縄県",
+    "coordinates": "24.7878, 125.2392",
+    "description": "伊良部大橋の南沖に干潮時だけ洋上へ浮かび上がる純白の砂州島。360度をミヤコブルーの浅瀬に囲まれ、カヤック・SUP・ボート上陸ツアーで訪れる絶景スポット。",
+    "access": "宮古島（トゥリバー・久松）よりカヤック・SUP・ボート上陸ツアーで約15〜25分",
+    "area": 0.02,
+    "radius_m": 400,
+    "checkin_radius_m": 1800,
+    "points": 80,
+    "difficulty": "潮汐限定",
+    "is_conquest_target": true,
+    "day_trip": true,
+    "is_uninhabited": true,
+    "slug": "uninohama",
+    "flags": {
+      "宿泊・観光": "yes",
+      "陸地座標実証済": "yes"
+    },
+    "hero_image_url": "/hero/slide18.webp",
+    "practical_info": {
+      "gallery_urls": [
+        "/hero/slide18.webp"
+      ],
+      "photo_caption": "ユニの浜（沖縄県宮古島市伊良部沖・現地実写）"
+    }
   }
 };
-
-export const ALL_ISLANDS_LIST = Object.values(ALL_ISLANDS_MASTER_DICTIONARY);

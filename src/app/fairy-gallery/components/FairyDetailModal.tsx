@@ -212,24 +212,36 @@ export default function FairyDetailModal({ fairy, isRevealed, onClose, onOpenVie
               className={`relative w-48 h-64 sm:w-52 sm:h-68 rounded-xl bg-slate-950 border border-slate-800 flex-shrink-0 flex items-center justify-center p-3 shadow-inner group ${onOpenViewer ? 'cursor-pointer hover:border-blue-500/80 transition' : ''}`}
               title={onOpenViewer ? 'クリックして特大カードで鑑賞' : ''}
             >
-              {isRevealed && fairy.visual.imageUrl ? (
-                <div className="relative w-full h-full">
-                  <Image
-                    src={fairy.visual.imageUrl}
-                    alt={fairy.name}
-                    fill
-                    className="object-contain drop-shadow-xl transition-transform duration-300 group-hover:scale-105"
-                    sizes="220px"
-                  />
-                  {onOpenViewer && (
-                    <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center backdrop-blur-[2px]">
-                      <span className="px-3 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold shadow flex items-center gap-1.5">
-                        <Maximize2 className="w-3.5 h-3.5" />
-                        <span>特大表示</span>
+              {isRevealed ? (
+                fairy.visual.imageUrl ? (
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={fairy.visual.imageUrl}
+                      alt={fairy.name}
+                      fill
+                      className="object-contain drop-shadow-xl transition-transform duration-300 group-hover:scale-105"
+                      sizes="220px"
+                    />
+                    {onOpenViewer && (
+                      <div className="absolute inset-0 bg-blue-950/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center backdrop-blur-[2px]">
+                        <span className="px-3 py-1.5 rounded-full bg-blue-600 text-white text-xs font-bold shadow flex items-center gap-1.5">
+                          <Maximize2 className="w-3.5 h-3.5" />
+                          <span>特大表示</span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className={`relative w-full h-full rounded-xl bg-gradient-to-br ${fairy.visual.colorFrom} ${fairy.visual.colorTo} flex flex-col items-center justify-center p-4 overflow-hidden`}>
+                    <div className="absolute inset-0 bg-slate-950/35" />
+                    <span className="relative z-10 text-7xl drop-shadow-2xl">{fairy.visual.icon}</span>
+                    {resolvedIslandName && (
+                      <span className="relative z-10 mt-3 px-3 py-1 rounded-full bg-black/45 border border-white/20 text-xs font-bold text-white">
+                        {resolvedIslandName}
                       </span>
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                )
               ) : (
                 <div className="relative w-full h-full">
                   <FairyTeaserSilhouette fairy={fairy} size="lg" />

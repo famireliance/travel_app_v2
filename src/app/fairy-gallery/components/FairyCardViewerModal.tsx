@@ -318,17 +318,24 @@ export default function FairyCardViewerModal({
               {/* 背景の魔方陣風グラデーションサークル */}
               <div className={`absolute w-64 h-64 rounded-full bg-gradient-to-tr ${fairy.visual.colorFrom} ${fairy.visual.colorTo} opacity-20 blur-2xl animate-pulse pointer-events-none`} />
 
-              {isRevealed && fairy.visual.imageUrl ? (
-                <div className="relative w-full h-full">
-                  <Image
-                    src={fairy.visual.imageUrl}
-                    alt={fairy.name}
-                    fill
-                    className="object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
-                    sizes="420px"
-                    priority
-                  />
-                </div>
+              {isRevealed ? (
+                fairy.visual.imageUrl ? (
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={fairy.visual.imageUrl}
+                      alt={fairy.name}
+                      fill
+                      className="object-contain filter drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]"
+                      sizes="420px"
+                      priority
+                    />
+                  </div>
+                ) : (
+                  <div className={`relative w-full h-full rounded-xl bg-gradient-to-br ${fairy.visual.colorFrom} ${fairy.visual.colorTo} flex flex-col items-center justify-center p-6 overflow-hidden`}>
+                    <div className="absolute inset-0 bg-slate-950/35" />
+                    <span className="relative z-10 text-8xl sm:text-9xl drop-shadow-2xl">{fairy.visual.icon}</span>
+                  </div>
+                )
               ) : (
                 <div className="relative w-full h-full">
                   <FairyTeaserSilhouette fairy={fairy} size="lg" />

@@ -196,7 +196,7 @@ export default async function RegionPage({
               href="/islands"
               className="text-xs md:text-sm font-bold text-slate-600 hover:text-blue-600 shrink-0"
             >
-              ← 全国481島ディレクトリへ
+              ← 全国529島ディレクトリへ
             </Link>
           </div>
 

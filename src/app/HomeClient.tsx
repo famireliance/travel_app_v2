@@ -20,15 +20,46 @@ import { toast } from 'react-hot-toast';
 import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 
-const ALL_ISLANDS_COUNT = 369;
+const ALL_ISLANDS_COUNT = 417;
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const INITIAL_MASTER_ISLANDS: any[] = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter(
   (i) => i.is_conquest_target !== false && i.is_published !== false
 );
 
+function getCleanPrimaryIslandName(rawName?: string): string {
+  if (!rawName) return '';
+  const withoutParens = String(rawName).replace(/（.*?）|\(.*?\)/g, '').trim();
+  if (withoutParens.includes('・')) {
+    const parts = withoutParens.split('・').map((s) => s.trim()).filter(Boolean);
+    const nonGroup = parts.find(
+      (p) => !p.endsWith('諸島') && !p.endsWith('列島') && !p.endsWith('群島') && !p.endsWith('湾')
+    );
+    return nonGroup || parts[parts.length - 1];
+  }
+  return withoutParens;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function matchesTargetIslandSpec(island: any, spec: string): boolean {
+  const cleanTarget = spec.split('（')[0].split('(')[0].trim();
+  const prefHint = (spec.match(/（([^）]+)）|\(([^)]+)\)/) || [])[1] || '';
+  const islandPrimary = getCleanPrimaryIslandName(island?.name);
+  if (islandPrimary !== cleanTarget) return false;
+  if (prefHint) {
+    const pref = String(island?.prefecture || '');
+    const rawName = String(island?.name || '');
+    if (!pref.includes(prefHint) && !rawName.includes(prefHint)) return false;
+  }
+  return true;
+}
+
 const getIslandIdFromLocation = (location: string) => {
+  if (location.includes('ユニの浜')) return 'uninohama_miyako';
+  if (location.includes('南島')) return 'minamijima_ogasawara';
+  if (location.includes('池間')) return '388';
+  if (location.includes('伊良部')) return '387';
   if (location.includes('西表')) return '396';
-  if (location.includes('小笠原')) return '63';
+  if (location.includes('小笠原') || location.includes('父島')) return '63';
   if (location.includes('与那国')) return '401';
   if (location.includes('宮古')) return '386';
   if (location.includes('粟国')) return '382';
@@ -56,14 +87,14 @@ export default function Home() {
   const [selectedRegionId, setSelectedRegionId] = useState<string | null>(null);
   const [selectedAreaTab, setSelectedAreaTab] = useState<string>('全て');
   const { user, totalVisited, companionChar, companionStage, islandStatuses, totalPoints, totalXP, subscriptionTier, conquestTargetCount } = useTravel();
-  const totalIslandsCount = useMemo(() => allIslands.length || 369, [allIslands]);
+  const totalIslandsCount = useMemo(() => allIslands.length || 417, [allIslands]);
   const { scrollY } = useScroll();
   const headerY = useTransform(scrollY, [0, 500], [0, 150]);
   const headerOpacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   // サーバーサイドとクライアントサイドでhydreation不一致を防ぐための空配列またはデフォルトを保証する
   const slides = heroSlides.length > 0 ? heroSlides : [
-    { type: 'image', src: "/hero/slide2.webp", title: ["まだ見ぬ青を、", "探す旅へ。"], location: "宮古島 (沖縄県)" }
+    { type: 'image', src: "/hero/slide2.webp", title: ["生命の鼓動に触れる、", "秘密の緑の迷宮へ。"], location: "西表島 (沖縄県)" }
   ];
 
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -173,32 +204,25 @@ export default function Home() {
     // カテゴリーごとの厳格なファクトチェック済み島名リスト
     const VERIFIED_CATEGORY_MAP: Record<string, string[]> = {
       'transparency': ['座間味島', '阿嘉島', '渡嘉敷島', '宮古島', '伊良部島', '下地島', '池間島', '来間島'],
-      'stars': ['波照間島', '神津島', '石垣島', '西表島', '竹富島', '小浜島', '黒島'],
+      'stars': ['波照間島', '神津島', '石垣島', '西表島', '竹富島', '小浜島', '黒島（沖縄）'],
       'retreat': ['直島', '豊島（香川）', '小豆島', '古宇利島', '瀬底島', '生口島', '竹富島', '与論島'],
       'family': ['石垣島', '宮古島', '淡路島', '伊豆大島', '佐渡島', '小豆島', '初島'],
       'onsen_sauna': ['式根島', '屋久島', '硫黄島（鹿児島）', '八丈島', '直島', '桜島'],
       'luxury': ['宮古島', '伊良部島', '石垣島', '小浜島', '屋久島', '奄美大島', '淡路島'],
       'remote': ['青ヶ島', '南大東島', '北大東島', '悪石島', '宝島', '与那国島', '波照間島'],
       'nature': ['西表島', '屋久島', '父島', '母島', '奄美大島', '徳之島', '御蔵島'],
-      'gourmet': ['淡路島', '小豆島', '壱岐島', '福江島', '利尻島', '礼文島', '佐渡島', '隠岐'],
-      'daytrip': ['江の島', '猿島', '友ヶ島', '能古島', '日間賀島', '佐久島', '相島', '水納島', '伊江島']
+      'gourmet': ['淡路島', '小豆島', '壱岐島', '福江島', '利尻島', '礼文島', '佐渡島', '島後'],
+      'daytrip': ['江の島', '猿島', '友ヶ島', '能古島', '日間賀島', '佐久島', '相島（福岡）', '水納島（クロワッサン）', '伊江島']
     };
 
     const targetNames = VERIFIED_CATEGORY_MAP[selectedCategory] || [];
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    return allIslands.filter((island: any) => {
-      const name = island.name || '';
-      return targetNames.some((verifiedName: string) => {
-        const cleanName = verifiedName.split('（')[0]; // 「豊島（香川）」などを「豊島」としてマッチングさせる
-        return name === cleanName || name.includes(cleanName) || cleanName.includes(name);
+    return allIslands
+      .filter((island: any) => targetNames.some((spec) => matchesTargetIslandSpec(island, spec)))
+      .sort((a, b) => {
+        const getIndex = (isl: any) => targetNames.findIndex((spec) => matchesTargetIslandSpec(isl, spec));
+        return getIndex(a) - getIndex(b);
       });
-    }).sort((a, b) => {
-      const getIndex = (islandName: string) => targetNames.findIndex(n => {
-        const clean = n.split('（')[0];
-        return islandName === clean || islandName.includes(clean) || clean.includes(islandName);
-      });
-      return getIndex(a.name || '') - getIndex(b.name || '');
-    });
   }, [selectedCategory, allIslands]);
 
   const selectedRegionObj = useMemo(() => {
@@ -222,39 +246,72 @@ export default function Home() {
 
   const kiratabiChoice = useMemo(() => {
     const list = ['宮古島', '石垣島', '父島', '屋久島', '奄美大島', '佐渡島', '直島', '淡路島', '西表島'];
-    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
-      .sort((a, b) => {
-        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
-        return getIdx(a.name) - getIdx(b.name);
-      });
+    return allIslands
+      .filter((i) => list.some((spec) => matchesTargetIslandSpec(i, spec)))
+      .sort((a, b) => list.findIndex((s) => matchesTargetIslandSpec(a, s)) - list.findIndex((s) => matchesTargetIslandSpec(b, s)));
   }, [allIslands]);
 
   const recommendedForWomen = useMemo(() => {
     const list = ['直島', '小豆島', '淡路島', '宮古島', '竹富島', '江の島'];
-    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
-      .sort((a, b) => {
-        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
-        return getIdx(a.name) - getIdx(b.name);
-      });
+    return allIslands
+      .filter((i) => list.some((spec) => matchesTargetIslandSpec(i, spec)))
+      .sort((a, b) => list.findIndex((s) => matchesTargetIslandSpec(a, s)) - list.findIndex((s) => matchesTargetIslandSpec(b, s)));
   }, [allIslands]);
 
   const recommendedForFamilies = useMemo(() => {
     const list = ['淡路島', '宮古島', '石垣島', '小豆島', '初島', '瀬底島', '沖縄本島'];
-    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
-      .sort((a, b) => {
-        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
-        return getIdx(a.name) - getIdx(b.name);
-      });
+    return allIslands
+      .filter((i) => list.some((spec) => matchesTargetIslandSpec(i, spec)))
+      .sort((a, b) => list.findIndex((s) => matchesTargetIslandSpec(a, s)) - list.findIndex((s) => matchesTargetIslandSpec(b, s)));
   }, [allIslands]);
 
   const easilyAccessible = useMemo(() => {
     const list = ['淡路島', '江の島', '瀬底島', '古宇利島', '宮古島', '石垣島', '八丈島', '奄美大島'];
-    return allIslands.filter(i => list.some(name => i.name === name || i.name.includes(name)))
-      .sort((a, b) => {
-        const getIdx = (n: string) => list.findIndex(l => n === l || n.includes(l));
-        return getIdx(a.name) - getIdx(b.name);
-      });
+    return allIslands
+      .filter((i) => list.some((spec) => matchesTargetIslandSpec(i, spec)))
+      .sort((a, b) => list.findIndex((s) => matchesTargetIslandSpec(a, s)) - list.findIndex((s) => matchesTargetIslandSpec(b, s)));
   }, [allIslands]);
+
+  // 45諸島すべてに「その諸島内の島の実地写真（他諸島・ヒーロースライドと重複しない固有画像）」を1対1で割り当て
+  const regionRepresentativeMap = useMemo(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const record: Record<string, { imgUrl: string; fallbackIsland: any }> = {};
+    const usedUrls = new Set<string>();
+    const heroSlideSrcs = new Set(slides.filter((s) => s.type === 'image').map((s) => s.src));
+
+    for (const region of regionsData) {
+      const strictIslands = allIslands.filter((i) => i.region_id === region.id);
+      const looseIslands =
+        strictIslands.length > 0
+          ? strictIslands
+          : allIslands.filter((i) => i.region_id === region.name);
+
+      // まずヒーロースライドと被らず、他諸島とも重複しない実地写真を優先選択
+      let chosenUrl = '';
+      for (const isl of looseIslands) {
+        const meta = getVerifiedIslandPhotos(isl);
+        const u = meta.desktopUrl || meta.mobileUrl || '';
+        if (u && !usedUrls.has(u) && !heroSlideSrcs.has(u)) {
+          chosenUrl = u;
+          break;
+        }
+      }
+      // 該当諸島にヒーロー写真しかない場合でも、他諸島と重複しなければ許可
+      if (!chosenUrl) {
+        for (const isl of looseIslands) {
+          const meta = getVerifiedIslandPhotos(isl);
+          const u = meta.desktopUrl || meta.mobileUrl || '';
+          if (u && !usedUrls.has(u)) {
+            chosenUrl = u;
+            break;
+          }
+        }
+      }
+      if (chosenUrl) usedUrls.add(chosenUrl);
+      record[region.id] = { imgUrl: chosenUrl, fallbackIsland: looseIslands[0] || null };
+    }
+    return record;
+  }, [allIslands, slides]);
 
 
   useEffect(() => {
@@ -878,7 +935,7 @@ export default function Home() {
               href="/islands"
               className="text-sm font-bold text-slate-500 hover:text-amber-600 flex items-center gap-1 transition-colors bg-slate-100 hover:bg-amber-50 px-6 py-2.5 rounded-full shadow-sm"
             >
-              全国481島の一覧をみる <ChevronRight className="w-4 h-4" />
+              全国529島の一覧をみる <ChevronRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
@@ -995,7 +1052,7 @@ export default function Home() {
       )}
 
       {/* Remote Islands Section */}
-      {allIslands.filter(i => ['青ヶ島', '御蔵島', '水納島', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'].some(name => i.name === name)).length > 0 && (
+      {allIslands.filter((i) => ['青ヶ島', '御蔵島', '水納島（宮古）', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'].some((spec) => matchesTargetIslandSpec(i, spec))).length > 0 && (
         <div className="px-8 lg:px-12 pt-4 pb-16 bg-white">
           <div className="mb-8 flex items-center justify-between max-w-7xl mx-auto">
             <div>
@@ -1009,17 +1066,16 @@ export default function Home() {
           </div>
           <div className="flex gap-4 overflow-x-auto pb-6 hide-scrollbar max-w-7xl mx-auto snap-x px-4 lg:px-0 scroll-pl-4 lg:scroll-pl-0 relative">
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-12 h-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none lg:hidden" />
-            {allIslands.filter(i => ['青ヶ島', '御蔵島', '水納島', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'].some(name => {
-              const clean = name.split('（')[0];
-              return i.name === clean || i.name.includes(clean);
-            })).sort((a, b) => {
-              const list = ['青ヶ島', '御蔵島', '水納島', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'];
-              const getIdx = (n: string) => list.findIndex(l => {
-                const clean = l.split('（')[0];
-                return n === clean || n.includes(clean);
-              });
-              return getIdx(a.name) - getIdx(b.name);
-            }).map((island, idx) => (
+            {(() => {
+              const remoteSpecs = ['青ヶ島', '御蔵島', '水納島（宮古）', '南大東島', '悪石島', '硫黄島（鹿児島）', '宝島', '北大東島'];
+              return allIslands
+                .filter((i) => remoteSpecs.some((spec) => matchesTargetIslandSpec(i, spec)))
+                .sort(
+                  (a, b) =>
+                    remoteSpecs.findIndex((s) => matchesTargetIslandSpec(a, s)) -
+                    remoteSpecs.findIndex((s) => matchesTargetIslandSpec(b, s))
+                );
+            })().map((island, idx) => (
               <Link 
                 key={`remote-${island.id}-${idx}`}
                 href={`/island/${island.slug || island.id}`}
@@ -1377,31 +1433,9 @@ export default function Home() {
               return st === 'visited' || st === 'verified_visited';
             }).length;
             const pct = regionTotalCount > 0 ? (regionVisitedCount / regionTotalCount) * 100 : 0;
-            const hash = region.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
-            
-            // Match real user photos to correct regions
-            const validImageSlides = slides.filter(s => s.type === 'image');
-            const regionSpecificSlides = validImageSlides.filter(s => {
-              if (region.id === 'ogasawara' && s.location.includes('小笠原')) return true;
-              if (region.id === 'miyako' && s.location.includes('宮古')) return true;
-              if (region.id === 'yaeyama' && (s.location.includes('与那国') || s.location.includes('竹富') || s.location.includes('西表'))) return true;
-              if (region.id === 'kume' && s.location.includes('粟国')) return true;
-              return false;
-            });
-
-            const representativeIsland = allIslands.find(i => {
-              const inRegion = i.region_id === region.id || i.region_id === region.name;
-              if (!inRegion) return false;
-              return getVerifiedIslandPhotos(i).hasVerifiedPhoto;
-            });
-
-            let regionImg = '';
-            if (regionSpecificSlides.length > 0) {
-              regionImg = regionSpecificSlides[hash % regionSpecificSlides.length].src;
-            } else if (representativeIsland) {
-              const vMeta = getVerifiedIslandPhotos(representativeIsland);
-              regionImg = vMeta.desktopUrl || vMeta.mobileUrl || '';
-            }
+            const regionVisual = regionRepresentativeMap[region.id];
+            const regionImg = regionVisual?.imgUrl || '';
+            const regionFallbackIsland = regionVisual?.fallbackIsland || null;
             
             const isSelected = selectedRegionId === region.id;
             return (
@@ -1414,13 +1448,18 @@ export default function Home() {
                   isSelected ? 'ring-4 ring-blue-500 shadow-2xl scale-[1.02]' : ''
                 }`}
               >
-                {/* Full Bleed Background Image (検証済み現地写真がある場合のみ表示、無い場合は海図グラフィック) */}
+                {/* Full Bleed Background Image (諸島固有の検証済実地写真、無い場合は代表島の実座標空撮) */}
                 {regionImg ? (
                   <img 
                     src={regionImg} 
-                    alt={region.name} 
+                    alt={region.name}
+                    loading="lazy"
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                   />
+                ) : regionFallbackIsland ? (
+                  <div className="absolute inset-0 w-full h-full">
+                    <AuthenticIslandCardImage island={regionFallbackIsland} showBadgeOnPlaceholder={false} />
+                  </div>
                 ) : (
                   <div
                     className="absolute inset-0 opacity-25 pointer-events-none"
@@ -1527,33 +1566,38 @@ export default function Home() {
                         <div
                           key={isl.id}
                           onClick={() => router.push(`/island/${isl.slug || isl.id}`)}
-                          className="bg-slate-800/90 hover:bg-slate-800 rounded-2xl border border-slate-700/80 hover:border-amber-500/50 p-5 cursor-pointer transition-all hover:-translate-y-1 shadow-lg group/card flex flex-col justify-between"
+                          className="bg-slate-800/90 hover:bg-slate-800 rounded-2xl border border-slate-700/80 hover:border-amber-500/50 overflow-hidden cursor-pointer transition-all hover:-translate-y-1 shadow-lg group/card flex flex-col justify-between"
                         >
                           <div>
-                            <div className="flex items-center justify-between mb-3">
-                              <span className="text-xs font-bold text-amber-400 tracking-wider">
-                                {isl.prefecture || selectedRegionObj.area}
-                              </span>
-                              <span className={`px-2 py-0.5 rounded-full text-[0.65rem] font-bold ${
+                            <div className="h-32 bg-slate-950 relative overflow-hidden">
+                              <AuthenticIslandCardImage island={isl} />
+                              <span className={`absolute top-2.5 right-2.5 z-20 px-2 py-0.5 rounded-full text-[0.65rem] font-bold backdrop-blur-sm ${
                                 isVisited
-                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40'
+                                  ? 'bg-emerald-950/85 text-emerald-300 border border-emerald-500/40'
                                   : status === 'planning'
-                                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
-                                  : 'bg-slate-700 text-slate-300'
+                                  ? 'bg-amber-950/85 text-amber-300 border border-amber-500/40'
+                                  : 'bg-slate-900/85 text-slate-300 border border-slate-700'
                               }`}>
                                 {isVisited ? '✓ 到達済' : status === 'planning' ? '★ 行きたい' : '未記録'}
                               </span>
                             </div>
-                            <h4 className="font-serif font-bold text-lg text-white group-hover/card:text-amber-300 transition-colors mb-2 flex items-center justify-between">
-                              <span>{isl.name}</span>
-                              <ArrowRight className="w-4 h-4 text-slate-500 group-hover/card:text-amber-300 group-hover/card:translate-x-1 transition-all" />
-                            </h4>
-                            <p className="text-xs text-slate-300 line-clamp-3 leading-relaxed mb-4">
-                              {isl.description || '島独自の自然と歴史文化が織りなす魅力あふれる離島。'}
-                            </p>
+                            <div className="p-5 pb-0">
+                              <div className="flex items-center justify-between mb-1.5">
+                                <span className="text-xs font-bold text-amber-400 tracking-wider">
+                                  {isl.prefecture || selectedRegionObj.area}
+                                </span>
+                              </div>
+                              <h4 className="font-serif font-bold text-lg text-white group-hover/card:text-amber-300 transition-colors mb-2 flex items-center justify-between">
+                                <span>{isl.name}</span>
+                                <ArrowRight className="w-4 h-4 text-slate-500 group-hover/card:text-amber-300 group-hover/card:translate-x-1 transition-all shrink-0" />
+                              </h4>
+                              <p className="text-xs text-slate-300 line-clamp-3 leading-relaxed mb-4">
+                                {isl.description || '島独自の自然と歴史文化が織りなす魅力あふれる離島。'}
+                              </p>
+                            </div>
                           </div>
-                          <div className="pt-3 border-t border-slate-700/60 flex items-center justify-between text-[0.7rem] text-slate-400">
-                            <span>アクセス: {isl.access || '定期船便等'}</span>
+                          <div className="px-5 pb-5 pt-3 border-t border-slate-700/60 flex items-center justify-between text-[0.7rem] text-slate-400">
+                            <span className="line-clamp-1">アクセス: {isl.access || '定期船便等'}</span>
                           </div>
                         </div>
                       );
