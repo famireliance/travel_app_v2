@@ -22,9 +22,12 @@ import { drawOfficialSquareHanko, drawOfficialMedallionSeal } from '@/lib/offici
 import regionsData from '@/data/regions.json';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
+import AuthModal from './AuthModal';
 
-export default function CertificateModal({ isOpen, onClose, island, user, anniversaryMode = false }: CertificateModalProps) {
-  const { travelerName: contextTravelerName, updateTravelerName, companionChar, companionStage, islandStatuses, tempCheckInPhotoUrl, setTempCheckInPhotoUrl, tempCheckInDate, subscriptionTier } = useTravel();
+export default function CertificateModal({ isOpen, onClose, island, user: userProp, anniversaryMode = false }: CertificateModalProps) {
+  const { user: contextUser, travelerName: contextTravelerName, updateTravelerName, islandStatuses, tempCheckInPhotoUrl, setTempCheckInPhotoUrl, tempCheckInDate, subscriptionTier } = useTravel();
+  const user = userProp || contextUser;
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const isPremium = subscriptionTier === 'premium' || subscriptionTier === 'ultimate';
   const status = island
     ? (islandStatuses[String(island.id)] || (island.slug ? islandStatuses[String(island.slug)] : undefined) || 'none')
@@ -35,7 +38,6 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
   const isVerified = status === 'verified_visited' || Boolean(tempCheckInPhotoUrl) || Boolean(customImage);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [includeCompanionStamp, setIncludeCompanionStamp] = useState(true);
   const [isOrdering, setIsOrdering] = useState(false);
   const [orderPlan, setOrderPlan] = useState<'standard' | 'frame_simple' | 'frame_wood' | 'frame_acrylic'>('standard');
   const [orderDesign, setOrderDesign] = useState<'horizontal' | 'vertical'>('horizontal');
@@ -97,9 +99,13 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       setLimitReachedError(false);
       // Check local storage for today's issue
       const todayStr = new Date().toISOString().split('T')[0];
-      const types = [];
-      if (localStorage.getItem(`kiratabi_issued_${island.id}_card`) === todayStr) types.push('card');
-      if (localStorage.getItem(`kiratabi_issued_${island.id}_high_quality`) === todayStr) types.push('high_quality');
+      const types: string[] = [];
+      try {
+        if (localStorage.getItem(`kiratabi_issued_${island.id}_card`) === todayStr) types.push('card');
+        if (localStorage.getItem(`kiratabi_issued_${island.id}_high_quality`) === todayStr) types.push('high_quality');
+      } catch {
+        // Ignore storage errors
+      }
       setIssuedTypes(types);
     }
   }, [isOpen, island]);
@@ -162,7 +168,14 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           headers,
           body: JSON.stringify({ islandId: String(island.id), userId: user.id, type, imageUrl: uploadedImageUrl })
         });
-        const data = await res.json();
+        const rawCertText = await res.text();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        let data: any = {};
+        try {
+          data = rawCertText ? JSON.parse(rawCertText) : {};
+        } catch {
+          data = {};
+        }
         
         if (!res.ok) {
           if (data.error === 'FREE_LIMIT_REACHED' || data.error === 'PREMIUM_LIMIT_REACHED') {
@@ -181,7 +194,11 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
 
     const issuedKey = `kiratabi_issued_${island.id}_${type}`;
     const todayStr = new Date().toISOString().split('T')[0];
-    localStorage.setItem(issuedKey, todayStr);
+    try {
+      localStorage.setItem(issuedKey, todayStr);
+    } catch {
+      // Ignore storage errors
+    }
 
     setIssuedTypes(prev => {
       if (!prev.includes(type)) return [...prev, type];
@@ -282,7 +299,14 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           userId: user?.id
         })
       });
-      const data = await res.json();
+      const rawCheckoutText = await res.text();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      let data: any = {};
+      try {
+        data = rawCheckoutText ? JSON.parse(rawCheckoutText) : {};
+      } catch {
+        data = {};
+      }
       if (res.ok && data.url) {
         // Stripe Checkoutページへリダイレクト
         window.location.href = data.url;
@@ -303,7 +327,8 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
     if (recipientCountry === 'Japan' && val.length === 7) {
       try {
         const res = await fetch(`https://zipcloud.ibsnet.co.jp/api/search?zipcode=${val}`);
-        const data = await res.json();
+        const rawZip = await res.text();
+        const data = rawZip ? JSON.parse(rawZip) : {};
         if (data.results && data.results.length > 0) {
           const addr = data.results[0];
           setAddress(`${addr.address1}${addr.address2}${addr.address3}`);
@@ -994,7 +1019,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
       tasks.push(drawToCanvas(fullscreenCanvasRef.current, seq));
     }
     return Promise.all(tasks).then(() => {});
-  }, [island, anniversaryMode, travelerName, visitDate, hasHologram, includeCompanionStamp, companionChar, companionStage, customImage, tempCheckInPhotoUrl, certificateType, orientation, designTheme, isFullscreenPreview, assignedSerial]);
+  }, [island, anniversaryMode, travelerName, visitDate, hasHologram, customImage, tempCheckInPhotoUrl, certificateType, orientation, designTheme, isFullscreenPreview, assignedSerial]);
 
   useEffect(() => {
     if (isFullscreenPreview) {
@@ -1253,12 +1278,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                       {uploadError && (
                         <p className="text-xs text-rose-400 font-bold">{uploadError}</p>
                       )}
-                      {companionChar && companionStage && (
-                        <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-300">
-                          <input type="checkbox" checked={includeCompanionStamp} onChange={(e) => setIncludeCompanionStamp(e.target.checked)} className="rounded text-amber-500 bg-slate-800 border-slate-600" />
-                          <span className="text-amber-400">{companionStage.icon} 精霊刻印</span>
-                        </label>
-                      )}
+
                     </div>
                   </div>
                 </div>
@@ -1283,7 +1303,7 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
                   {!user ? (
                     <div className="text-center p-4 bg-slate-800 rounded-xl">
                       <p className="text-xs text-slate-400 mb-3">公式証明書を発行・保存するにはログインが必要です。</p>
-                      <button onClick={onClose} className="py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg">ログイン画面へ</button>
+                      <button onClick={() => setIsAuthModalOpen(true)} className="py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors">ログイン画面へ</button>
                     </div>
                   ) : limitReachedError ? (
                     <div className="text-center p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl">
@@ -1607,6 +1627,12 @@ export default function CertificateModal({ isOpen, onClose, island, user, annive
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+        onAuthSuccess={() => setIsAuthModalOpen(false)}
+      />
     </AnimatePresence>
   );
 }

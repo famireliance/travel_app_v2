@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import imageCompression from 'browser-image-compression';
 import {
   Ship,
   Hotel,
@@ -203,10 +204,27 @@ export default function AdminPartners({ password }: { password: string }) {
     if (!file) return;
 
     setUploading(true);
-    const toastId = toast.loading('画像をアップロード中...');
+    const toastId = toast.loading('画像を圧縮・アップロード中...');
     try {
+      let uploadFile: File = file;
+      if (file.type !== 'image/gif') {
+        try {
+          const compressed: Blob = await imageCompression(file, {
+            maxSizeMB: 1.2,
+            maxWidthOrHeight: 1600,
+            useWebWorker: false,
+          });
+          uploadFile =
+            compressed instanceof File
+              ? compressed
+              : new File([compressed], file.name, { type: compressed.type || file.type });
+        } catch {
+          uploadFile = file;
+        }
+      }
+
       const body = new FormData();
-      body.append('file', file);
+      body.append('file', uploadFile);
       body.append('bucket', 'public-assets');
 
       const res = await fetch('/api/admin/upload', {

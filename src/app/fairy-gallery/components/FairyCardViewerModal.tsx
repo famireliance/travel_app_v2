@@ -85,18 +85,19 @@ function findRelatedIsland(fairy: IslandFairy) {
   const dictionary = ALL_ISLANDS_MASTER_DICTIONARY;
   const islands = Object.values(dictionary);
 
-  if (fairy.island_id && dictionary[fairy.island_id]) {
-    const isl = dictionary[fairy.island_id];
+  const islandKey = fairy.island_id != null ? String(fairy.island_id) : '';
+  if (islandKey && dictionary[islandKey]) {
+    const isl = dictionary[islandKey];
     return { id: isl.id, name: isl.name, prefecture: isl.prefecture, slug: isl.slug };
   }
 
-  if (fairy.island_id) {
-    const target = fairy.island_id.toLowerCase().trim();
+  if (islandKey) {
+    const target = islandKey.toLowerCase().trim();
     const found = islands.find(
       (isl: any) =>
-        isl.name === fairy.island_id ||
+        isl.name === islandKey ||
         isl.slug === target ||
-        (isl.name && (isl.name.includes(fairy.island_id as string) || (fairy.island_id as string).includes(isl.name)))
+        (isl.name && (isl.name.includes(islandKey) || islandKey.includes(isl.name)))
     );
     if (found) {
       return { id: found.id, name: found.name, prefecture: found.prefecture, slug: found.slug };
@@ -200,6 +201,11 @@ export default function FairyCardViewerModal({
   const rarity = RARITY_CONFIG[fairy.rarity] || RARITY_CONFIG.NORMAL;
   const attrInfo = ATTRIBUTE_LABELS[fairy.attribute] || { label: fairy.attribute, color: 'text-slate-300', icon: '✨' };
   const relatedIsland = findRelatedIsland(fairy);
+  const resolvedIslandName =
+    (fairy.island_id ? ALL_ISLANDS_MASTER_DICTIONARY[String(fairy.island_id)]?.name : undefined) ||
+    (fairy as { island_name?: string }).island_name ||
+    relatedIsland?.name ||
+    (fairy.island_id ? String(fairy.island_id) : '');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-xl animate-in fade-in duration-200 p-4 sm:p-6 overflow-hidden select-none">
@@ -297,7 +303,7 @@ export default function FairyCardViewerModal({
             {/* カード上部ヘッダー（名前、属性、アイコン） */}
             <div className={`h-14 w-full flex items-center justify-between px-4 bg-gradient-to-r ${fairy.visual.colorFrom} ${fairy.visual.colorTo} bg-opacity-30 border-b border-white/10 z-10`}>
               <div className="flex items-center gap-2">
-                <span className="text-xl sm:text-2xl filter drop-shadow">{fairy.visual.icon}</span>
+                <span className="text-xl sm:text-2xl filter drop-shadow">{isRevealed ? fairy.visual.icon : '🔒'}</span>
                 <span className="text-base sm:text-lg font-bold text-white tracking-wide truncate max-w-[200px] sm:max-w-xs drop-shadow">
                   {isRevealed ? fairy.name : '？？？'}
                 </span>
@@ -345,7 +351,7 @@ export default function FairyCardViewerModal({
             {/* カード下部フッター（テーマ＆生息島） */}
             <div className="h-16 bg-slate-950 border-t border-slate-800/80 px-4 flex flex-col justify-center text-center z-10">
               <span className="text-xs sm:text-sm font-semibold text-slate-200 truncate">
-                {isRevealed ? fairy.theme : `🔒 ${fairy.island_id ? `「${fairy.island_id}」` : '全国離島'}の未知なる守護精霊`}
+                {isRevealed ? fairy.theme : `🔒 ${resolvedIslandName ? `「${resolvedIslandName}」` : '全国離島'}の未知なる守護妖精`}
               </span>
               <span className="text-[11px] text-blue-400/90 flex items-center justify-center gap-1 mt-0.5">
                 <MapPin className="w-3 h-3" />
@@ -373,7 +379,7 @@ export default function FairyCardViewerModal({
                   {isRevealed ? fairy.name : '？？？（未発見）'}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                  {isRevealed ? fairy.theme : `${fairy.island_id || '離島'}に眠る守護精霊`}
+                  {isRevealed ? fairy.theme : `${resolvedIslandName || '離島'}に眠る守護精霊`}
                 </p>
               </div>
 
@@ -387,7 +393,7 @@ export default function FairyCardViewerModal({
                 <p className="text-xs sm:text-sm text-slate-200 leading-relaxed max-h-36 overflow-y-auto">
                   {isRevealed
                     ? fairy.description
-                    : `この妖精は未発見の状態で眠っています。${fairy.island_id ? `「${fairy.island_id}」` : '該当の島'}を実際に訪れて位置情報チェックインまたは公式到達証明を発行することで、真の姿と神秘のステータスが解放されます。`}
+                    : `この妖精は未発見の状態で眠っています。${resolvedIslandName ? `「${resolvedIslandName}」` : '該当の島'}を実際に訪れて位置情報チェックインまたは公式到達証明を発行することで、真の姿と神秘のステータスが解放されます。`}
                 </p>
               </div>
 

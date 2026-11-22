@@ -14,13 +14,17 @@ function getAdminClient() {
       ? process.env.SUPABASE_SERVICE_ROLE_KEY
       : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
+  if (!supabaseUrl || !serviceKey) {
+    return null;
+  }
+
   return createClient(supabaseUrl, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
 
 async function readAdminConfigJson<T>(
-  client: ReturnType<typeof getAdminClient>,
+  client: NonNullable<ReturnType<typeof getAdminClient>>,
   key: string,
   fallback: T
 ): Promise<T> {
@@ -57,6 +61,10 @@ async function resolveOwnerAccommodation(req: NextRequest) {
   }
 
   const adminClient = getAdminClient();
+  if (!adminClient) {
+    return { errorResponse: NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 }) };
+  }
+
   const { data: profile } = await adminClient
     .from('user_profiles')
     .select('role')
@@ -68,13 +76,16 @@ async function resolveOwnerAccommodation(req: NextRequest) {
     return { errorResponse: NextResponse.json({ error: 'オーナー権限が必要です' }, { status: 403 }) };
   }
 
-  let { data: acc } = await adminClient
+  const { data: ownedRows } = await adminClient
     .from('accommodations')
     .select('*')
     .eq('owner_id', user.id)
-    .limit(1)
-    .maybeSingle();
+    .order('created_at', { ascending: true });
 
+  const ownedList = Array.isArray(ownedRows) ? ownedRows : [];
+  const ownedIds = new Set<string>(ownedList.map((a: any) => String(a.id)));
+
+  let acc: any = ownedList[0] || null;
   if (!acc && role === 'super_admin') {
     const { data: fallbackAcc } = await adminClient
       .from('accommodations')
@@ -85,40 +96,73 @@ async function resolveOwnerAccommodation(req: NextRequest) {
     acc = fallbackAcc;
   }
 
-  return { user, role, acc, adminClient };
+  return { user, role, acc, ownedList, ownedIds, adminClient };
 }
 
 export async function GET(req: NextRequest) {
-  const resolved = await resolveOwnerAccommodation(req);
-  if ('errorResponse' in resolved && resolved.errorResponse) {
-    return resolved.errorResponse;
-  }
+  try {
+    const resolved = await resolveOwnerAccommodation(req);
+    if ('errorResponse' in resolved && resolved.errorResponse) {
+      return resolved.errorResponse;
+    }
 
-  const { acc, adminClient } = resolved;
-  if (!acc) {
-    return NextResponse.json({
-      accommodation: null,
-      reservations: [],
-      ledgers: [],
-      todayPv: 0,
-    });
-  }
+    const { role, acc: defaultAcc, ownedList, ownedIds, adminClient } = resolved;
+    const { searchParams } = new URL(req.url);
+    const requestedAccId = (searchParams.get('accommodation_id') || searchParams.get('id') || '').trim();
 
-  const islandName =
-    ALL_ISLANDS_MASTER_DICTIONARY[String(acc.island_id || '').trim()]?.name || '';
+    let acc = defaultAcc;
+    let targetAccIds: string[] = [];
 
-  // 1. Fetch reservations for this accommodation
-  const { data: rawReservations, error: resError } = await adminClient
-    .from('reservations')
-    .select('*')
-    .eq('accommodation_id', acc.id)
-    .order('created_at', { ascending: false });
+    if (requestedAccId) {
+      if (ownedIds.has(requestedAccId)) {
+        acc = ownedList.find((a: any) => String(a.id) === requestedAccId) || defaultAcc;
+        targetAccIds = [requestedAccId];
+      } else if (role === 'super_admin') {
+        const { data: requestedAcc } = await adminClient
+          .from('accommodations')
+          .select('*')
+          .eq('id', requestedAccId)
+          .limit(1)
+          .maybeSingle();
+        if (!requestedAcc) {
+          return NextResponse.json({ error: '宿泊施設が見つかりません' }, { status: 404 });
+        }
+        acc = requestedAcc;
+        targetAccIds = [String(requestedAcc.id)];
+      } else {
+        return NextResponse.json({ error: 'この宿泊施設を参照する権限がありません' }, { status: 403 });
+      }
+    } else if (ownedList.length > 0) {
+      targetAccIds = ownedList.map((a: any) => String(a.id));
+    } else if (acc) {
+      targetAccIds = [String(acc.id)];
+    }
 
-  if (resError) {
-    return NextResponse.json({ error: resError.message }, { status: 500 });
-  }
+    if (!acc || targetAccIds.length === 0) {
+      return NextResponse.json({
+        accommodation: null,
+        accommodations: [],
+        reservations: [],
+        ledgers: [],
+        todayPv: 0,
+      });
+    }
 
-  const reservationsList = rawReservations || [];
+    const islandName =
+      ALL_ISLANDS_MASTER_DICTIONARY[String(acc.island_id || '').trim()]?.name || '';
+
+    // 1. Fetch reservations across all target owned accommodations
+    const { data: rawReservations, error: resError } = await adminClient
+      .from('reservations')
+      .select('*')
+      .in('accommodation_id', targetAccIds)
+      .order('created_at', { ascending: false });
+
+    if (resError) {
+      return NextResponse.json({ error: resError.message }, { status: 500 });
+    }
+
+    const reservationsList = rawReservations || [];
 
   // 2. Safely enrich guest nickname & email on the server (avoiding client FK/RLS issues)
   const guestIds = Array.from(
@@ -179,155 +223,194 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  // 3. Read guest ledgers from BOTH guest_ledgers table AND admin_config fallback
-  let dbLedgers: any[] = [];
-  try {
-    const { data: lRows, error: lErr } = await adminClient
-      .from('guest_ledgers')
-      .select('*')
-      .eq('accommodation_id', acc.id)
-      .order('created_at', { ascending: false });
-    if (!lErr && Array.isArray(lRows)) {
-      dbLedgers = lRows;
+  // 3. Read guest ledgers from BOTH guest_ledgers table AND admin_config fallback across all target accommodations
+    let dbLedgers: any[] = [];
+    try {
+      const { data: lRows, error: lErr } = await adminClient
+        .from('guest_ledgers')
+        .select('*')
+        .in('accommodation_id', targetAccIds)
+        .order('created_at', { ascending: false });
+      if (!lErr && Array.isArray(lRows)) {
+        dbLedgers = lRows;
+      }
+    } catch {
+      dbLedgers = [];
     }
-  } catch {
-    dbLedgers = [];
-  }
 
-  const fallbackLedgers = await readAdminConfigJson<any[]>(
-    adminClient,
-    `b2b_ledgers_${acc.id}`,
-    []
-  );
+    const fallbackLedgerArrays = await Promise.all(
+      targetAccIds.map((aid) => readAdminConfigJson<any[]>(adminClient, `b2b_ledgers_${aid}`, []))
+    );
+    const fallbackLedgers = fallbackLedgerArrays.flatMap((arr) => (Array.isArray(arr) ? arr : []));
+    const fallbackByResId = new Map<string, any>();
+    for (const fl of fallbackLedgers) {
+      if (fl?.reservation_id) {
+        fallbackByResId.set(String(fl.reservation_id), fl);
+      }
+    }
 
-  const seenReservationIds = new Set<string>();
-  const seenLedgerIds = new Set<string>();
-  const mergedLedgers: any[] = [];
+    const seenReservationIds = new Set<string>();
+    const seenLedgerIds = new Set<string>();
+    const mergedLedgers: any[] = [];
 
-  for (const row of [
-    ...dbLedgers,
-    ...(Array.isArray(fallbackLedgers) ? fallbackLedgers : []),
-  ]) {
-    if (!row) continue;
-    const lid = row.id ? String(row.id) : '';
-    const rid = row.reservation_id ? String(row.reservation_id) : '';
-    if (lid && seenLedgerIds.has(lid)) continue;
-    if (rid && seenReservationIds.has(rid)) continue;
-    if (lid) seenLedgerIds.add(lid);
-    if (rid) seenReservationIds.add(rid);
+    for (const row of [...dbLedgers, ...fallbackLedgers]) {
+      if (!row) continue;
+      const lid = row.id ? String(row.id) : '';
+      const rid = row.reservation_id ? String(row.reservation_id) : '';
+      if (lid && seenLedgerIds.has(lid)) continue;
+      if (rid && seenReservationIds.has(rid)) continue;
+      if (lid) seenLedgerIds.add(lid);
+      if (rid) seenReservationIds.add(rid);
 
-    const linkedRes = rid ? reservationById.get(rid) : null;
-    mergedLedgers.push({
-      ...row,
-      reservations: row.reservations || (linkedRes
-        ? {
-            check_in_date: linkedRes.check_in_date,
-            check_out_date: linkedRes.check_out_date,
-            guest_count: linkedRes.guest_count,
-          }
-        : null),
+      const fbMatch = rid ? fallbackByResId.get(rid) : null;
+      const linkedRes = rid ? reservationById.get(rid) : null;
+      mergedLedgers.push({
+        ...(fbMatch || {}),
+        ...row,
+        reservations:
+          row.reservations ||
+          (linkedRes
+            ? {
+                check_in_date: linkedRes.check_in_date,
+                check_out_date: linkedRes.check_out_date,
+                guest_count: linkedRes.guest_count,
+              }
+            : null),
+      });
+    }
+
+    mergedLedgers.sort((a, b) => {
+      const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
+      const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
+      return tb - ta;
     });
-  }
 
-  mergedLedgers.sort((a, b) => {
-    const ta = a.created_at ? new Date(a.created_at).getTime() : 0;
-    const tb = b.created_at ? new Date(b.created_at).getTime() : 0;
-    return tb - ta;
-  });
-
-  // 4. Query real today PV from tracking_events (defaulting to 0)
-  let todayPv = 0;
-  try {
+    // 4. Query real today PV from tracking_events (with fallback_tracking_events fallback)
+    let todayPv = 0;
     const startOfDayIso = getStartOfTodayJstIso();
-    const { count, error: pvErr } = await adminClient
-      .from('tracking_events')
-      .select('id', { count: 'exact', head: true })
-      .eq('facility_id', String(acc.id))
-      .gte('created_at', startOfDayIso);
-    if (!pvErr && typeof count === 'number') {
-      todayPv = count;
-    }
-  } catch {
-    todayPv = 0;
-  }
+    const startOfDayMs = new Date(startOfDayIso).getTime();
+    const targetAccIdSet = new Set(targetAccIds.map(String));
+    let trackingTableOk = false;
 
-  return NextResponse.json({
-    accommodation: {
-      ...acc,
-      island_name: islandName,
-    },
-    reservations: enrichedReservations,
-    ledgers: mergedLedgers,
-    todayPv,
-  });
+    try {
+      const { count, error: pvErr } = await adminClient
+        .from('tracking_events')
+        .select('id', { count: 'exact', head: true })
+        .in('facility_id', targetAccIds)
+        .gte('created_at', startOfDayIso);
+      if (!pvErr && typeof count === 'number') {
+        todayPv = count;
+        trackingTableOk = true;
+      }
+    } catch {
+      trackingTableOk = false;
+    }
+
+    if (!trackingTableOk) {
+      const fbEvents = await readAdminConfigJson<any[]>(
+        adminClient,
+        'fallback_tracking_events',
+        []
+      );
+      if (Array.isArray(fbEvents)) {
+        todayPv = fbEvents.filter((ev) => {
+          if (!ev || !targetAccIdSet.has(String(ev.facility_id || ''))) return false;
+          const ts = ev.created_at ? new Date(ev.created_at).getTime() : 0;
+          return ts >= startOfDayMs;
+        }).length;
+      }
+    }
+
+    return NextResponse.json({
+      accommodation: {
+        ...acc,
+        island_name: islandName,
+      },
+      accommodations: ownedList.map((a: any) => ({
+        id: a.id,
+        name: a.name,
+        island_id: a.island_id,
+        island_name: ALL_ISLANDS_MASTER_DICTIONARY[String(a.island_id || '').trim()]?.name || '',
+      })),
+      reservations: enrichedReservations,
+      ledgers: mergedLedgers,
+      todayPv,
+    });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || '予約一覧の取得に失敗しました' }, { status: 500 });
+  }
 }
 
 export async function PATCH(req: NextRequest) {
-  const resolved = await resolveOwnerAccommodation(req);
-  if ('errorResponse' in resolved && resolved.errorResponse) {
-    return resolved.errorResponse;
-  }
-
-  const { role, acc, adminClient } = resolved;
-  if (!acc && role !== 'super_admin') {
-    return NextResponse.json({ error: '宿泊施設が見つかりません' }, { status: 404 });
-  }
-
-  let body: Record<string, any>;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    const resolved = await resolveOwnerAccommodation(req);
+    if ('errorResponse' in resolved && resolved.errorResponse) {
+      return resolved.errorResponse;
+    }
+
+    const { role, ownedIds, adminClient } = resolved;
+    if (ownedIds.size === 0 && role !== 'super_admin') {
+      return NextResponse.json({ error: '宿泊施設が見つかりません' }, { status: 404 });
+    }
+
+    let body: Record<string, any>;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const resId = typeof body?.id === 'string' ? body.id.trim() : '';
+    const status = typeof body?.status === 'string' ? body.status.trim() : '';
+
+    if (!resId || !ALLOWED_STATUSES.has(status)) {
+      return NextResponse.json(
+        { error: '有効な予約IDおよびステータスが必要です' },
+        { status: 400 }
+      );
+    }
+
+    const { data: existingRes, error: fetchErr } = await adminClient
+      .from('reservations')
+      .select('id, accommodation_id')
+      .eq('id', resId)
+      .maybeSingle();
+
+    if (fetchErr || !existingRes) {
+      return NextResponse.json({ error: '該当の予約が見つかりません' }, { status: 404 });
+    }
+
+    if (role !== 'super_admin' && !ownedIds.has(String(existingRes.accommodation_id))) {
+      return NextResponse.json({ error: 'この予約を更新する権限がありません' }, { status: 403 });
+    }
+
+    const updateData: Record<string, any> = {
+      status,
+      updated_at: new Date().toISOString(),
+    };
+
+    if (body.cancellation_reason !== undefined) {
+      updateData.cancellation_reason = body.cancellation_reason
+        ? String(body.cancellation_reason)
+        : null;
+    }
+    if (body.internal_notes !== undefined) {
+      updateData.internal_notes = String(body.internal_notes || '');
+    }
+
+    const { data: updated, error: updateErr } = await adminClient
+      .from('reservations')
+      .update(updateData)
+      .eq('id', resId)
+      .select('*')
+      .single();
+
+    if (updateErr) {
+      return NextResponse.json({ error: updateErr.message }, { status: 500 });
+    }
+
+    return NextResponse.json({ success: true, reservation: updated });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || '予約の更新に失敗しました' }, { status: 500 });
   }
-
-  const resId = typeof body.id === 'string' ? body.id.trim() : '';
-  const status = typeof body.status === 'string' ? body.status.trim() : '';
-
-  if (!resId || !ALLOWED_STATUSES.has(status)) {
-    return NextResponse.json(
-      { error: '有効な予約IDおよびステータスが必要です' },
-      { status: 400 }
-    );
-  }
-
-  const { data: existingRes, error: fetchErr } = await adminClient
-    .from('reservations')
-    .select('id, accommodation_id')
-    .eq('id', resId)
-    .maybeSingle();
-
-  if (fetchErr || !existingRes) {
-    return NextResponse.json({ error: '該当の予約が見つかりません' }, { status: 404 });
-  }
-
-  if (role !== 'super_admin' && existingRes.accommodation_id !== acc?.id) {
-    return NextResponse.json({ error: 'この予約を更新する権限がありません' }, { status: 403 });
-  }
-
-  const updateData: Record<string, any> = {
-    status,
-    updated_at: new Date().toISOString(),
-  };
-
-  if (body.cancellation_reason !== undefined) {
-    updateData.cancellation_reason = body.cancellation_reason
-      ? String(body.cancellation_reason)
-      : null;
-  }
-  if (body.internal_notes !== undefined) {
-    updateData.internal_notes = String(body.internal_notes || '');
-  }
-
-  const { data: updated, error: updateErr } = await adminClient
-    .from('reservations')
-    .update(updateData)
-    .eq('id', resId)
-    .select('*')
-    .single();
-
-  if (updateErr) {
-    return NextResponse.json({ error: updateErr.message }, { status: 500 });
-  }
-
-  return NextResponse.json({ success: true, reservation: updated });
 }

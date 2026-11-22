@@ -33,7 +33,9 @@ export default function BannerCarousel({ campaigns, marginTop = 'mt-0' }: Banner
 
   if (!campaigns || campaigns.length === 0) return null;
 
-  const activeCampaign = campaigns[currentIndex];
+  const activeIndex = currentIndex % campaigns.length;
+  const activeCampaign = campaigns[activeIndex];
+  if (!activeCampaign) return null;
 
   return (
     <div className={`w-full bg-slate-950 cursor-pointer overflow-hidden ${marginTop} shadow-xl`} onClick={() => { if (activeCampaign.target_url) window.open(activeCampaign.target_url, '_blank', 'noopener,noreferrer'); }}>
@@ -80,7 +82,7 @@ export default function BannerCarousel({ campaigns, marginTop = 'mt-0' }: Banner
             {campaigns.map((_, idx) => (
               <div 
                 key={idx} 
-                className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${idx === currentIndex ? 'bg-blue-400 w-5' : 'bg-white/30'}`}
+                className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${idx === activeIndex ? 'bg-blue-400 w-5' : 'bg-white/30'}`}
               />
             ))}
           </div>

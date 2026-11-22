@@ -3,8 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
 import { getFallbackJson } from '@/lib/adminConfigFallback';
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
+    return null;
+  }
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+}
 
 async function verifyAuth(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -12,22 +20,23 @@ async function verifyAuth(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  if (!await verifyAuth(req)) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get('userId');
-
-  if (!userId) {
-    return NextResponse.json({ error: 'userId が必要です' }, { status: 400 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
+    if (!await verifyAuth(req)) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const userId = searchParams.get('userId');
+
+    if (!userId) {
+      return NextResponse.json({ error: 'userId が必要です' }, { status: 400 });
+    }
+
     // 並列クエリで高速取得（physical_orders テーブル未存在エラーは無視）
     const [profileRes, visitsRes, certsRes, ordersRes, physOrdersRes, diariesRes, shippingOv] = await Promise.all([
       adminClient.from('user_profiles').select('*').eq('id', userId).maybeSingle(),
@@ -76,25 +85,26 @@ export async function GET(req: NextRequest) {
 
 // 訪問記録の削除
 export async function DELETE(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
   try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
     const { searchParams } = new URL(req.url);
     const visitId = searchParams.get('visitId');
 
     if (!visitId) {
       return NextResponse.json({ error: 'visitId が必要です' }, { status: 400 });
     }
-
-    const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-      auth: { autoRefreshToken: false, persistSession: false }
-    });
 
     const { error } = await adminClient
       .from('island_visits')

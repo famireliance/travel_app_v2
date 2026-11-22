@@ -85,7 +85,7 @@ export default function RegionMapSection({ region, initialIslands }: RegionMapSe
   return (
     <div className="relative w-full h-[62vh] min-h-[460px] max-h-[680px] border-b border-slate-200 overflow-hidden">
       {/* Header Overlay */}
-      <div className="absolute top-0 left-0 right-0 z-[1000] px-6 lg:px-12 pt-8 pb-4 flex items-center justify-between pointer-events-none">
+      <div className="absolute top-0 left-0 right-0 z-[1000] px-4 sm:px-6 lg:px-12 pt-3 sm:pt-4 pb-2 flex items-center justify-between pointer-events-none">
         <button
           onClick={() => {
             if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
@@ -94,24 +94,24 @@ export default function RegionMapSection({ region, initialIslands }: RegionMapSe
               router.push('/islands');
             }
           }}
-          className="w-11 h-11 lg:w-12 lg:h-12 rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-slate-200 flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
+          className="w-10 h-10 lg:w-11 lg:h-11 rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-slate-200 flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
           title="前のページに戻る"
         >
           <ArrowLeft className="w-5 h-5" strokeWidth={1.6} />
         </button>
 
-        <div className="text-center flex-1 mx-4 bg-white/85 backdrop-blur-md px-5 py-2 rounded-2xl shadow-sm border border-white/80 max-w-md">
+        <div className="text-center flex-1 mx-3 sm:mx-4 bg-white/85 backdrop-blur-md px-4 sm:px-5 py-1.5 sm:py-2 rounded-2xl shadow-sm border border-white/80 max-w-md">
           <p className="text-[10px] text-slate-500 font-bold tracking-[0.25em] uppercase">
             {region.enName}
           </p>
-          <p className="font-serif font-bold text-lg lg:text-2xl text-slate-900 tracking-wider">
+          <p className="font-serif font-bold text-base sm:text-lg lg:text-2xl text-slate-900 tracking-wider">
             {region.name} エリアマップ
           </p>
         </div>
 
         <button
           onClick={() => setIsSearchOpen(true)}
-          className="w-11 h-11 lg:w-12 lg:h-12 rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-slate-200 flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
+          className="w-10 h-10 lg:w-11 lg:h-11 rounded-full bg-white/95 backdrop-blur-md shadow-lg border border-slate-200 flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
           title="島を検索"
         >
           <Search className="w-5 h-5" strokeWidth={1.6} />
@@ -119,7 +119,7 @@ export default function RegionMapSection({ region, initialIslands }: RegionMapSe
       </div>
 
       {/* Breadcrumb Overlay */}
-      <div className="absolute top-24 left-6 lg:left-12 z-[1000] pointer-events-auto hidden sm:block">
+      <div className="absolute bottom-5 left-5 z-[1000] pointer-events-auto hidden sm:block">
         <Breadcrumb
           items={[
             { label: '日本全国離島一覧', href: '/islands' },
@@ -131,7 +131,19 @@ export default function RegionMapSection({ region, initialIslands }: RegionMapSe
 
       {/* Interactive Map */}
       <div className="w-full h-full relative z-0">
-        <MapClient islands={regionIslands} bounds={bounds} />
+        <MapClient
+          islands={regionIslands}
+          bounds={bounds}
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          onIslandSelect={(isl: any) => {
+            if (typeof isl === 'string') {
+              const matched = regionIslands.find((i) => String(i.id) === isl);
+              router.push(`/island/${matched?.slug || isl}`);
+            } else if (isl) {
+              router.push(`/island/${isl.slug || isl.id}`);
+            }
+          }}
+        />
 
         {regionIslands.length === 0 && (
           <div className="absolute inset-0 z-[1000] flex items-center justify-center p-6 bg-slate-900/30 pointer-events-none">

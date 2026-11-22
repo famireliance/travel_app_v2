@@ -43,8 +43,10 @@ export default function OrderHistory() {
           'Authorization': `Bearer ${session?.access_token || ''}`
         }
       });
-      const data = await res.json();
-      if (res.ok && data.orders) {
+      const rawText = await res.text();
+      let data: { orders?: any[] } = {};
+      try { data = rawText ? JSON.parse(rawText) : {}; } catch {}
+      if (res.ok && Array.isArray(data.orders)) {
         setOrders(data.orders);
       }
     } catch (err) {
@@ -80,8 +82,10 @@ export default function OrderHistory() {
         },
         body: JSON.stringify({ id: orderId, ...editForm })
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      const rawText = await res.text();
+      let data: { error?: string } = {};
+      try { data = rawText ? JSON.parse(rawText) : {}; } catch {}
+      if (!res.ok) throw new Error(data.error || '更新に失敗しました');
       
       toast.success('配送先を更新しました', { id: toastId });
       setEditingOrderId(null);

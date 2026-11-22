@@ -119,7 +119,7 @@ export async function generateMetadata(
   
   const [islandResult, diariesResult] = await Promise.all([
     withTimeout(
-      supabase.from('islands').select('name, description, population, hero_image_url, practical_info').eq('id', internalId).single(),
+      supabase.from('islands').select('name, description, population, hero_image_url, practical_info, is_published').eq('id', internalId).single(),
       1500,
       { data: null, error: null } as any
     ),
@@ -130,7 +130,7 @@ export async function generateMetadata(
     )
   ]);
   
-  if (!masterEntry && !islandResult.data) {
+  if ((!masterEntry && !islandResult.data) || islandResult.data?.is_published === false || masterEntry?.is_published === false) {
     return {
       title: '島が見つかりません',
       robots: { index: false, follow: false },
@@ -250,7 +250,7 @@ export default async function Page({ params }: { params: any }) {
     withTimeout(
       supabase
         .from('islands')
-        .select('name, region_id, description, hero_image_url, practical_info')
+        .select('name, region_id, description, hero_image_url, practical_info, is_published')
         .eq('id', internalId)
         .single(),
       1500,
@@ -258,7 +258,8 @@ export default async function Page({ params }: { params: any }) {
     )
   ]);
 
-  if (!masterEntry && !islandResult.data) {
+  const dbRow = islandResult.data;
+  if ((!masterEntry && !dbRow) || dbRow?.is_published === false || masterEntry?.is_published === false) {
     notFound();
   }
 

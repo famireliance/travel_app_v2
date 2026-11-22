@@ -181,22 +181,22 @@ export default function RankingPage() {
                   {/* スコア・プログレス */}
                   <div className="grid grid-cols-2 gap-4 mt-1">
                     <div className="flex flex-col gap-1">
-                      <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/80' : 'text-slate-500'}`}>
-                        <span className="flex items-center gap-1.5"><Compass size={14} className={rankingType === 'visited' ? 'text-blue-500' : 'text-slate-400'}/> 制覇島数</span>
-                        <span className={rankingType === 'visited' ? 'text-blue-600 text-sm' : ''}>{safeVisited} 島</span>
+                      <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/90' : 'text-slate-500'}`}>
+                        <span className="flex items-center gap-1.5"><Compass size={14} className={isMe ? 'text-amber-300' : rankingType === 'visited' ? 'text-blue-500' : 'text-slate-400'}/> 制覇島数</span>
+                        <span className={isMe ? (rankingType === 'visited' ? 'text-amber-300 text-sm' : 'text-white') : (rankingType === 'visited' ? 'text-blue-600 text-sm' : '')}>{safeVisited} 島</span>
                       </div>
-                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
-                        <div className={`h-full rounded-full ${rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (safeVisited / ALL_ISLANDS_COUNT) * 100)}%` }} />
+                      <div className={`h-1.5 rounded-full overflow-hidden w-full max-w-[150px] ${isMe ? 'bg-white/20' : 'bg-slate-100'}`}>
+                        <div className={`h-full rounded-full ${isMe ? (rankingType === 'visited' ? 'bg-amber-300' : 'bg-white/70') : (rankingType === 'visited' ? 'bg-blue-500' : 'bg-slate-300')}`} style={{ width: `${Math.min(100, (safeVisited / ALL_ISLANDS_COUNT) * 100)}%` }} />
                       </div>
                     </div>
                     
                     <div className="flex flex-col gap-1">
-                      <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/80' : 'text-slate-500'}`}>
-                        <span className="flex items-center gap-1.5"><Star size={14} className={rankingType === 'points' ? 'text-amber-500' : 'text-slate-400'}/> 冒険XP</span>
-                        <span className={rankingType === 'points' ? 'text-amber-600 text-sm' : ''}>{(p.points ?? 0).toLocaleString()} XP</span>
+                      <div className={`flex items-center justify-between text-xs font-bold mb-0.5 ${isMe ? 'text-white/90' : 'text-slate-500'}`}>
+                        <span className="flex items-center gap-1.5"><Star size={14} className={isMe ? 'text-amber-300' : rankingType === 'points' ? 'text-amber-500' : 'text-slate-400'}/> 冒険XP</span>
+                        <span className={isMe ? (rankingType === 'points' ? 'text-amber-300 text-sm' : 'text-white') : (rankingType === 'points' ? 'text-amber-600 text-sm' : '')}>{(p.points ?? 0).toLocaleString()} XP</span>
                       </div>
-                      <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden w-full max-w-[150px]">
-                        <div className={`h-full rounded-full ${rankingType === 'points' ? 'bg-amber-400' : 'bg-slate-300'}`} style={{ width: `${Math.min(100, (safePoints / (levelInfo.nextLevelXP || safePoints || 1)) * 100)}%` }} />
+                      <div className={`h-1.5 rounded-full overflow-hidden w-full max-w-[150px] ${isMe ? 'bg-white/20' : 'bg-slate-100'}`}>
+                        <div className={`h-full rounded-full ${isMe ? (rankingType === 'points' ? 'bg-amber-300' : 'bg-white/70') : (rankingType === 'points' ? 'bg-amber-400' : 'bg-slate-300')}`} style={{ width: `${Math.min(100, (safePoints / (levelInfo.nextLevelXP || safePoints || 1)) * 100)}%` }} />
                       </div>
                     </div>
                   </div>

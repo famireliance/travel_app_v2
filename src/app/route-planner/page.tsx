@@ -75,7 +75,15 @@ export default function RoutePlannerPage() {
         throw new Error(data?.error || 'ルートの作成に失敗しました。もう一度お試しください。');
       }
 
-      setResult(data);
+      const normalizedPlans = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.plans)
+        ? data.plans
+        : [];
+      if (normalizedPlans.length === 0) {
+        throw new Error('ルートプランを生成できませんでした。条件を変更して再度お試しください。');
+      }
+      setResult(normalizedPlans);
       setActiveTab(0);
     } catch (err: unknown) {
       console.error(err);
@@ -201,7 +209,7 @@ export default function RoutePlannerPage() {
         </div>
 
         {/* AI Result Section (Tabs for Multiple Plans) */}
-        {result && result.length > 0 && !isLoading && (
+        {Array.isArray(result) && result.length > 0 && !isLoading && (
           <div className="animate-fade-in-up">
             <h2 className="font-serif text-2xl font-bold text-slate-800 mb-6 flex items-center gap-2">
               <Compass className="w-6 h-6 text-blue-500" /> 
@@ -234,7 +242,7 @@ export default function RoutePlannerPage() {
               </p>
 
               <div className="space-y-6 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-blue-200 before:to-transparent">
-                {(result?.[activeTab]?.route || []).map((day, index) => {
+                {(Array.isArray(result?.[activeTab]?.route) ? result[activeTab].route : []).map((day, index) => {
                   const targetSlugOrId =
                     day?.slug ||
                     (day?.islandId && ALL_ISLANDS_MASTER_DICTIONARY[String(day.islandId)]?.slug) ||

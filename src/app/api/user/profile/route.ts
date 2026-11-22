@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
+import { getFallbackJson } from '@/lib/adminConfigFallback';
 
 function getAuthToken(request: Request): string {
   const authHeader =
@@ -78,13 +79,30 @@ export async function GET(request: Request) {
       }
     }
 
+    const ultimateMeta = await getFallbackJson<{
+      ultimate_started_at?: string | null;
+      anniversary_cert_used?: boolean;
+    }>(`ultimate_meta_${user.id}`, {});
+
+    const rawTier = data?.subscription_tier ?? 'free';
+    const isExpired =
+      rawTier !== 'free' &&
+      Boolean(data?.premium_until) &&
+      new Date(data.premium_until).getTime() < Date.now();
+    const effectiveTier = isExpired ? 'free' : rawTier;
+
     const profile = data
       ? {
           nickname: data.nickname ?? null,
-          subscription_tier: data.subscription_tier ?? 'free',
+          subscription_tier: effectiveTier,
           premium_until: data.premium_until ?? null,
-          ultimate_started_at: data.ultimate_started_at ?? null,
-          anniversary_cert_used: data.anniversary_cert_used ?? false,
+          ultimate_started_at:
+            effectiveTier === 'ultimate'
+              ? (ultimateMeta.ultimate_started_at ?? data.ultimate_started_at ?? null)
+              : null,
+          anniversary_cert_used: Boolean(
+            ultimateMeta.anniversary_cert_used ?? data.anniversary_cert_used ?? false
+          ),
           high_quality_tickets: data.high_quality_tickets ?? 0,
         }
       : {};

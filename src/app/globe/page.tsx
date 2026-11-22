@@ -25,7 +25,7 @@ const GlobeSatelliteMap = dynamic(() => import('./GlobeSatelliteMap'), {
   loading: () => (
     <div className="w-full h-full aspect-square max-w-2xl mx-auto rounded-3xl bg-slate-950 border border-indigo-500/30 flex flex-col items-center justify-center text-indigo-300 font-serif tracking-widest gap-4 shadow-2xl">
       <Compass className="w-12 h-12 animate-spin text-amber-400 opacity-80" />
-      <span>高精細 航空衛星写真＆フライト航路エンジンを展開中...</span>
+      <span>地球衛星ビュー＆フライト航路エンジンを展開中...</span>
     </div>
   )
 });
@@ -178,10 +178,16 @@ export default function GlobeTrackerPage() {
       toast.error('保存するキャンバスが見つかりません');
       return;
     }
-    const link = document.createElement('a');
-    link.download = `kiratabi-passport-${Date.now()}.png`;
-    link.href = canvas.toDataURL('image/png');
-    link.click();
+    try {
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `kiratabi-passport-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error('Canvas export error:', err);
+      toast.error('画像の保存に失敗しました');
+    }
   };
 
   const handleStartRecording = () => {
@@ -311,7 +317,7 @@ export default function GlobeTrackerPage() {
               <span className="px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500 to-yellow-600 text-slate-950 font-bold text-[0.65rem] tracking-widest uppercase">
                 SATELLITE FLIGHT STUDIO
               </span>
-              <span className="text-xs text-indigo-300 font-mono">ESRI HIGH-RES AERIAL & GEODESIC ROUTES</span>
+              <span className="text-xs text-indigo-300 font-mono">BLUE MARBLE SATELLITE & GEODESIC ROUTES</span>
             </div>
             <h1 className="text-2xl lg:text-3xl font-serif font-bold tracking-wider flex items-center gap-2.5">
               <Plane className="w-7 h-7 text-amber-400 animate-pulse" />
@@ -427,7 +433,7 @@ export default function GlobeTrackerPage() {
                   mapStyleMode === 'satellite' ? 'bg-amber-500 text-slate-950 shadow-md' : 'text-slate-400 hover:text-white'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5" /> 🌐 高精細 衛星航空写真 (ESRI)
+                <Layers className="w-3.5 h-3.5" /> 🌐 地球衛星ビュー
               </button>
               <button
                 onClick={() => setMapStyleMode('dark_ocean')}
@@ -451,7 +457,7 @@ export default function GlobeTrackerPage() {
             {loading ? (
               <div className="w-full h-full flex flex-col items-center justify-center text-indigo-300 font-serif tracking-widest gap-4">
                 <Compass className="w-12 h-12 animate-spin text-amber-400 opacity-80" />
-                <span>高精細 衛星航空写真＆地形エンジンをロード中...</span>
+                <span>地球衛星ビュー＆地形エンジンをロード中...</span>
               </div>
             ) : (
               <GlobeSatelliteMap
@@ -493,10 +499,6 @@ export default function GlobeTrackerPage() {
               </div>
             </div>
           </div>
-
-          <p className="text-[0.7rem] text-slate-400 mt-6 text-center font-serif">
-            💡 抽象的な点群ドット絵から「本物の高精細航空衛星写真（島ごとの海岸線や地形が鮮明に見える）」へとリニューアル！マウスドラッグ・ホイールで自由に探索できます。
-          </p>
         </div>
 
         {/* 右側：島別 フライト・フェリー航路シミュレーター ＆ コマンドパネル */}

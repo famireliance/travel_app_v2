@@ -139,6 +139,7 @@ export default function GlobeSatelliteMap({
         ref={globeEl}
         width={dimensions.width}
         height={dimensions.height}
+        rendererConfig={{ antialias: true, alpha: true, preserveDrawingBuffer: true }}
         globeImageUrl={mapStyleMode === 'satellite' ? "//unpkg.com/three-globe/example/img/earth-blue-marble.jpg" : "//unpkg.com/three-globe/example/img/earth-dark.jpg"}
         bumpImageUrl="//unpkg.com/three-globe/example/img/earth-topology.png"
         backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"

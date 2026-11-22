@@ -3,11 +3,21 @@ import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
 import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
+    return null;
+  }
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+}
 
 function normalizeOrder(o: any, shippingOv: Record<string, any> = {}) {
-  const ov = shippingOv[o.id] || {};
+  const sessionOv = o.stripe_session_id ? (shippingOv[o.stripe_session_id] || {}) : {};
+  const idOv = o.id ? (shippingOv[o.id] || {}) : {};
+  const ov = { ...sessionOv, ...idOv };
   const rawAddr = ov.shipping_address ?? o.shipping_address ?? o.address ?? '';
   let postal = ov.shipping_postal_code ?? o.shipping_postal_code ?? '';
   let addr = rawAddr;
@@ -25,6 +35,14 @@ function normalizeOrder(o: any, shippingOv: Record<string, any> = {}) {
     user_id: o.user_id,
     island_id: o.island_id,
     type: o.type || o.plan || 'standard',
+    laminated: Boolean(ov.laminated ?? o.laminated ?? false),
+    design: ov.design ?? o.design ?? 'horizontal',
+    amount: ov.amount ?? o.amount ?? undefined,
+    country: ov.country ?? o.country ?? 'Japan',
+    traveler_name: ov.traveler_name ?? o.traveler_name ?? '',
+    visit_date: ov.visit_date ?? o.visit_date ?? '',
+    order_number: ov.order_number ?? o.order_number ?? '',
+    serial_number: ov.serial_number ?? o.serial_number ?? '',
     shipping_name: ov.shipping_name ?? o.shipping_name ?? o.recipient_name ?? o.traveler_name ?? '',
     shipping_postal_code: postal,
     shipping_address: addr,
@@ -40,71 +58,85 @@ function normalizeOrder(o: any, shippingOv: Record<string, any> = {}) {
 }
 
 export async function GET(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
-  const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
-
-  // First try physical_orders (ignoring missing table error), then merge/fallback with orders
-  let physOrders: any[] = [];
   try {
-    const physRes = await adminClient
-      .from('physical_orders')
-      .select('*')
-      .order('ordered_at', { ascending: false });
-    if (!physRes.error && Array.isArray(physRes.data)) {
-      physOrders = physRes.data;
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
-  } catch {
-    // physical_orders does not exist in live Supabase
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
+
+    // First try physical_orders (ignoring missing table error), then merge/fallback with orders
+    let physOrders: any[] = [];
+    try {
+      const physRes = await adminClient
+        .from('physical_orders')
+        .select('*')
+        .order('ordered_at', { ascending: false });
+      if (!physRes.error && Array.isArray(physRes.data)) {
+        physOrders = physRes.data;
+      }
+    } catch {
+      // physical_orders does not exist in live Supabase
+    }
+
+    const { data: legacyOrders, error } = await adminClient
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error && physOrders.length === 0) {
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+
+    const combined = [...physOrders, ...(legacyOrders || [])];
+    const seen = new Set<string>();
+    const seenSessions = new Set<string>();
+    const uniqueOrders = combined.filter(o => {
+      if (o.id && seen.has(o.id)) return false;
+      if (o.stripe_session_id && seenSessions.has(o.stripe_session_id)) return false;
+      if (o.id) seen.add(o.id);
+      if (o.stripe_session_id) seenSessions.add(o.stripe_session_id);
+      return true;
+    }).map(o => normalizeOrder(o, shippingOv));
+
+    return NextResponse.json({ orders: uniqueOrders });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || '注文一覧の取得に失敗しました' }, { status: 500 });
   }
-
-  const { data: legacyOrders, error } = await adminClient
-    .from('orders')
-    .select('*')
-    .order('created_at', { ascending: false });
-
-  if (error && physOrders.length === 0) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-
-  const combined = [...physOrders, ...(legacyOrders || [])];
-  const seen = new Set<string>();
-  const uniqueOrders = combined.filter(o => {
-    if (seen.has(o.id)) return false;
-    seen.add(o.id);
-    return true;
-  }).map(o => normalizeOrder(o, shippingOv));
-
-  return NextResponse.json({ orders: uniqueOrders });
 }
 
 export async function PUT(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const body = await req.json();
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
-  const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
-
   try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
+
     // 一括更新の場合
-    if (Array.isArray(body.ids) && body.status) {
+    if (Array.isArray(body?.ids) && body?.status) {
       const { ids, status, carrier } = body;
       const nowIso = new Date().toISOString();
       const updateData: any = { status };
@@ -112,17 +144,23 @@ export async function PUT(req: NextRequest) {
       if (status === 'delivered') updateData.delivered_at = nowIso;
       if (carrier) updateData.carrier = carrier;
 
+      let physErr: any = null;
       try {
-        await adminClient.from('physical_orders').update(updateData).in('id', ids);
-      } catch {
-        // ignore missing physical_orders table
+        const physRes = await adminClient.from('physical_orders').update(updateData).in('id', ids);
+        physErr = physRes.error;
+      } catch (e) {
+        physErr = e;
       }
 
       const { error } = await adminClient.from('orders').update(updateData).in('id', ids);
 
       if (error) {
-        // Fallback: update only status column on orders and persist shipping fields in admin_config
-        await adminClient.from('orders').update({ status }).in('id', ids);
+        try {
+          await adminClient.from('orders').update({ status }).in('id', ids);
+        } catch {}
+      }
+
+      if (error || physErr || status === 'cancelled') {
         for (const id of ids) {
           shippingOv[id] = { ...(shippingOv[id] || {}), ...updateData };
         }
@@ -132,7 +170,7 @@ export async function PUT(req: NextRequest) {
     }
 
     // 単一更新の場合
-    const { id, status, tracking_number, carrier, notes } = body;
+    const { id, status, tracking_number, carrier, notes } = body || {};
     if (!id || !status) {
       return NextResponse.json({ error: '必須項目が不足しています' }, { status: 400 });
     }
@@ -145,23 +183,29 @@ export async function PUT(req: NextRequest) {
     if (carrier !== undefined) updateData.carrier = carrier;
     if (notes !== undefined) updateData.notes = notes;
 
+    let physErr: any = null;
     try {
-      await adminClient.from('physical_orders').update(updateData).eq('id', id);
-    } catch {
-      // ignore missing physical_orders table
+      const physRes = await adminClient.from('physical_orders').update(updateData).eq('id', id);
+      physErr = physRes.error;
+    } catch (e) {
+      physErr = e;
     }
 
     const { error } = await adminClient.from('orders').update(updateData).eq('id', id);
 
     if (error) {
-      // Fallback: update only status column on orders and persist shipping fields in admin_config
-      await adminClient.from('orders').update({ status }).eq('id', id);
+      try {
+        await adminClient.from('orders').update({ status }).eq('id', id);
+      } catch {}
+    }
+
+    if (error || physErr || status === 'cancelled') {
       shippingOv[id] = { ...(shippingOv[id] || {}), ...updateData };
       await setFallbackJson('fallback_order_shipping', shippingOv);
     }
 
     return NextResponse.json({ success: true, message: '注文ステータス・発送情報を更新しました' });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || '注文更新中にエラーが発生しました' }, { status: 500 });
+    return NextResponse.json({ error: err?.message || '注文更新中にエラーが発生しました' }, { status: 500 });
   }
 }

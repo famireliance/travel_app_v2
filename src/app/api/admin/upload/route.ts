@@ -6,19 +6,25 @@ const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
 const ALLOWED_MIME_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
-const MAX_FILE_SIZE = 15 * 1024 * 1024; // 15MB
+const MAX_FILE_SIZE = 4 * 1024 * 1024; // 4MB
 const ALLOWED_BUCKETS = ['islands', 'fairies', 'avatars', 'diary-photos', 'public-assets', 'accommodations'];
 
 export async function POST(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
   try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
     const formData = await req.formData();
     const file = formData.get('file') as File;
     const bucket = (formData.get('bucket') as string) || 'islands';
@@ -38,10 +44,10 @@ export async function POST(req: NextRequest) {
     }
 
     if (file.size > MAX_FILE_SIZE) {
-      return NextResponse.json({ error: 'ファイルサイズは15MB以下にしてください' }, { status: 400 });
+      return NextResponse.json({ error: 'ファイルサイズは4MB以下にしてください' }, { status: 400 });
     }
 
-    const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
+    const adminClient = createClient(supabaseUrl, serviceRoleKey, {
       auth: { autoRefreshToken: false, persistSession: false }
     });
 
@@ -78,12 +84,11 @@ export async function POST(req: NextRequest) {
     }
 
     if (uploadError) {
-      const base64 = buffer.toString('base64');
-      const dataUrl = `data:${file.type};base64,${base64}`;
-      return NextResponse.json({
-        url: dataUrl,
-        warning: 'Supabase Storageへの保存に失敗したためDataURL形式で返却しました'
-      });
+      console.error('[admin/upload] Storage upload failed:', uploadError);
+      return NextResponse.json(
+        { error: uploadError.message || 'ストレージへの画像保存に失敗しました' },
+        { status: 500 }
+      );
     }
 
     const { data: publicUrlData } = adminClient.storage

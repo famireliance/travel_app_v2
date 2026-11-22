@@ -12,29 +12,87 @@ interface NearbyIslandsProps {
   currentIsland: any;
 }
 
-export default function NearbyIslands({ currentIsland }: NearbyIslandsProps) {
-  const nearbyList = useMemo(() => {
-    if (!currentIsland) return [];
+function parseCoords(coordsStr?: string): { lat: number; lng: number } | null {
+  if (!coordsStr) return null;
+  const parts = String(coordsStr).split(',').map((s) => parseFloat(s.trim()));
+  if (parts.length >= 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+    return { lat: parts[0], lng: parts[1] };
+  }
+  return null;
+}
 
-    const allIslands = Object.values(ALL_ISLANDS_MASTER_DICTIONARY);
-    
-    // Find islands in the same region or prefecture
-    const matches = allIslands.filter(
+function haversineDistanceKm(a: { lat: number; lng: number }, b: { lat: number; lng: number }): number {
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const R = 6371;
+  const dLat = toRad(b.lat - a.lat);
+  const dLng = toRad(b.lng - a.lng);
+  const sinLat = Math.sin(dLat / 2);
+  const sinLng = Math.sin(dLng / 2);
+  const h = sinLat * sinLat + Math.cos(toRad(a.lat)) * Math.cos(toRad(b.lat)) * sinLng * sinLng;
+  return 2 * R * Math.atan2(Math.sqrt(Math.min(1, h)), Math.sqrt(Math.max(0, 1 - h)));
+}
+
+export default function NearbyIslands({ currentIsland }: NearbyIslandsProps) {
+  const { nearbyList, hasCrossPrefecture, sameAreaCount } = useMemo(() => {
+    if (!currentIsland) return { nearbyList: [], hasCrossPrefecture: false, sameAreaCount: 0 };
+
+    const currentId = String(currentIsland.id);
+    const currentCoords = parseCoords(currentIsland.coordinates);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const distanceFromCurrent = (isl: any): number => {
+      if (!currentCoords) return Number.POSITIVE_INFINITY;
+      const c = parseCoords(isl.coordinates);
+      if (!c) return Number.POSITIVE_INFINITY;
+      return haversineDistanceKm(currentCoords, c);
+    };
+
+    const conquestIslands = Object.values(ALL_ISLANDS_MASTER_DICTIONARY).filter(
       (isl) =>
-        isl.id !== currentIsland.id &&
-        (isl.region_id === currentIsland.region_id || isl.prefecture === currentIsland.prefecture)
+        String(isl.id) !== currentId &&
+        isl.is_conquest_target !== false &&
+        isl.is_published !== false
     );
 
-    // If matches are few, fallback to any island
-    if (matches.length < 3) {
-      const remaining = allIslands.filter((isl) => isl.id !== currentIsland.id);
-      return remaining.slice(0, 6);
+    // 1. Keep all same-region / same-prefecture matches first (ordered by geographic proximity)
+    const sameAreaMatches = conquestIslands
+      .filter(
+        (isl) =>
+          (currentIsland.region_id && isl.region_id === currentIsland.region_id) ||
+          (currentIsland.prefecture && isl.prefecture === currentIsland.prefecture)
+      )
+      .sort((a, b) => distanceFromCurrent(a) - distanceFromCurrent(b));
+
+    if (sameAreaMatches.length >= 6) {
+      return {
+        nearbyList: sameAreaMatches.slice(0, 6),
+        hasCrossPrefecture: false,
+        sameAreaCount: sameAreaMatches.length,
+      };
     }
 
-    return matches.slice(0, 6);
+    // 2. Fill remaining slots with genuinely nearest conquest-target islands by Haversine distance
+    const matchedIds = new Set(sameAreaMatches.map((m) => String(m.id)));
+    const nearestOthers = conquestIslands
+      .filter((isl) => !matchedIds.has(String(isl.id)))
+      .sort((a, b) => distanceFromCurrent(a) - distanceFromCurrent(b))
+      .slice(0, 6 - sameAreaMatches.length);
+
+    const combined = [...sameAreaMatches, ...nearestOthers];
+    return {
+      nearbyList: combined,
+      hasCrossPrefecture: nearestOthers.length > 0,
+      sameAreaCount: sameAreaMatches.length,
+    };
   }, [currentIsland]);
 
   if (nearbyList.length === 0) return null;
+
+  const subtitleText = !hasCrossPrefecture
+    ? '同じエリア・自治体のおすすめ島めぐりコース'
+    : sameAreaCount > 0
+      ? '同じエリアおよび近隣海域のおすすめ島めぐりコース'
+      : '近隣海域・周辺エリアのおすすめ島めぐりコース';
 
   return (
     <div className="mb-12 bg-white rounded-3xl p-6 lg:p-8 shadow-sm border border-slate-100">
@@ -47,7 +105,7 @@ export default function NearbyIslands({ currentIsland }: NearbyIslandsProps) {
             <h3 className="font-serif font-bold text-slate-800 text-base">
               {currentIsland.name} の周辺の島々
             </h3>
-            <p className="text-xs text-slate-400">同じエリア・自治体のおすすめ島めぐりコース</p>
+            <p className="text-xs text-slate-400">{subtitleText}</p>
           </div>
         </div>
         <Link

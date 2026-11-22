@@ -57,9 +57,9 @@ const REGION_PUBLIC_WIFI_PRESETS: Record<string, { brandName: string; spots: Isl
       }
     ]
   },
-  // 奄美・屋久島・トカラ・トカラ列島（鹿児島県）
+  // 奄美群島（鹿児島県・奄美エリア限定）
   amami: {
-    brandName: 'しまぽWi-Fi / 奄美群島フリーWi-Fi',
+    brandName: '奄美群島フリーWi-Fi / Kagoshima Free Wi-Fi',
     cellNote: '港・空港・集落は全社4G。マングローブ林や山間部・トンネルはdocomo・au推奨。',
     spots: [
       {
@@ -80,8 +80,31 @@ const REGION_PUBLIC_WIFI_PRESETS: Record<string, { brandName: string; spots: Isl
       }
     ]
   },
-  // 沖縄本島周辺・宮古・八重山
-  okinawa: {
+  // 鹿児島県の他離島（屋久島・種子島・トカラ・甑島・長島等）
+  kagoshima: {
+    brandName: 'Kagoshima Free Wi-Fi / 自治体公衆無線LAN',
+    cellNote: '港・空港・集落は主要キャリア4G対応。屋久島山岳部やトカラ列島の外海航路は一部圏外あり。',
+    spots: [
+      {
+        name: '各港・フェリー船客待合所・観光案内所',
+        location: '船客待合所ロビー・観光案内窓口',
+        ssid: 'Kagoshima_Free_WiFi',
+        hasPassword: false,
+        authMethod: 'ブラウザ利用規約同意のみ',
+        note: '乗船待ち時間や荒天時のフェリー・高速船運航状況確認に活用できます。'
+      },
+      {
+        name: '市町村役場・支所・離島開発総合センター',
+        location: '行政窓口ロビー・コミュニティスペース',
+        ssid: 'City_Town_Free_Wi-Fi（庁舎内掲示を確認）',
+        hasPassword: false,
+        authMethod: '利用規約同意またはメール認証',
+        note: '防災拠点および地域観光情報の収集に活用可能。'
+      }
+    ]
+  },
+  // 八重山諸島（石垣・竹富・西表・小浜・黒島・波照間・与那国等）
+  yaeyama: {
     brandName: 'Be.Okinawa Free Wi-Fi / やえやまFree Wi-Fi',
     cellNote: '平坦な島（波照間・竹富など）は全域電波良好。西表島の内陸・ジャングルは圏外多数。',
     spots: [
@@ -100,6 +123,29 @@ const REGION_PUBLIC_WIFI_PRESETS: Record<string, { brandName: string; spots: Isl
         hasPassword: false,
         authMethod: 'ワンタップ接続',
         note: '集落散策時の通信に活用できます。'
+      }
+    ]
+  },
+  // 沖縄本島周辺・宮古・慶良間・久米・大東諸島
+  okinawa: {
+    brandName: 'Be.Okinawa Free Wi-Fi / 沖縄県公衆無線LAN',
+    cellNote: '空港・港・集落周辺は4G/5G良好。一部の離れ小島や岬・海上航路では電波が弱まる区間あり。',
+    spots: [
+      {
+        name: '離島ターミナル・港待合所・空港ロビー',
+        location: 'フェリー乗り場ロビー・観光案内窓口',
+        ssid: 'Be_Okinawa_Free_Wi-Fi',
+        hasPassword: false,
+        authMethod: '多言語対応Web認証（無料・無制限）',
+        note: '船の出航待ちや観光情報・運航状況の確認に便利。'
+      },
+      {
+        name: '市町村役場・観光協会・交流施設',
+        location: '集落中心部・公共施設ロビー',
+        ssid: 'Okinawa_Free_Wi-Fi（施設内案内掲示を確認）',
+        hasPassword: false,
+        authMethod: 'ブラウザ利用規約同意またはSNS/メール認証',
+        note: '集落散策時の通信や地域情報の確認に活用できます。'
       }
     ]
   },
@@ -143,14 +189,47 @@ export default function IslandWifiGuide({ islandId, islandName, regionId, prefec
   const [dynamicSpots, setDynamicSpots] = useState<IslandWifiSpot[] | null>(null);
   const [dynamicCellNote, setDynamicCellNote] = useState<string | null>(null);
 
-  // 地域プリセットの判定（東京都の島のみ tokyo_islands を使用し、他道府県では自治体汎用プリセットを表示）
+  // 地域プリセットの判定（東京都→しまぽWi-Fi、奄美群島のみ→Amami_Free_WiFi、八重山諸島のみ→Yaeyama_Free_Wi-Fi）
+  const AMAMI_ISLAND_NAMES = [
+    '奄美大島', '加計呂麻島', '請島', '与路島', '喜界島', '徳之島', '沖永良部島', '与論島'
+  ];
+  const YAEYAMA_ISLAND_NAMES = [
+    '石垣島', '竹富島', '小浜島', '西表島', '由布島', '鳩間島', '新城島', '波照間島', '与那国島', '嘉弥真島'
+  ];
+  const isAmamiIsland =
+    regionId === 'amami' ||
+    AMAMI_ISLAND_NAMES.some((n) => islandName === n || islandName.startsWith(`${n}（`)) ||
+    islandName.includes('奄美群島');
+  const isYaeyamaIsland =
+    regionId === 'yaeyama' ||
+    YAEYAMA_ISLAND_NAMES.some((n) => islandName === n || islandName.startsWith(`${n}（`)) ||
+    islandName.startsWith('黒島（八重山');
+
   let preset = REGION_PUBLIC_WIFI_PRESETS.japan_general;
-  if (prefecture === '東京都') {
+  if (prefecture === '東京都' || regionId === 'izu' || regionId === 'ogasawara') {
     preset = REGION_PUBLIC_WIFI_PRESETS.tokyo_islands;
-  } else if (prefecture === '沖縄県' || regionId?.includes('yaeyama') || regionId?.includes('okinawa') || regionId?.includes('miyako') || regionId === 'kerama' || regionId === 'kume' || regionId === 'daito') {
+  } else if (isYaeyamaIsland) {
+    preset = REGION_PUBLIC_WIFI_PRESETS.yaeyama;
+  } else if (
+    prefecture === '沖縄県' ||
+    regionId === 'okinawa_main' ||
+    regionId === 'miyako' ||
+    regionId === 'kerama' ||
+    regionId === 'kume' ||
+    regionId === 'daito'
+  ) {
     preset = REGION_PUBLIC_WIFI_PRESETS.okinawa;
-  } else if (prefecture === '鹿児島県' || regionId?.includes('amami') || regionId === 'tokara' || regionId === 'osumi' || regionId === 'koshiki') {
+  } else if (isAmamiIsland) {
     preset = REGION_PUBLIC_WIFI_PRESETS.amami;
+  } else if (
+    prefecture === '鹿児島県' ||
+    regionId === 'tokara' ||
+    regionId === 'osumi' ||
+    regionId === 'koshiki' ||
+    regionId === 'pseudo_nagashima' ||
+    regionId === 'pseudo_satsuma'
+  ) {
+    preset = REGION_PUBLIC_WIFI_PRESETS.kagoshima;
   }
 
   // 運営管理マスターAPIからの動的最新データ取得（オフライン時は自動フォールバック）

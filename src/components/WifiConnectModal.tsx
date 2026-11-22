@@ -32,10 +32,12 @@ export default function WifiConnectModal({
 
   if (!isOpen) return null;
 
-  // 国際標準 Wi-Fi 接続文字列フォーマット (iOS/Android標準対応)
-  // WIFI:S:<SSID>;T:<WPA|WEP|nopass>;P:<PASSWORD>;;
-  const wifiQrString = `WIFI:S:${ssid};T:${encryption};P:${password};;`;
-  const qrImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=500x500&margin=10&data=${encodeURIComponent(wifiQrString)}`;
+  const encryptionLabel =
+    encryption === 'nopass' || !password
+      ? 'オープン（パスワード不要）'
+      : encryption === 'WEP'
+        ? 'WEP'
+        : 'WPA / WPA2 / WPA3';
 
   const handleCopy = async (type: 'ssid' | 'password') => {
     const textToCopy = type === 'ssid' ? ssid : password;
@@ -86,29 +88,20 @@ export default function WifiConnectModal({
           </div>
 
           <div className="p-6 space-y-6">
-            {/* 1. 国際標準 Wi-Fi QRコード */}
-            <div className="flex flex-col items-center justify-center text-center p-4 bg-slate-50 border border-slate-200/80 rounded-2xl">
-              <div className="relative p-3 bg-white rounded-2xl shadow-sm border border-slate-200">
-                <img
-                  src={qrImageUrl}
-                  alt="Wi-Fi接続用QRコード"
-                  className="w-44 h-44 object-contain rounded-lg"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                  <div className="w-10 h-10 rounded-full bg-emerald-500 border-2 border-white flex items-center justify-center shadow-md">
-                    <Wifi className="w-5 h-5 text-white" />
-                  </div>
-                </div>
+            {/* 1. オフライン完結・プライバシー保護ステータスバナー */}
+            <div className="flex items-start gap-3 p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl">
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                <ShieldCheck className="w-5 h-5" />
               </div>
-
-              <div className="mt-3 space-y-1">
-                <p className="text-xs font-bold text-slate-800 flex items-center justify-center gap-1.5">
-                  <Smartphone className="w-4 h-4 text-emerald-600" />
-                  スマホのカメラをかざすだけで即接続！
+              <div className="space-y-0.5">
+                <p className="text-xs font-bold text-emerald-950 flex items-center gap-1.5">
+                  <span>100%オフライン対応・外部送信なし</span>
                 </p>
-                <p className="text-[11px] text-slate-500 leading-tight">
-                  標準カメラを向けると接続通知が出ます。タップして「接続」で完了！
+                <p className="text-[11px] text-emerald-800/90 leading-relaxed">
+                  SSID・パスワードを外部サーバーへ一切送信せず端末内で表示します。圏外や機内モード中でも安全にコピーして接続できます。
+                </p>
+                <p className="text-[10px] font-mono text-emerald-700 pt-0.5">
+                  暗号化方式: {encryptionLabel}
                 </p>
               </div>
             </div>
@@ -219,19 +212,17 @@ export default function WifiConnectModal({
                   <div className="space-y-1">
                     <p className="font-bold text-slate-800">📱 iPhone (iOS) の場合:</p>
                     <p className="text-slate-600 leading-relaxed">
-                      標準の「カメラ」アプリを開いて上記QRコードを映すと、画面上部に「ネットワーク {ssid} に接続」とバナーが出ます。タップして「接続」を押すだけで完了です。
+                      1. 上の「パスワードをコピー」をタップします。<br />
+                      2. iPhoneの「設定」アプリ →「Wi-Fi」を開きます。<br />
+                      3. ネットワーク一覧から『{ssid}』をタップし、コピーしたパスワードを貼り付けて「接続」を押します。
                     </p>
                   </div>
-                  <div className="space-y-1">
-                    <p className="font-bold text-slate-800">🤖 Android の場合:</p>
+                  <div className="space-y-1 pt-2 border-t border-slate-100">
+                    <p className="font-bold text-slate-800">🤖 Android / PC の場合:</p>
                     <p className="text-slate-600 leading-relaxed">
-                      標準カメラまたは「Google レンズ」でQRコードを読み取ると、「ネットワークに接続」ボタンが表示されます。
-                    </p>
-                  </div>
-                  <div className="space-y-1 pt-1 border-t border-slate-100">
-                    <p className="font-bold text-slate-800">💡 この画面を開いている端末自身を接続する場合:</p>
-                    <p className="text-slate-600 leading-relaxed">
-                      上の「パスワードをコピー」をタップ後、端末の「設定」→「Wi-Fi」を開き、一覧から『{ssid}』を選んでパスワードを貼り付けてください。
+                      1. 上の「パスワードをコピー」をタップします。<br />
+                      2. 端末の「設定」→「ネットワークとインターネット（Wi-Fi）」を開きます。<br />
+                      3. 一覧から『{ssid}』を選択し、パスワード欄を長押しして「貼り付け」→「接続」をタップします。
                     </p>
                   </div>
                 </div>

@@ -44,8 +44,15 @@ const REGION_NAME_MAP: Record<string, string> = {
 
 export function formatHabitatName(fairy: IslandFairy): string {
   if (fairy.island_id) {
-    return REGION_NAME_MAP[fairy.island_id] || fairy.island_id;
+    const idKey = String(fairy.island_id);
+    const dictName = ALL_ISLANDS_MASTER_DICTIONARY[idKey]?.name;
+    if (dictName) return dictName;
+    const explicitName = (fairy as { island_name?: string }).island_name;
+    if (explicitName) return explicitName;
+    return REGION_NAME_MAP[idKey] || idKey;
   }
+  const explicitName = (fairy as { island_name?: string }).island_name;
+  if (explicitName) return explicitName;
   if (fairy.region_id && REGION_NAME_MAP[fairy.region_id]) {
     return REGION_NAME_MAP[fairy.region_id];
   }
@@ -85,18 +92,19 @@ function findRelatedIsland(fairy: IslandFairy) {
   const dictionary = ALL_ISLANDS_MASTER_DICTIONARY;
   const islands = Object.values(dictionary);
 
-  if (fairy.island_id && dictionary[fairy.island_id]) {
-    const isl = dictionary[fairy.island_id];
+  const islandKey = fairy.island_id != null ? String(fairy.island_id) : '';
+  if (islandKey && dictionary[islandKey]) {
+    const isl = dictionary[islandKey];
     return { id: isl.id, name: isl.name, prefecture: isl.prefecture, slug: isl.slug };
   }
 
-  if (fairy.island_id) {
-    const target = fairy.island_id.toLowerCase().trim();
+  if (islandKey) {
+    const target = islandKey.toLowerCase().trim();
     const found = islands.find(
       (isl: any) =>
-        isl.name === fairy.island_id ||
+        isl.name === islandKey ||
         isl.slug === target ||
-        (isl.name && fairy.island_id && (isl.name.includes(fairy.island_id) || fairy.island_id.includes(isl.name)))
+        (isl.name && (isl.name.includes(islandKey) || islandKey.includes(isl.name)))
     );
     if (found) {
       return { id: found.id, name: found.name, prefecture: found.prefecture, slug: found.slug };
@@ -137,6 +145,11 @@ export default function FairyDetailModal({ fairy, isRevealed, onClose, onOpenVie
     text: 'text-slate-300',
   };
   const relatedIsland = findRelatedIsland(fairy);
+  const resolvedIslandName =
+    (fairy.island_id ? ALL_ISLANDS_MASTER_DICTIONARY[String(fairy.island_id)]?.name : undefined) ||
+    (fairy as { island_name?: string }).island_name ||
+    relatedIsland?.name ||
+    (fairy.island_id ? String(fairy.island_id) : '');
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/80 backdrop-blur-sm animate-in fade-in duration-200">
@@ -172,7 +185,7 @@ export default function FairyDetailModal({ fairy, isRevealed, onClose, onOpenVie
           </div>
 
           <div className="flex items-center gap-3">
-            <span className="text-3xl sm:text-4xl filter drop-shadow-md">{fairy.visual.icon}</span>
+            <span className="text-3xl sm:text-4xl filter drop-shadow-md">{isRevealed ? fairy.visual.icon : '🔒'}</span>
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <span className={`text-xs px-2.5 py-0.5 rounded-full border font-bold ${rarity.badge}`}>
@@ -239,7 +252,7 @@ export default function FairyDetailModal({ fairy, isRevealed, onClose, onOpenVie
                 <p className="text-base sm:text-lg font-bold text-slate-100">
                   {isRevealed
                     ? fairy.theme
-                    : `🔒 ${fairy.island_id ? `「${fairy.island_id}」` : '全国離島'}の未知なる守護妖精`}
+                    : `🔒 ${resolvedIslandName ? `「${resolvedIslandName}」` : '全国離島'}の未知なる守護妖精`}
                 </p>
               </div>
 
@@ -248,7 +261,7 @@ export default function FairyDetailModal({ fairy, isRevealed, onClose, onOpenVie
                 <p className="text-sm text-slate-300 leading-relaxed mt-1 bg-slate-950/60 p-3.5 rounded-xl border border-slate-800">
                   {isRevealed
                     ? fairy.description
-                    : `この妖精の詳しい生態はまだ封印されています。${fairy.island_id ? `「${fairy.island_id}」` : '該当の島'}へ実際に足を運び、位置情報チェックインまたは公式到達証明を発行することで、真の姿と神秘の力が解放されます。`}
+                    : `この妖精の詳しい生態はまだ封印されています。${resolvedIslandName ? `「${resolvedIslandName}」` : '該当の島'}へ実際に足を運び、位置情報チェックインまたは公式到達証明を発行することで、真の姿と神秘の力が解放されます。`}
                 </p>
               </div>
 

@@ -58,24 +58,46 @@ export async function POST(req: NextRequest) {
 
   try {
     const body = await req.json();
-    const { code, reward_amount, max_uses, expires_at } = body;
+    const { code, reward_amount, max_uses, valid_until, expires_at } = body || {};
     if (!code || typeof code !== 'string' || !code.trim()) {
       return NextResponse.json({ error: 'コードが必要です' }, { status: 400 });
     }
 
     const cleanCode = code.trim();
-    const reward = Math.max(1, Number(reward_amount) || 1);
+    const reward = Math.max(1, Math.floor(Number(reward_amount) || 1));
+    const parsedMaxUses =
+      max_uses !== undefined && max_uses !== null && max_uses !== ''
+        ? Math.max(1, Math.floor(Number(max_uses)))
+        : null;
+    const normalizedMaxUses = parsedMaxUses !== null && Number.isFinite(parsedMaxUses) ? parsedMaxUses : null;
+    const resolvedValidUntil = valid_until || expires_at || null;
 
     const client = getAdminClient();
     if (client) {
-      const { data, error } = await client
+      const insertPayload: Record<string, any> = {
+        code: cleanCode,
+        reward_amount: reward,
+      };
+      if (normalizedMaxUses !== null) insertPayload.max_uses = normalizedMaxUses;
+      if (resolvedValidUntil) insertPayload.valid_until = resolvedValidUntil;
+
+      let { data, error } = await client
         .from('app_promo_codes')
-        .insert({
-          code: cleanCode,
-          reward_amount: reward,
-        })
+        .insert(insertPayload)
         .select()
         .single();
+
+      if (error && resolvedValidUntil && String(error.message || '').includes('valid_until')) {
+        delete insertPayload.valid_until;
+        insertPayload.expires_at = resolvedValidUntil;
+        const retry = await client
+          .from('app_promo_codes')
+          .insert(insertPayload)
+          .select()
+          .single();
+        data = retry.data;
+        error = retry.error;
+      }
 
       if (!error && data) {
         return NextResponse.json({ success: true, promoCode: data });
@@ -94,8 +116,9 @@ export async function POST(req: NextRequest) {
       code: cleanCode,
       reward_amount: reward,
       current_uses: 0,
-      max_uses: max_uses ?? null,
-      expires_at: expires_at ?? null,
+      max_uses: normalizedMaxUses,
+      valid_until: resolvedValidUntil,
+      expires_at: resolvedValidUntil,
       created_at: new Date().toISOString(),
     };
     list.unshift(created);
@@ -108,34 +131,38 @@ export async function POST(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-  if (!isSuperAdmin(user)) {
-    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
-  }
-
-  const id = new URL(req.url).searchParams.get('id');
-  if (!id) {
-    return NextResponse.json({ error: 'id が必要です' }, { status: 400 });
-  }
-
-  const client = getAdminClient();
-  if (client) {
-    const { error } = await client.from('app_promo_codes').delete().eq('id', id);
-    if (!error) {
-      return NextResponse.json({ success: true });
+  try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
-  }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+    if (!isSuperAdmin(user)) {
+      return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
+    }
 
-  const fbCodes = await getFallbackJson<any[]>(FALLBACK_PROMO_KEY, []);
-  const filtered = (Array.isArray(fbCodes) ? fbCodes : []).filter(
-    (c: any) => c.id !== id && c.code !== id
-  );
-  await setFallbackJson(FALLBACK_PROMO_KEY, filtered);
-  return NextResponse.json({ success: true });
+    const id = new URL(req.url).searchParams.get('id');
+    if (!id) {
+      return NextResponse.json({ error: 'id が必要です' }, { status: 400 });
+    }
+
+    const client = getAdminClient();
+    if (client) {
+      const { error } = await client.from('app_promo_codes').delete().eq('id', id);
+      if (!error) {
+        return NextResponse.json({ success: true });
+      }
+    }
+
+    const fbCodes = await getFallbackJson<any[]>(FALLBACK_PROMO_KEY, []);
+    const filtered = (Array.isArray(fbCodes) ? fbCodes : []).filter(
+      (c: any) => c.id !== id && c.code !== id
+    );
+    await setFallbackJson(FALLBACK_PROMO_KEY, filtered);
+    return NextResponse.json({ success: true });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || '削除に失敗しました' }, { status: 500 });
+  }
 }

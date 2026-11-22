@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Sparkles, CalendarHeart, MapPin, Camera } from 'lucide-react';
-import toast from 'react-hot-toast';
+import { X, Sparkles, CalendarHeart, MapPin } from 'lucide-react';
 
 interface CharacterViewerModalProps {
   isOpen: boolean;
@@ -35,10 +34,6 @@ export default function CharacterViewerModal({ isOpen, onClose, image, icon, nam
   const handleMouseLeave = () => {
     setRotateX(0);
     setRotateY(0);
-  };
-
-  const handleAROverlay = () => {
-    toast('精霊ARモード: お手元の旅行写真を選択して、精霊と一緒に記念写真を保存できます！', { icon: '📸', duration: 4000 });
   };
 
   return (
@@ -136,15 +131,7 @@ export default function CharacterViewerModal({ isOpen, onClose, image, icon, nam
                 </div>
               )}
 
-              <div className="mt-6">
-                <button
-                  onClick={handleAROverlay}
-                  className="w-full py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-300 font-bold text-xs flex items-center justify-center gap-2 transition-all"
-                >
-                  <Camera className="w-4 h-4 text-amber-400" />
-                  精霊ARフォトフレームで記念撮影
-                </button>
-              </div>
+
             </div>
           </div>
         </motion.div>

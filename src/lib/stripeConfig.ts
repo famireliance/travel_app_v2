@@ -127,6 +127,10 @@ export async function getStripeConfig(): Promise<StripeRuntimeConfig> {
     }
   }
 
+  if (!secretKey) {
+    throw new Error('STRIPE_SECRET_KEY が未設定です');
+  }
+
   const stripe = new Stripe(secretKey, {
     apiVersion: '2026-07-29.dahlia' as any,
   });

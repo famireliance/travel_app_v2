@@ -15,6 +15,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { calculateDifficultyStats, getIslandDifficulty } from '@/lib/difficulty';
 import { getPlayerLevelInfo, getIslandMastery, getSpecialTitles, getRegionMastery } from '@/lib/gamification';
 import { FAIRIES_MASTER } from '@/lib/fairies';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -154,7 +155,9 @@ export default function MyPage() {
           phone: anniversaryPhone,
         }),
       });
-      const data = await res.json();
+      const rawAnniv = await res.text();
+      let data: { error?: string } = {};
+      try { data = rawAnniv ? JSON.parse(rawAnniv) : {}; } catch {}
       if (!res.ok) throw new Error(data.error || '申請に失敗しました');
       setAnniversarySuccess(true);
       setAnniversaryCertUsed(true); // ローカルステートも更新
@@ -183,7 +186,9 @@ export default function MyPage() {
         },
         body: JSON.stringify({ code: promoCode }),
       });
-      const data = await res.json();
+      const rawPromo = await res.text();
+      let data: { error?: string; message?: string } = {};
+      try { data = rawPromo ? JSON.parse(rawPromo) : {}; } catch {}
       if (!res.ok) throw new Error(data.error || 'クーポンの適用に失敗しました');
       toast.success(data.message || 'クーポンを適用しました！');
       setPromoCode('');
@@ -256,9 +261,25 @@ export default function MyPage() {
     }
 
     if (user) {
-      const { data } = await supabase.from('user_profiles').select('id').eq('nickname', newName).neq('id', user.id);
-      if (data && data.length > 0) {
-        toast.error('この名前はすでに使用されています。別の名前をお試しください。');
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch('/api/user/profile', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.access_token || ''}`,
+          },
+          body: JSON.stringify({ nickname: newName }),
+        });
+        const rawText = await res.text();
+        let data: { error?: string } = {};
+        try { data = rawText ? JSON.parse(rawText) : {}; } catch {}
+        if (!res.ok) {
+          toast.error(data.error || '名前の更新に失敗しました。別の名前をお試しください。');
+          return;
+        }
+      } catch {
+        toast.error('名前の更新中に通信エラーが発生しました。');
         return;
       }
     }
@@ -706,12 +727,31 @@ export default function MyPage() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {myCertificates.map((cert) => {
-                    const island = allIslandsData.find(i => i.id === cert.island_id);
+                    const island = allIslandsData.find(
+                      i => String(i.id) === String(cert.island_id) || (i.slug && String(i.slug) === String(cert.island_id))
+                    );
+                    const certIslandName =
+                      island?.name ||
+                      ALL_ISLANDS_MASTER_DICTIONARY[String(cert.island_id)]?.name ||
+                      cert.island_name ||
+                      (cert.island_id ? String(cert.island_id) : '離島');
+                    const safeCertUrl =
+                      typeof cert.image_url === 'string' && cert.image_url.startsWith('https://')
+                        ? cert.image_url
+                        : null;
                     return (
-                      <div key={cert.id} className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-slate-700 hover:border-amber-500 transition-colors cursor-pointer group" onClick={() => window.open(cert.image_url, '_blank')}>
+                      <div
+                        key={cert.id}
+                        className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-slate-700 hover:border-amber-500 transition-colors cursor-pointer group"
+                        onClick={() => {
+                          if (safeCertUrl) {
+                            window.open(safeCertUrl, '_blank', 'noopener,noreferrer');
+                          }
+                        }}
+                      >
                         <div className="aspect-[4/3] bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
-                          {cert.image_url ? (
-                            <img src={cert.image_url} alt="Certificate" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+                          {safeCertUrl ? (
+                            <img src={safeCertUrl} alt="Certificate" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                           ) : (
                             <span className="text-slate-500 text-xs">画像データがありません</span>
                           )}
@@ -720,7 +760,7 @@ export default function MyPage() {
                           </div>
                         </div>
                         <div className="p-4 bg-slate-800">
-                          <h4 className="font-bold text-white text-sm font-serif mb-1 line-clamp-1">{island?.name || '不明な島'} 到達証明書</h4>
+                          <h4 className="font-bold text-white text-sm font-serif mb-1 line-clamp-1">{certIslandName} 到達証明書</h4>
                           <div className="flex justify-between items-center mt-3">
                             <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-1 rounded">
                               {new Date(cert.created_at).toLocaleDateString('ja-JP')}
@@ -748,13 +788,19 @@ export default function MyPage() {
               ) : (
                 <div className="space-y-4">
                   {myDiaries.map((diary) => {
-                    const island = allIslandsData.find(i => i.id === diary.island_id);
+                    const island = allIslandsData.find(
+                      i => String(i.id) === String(diary.island_id) || (i.slug && String(i.slug) === String(diary.island_id))
+                    );
+                    const diaryIslandName =
+                      island?.name ||
+                      ALL_ISLANDS_MASTER_DICTIONARY[String(diary.island_id)]?.name ||
+                      (diary.island_id ? String(diary.island_id) : '離島');
                     return (
                       <div key={diary.id} className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row gap-6 hover:shadow-md transition-shadow">
                         <div className="flex-1">
                           <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                             <h4 onClick={() => router.push(`/island/${diary.island_id}`)} className="font-bold text-lg text-slate-800 cursor-pointer hover:text-blue-600 transition-colors flex items-center gap-2 font-serif">
-                              <MapPin size={18} className="text-blue-500" /> {island?.name || '不明な島'}
+                              <MapPin size={18} className="text-blue-500" /> {diaryIslandName}
                             </h4>
                             <span className="text-[0.7rem] text-slate-500 font-mono bg-slate-50 px-3 py-1 rounded-full border border-slate-200">
                               {new Date(diary.created_at).toLocaleDateString('ja-JP')}
@@ -885,13 +931,18 @@ export default function MyPage() {
                             </Link>
                           )}
 
-                          {isStay && res.status === 'confirmed' && (
+                          {isStay &&
+                            (res.status === 'completed' ||
+                              res.status === 'checked_in' ||
+                              (res.status === 'confirmed' &&
+                                res.check_out_date &&
+                                new Date(res.check_out_date) <= new Date())) && (
                             <button
                               onClick={() => setSelectedCertRes(res)}
                               className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-amber-300 text-xs font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-1.5 border border-amber-400/40"
                             >
                               <Award className="w-4 h-4 text-amber-400" />
-                              公式宿泊証明書を表示
+                              公式宿泊証明書を発行
                             </button>
                           )}
                         </div>
@@ -1021,46 +1072,59 @@ export default function MyPage() {
                 <button onClick={() => setFilterAttribute('ICE')} className={`px-4 py-1.5 rounded-full text-xs font-bold transition-colors flex items-center gap-1 ${filterAttribute === 'ICE' ? 'bg-cyan-300 text-slate-800' : 'bg-white text-slate-500 border border-slate-200'}`}>❄️ 氷</button>
               </div>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 bg-transparent pt-2">
-                {unlockedFairies.filter(f => !filterAttribute || (f as any).attribute === filterAttribute).map((fairy) => (
-                  <div key={fairy.id} className={`relative flex flex-col items-center bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:-translate-y-1 hover:shadow-md ${fairy.unlocked ? 'border-slate-200' : 'border-slate-100 grayscale opacity-60'}`}>
-                    {/* Card Header (Rarity & Attr) */}
-                    {fairy.unlocked && (
-                      <div className="absolute top-2 w-full px-2 flex justify-between items-center z-10">
-                        <span className={`text-[0.55rem] font-black tracking-widest px-1.5 py-0.5 rounded-sm text-white shadow-sm ${
-                          fairy.rarity === 'EPIC' ? 'bg-gradient-to-r from-purple-500 to-indigo-500' : 
-                          fairy.rarity === 'RARE' ? 'bg-gradient-to-r from-amber-400 to-orange-500' : 
-                          fairy.rarity === 'SPOT_EXCLUSIVE' ? 'bg-gradient-to-r from-rose-500 to-pink-600' : 'bg-slate-700'
-                        }`}>
-                          {fairy.rarity.replace('_EXCLUSIVE', '')}
-                        </span>
-                        {(fairy as any).attribute && (
-                          <div className="bg-white/90 backdrop-blur-md rounded-full w-6 h-6 flex items-center justify-center text-[0.65rem] shadow-sm">
-                            {{ WATER: '💧', NATURE: '🌿', FIRE: '🔥', LIGHT: '✨', EARTH: '🪨', WIND: '🌪️', ICE: '❄️' }[(fairy as any).attribute as string] || ''}
+                {unlockedFairies
+                  .filter(f => !filterAttribute || (f.unlocked && (f as any).attribute === filterAttribute))
+                  .map((fairy) => {
+                    const resolvedFairyIsland = fairy.island_id
+                      ? (ALL_ISLANDS_MASTER_DICTIONARY[String(fairy.island_id)]?.name ||
+                         (fairy as any).island_name ||
+                         String(fairy.island_id))
+                      : ((fairy as any).island_name || '');
+                    return (
+                      <div key={fairy.id} className={`relative flex flex-col items-center bg-white rounded-xl shadow-sm border overflow-hidden transition-all hover:-translate-y-1 hover:shadow-md ${fairy.unlocked ? 'border-slate-200' : 'border-slate-100 grayscale opacity-60'}`}>
+                        {/* Card Header (Rarity & Attr) */}
+                        {fairy.unlocked && (
+                          <div className="absolute top-2 w-full px-2 flex justify-between items-center z-10">
+                            <span className={`text-[0.55rem] font-black tracking-widest px-1.5 py-0.5 rounded-sm text-white shadow-sm ${
+                              fairy.rarity === 'EPIC' ? 'bg-gradient-to-r from-purple-500 to-indigo-500' : 
+                              fairy.rarity === 'RARE' ? 'bg-gradient-to-r from-amber-400 to-orange-500' : 
+                              fairy.rarity === 'SPOT_EXCLUSIVE' ? 'bg-gradient-to-r from-rose-500 to-pink-600' : 'bg-slate-700'
+                            }`}>
+                              {fairy.rarity.replace('_EXCLUSIVE', '')}
+                            </span>
+                            {(fairy as any).attribute && (
+                              <div className="bg-white/90 backdrop-blur-md rounded-full w-6 h-6 flex items-center justify-center text-[0.65rem] shadow-sm">
+                                {{ WATER: '💧', NATURE: '🌿', FIRE: '🔥', LIGHT: '✨', EARTH: '🪨', WIND: '🌪️', ICE: '❄️' }[(fairy as any).attribute as string] || ''}
+                              </div>
+                            )}
                           </div>
                         )}
+                        
+                        {/* Image Area */}
+                        <div className={`w-full aspect-[3/4] flex items-center justify-center text-5xl relative ${fairy.unlocked ? `bg-gradient-to-b ${fairy.visual.colorFrom} ${fairy.visual.colorTo}` : 'bg-slate-100'}`}>
+                          {fairy.unlocked ? (
+                            fairy.visual.imageUrl ? (
+                              <img src={fairy.visual.imageUrl} alt={fairy.name} className="w-full h-full object-contain p-2 drop-shadow-md" />
+                            ) : (
+                              <span>{fairy.visual.icon}</span>
+                            )
+                          ) : (
+                            <span className="text-3xl text-slate-400">🔒</span>
+                          )}
+                        </div>
+                        
+                        {/* Card Footer (Name & Theme) */}
+                        <div className="p-3 w-full text-center bg-white border-t border-slate-100">
+                          <div className={`text-xs font-black truncate ${fairy.unlocked ? 'text-slate-800' : 'text-slate-400'}`}>
+                            {fairy.unlocked ? fairy.name : '❓？？？'}
+                          </div>
+                          <div className="text-[0.55rem] text-slate-500 truncate mt-0.5">
+                            {fairy.unlocked ? fairy.theme : (resolvedFairyIsland ? `🔒 「${resolvedFairyIsland}」の未発見妖精` : '🔒 未発見の妖精')}
+                          </div>
+                        </div>
                       </div>
-                    )}
-                    
-                    {/* Image Area */}
-                    <div className={`w-full aspect-[3/4] flex items-center justify-center text-5xl relative ${fairy.unlocked ? `bg-gradient-to-b ${fairy.visual.colorFrom} ${fairy.visual.colorTo}` : 'bg-slate-100'}`}>
-                      {fairy.unlocked && fairy.visual.imageUrl ? (
-                        <img src={fairy.visual.imageUrl} alt={fairy.name} className="w-full h-full object-contain p-2 drop-shadow-md" />
-                      ) : (
-                        <span>{fairy.visual.icon}</span>
-                      )}
-                    </div>
-                    
-                    {/* Card Footer (Name & Theme) */}
-                    <div className="p-3 w-full text-center bg-white border-t border-slate-100">
-                      <div className={`text-xs font-black truncate ${fairy.unlocked ? 'text-slate-800' : 'text-slate-400'}`}>
-                        {fairy.unlocked ? fairy.name : '???'}
-                      </div>
-                      <div className="text-[0.55rem] text-slate-500 truncate mt-0.5">
-                        {fairy.unlocked ? fairy.theme : '未発見の妖精'}
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                    );
+                  })}
               </div>
             </motion.div>
           )}
@@ -1145,7 +1209,9 @@ export default function MyPage() {
                         method: 'POST',
                         headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
                       });
-                      const data = await res.json();
+                      const rawPortal = await res.text();
+                      let data: { url?: string; error?: string } = {};
+                      try { data = rawPortal ? JSON.parse(rawPortal) : {}; } catch {}
                       if (!res.ok || data.error) {
                         toast.error(data.error || 'お支払い管理ページを開けませんでした。');
                         return;
@@ -1178,12 +1244,19 @@ export default function MyPage() {
                           method: 'POST',
                           headers: { 'Authorization': `Bearer ${session?.access_token || ''}` }
                         });
+                        const rawDel = await res.text();
+                        let delData: { error?: string } = {};
+                        try { delData = rawDel ? JSON.parse(rawDel) : {}; } catch {}
                         if (res.ok) {
+                          try {
+                            localStorage.clear();
+                            sessionStorage.clear();
+                          } catch {}
                           toast.success('アカウントを退会しました。ご利用ありがとうございました。');
                           await supabase.auth.signOut();
                           window.location.href = '/';
                         } else {
-                          toast.error('退会処理に失敗しました。');
+                          toast.error(delData.error || '退会処理に失敗しました。');
                         }
                       } catch (e) {
                         toast.error('エラーが発生しました。');

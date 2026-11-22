@@ -9,6 +9,7 @@ import { useTravel } from '@/context/TravelContext';
 import { COMPANION_CHARACTERS, CompanionId } from '@/lib/companion';
 import { getPlayerLevelInfo } from '@/lib/gamification';
 import { FAIRIES_MASTER } from '@/lib/fairies';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import CharacterViewerModal from '@/components/CharacterViewerModal';
 import Breadcrumb from '@/components/Breadcrumb';
 
@@ -16,7 +17,7 @@ type ViewMode = 'COMPANION' | 'FAIRIES';
 
 export default function CompanionClient() {
   const router = useRouter();
-  const { totalXP, totalPoints, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, user, allFairies } = useTravel();
+  const { totalXP, totalPoints, selectedCompanionId, updateCompanionId, companionChar, companionStage, collectedFairies, collectedFairyDates, user, allFairies, subscriptionTier } = useTravel();
   const effectiveXP = Math.max(totalXP || 0, totalPoints || 0);
   const playerLvInfo = getPlayerLevelInfo(effectiveXP);
   
@@ -241,8 +242,10 @@ export default function CompanionClient() {
                       <Sparkles className="text-amber-400" /> 進化系統樹・獲得スキル
                     </h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-                      {activeViewChar.stages.map((st, idx) => {
-                        const isUnlocked = playerLvInfo.level >= st.minLevel;
+                      {activeViewChar.stages.map((st) => {
+                        const isUltimateLocked = st.stage === 4 && subscriptionTier !== 'ultimate';
+                        const isLevelMet = playerLvInfo.level >= st.minLevel;
+                        const isUnlocked = isLevelMet && !isUltimateLocked;
                         return (
                           <div 
                             key={st.stage} 
@@ -255,9 +258,15 @@ export default function CompanionClient() {
                                 STAGE {st.stage}
                               </span>
                               {!isUnlocked ? (
-                                <span className="flex items-center gap-1 text-[10px] font-bold text-white/50 bg-white/10 px-2 py-1 rounded">
-                                  <Lock className="w-3 h-3" /> Lv.{st.minLevel}〜
-                                </span>
+                                isLevelMet && isUltimateLocked ? (
+                                  <span className="flex items-center gap-1 text-[10px] font-bold text-amber-300 bg-amber-500/20 border border-amber-400/40 px-2 py-1 rounded">
+                                    <Lock className="w-3 h-3" /> Ultimate限定
+                                  </span>
+                                ) : (
+                                  <span className="flex items-center gap-1 text-[10px] font-bold text-white/50 bg-white/10 px-2 py-1 rounded">
+                                    <Lock className="w-3 h-3" /> {st.stage === 4 ? `Lv.${st.minLevel}〜 / Ultimate限定` : `Lv.${st.minLevel}〜`}
+                                  </span>
+                                )
                               ) : (
                                 <span className="text-[10px] font-bold text-emerald-400">UNLOCKED</span>
                               )}
@@ -390,7 +399,7 @@ export default function CompanionClient() {
                                     {new Date(collectedFairyDates[fairy.id]).toLocaleString('ja-JP', {year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit'})}
                                   </p>
                                   <p className="text-[8px] text-white/50 font-mono scale-90 origin-left truncate">
-                                    LOC: {fairy.island_id?.toUpperCase() ?? 'REGION'}
+                                    LOC: {(fairy.island_id && ALL_ISLANDS_MASTER_DICTIONARY[String(fairy.island_id)]?.name) || String(fairy.island_id || 'REGION').toUpperCase()}
                                   </p>
                                 </div>
                               )}
@@ -414,24 +423,7 @@ export default function CompanionClient() {
           </motion.div>
         )}
 
-        {/* 妖精キャラクターリスト (SEO & Accessibility) */}
-        <div className="max-w-7xl mx-auto px-6 lg:px-12 mt-12 mb-24 relative z-10">
-          <details className="group bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 overflow-hidden transition-all">
-            <summary className="text-sm font-bold text-slate-300 p-6 cursor-pointer select-none outline-none flex justify-between items-center hover:bg-white/10 transition-colors list-none">
-              登場するご当地妖精キャラクター一覧（全図鑑リスト）
-              <ChevronRight className="w-5 h-5 transition-transform duration-300 group-open:rotate-90" />
-            </summary>
-            <div className="p-6 pt-0 text-xs text-slate-400 border-t border-white/10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {allFairies.map(fairy => (
-                <div key={fairy.id} className="p-3 bg-black/20 rounded-xl">
-                  <div className="font-bold text-white mb-1">{fairy.name} <span className="text-[10px] text-amber-400">[{fairy.rarity}]</span></div>
-                  <div className="text-[10px] text-slate-300 mb-1">{fairy.theme}</div>
-                  <p className="text-[10px] text-slate-500 leading-relaxed line-clamp-2" title={fairy.description}>{fairy.description}</p>
-                </div>
-              ))}
-            </div>
-          </details>
-        </div>
+
       </main>
 
       <CharacterViewerModal

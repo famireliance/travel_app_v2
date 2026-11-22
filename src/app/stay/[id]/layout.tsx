@@ -33,6 +33,7 @@ export async function generateMetadata({
   let description =
     '輝旅 島専科（KIRATABI）公認パートナー宿泊施設のご案内。離島のホテル・民宿・ヴィラのプランや設備、アクセス情報を確認できます。';
   let ogImage = '/og-image.png';
+  let shouldIndex = false;
 
   try {
     const client = getServerSupabase();
@@ -41,7 +42,7 @@ export async function generateMetadata({
       if (UUID_REGEX.test(cleanId)) {
         const { data } = await client
           .from('accommodations')
-          .select('id, island_id, name, description, photo_exterior, photo_urls')
+          .select('id, island_id, name, description, is_verified, photo_exterior, photo_urls')
           .or(`id.eq.${cleanId},owner_id.eq.${cleanId}`)
           .limit(1)
           .maybeSingle();
@@ -49,7 +50,7 @@ export async function generateMetadata({
       } else {
         const { data } = await client
           .from('accommodations')
-          .select('id, island_id, name, description, photo_exterior, photo_urls')
+          .select('id, island_id, name, description, is_verified, photo_exterior, photo_urls')
           .eq('id', cleanId)
           .limit(1)
           .maybeSingle();
@@ -57,6 +58,13 @@ export async function generateMetadata({
       }
 
       if (acc?.name) {
+        const accNameStr = String(acc.name);
+        const isFictionalOrTest =
+          accNameStr.includes('架空') || accNameStr.includes('テスト用');
+        if (acc.is_verified && !isFictionalOrTest) {
+          shouldIndex = true;
+        }
+
         const islandName =
           ALL_ISLANDS_MASTER_DICTIONARY[String(acc.island_id || '').trim()]?.name || '';
         let extCatchphrase = '';
@@ -103,6 +111,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    ...(shouldIndex ? {} : { robots: { index: false, follow: false } }),
     alternates: {
       canonical: canonicalUrl,
     },

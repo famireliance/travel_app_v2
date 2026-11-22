@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getStripeConfig } from '@/lib/stripeConfig';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 export async function GET(req: NextRequest) {
@@ -37,6 +38,7 @@ export async function GET(req: NextRequest) {
         });
 
         const paymentIntentId = typeof session.payment_intent === 'string' ? session.payment_intent : '';
+        const trackedKeys: string[] = [sessionId];
 
         // 1. physical_orders の確認と更新
         let hasPhysicalRow = false;
@@ -48,6 +50,7 @@ export async function GET(req: NextRequest) {
 
         if (!physSelectErr && existingPhys) {
           hasPhysicalRow = true;
+          if (existingPhys.id) trackedKeys.push(String(existingPhys.id));
           if (existingPhys.status === 'pending_payment') {
             await adminClient
               .from('physical_orders')
@@ -67,6 +70,7 @@ export async function GET(req: NextRequest) {
           .maybeSingle();
 
         if (!legSelectErr && existingLegacy) {
+          if (existingLegacy.id) trackedKeys.push(String(existingLegacy.id));
           if (existingLegacy.order_number) {
             finalOrderNumber = existingLegacy.order_number;
           }
@@ -87,22 +91,49 @@ export async function GET(req: NextRequest) {
         } else if (!hasPhysicalRow) {
           // physical_orders が存在せず orders にも未登録だった場合は確定レコードを作成
           const formattedAddress = `${meta.country && meta.country !== 'Japan' ? `[${meta.country}] ` : ''}〒${meta.postal_code || ''} ${meta.address || ''}${meta.phone ? ` (TEL: ${meta.phone})` : ''}`.trim();
-          await adminClient.from('orders').insert([{
-            order_number: finalOrderNumber,
-            serial_number: finalSerial,
-            stripe_session_id: sessionId,
-            ...(meta.user_id && meta.user_id !== 'anonymous' ? { user_id: meta.user_id } : {}),
-            island_id: meta.island_id || 'unknown',
-            island_name: ALL_ISLANDS_MASTER_DICTIONARY[meta.island_id || '']?.name || meta.island_name || meta.island_id || 'unknown',
-            plan: meta.plan || 'standard',
-            traveler_name: meta.traveler_name || '',
-            recipient_name: meta.recipient_name || '',
-            address: formattedAddress,
-            visit_date: meta.visit_date || new Date().toISOString().slice(0, 10),
-            status: 'ordered',
-            created_at: new Date().toISOString(),
-          }]);
+          const { data: createdOrd } = await adminClient
+            .from('orders')
+            .insert([{
+              order_number: finalOrderNumber,
+              serial_number: finalSerial,
+              stripe_session_id: sessionId,
+              ...(meta.user_id && meta.user_id !== 'anonymous' ? { user_id: meta.user_id } : {}),
+              island_id: meta.island_id || 'unknown',
+              island_name: ALL_ISLANDS_MASTER_DICTIONARY[meta.island_id || '']?.name || meta.island_name || meta.island_id || 'unknown',
+              plan: meta.plan || 'standard',
+              traveler_name: meta.traveler_name || '',
+              recipient_name: meta.recipient_name || '',
+              address: formattedAddress,
+              visit_date: meta.visit_date || new Date().toISOString().slice(0, 10),
+              status: 'ordered',
+              created_at: new Date().toISOString(),
+            }])
+            .select('id')
+            .maybeSingle();
+          if (createdOrd?.id) trackedKeys.push(String(createdOrd.id));
         }
+
+        const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
+        const verifiedMeta = {
+          laminated: meta.laminated === 'true',
+          design: meta.design || 'horizontal',
+          amount: session.amount_total ?? undefined,
+          shipping_phone: meta.phone || '',
+          country: meta.country || 'Japan',
+          traveler_name: meta.traveler_name || '',
+          visit_date: meta.visit_date || '',
+          order_number: finalOrderNumber,
+          serial_number: finalSerial,
+        };
+        for (const key of trackedKeys) {
+          if (!key) continue;
+          shippingOv[key] = {
+            ...(shippingOv[key] || {}),
+            ...verifiedMeta,
+            shipping_phone: shippingOv[key]?.shipping_phone || verifiedMeta.shipping_phone,
+          };
+        }
+        await setFallbackJson('fallback_order_shipping', shippingOv);
       } catch (dbErr) {
         console.warn('Order verify DB sync warning:', dbErr);
       }

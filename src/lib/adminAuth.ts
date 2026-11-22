@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js';
 import { NextRequest } from 'next/server';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 
 export interface AdminUser {
   id: string;
@@ -15,7 +15,7 @@ export interface AdminUser {
 }
 
 export async function getAdminPassword(): Promise<string> {
-  if (SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
+  if (SUPABASE_URL && SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
     try {
       const client = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
         auth: { autoRefreshToken: false, persistSession: false }
@@ -49,7 +49,7 @@ export async function validateTokenString(token: string): Promise<AdminUser | nu
 
   // Check if token is a valid UUID format (session ID)
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-  if (uuidRegex.test(token) && SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
+  if (uuidRegex.test(token) && SUPABASE_URL && SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
     try {
       const client = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
         auth: { autoRefreshToken: false, persistSession: false }
@@ -70,7 +70,7 @@ export async function validateTokenString(token: string): Promise<AdminUser | nu
         
       if (!error && data && new Date(data.expires_at) > new Date()) {
         const u = data.admin_users as any;
-        if (!u) {
+        if (!u && !data.user_id) {
           // Master Admin session (user_id is null)
           return {
             id: 'master-admin-id',
@@ -80,10 +80,18 @@ export async function validateTokenString(token: string): Promise<AdminUser | nu
             org_name: 'システム管理'
           };
         }
+        if (!u) {
+          return null;
+        }
         const orgRel = u?.admin_organizations;
-        const orgName =
-          (Array.isArray(orgRel) ? orgRel[0]?.name : orgRel?.name) ||
-          (u.org_id ? '自治体組織' : 'システム管理');
+        const explicitOrgName = Array.isArray(orgRel) ? orgRel[0]?.name : orgRel?.name;
+        const orgName = explicitOrgName
+          ? explicitOrgName
+          : u.role === 'super_admin'
+            ? 'システム管理'
+            : u.org_id
+              ? '自治体組織'
+              : '未所属';
         return {
           id: u.id,
           userId: u.id,

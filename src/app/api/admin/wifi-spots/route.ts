@@ -15,16 +15,20 @@ import {
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 export async function GET(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  
-  const island_id = new URL(req.url).searchParams.get('island_id') || undefined;
-  const [spots, cell_notes] = await Promise.all([
-    getWifiSpots(island_id),
-    getCellNotes(),
-  ]);
-  
-  return NextResponse.json({ spots, cell_notes });
+  try {
+    const user = await getAuthUser(req);
+    if (!user) return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+
+    const island_id = new URL(req.url).searchParams.get('island_id') || undefined;
+    const [spots, cell_notes] = await Promise.all([
+      getWifiSpots(island_id),
+      getCellNotes(),
+    ]);
+
+    return NextResponse.json({ spots, cell_notes });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || '取得エラー' }, { status: 500 });
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -55,9 +59,18 @@ function resolveMasterIsland(rawId: string): any | null {
 
 function checkJurisdiction(user: { role: string; org_name?: string }, islandId: string): boolean {
   if (user.role === 'super_admin') return true;
-  if (!user.org_name || user.org_name === 'システム管理' || user.org_name === 'System') return true;
 
-  const org = user.org_name;
+  const org = (user.org_name || '').trim();
+  if (
+    !org ||
+    org === '未所属' ||
+    org === '自治体組織' ||
+    org === 'システム管理' ||
+    org === 'System'
+  ) {
+    return false;
+  }
+
   const master = resolveMasterIsland(islandId);
   const id = master ? String(master.id) : islandId.trim().toLowerCase();
   const slug = master ? String(master.slug || '').toLowerCase() : islandId.trim().toLowerCase();
@@ -128,7 +141,37 @@ function checkJurisdiction(user: { role: string; org_name?: string }, islandId: 
     ].includes(slug);
   }
 
-  return true;
+  // 都道府県・市町村名による厳格一致チェック（未一致の場合は拒否）
+  const cleanOrg = org.replace(/(県庁|都庁|道庁|府庁|市役所|町役場|村役場|役場|観光協会|支庁)$/g, '').trim();
+  if (!cleanOrg) return false;
+
+  if (pref && (cleanOrg === pref || org === pref)) {
+    return true;
+  }
+
+  if (pref && cleanOrg.startsWith(pref)) {
+    const subMuni = cleanOrg.slice(pref.length).trim();
+    if (!subMuni) return true;
+    const muniCore = subMuni.replace(/[市町村郡]$/, '').trim();
+    if (muniCore.length >= 2) {
+      const desc = String(master?.description || '');
+      const access = String(master?.access || '');
+      return name.includes(muniCore) || desc.includes(subMuni) || access.includes(subMuni);
+    }
+    return false;
+  }
+
+  const muniCore = cleanOrg.replace(/[都道府県市町村郡]$/, '').trim();
+  if (muniCore.length >= 2 && master) {
+    const desc = String(master.description || '');
+    const access = String(master.access || '');
+    if (name.includes(muniCore)) return true;
+    if (/[市町村]$/.test(cleanOrg) && (desc.includes(cleanOrg) || access.includes(cleanOrg))) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export async function POST(req: NextRequest) {

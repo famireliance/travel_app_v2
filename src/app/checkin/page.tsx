@@ -141,7 +141,7 @@ function CheckinContent() {
             <p className="text-xs text-emerald-100">店舗限定のレア妖精を獲得しました！</p>
             
             <button
-              onClick={() => router.push('/companion')}
+              onClick={() => router.push('/fairy-gallery')}
               className="mt-6 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all"
             >
               図鑑へ見に行く
@@ -156,7 +156,7 @@ function CheckinContent() {
             <p className="text-xs text-blue-100">このスポットの限定妖精はすでに獲得済みです！</p>
             
             <button
-              onClick={() => router.push('/companion')}
+              onClick={() => router.push('/fairy-gallery')}
               className="mt-6 w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl shadow-lg transition-all"
             >
               図鑑へ見に行く

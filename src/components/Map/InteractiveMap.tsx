@@ -17,7 +17,9 @@ interface InteractiveMapProps {
   bounds?: [[number, number], [number, number]];
   zoom?: number;
   mapStyle?: MapStyle;
-  onIslandSelect?: (islandId: string) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onIslandSelect?: (island: any) => void;
+  filterBarClassName?: string;
 }
 
 // Component to dynamically fit bounds when islands change
@@ -33,7 +35,7 @@ const FitBounds = ({ bounds }: { bounds: [[number, number], [number, number]] })
 
 // Component that manages supercluster clustering & map events
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ClusteredMarkers = ({ islands, islandStatuses, onIslandSelect }: { islands: any[], islandStatuses: Record<string, string>, onIslandSelect?: (id: string) => void }) => {
+const ClusteredMarkers = ({ islands, islandStatuses, onIslandSelect }: { islands: any[], islandStatuses: Record<string, string>, onIslandSelect?: (island: any) => void }) => {
   const map = useMap();
   const [zoom, setZoom] = useState(map.getZoom());
   const [bounds, setBounds] = useState<[number, number, number, number] | null>(null);
@@ -117,7 +119,7 @@ const ClusteredMarkers = ({ islands, islandStatuses, onIslandSelect }: { islands
             html: `<div class="relative flex items-center justify-center cursor-pointer group">
                      <div class="absolute -inset-2 rounded-full bg-blue-500/20 blur-md group-hover:bg-blue-400/40 transition-all"></div>
                      <div class="w-10 h-10 rounded-full bg-slate-900/90 border-2 border-cyan-400 text-cyan-300 font-bold text-xs flex items-center justify-center shadow-lg shadow-cyan-500/30 backdrop-blur-sm transition-transform duration-300 group-hover:scale-110">
-                       <span className="font-mono">${pointCount}</span>
+                       <span class="font-mono">${pointCount}</span>
                      </div>
                    </div>`,
             iconSize: [40, 40],
@@ -199,7 +201,7 @@ const ClusteredMarkers = ({ islands, islandStatuses, onIslandSelect }: { islands
 
         const customIcon = L.divIcon({
           className: 'custom-island-marker',
-          html: `<div class="relative flex items-center justify-center">
+          html: `<div class="relative flex items-center justify-center cursor-pointer">
                    ${pulseEffect}
                    <div class="${sizeClass} ${markerColor} rounded-full shadow-md flex items-center justify-center font-bold z-10 transition-transform duration-300 hover:scale-150">
                      ${innerIcon}
@@ -218,9 +220,10 @@ const ClusteredMarkers = ({ islands, islandStatuses, onIslandSelect }: { islands
             icon={customIcon}
             zIndexOffset={zIndexOffset}
             eventHandlers={{
-              click: () => {
+              click: (e) => {
+                e.originalEvent?.stopPropagation();
                 if (onIslandSelect) {
-                  onIslandSelect(island.id);
+                  onIslandSelect(island);
                 }
               }
             }}
@@ -248,7 +251,7 @@ const ClusteredMarkers = ({ islands, islandStatuses, onIslandSelect }: { islands
   );
 };
 
-export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = 'voyager', onIslandSelect }: InteractiveMapProps) {
+export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = 'voyager', onIslandSelect, filterBarClassName }: InteractiveMapProps) {
   const { islandStatuses } = useTravel();
   const [mounted, setMounted] = useState(false);
   const [selectedFilter, setSelectedFilter] = useState<'all' | 'unvisited' | 'visited' | 'planning' | 'star5'>('all');
@@ -294,8 +297,16 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
 
   return (
     <div className="relative w-full h-full">
+      <style>{`
+        .kiratabi-dark-tile {
+          filter: brightness(0.65) invert(1) contrast(1.1) hue-rotate(180deg);
+        }
+      `}</style>
       {/* Floating Filter Bar */}
-      <div className="absolute top-4 left-4 z-[1000] flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-slate-700/50 shadow-xl overflow-x-auto max-w-[90vw]">
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className={`absolute ${filterBarClassName || 'top-16 sm:top-20 left-4 max-w-[90vw]'} z-[1000] flex items-center gap-1.5 bg-slate-900/80 backdrop-blur-md p-1.5 rounded-2xl border border-slate-700/50 shadow-xl overflow-x-auto hide-scrollbar`}
+      >
         <button
           onClick={() => setSelectedFilter('all')}
           className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 whitespace-nowrap ${
@@ -351,8 +362,10 @@ export default function InteractiveMap({ islands, bounds, zoom = 5, mapStyle = '
         attributionControl={false}
       >
         <TileLayer
+          key={mapStyle}
           url={tileUrls[mapStyle]}
           attribution={attributions[mapStyle]}
+          className={mapStyle === 'dark' ? 'kiratabi-dark-tile' : undefined}
         />
         
         <FitBounds bounds={mapBounds} />

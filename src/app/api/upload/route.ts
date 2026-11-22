@@ -6,7 +6,8 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 
 const VALID_IMAGE_HEADER = /^data:image\/(jpeg|jpg|png|webp);base64,/;
-const MAX_BASE64_LENGTH = 7 * 1024 * 1024; // ~7MB base64 payload limit
+const MAX_BASE64_LENGTH = Math.floor(4.4 * 1024 * 1024); // ~4.4MB base64 payload limit
+const MAX_BINARY_BYTES = Math.floor(3.5 * 1024 * 1024); // 3.5MB binary limit
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,15 +15,15 @@ export async function POST(req: NextRequest) {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    const authHeader = req.headers.get('authorization');
+    const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
     if (!authHeader) {
       return NextResponse.json({ error: '認証ヘッダーがありません' }, { status: 401 });
     }
-    const token = authHeader.replace('Bearer ', '').trim();
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
     if (!token) {
       return NextResponse.json({ error: '認証エラー' }, { status: 401 });
     }
-    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey) {
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey || supabaseServiceRoleKey.startsWith('REPLACE')) {
       return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
     }
     
@@ -48,7 +49,7 @@ export async function POST(req: NextRequest) {
     }
 
     if (imageBase64.length > MAX_BASE64_LENGTH) {
-      return NextResponse.json({ error: '画像サイズが大きすぎます（上限7MB）' }, { status: 400 });
+      return NextResponse.json({ error: '画像サイズが大きすぎます（上限3.5MB）' }, { status: 400 });
     }
 
     const match = imageBase64.match(VALID_IMAGE_HEADER);
@@ -58,8 +59,8 @@ export async function POST(req: NextRequest) {
     const base64Data = imageBase64.replace(VALID_IMAGE_HEADER, '');
     const buffer = Buffer.from(base64Data, 'base64');
     
-    if (buffer.length > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: '画像サイズが大きすぎます' }, { status: 400 });
+    if (buffer.length > MAX_BINARY_BYTES) {
+      return NextResponse.json({ error: '画像サイズが大きすぎます（上限3.5MB）' }, { status: 400 });
     }
 
     const fileName = `${user.id}/${uuidv4()}.${ext}`;
@@ -68,13 +69,25 @@ export async function POST(req: NextRequest) {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const { error: uploadError } = await adminClient
+    let { error: uploadError } = await adminClient
       .storage
       .from('diaries')
       .upload(fileName, buffer, {
         contentType: `image/${ext}`,
         upsert: false
       });
+
+    if (uploadError) {
+      await adminClient.storage.createBucket('diaries', { public: true }).catch(() => {});
+      const retry = await adminClient
+        .storage
+        .from('diaries')
+        .upload(fileName, buffer, {
+          contentType: `image/${ext}`,
+          upsert: false
+        });
+      uploadError = retry.error;
+    }
 
     if (uploadError) {
       console.error('Storage upload error:', uploadError);

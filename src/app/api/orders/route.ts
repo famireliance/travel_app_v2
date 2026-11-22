@@ -4,7 +4,9 @@ import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 function normalizeUserOrder(o: any, shippingOv: Record<string, any> = {}) {
-  const ov = shippingOv[o.id] || {};
+  const sessionOv = o.stripe_session_id ? (shippingOv[o.stripe_session_id] || {}) : {};
+  const idOv = o.id ? (shippingOv[o.id] || {}) : {};
+  const ov = { ...sessionOv, ...idOv };
   const rawAddr = ov.shipping_address ?? o.shipping_address ?? o.address ?? '';
   let postal = ov.shipping_postal_code ?? o.shipping_postal_code ?? '';
   let addr = rawAddr;
@@ -28,6 +30,14 @@ function normalizeUserOrder(o: any, shippingOv: Record<string, any> = {}) {
     island_id: o.island_id,
     island_name: islandName,
     type: o.type || o.plan || 'standard',
+    laminated: Boolean(ov.laminated ?? o.laminated ?? false),
+    design: ov.design ?? o.design ?? 'horizontal',
+    amount: ov.amount ?? o.amount ?? undefined,
+    country: ov.country ?? o.country ?? 'Japan',
+    traveler_name: ov.traveler_name ?? o.traveler_name ?? '',
+    visit_date: ov.visit_date ?? o.visit_date ?? '',
+    order_number: ov.order_number ?? o.order_number ?? '',
+    serial_number: ov.serial_number ?? o.serial_number ?? '',
     shipping_name: ov.shipping_name ?? o.shipping_name ?? o.recipient_name ?? o.traveler_name ?? '',
     shipping_postal_code: postal,
     shipping_address: addr,
@@ -42,7 +52,7 @@ export async function GET(req: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey || supabaseServiceKey.startsWith('REPLACE')) {
       return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
     }
 
@@ -101,7 +111,7 @@ export async function PUT(req: NextRequest) {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey) {
+    if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceKey || supabaseServiceKey.startsWith('REPLACE')) {
       return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
     }
 
@@ -173,6 +183,14 @@ export async function PUT(req: NextRequest) {
       if (updateError) {
         return NextResponse.json({ error: '更新に失敗しました' }, { status: 500 });
       }
+      shippingOv[id] = {
+        ...(shippingOv[id] || {}),
+        shipping_name,
+        shipping_postal_code,
+        shipping_address,
+        shipping_phone
+      };
+      await setFallbackJson('fallback_order_shipping', shippingOv);
     } else {
       await adminClient
         .from('orders')

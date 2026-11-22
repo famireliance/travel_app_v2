@@ -3,8 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
 import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
+    return null;
+  }
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+}
 
 async function verifyAuth(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -12,15 +20,16 @@ async function verifyAuth(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  if (!await verifyAuth(req)) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
+    if (!await verifyAuth(req)) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
     const { data: partners, error } = await adminClient
       .from('b2b_partners')
       .select('*')
@@ -42,20 +51,26 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
-    const body = await req.json();
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
     const {
       name,
       type,
@@ -70,7 +85,7 @@ export async function POST(req: NextRequest) {
       contract_end,
       notification_email,
       is_active = true
-    } = body;
+    } = body || {};
 
     if (!name || !island_id || !type) {
       return NextResponse.json({ error: 'パートナー名、対象島ID、業種種別は必須です' }, { status: 400 });
@@ -128,21 +143,27 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
-    const body = await req.json();
-    const { id, extendDays, ...rawUpdates } = body;
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+    const { id, extendDays, ...rawUpdates } = body || {};
 
     if (!id) {
       return NextResponse.json({ error: 'id が必要です' }, { status: 400 });
@@ -218,19 +239,20 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 

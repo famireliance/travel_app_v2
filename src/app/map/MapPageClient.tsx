@@ -178,8 +178,10 @@ function GlobalMapContent() {
 
 
 
-  const handleSelectIsland = (islandId: string) => {
-    const island = allIslands.find(i => i.id === islandId);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleSelectIsland = (islOrId: any) => {
+    const targetId = typeof islOrId === 'string' ? islOrId : String(islOrId?.id || '');
+    const island = allIslands.find(i => String(i.id) === targetId);
     if (island && island.coordinates) {
       const [latStr, lngStr] = island.coordinates.split(',');
       const lat = parseFloat(latStr);
@@ -187,19 +189,19 @@ function GlobalMapContent() {
       if (!isNaN(lat) && !isNaN(lng)) {
         // Just fly to the island, don't set filter
         setManualBounds([[lat - 0.05, lng - 0.05], [lat + 0.05, lng + 0.05]]);
-        setSelectedIslandId(islandId);
+        setSelectedIslandId(String(island.id));
       }
     }
   };
 
-  const selectedIsland = allIslands.find(i => i.id === selectedIslandId);
+  const selectedIsland = allIslands.find(i => String(i.id) === String(selectedIslandId));
   const selectedStatus = selectedIsland ? (islandStatuses[selectedIsland.id] || 'none') : 'none';
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] overflow-hidden fixed inset-0 flex flex-col font-sans">
       
       {/* Header */}
-      <header className="absolute top-0 left-0 right-0 z-[1000] px-6 lg:px-12 pt-12 lg:pt-8 pb-6 flex items-center justify-between pointer-events-none">
+      <header className="absolute top-0 left-0 right-0 z-[1000] px-4 sm:px-6 lg:px-12 pt-4 sm:pt-6 lg:pt-6 pb-3 flex items-center justify-between pointer-events-none">
         <button 
           onClick={() => {
             if (typeof window !== 'undefined' && document.referrer && document.referrer.includes(window.location.host)) {
@@ -208,74 +210,42 @@ function GlobalMapContent() {
               router.push('/');
             }
           }} 
-          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
+          className="w-11 h-11 lg:w-12 lg:h-12 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
           title="前のページに戻る"
         >
-          <ArrowLeft className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={1.5} />
+          <ArrowLeft className="w-5 h-5" strokeWidth={1.5} />
         </button>
         
-        <div className="text-center flex-1 mx-4 drop-shadow-md">
-          <p className="text-[0.65rem] lg:text-xs text-slate-600 font-bold tracking-[0.3em] uppercase mb-1 drop-shadow-sm">JAPAN</p>
-          <h1 className="font-serif font-bold text-2xl lg:text-4xl text-slate-900 tracking-widest drop-shadow-sm">全国の離島マップ</h1>
+        <div className="text-center flex-1 mx-3 sm:mx-4 drop-shadow-md">
+          <p className="text-[0.6rem] lg:text-xs text-slate-600 font-bold tracking-[0.3em] uppercase mb-0.5 drop-shadow-sm">JAPAN</p>
+          <h1 className="font-serif font-bold text-lg sm:text-2xl lg:text-3xl text-slate-900 tracking-widest drop-shadow-sm">全国の離島マップ</h1>
         </div>
         
         <button 
           onClick={() => setIsSearchOpen(true)}
-          className="w-12 h-12 lg:w-14 lg:h-14 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
+          className="w-11 h-11 lg:w-12 lg:h-12 rounded-full bg-white/90 backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.08)] border border-white flex items-center justify-center text-slate-800 hover:scale-105 transition-transform pointer-events-auto"
         >
-          <Search className="w-5 h-5 lg:w-6 lg:h-6" strokeWidth={1.5} />
+          <Search className="w-5 h-5" strokeWidth={1.5} />
         </button>
       </header>
 
-      {/* Breadcrumb Overlay */}
-      <div className="absolute top-28 lg:top-24 left-6 lg:left-12 z-[1000] pointer-events-auto flex flex-col gap-2">
+      {/* Desktop Breadcrumb Overlay (hidden on mobile to prevent collision with quick nav) */}
+      <div className="absolute top-20 left-12 z-[1000] pointer-events-auto hidden xl:block">
         <Breadcrumb 
           items={[
             { label: '日本全国離島マップ' }
           ]} 
           className="mb-0"
         />
-
-        {difficultyFilter !== null && (
-          <button 
-            onClick={() => setDifficultyFilter(null)}
-            className="bg-slate-900/90 hover:bg-slate-950 backdrop-blur-md text-amber-300 text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max border border-amber-500/30 transition-all cursor-pointer group"
-            title="クリックで全表示に戻す"
-          >
-            <span>
-              {difficultyFilter === 0 ? '🔒 渡航制限島（対象外）を抽出中' : `★${difficultyFilter} 難易度フィルター中`} ({filteredIslands.length}島)
-            </span>
-            <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
-              解除 ✕
-            </span>
-          </button>
-        )}
-
-        {filterParam && (
-          <button 
-            onClick={() => {
-              const params = new URLSearchParams(searchParams.toString());
-              params.delete('filter');
-              router.replace(`/map?${params.toString()}`);
-            }}
-            className="bg-blue-600/90 hover:bg-blue-700 backdrop-blur-md text-white text-xs font-bold px-4 py-2 rounded-xl flex items-center gap-2 shadow-lg w-max transition-all cursor-pointer group"
-            title="クリックで解除"
-          >
-            <span>🔍 「{THEME_LABELS[filterParam.toLowerCase()] || filterParam}」でフィルター中 ({filteredIslands.length}島)</span>
-            <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full group-hover:bg-white group-hover:text-blue-600 transition-colors">
-              解除 ✕
-            </span>
-          </button>
-        )}
       </div>
 
-      {/* Archipelago Quick Nav (諸島ナビ) */}
-      <div className="absolute top-28 lg:top-24 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center gap-2 w-full pointer-events-auto">
-        <div className="bg-white/80 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] hide-scrollbar">
+      {/* Unified Top Controls Stack: Archipelago Quick Nav + Difficulty Tier Filter + Active Filter Chips */}
+      <div className="absolute top-16 sm:top-20 lg:top-20 left-1/2 -translate-x-1/2 z-[1000] flex flex-col items-center gap-1.5 w-full pointer-events-none px-2">
+        <div className="bg-white/85 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] xl:max-w-[68vw] hide-scrollbar pointer-events-auto">
           <span className="text-[10px] font-bold text-slate-400 px-2 shrink-0">人気の諸島:</span>
           <button 
             onClick={() => { setManualBounds(null); setDifficultyFilter(null); }} 
-            className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all bg-slate-900 text-white shrink-0 shadow-sm"
+            className="px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-all bg-slate-900 text-white shrink-0 shadow-sm"
           >
             全国
           </button>
@@ -287,7 +257,7 @@ function GlobalMapContent() {
                 setManualBounds(arch.bounds);
                 setSelectedIslandId(null);
               }}
-              className="px-3 py-1.5 rounded-full text-[10px] sm:text-xs font-bold transition-all text-slate-700 hover:bg-slate-100 hover:text-slate-900 shrink-0 border border-transparent hover:border-slate-200 whitespace-nowrap"
+              className="px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold transition-all text-slate-700 hover:bg-slate-100 hover:text-slate-900 shrink-0 border border-transparent hover:border-slate-200 whitespace-nowrap"
             >
               {arch.name}
             </button>
@@ -295,39 +265,74 @@ function GlobalMapContent() {
         </div>
 
         {/* Difficulty Tier Filter Bar */}
-        <div className="bg-white/80 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] hide-scrollbar">
+        <div className="bg-white/85 backdrop-blur-xl border border-white/40 px-2 py-1.5 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.12)] flex items-center gap-1.5 overflow-x-auto max-w-[95vw] xl:max-w-[68vw] hide-scrollbar pointer-events-auto">
+          <button 
+            onClick={() => { setDifficultyFilter('conquest_only'); setManualBounds(null); }} 
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 'conquest_only' ? 'bg-emerald-600 text-white shadow-sm' : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'}`}
+          >
+            🏝️ 渡航可能島 ({allIslands.filter(i => getIslandDifficulty(i).level >= 1).length})
+          </button>
+          <button 
+            onClick={() => { setDifficultyFilter(null); setManualBounds(null); router.replace('/map'); }} 
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === null && !regionParam ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+          >
+            全島 ({allIslands.length})
+          </button>
+          {[1, 2, 3, 4, 5].map(lvl => {
+            const diffInfo = getDifficultyInfoByLevel(lvl);
+            return (
+              <button 
+                key={lvl} 
+                onClick={() => { setDifficultyFilter(lvl); setManualBounds(null); }} 
+                className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === lvl ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
+              >
+                {diffInfo.shortLabel}
+              </button>
+            );
+          })}
+          <button 
+            onClick={() => { setDifficultyFilter(0); setManualBounds(null); }} 
+            className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-slate-500 hover:bg-slate-100'}`}
+          >
+            🔒 渡航制限島（対象外）
+          </button>
+        </div>
 
-        <button 
-          onClick={() => { setDifficultyFilter('conquest_only'); setManualBounds(null); }} 
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 'conquest_only' ? 'bg-emerald-600 text-white shadow-sm' : 'text-emerald-700 bg-emerald-50 hover:bg-emerald-100'}`}
-        >
-          🏝️ 渡航可能島 ({allIslands.filter(i => getIslandDifficulty(i).level >= 1).length})
-        </button>
-        <button 
-          onClick={() => { setDifficultyFilter(null); setManualBounds(null); router.replace('/map'); }} 
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === null && !regionParam ? 'bg-slate-900 text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-        >
-          全島 ({allIslands.length})
-        </button>
-        {[1, 2, 3, 4, 5].map(lvl => {
-          const diffInfo = getDifficultyInfoByLevel(lvl);
-          return (
-            <button 
-              key={lvl} 
-              onClick={() => { setDifficultyFilter(lvl); setManualBounds(null); }} 
-              className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === lvl ? 'bg-amber-500 text-slate-950 shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}
-            >
-              {diffInfo.shortLabel}
-            </button>
-          );
-        })}
-        <button 
-          onClick={() => { setDifficultyFilter(0); setManualBounds(null); }} 
-          className={`px-3 py-1 rounded-full text-xs font-bold transition-all whitespace-nowrap ${difficultyFilter === 0 ? 'bg-slate-900 text-amber-300 shadow-sm ring-2 ring-amber-400' : 'text-slate-500 hover:bg-slate-100'}`}
-        >
-          🔒 渡航制限島（対象外）
-        </button>
-      </div>
+        {(typeof difficultyFilter === 'number' || Boolean(filterParam)) && (
+          <div className="flex flex-wrap items-center justify-center gap-2 pointer-events-auto">
+            {typeof difficultyFilter === 'number' && (
+              <button 
+                onClick={() => setDifficultyFilter(null)}
+                className="bg-slate-900/90 hover:bg-slate-950 backdrop-blur-md text-amber-300 text-[11px] font-bold px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-lg border border-amber-500/30 transition-all cursor-pointer group"
+                title="クリックで全表示に戻す"
+              >
+                <span>
+                  {difficultyFilter === 0 ? '🔒 渡航制限島（対象外）を抽出中' : `★${difficultyFilter} 難易度フィルター中`} ({filteredIslands.length}島)
+                </span>
+                <span className="text-[10px] bg-amber-400/20 text-amber-300 px-2 py-0.5 rounded-full group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+                  解除 ✕
+                </span>
+              </button>
+            )}
+
+            {filterParam && (
+              <button 
+                onClick={() => {
+                  const params = new URLSearchParams(searchParams.toString());
+                  params.delete('filter');
+                  router.replace(`/map?${params.toString()}`);
+                }}
+                className="bg-blue-600/90 hover:bg-blue-700 backdrop-blur-md text-white text-[11px] font-bold px-3.5 py-1.5 rounded-xl flex items-center gap-2 shadow-lg transition-all cursor-pointer group"
+                title="クリックで解除"
+              >
+                <span>🔍 「{THEME_LABELS[filterParam.toLowerCase()] || filterParam}」でフィルター中 ({filteredIslands.length}島)</span>
+                <span className="text-[10px] bg-white/20 text-white px-2 py-0.5 rounded-full group-hover:bg-white group-hover:text-blue-600 transition-colors">
+                  解除 ✕
+                </span>
+              </button>
+            )}
+          </div>
+        )}
       </div>
 
       {/* Map Area */}
@@ -338,11 +343,12 @@ function GlobalMapContent() {
           bounds={calculatedBounds} 
           mapStyle={mapStyle} 
           onIslandSelect={handleSelectIsland} 
+          filterBarClassName="top-[9.5rem] sm:top-[10.5rem] lg:top-[10.5rem] left-3 sm:left-6 lg:left-12 max-w-[calc(100vw-4.5rem)]"
         />
       </div>
 
       {/* Map Style Toggle Layer */}
-      <div className="absolute top-44 lg:top-36 right-4 sm:right-6 lg:right-12 z-[1000] flex flex-col gap-2 pointer-events-auto">
+      <div className="absolute top-[9.5rem] sm:top-[10.5rem] lg:top-[10.5rem] right-3 sm:right-6 lg:right-12 z-[1000] flex flex-col gap-2 pointer-events-auto">
         <button 
           onClick={() => setMapStyle('voyager')}
           className={`w-10 h-10 rounded-xl shadow-md flex items-center justify-center transition-all ${mapStyle === 'voyager' ? 'bg-blue-600 text-white' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
@@ -453,7 +459,7 @@ function GlobalMapContent() {
                 </p>
                 <div className="mt-6 flex gap-2">
                   <button 
-                    onClick={() => router.push(`/island/${selectedIsland.id}`)}
+                    onClick={() => router.push(`/island/${selectedIsland.slug || selectedIsland.id}`)}
                     className="flex-1 bg-blue-600 text-white font-bold py-3 rounded-xl hover:bg-blue-700 transition-colors shadow-md flex items-center justify-center gap-2 text-sm"
                   >
                     <Navigation size={16} /> 詳細を見る

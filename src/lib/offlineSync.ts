@@ -67,10 +67,22 @@ export async function saveOfflineCheckin(
     console.warn('IndexedDB save failed, falling back to localStorage:', err);
     // localStorage フォールバック
     if (typeof window !== 'undefined') {
-      const existingStr = localStorage.getItem('kiratabi_offline_checkins_fallback') || '[]';
-      const list = JSON.parse(existingStr) as OfflineCheckinItem[];
-      list.push(newItem);
-      localStorage.setItem('kiratabi_offline_checkins_fallback', JSON.stringify(list));
+      try {
+        const existingStr = localStorage.getItem('kiratabi_offline_checkins_fallback') || '[]';
+        const parsed = JSON.parse(existingStr);
+        const list = Array.isArray(parsed) ? (parsed as OfflineCheckinItem[]) : [];
+        list.push(newItem);
+        try {
+          localStorage.setItem('kiratabi_offline_checkins_fallback', JSON.stringify(list));
+        } catch {
+          // 容量超過時は写真データを除いた軽量レコードで確実に保存
+          const { photoDataUrl: _omitPhoto, ...slimItem } = newItem;
+          const slimList = [...list.slice(0, -1), slimItem];
+          localStorage.setItem('kiratabi_offline_checkins_fallback', JSON.stringify(slimList));
+        }
+      } catch (storageErr) {
+        console.warn('localStorage fallback save failed:', storageErr);
+      }
     }
     return newItem;
   }
@@ -104,9 +116,10 @@ export async function getOfflineCheckins(): Promise<OfflineCheckinItem[]> {
   if (typeof window !== 'undefined') {
     try {
       const existingStr = localStorage.getItem('kiratabi_offline_checkins_fallback') || '[]';
-      const localItems = JSON.parse(existingStr) as OfflineCheckinItem[];
+      const parsed = JSON.parse(existingStr);
+      const localItems = Array.isArray(parsed) ? (parsed as OfflineCheckinItem[]) : [];
       localItems.forEach((item) => {
-        if (!itemsMap.has(item.id)) {
+        if (item && item.id && !itemsMap.has(item.id)) {
           itemsMap.set(item.id, item);
         }
       });
@@ -136,8 +149,9 @@ export async function removeOfflineCheckin(id: string): Promise<void> {
   if (typeof window !== 'undefined') {
     try {
       const existingStr = localStorage.getItem('kiratabi_offline_checkins_fallback') || '[]';
-      const list = JSON.parse(existingStr) as OfflineCheckinItem[];
-      const filtered = list.filter((i) => i.id !== id);
+      const parsed = JSON.parse(existingStr);
+      const list = Array.isArray(parsed) ? (parsed as OfflineCheckinItem[]) : [];
+      const filtered = list.filter((i) => i && i.id !== id);
       localStorage.setItem('kiratabi_offline_checkins_fallback', JSON.stringify(filtered));
     } catch {}
   }

@@ -38,6 +38,7 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
   const [ferryRisk, setFerryRisk] = useState<string | null>(null);
   const [companion, setCompanion] = useState<string | null>(null);
   
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const toggleTag = (tag: string) => {
@@ -54,7 +55,7 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
           maxSizeMB: 1,
           maxWidthOrHeight: 1200,
           fileType: 'image/jpeg',
-          useWebWorker: true,
+          useWebWorker: false,
         };
         const compressedFile = await imageCompression(file, options);
         const reader = new FileReader();
@@ -71,6 +72,10 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!agreedToTerms) {
+      toast.error('利用規約への同意が必要です');
+      return;
+    }
     if (!content.trim()) {
       toast.error('本文を入力してください');
       return;
@@ -97,11 +102,22 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
           body: JSON.stringify({ imageBase64: photoUrl })
         });
         
-        if (res.ok) {
-          const data = await res.json();
-          if (data.url) finalPhotoUrl = data.url;
+        const rawUploadText = await res.text();
+        let uploadData: { url?: string; error?: string } | null = null;
+        try {
+          uploadData = rawUploadText ? JSON.parse(rawUploadText) : null;
+        } catch {
+          uploadData = null;
+        }
+
+        if (res.ok && uploadData?.url) {
+          finalPhotoUrl = uploadData.url;
         } else {
-          toast.error('画像のアップロードに失敗しました。');
+          toast.error(
+            res.status === 413
+              ? '画像サイズが大きすぎます。別の写真をお試しください。'
+              : uploadData?.error || '画像のアップロードに失敗しました。'
+          );
           setIsSubmitting(false);
           return;
         }
@@ -138,6 +154,7 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
       setOverallRating(0);
       setFerryRisk(null);
       setCompanion(null);
+      setAgreedToTerms(false);
       
       if (onSuccess) onSuccess();
       onClose();
@@ -351,7 +368,8 @@ export default function DiaryPostModal({ isOpen, onClose, islandId, islandName, 
               <label className="flex items-center gap-2 cursor-pointer mb-2 max-w-max mx-auto">
                 <input
                   type="checkbox"
-                  required
+                  checked={agreedToTerms}
+                  onChange={(e) => setAgreedToTerms(e.target.checked)}
                   className="w-4 h-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500"
                 />
                 <span className="text-xs text-slate-600 font-bold">

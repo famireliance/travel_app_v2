@@ -199,11 +199,27 @@ const DEFAULT_FALLBACK_INN: InnData = {
   }
 };
 
+function safeHttpUrl(u?: string | null): string | undefined {
+  if (!u || typeof u !== 'string') return undefined;
+  const trimmed = u.trim();
+  if (!/^https?:\/\//i.test(trimmed)) return undefined;
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return parsed.toString();
+    }
+  } catch {
+    return undefined;
+  }
+  return undefined;
+}
+
 export default function DedicatedInnPage() {
   const router = useRouter();
   const params = useParams();
   const pathname = usePathname();
-  const demoMode = pathname?.startsWith('/demo') ?? false;
+  const isProduction = process.env.NODE_ENV === 'production';
+  const demoMode = !isProduction && (pathname?.startsWith('/demo') ?? false);
   const innParamId = (params?.id as string) || (demoMode ? 'demo' : '');
 
   const [loading, setLoading] = useState(true);
@@ -220,7 +236,7 @@ export default function DedicatedInnPage() {
   const [showCertPreviewModal, setShowCertPreviewModal] = useState(false);
   const [showWifiModal, setShowWifiModal] = useState(false);
 
-  // B2B Facility公開APIから該当宿の実データをロード（DEFAULT_FALLBACK_INNは ?demo=1 指定時のみ許可）
+  // B2B Facility公開APIから該当宿の実データをロード（本番環境では ?demo=1 / ?preview=1 バイパスを完全無効化）
   useEffect(() => {
     async function loadInnData() {
       setLoading(true);
@@ -229,8 +245,8 @@ export default function DedicatedInnPage() {
       setActiveImageIndex(0);
 
       const sp = typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : null;
-      const allowDemoFallback = demoMode || sp?.get('demo') === '1';
-      const hasPreview = sp?.get('preview') === '1';
+      const allowDemoFallback = !isProduction && (demoMode || sp?.get('demo') === '1');
+      const hasPreview = !isProduction && sp?.get('preview') === '1';
       setIsDemoQuery(allowDemoFallback);
       setIsPreviewQuery(hasPreview);
 
@@ -326,11 +342,11 @@ export default function DedicatedInnPage() {
             phone: accData.phone_number || accData.phone || '',
             address: accData.address || accData.island_name || '詳細は施設までお問い合わせください',
             email: accData.email || undefined,
-            lineUrl: accData.line_url || undefined,
-            instagramUrl: accData.instagram_url || undefined,
+            lineUrl: safeHttpUrl(accData.line_url),
+            instagramUrl: safeHttpUrl(accData.instagram_url),
             instagramAccount: accData.instagram_account || undefined,
-            twitterUrl: accData.twitter_url || undefined,
-            websiteUrl: accData.website_url || undefined,
+            twitterUrl: safeHttpUrl(accData.twitter_url),
+            websiteUrl: safeHttpUrl(accData.website_url),
             priceRange: accData.price_range || undefined,
             priceNotice: accData.deposit_policy || undefined,
             features:
@@ -388,7 +404,11 @@ export default function DedicatedInnPage() {
     loadInnData();
   }, [innParamId, demoMode]);
 
-  const isPublicBookingBlocked = isUnverifiedOrTest && !isPreviewQuery;
+  const isPublicBookingBlocked = isUnverifiedOrTest && (isProduction || !isPreviewQuery);
+  const safeInstagramUrl = safeHttpUrl(inn.instagramUrl);
+  const safeLineUrl = safeHttpUrl(inn.lineUrl);
+  const safeTwitterUrl = safeHttpUrl(inn.twitterUrl);
+  const safeWebsiteUrl = safeHttpUrl(inn.websiteUrl);
 
   const handleCall = (e?: React.MouseEvent) => {
     if (isPublicBookingBlocked) {
@@ -669,7 +689,7 @@ export default function DedicatedInnPage() {
               id: 'sns',
               label: '公式SNS・島情報',
               icon: InstagramIcon,
-              show: Boolean(inn.instagramUrl || inn.lineUrl || inn.twitterUrl || inn.websiteUrl),
+              show: Boolean(safeInstagramUrl || safeLineUrl || safeTwitterUrl || safeWebsiteUrl),
             },
             { id: 'amenities', label: '設備・アメニティ', icon: ShieldCheck, show: true },
             { id: 'info', label: 'アクセス・地図', icon: MapPin, show: true },
@@ -765,7 +785,7 @@ export default function DedicatedInnPage() {
                         </span>
                       </div>
                       <p className="text-[0.7rem] text-slate-600">
-                        SSID: <span className="font-mono font-bold text-slate-800 select-all">{inn.wifiSsid}</span> / スマホをかざすだけでパスワード手入力不要で接続できます。
+                        SSID: <span className="font-mono font-bold text-slate-800 select-all">{inn.wifiSsid}</span> / ワンタップでSSID・パスワードをコピーして接続できます（オフライン対応）。
                       </p>
                     </div>
                   </div>
@@ -987,7 +1007,7 @@ export default function DedicatedInnPage() {
             </div>
 
             {/* 4. 公式SNS ＆ インスタグラム情報カード */}
-            {(inn.instagramUrl || inn.lineUrl || inn.twitterUrl || inn.websiteUrl) && (
+            {(safeInstagramUrl || safeLineUrl || safeTwitterUrl || safeWebsiteUrl) && (
             <div id="sns" className="bg-white p-6 md:p-8 rounded-3xl shadow-sm border border-slate-200 space-y-6 scroll-mt-32">
               <div className="border-b border-slate-100 pb-4">
                 <span className="text-[0.65rem] font-bold tracking-widest text-pink-600 uppercase block mb-1 font-mono">
@@ -1000,7 +1020,7 @@ export default function DedicatedInnPage() {
               </div>
 
               {/* Instagram Card */}
-              {inn.instagramUrl && (
+              {safeInstagramUrl && (
                 <div className="p-5 rounded-2xl bg-gradient-to-br from-pink-50 via-purple-50/50 to-orange-50/30 border border-pink-200/80 space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div className="flex items-center gap-3">
@@ -1018,7 +1038,7 @@ export default function DedicatedInnPage() {
                     </div>
 
                     <a
-                      href={inn.instagramUrl}
+                      href={safeInstagramUrl}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="px-4 py-2 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-bold text-xs rounded-xl shadow-sm flex items-center gap-1.5 transition-all self-start sm:self-auto"
@@ -1038,7 +1058,7 @@ export default function DedicatedInnPage() {
                       {inn.galleryImages.slice(1, 4).filter(Boolean).map((img, idx) => (
                         <a
                           key={idx}
-                          href={inn.instagramUrl}
+                          href={safeInstagramUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="h-24 sm:h-28 rounded-xl overflow-hidden border border-pink-100 group relative block"
@@ -1056,9 +1076,9 @@ export default function DedicatedInnPage() {
 
               {/* Other SNS Links Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                {inn.lineUrl && (
+                {safeLineUrl && (
                   <a
-                    href={inn.lineUrl}
+                    href={safeLineUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3.5 rounded-2xl bg-[#06C755]/10 hover:bg-[#06C755]/20 border border-[#06C755]/30 flex items-center gap-3 transition-colors group"
@@ -1073,9 +1093,9 @@ export default function DedicatedInnPage() {
                   </a>
                 )}
 
-                {inn.twitterUrl && (
+                {safeTwitterUrl && (
                   <a
-                    href={inn.twitterUrl}
+                    href={safeTwitterUrl}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="p-3.5 rounded-2xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200 flex items-center gap-3 transition-colors group"
@@ -1090,11 +1110,14 @@ export default function DedicatedInnPage() {
                   </a>
                 )}
 
-                {inn.websiteUrl && (
+                {safeWebsiteUrl && (
                   <a
-                    href={inn.websiteUrl}
+                    href={safeWebsiteUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => {
+                      if (!isUnverifiedOrTest) trackFacilityEvent(String(inn.id), 'website_click');
+                    }}
                     className="p-3.5 rounded-2xl bg-blue-50/70 hover:bg-blue-100/70 border border-blue-200/70 flex items-center gap-3 transition-colors group"
                   >
                     <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm">
@@ -1267,11 +1290,11 @@ export default function DedicatedInnPage() {
                   )}
 
                   {/* Multi Contact: LINE or Email */}
-                  {(inn.lineUrl || inn.email) && (
+                  {(safeLineUrl || inn.email) && (
                     <div className="grid grid-cols-2 gap-2 pt-1">
-                      {inn.lineUrl && (
+                      {safeLineUrl && (
                         <a
-                          href={inn.lineUrl}
+                          href={safeLineUrl}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="py-2.5 px-3 bg-[#06C755] hover:bg-[#05b34c] text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-colors shadow-sm"
@@ -1340,9 +1363,9 @@ export default function DedicatedInnPage() {
           <span className="font-mono font-bold text-amber-700 text-sm">{inn.priceRange || '料金はお問い合わせ'}</span>
         </div>
         <div className="flex items-center gap-2">
-          {!isPublicBookingBlocked && inn.lineUrl && (
+          {!isPublicBookingBlocked && safeLineUrl && (
             <a
-              href={inn.lineUrl}
+              href={safeLineUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 bg-[#06C755] text-white rounded-2xl font-bold text-xs flex items-center justify-center shadow-sm"

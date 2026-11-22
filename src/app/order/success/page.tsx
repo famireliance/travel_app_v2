@@ -28,11 +28,12 @@ function SuccessContent() {
       return;
     }
 
-    fetch(`/api/order/verify?session_id=${sessionId}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.error) {
-          setError(data.error);
+    fetch(`/api/order/verify?session_id=${encodeURIComponent(sessionId)}`)
+      .then(async res => {
+        const rawText = await res.text();
+        const data = rawText ? JSON.parse(rawText) : {};
+        if (!res.ok || data.error) {
+          setError(data.error || '注文情報の取得に失敗しました');
         } else {
           setOrderInfo(data);
         }

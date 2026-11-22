@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import type Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { getStripeConfig } from '@/lib/stripeConfig';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
@@ -93,24 +94,43 @@ export async function POST(req: NextRequest) {
       auth: { autoRefreshToken: false, persistSession: false },
     });
 
-    const { data: existingProfile } = await adminClient
-      .from('user_profiles')
-      .select('id, ultimate_started_at')
-      .eq('id', user.id)
-      .maybeSingle();
-
-    const upsertPayload: Record<string, unknown> = {
+    const upsertPayload = {
       id: user.id,
       subscription_tier: tier,
       stripe_customer_id: customerId,
       stripe_subscription_id: subscriptionId,
       premium_until: periodEndIso,
+      is_premium: true,
     };
-    if (tier === 'ultimate' && !existingProfile?.ultimate_started_at) {
-      upsertPayload.ultimate_started_at = new Date().toISOString();
+
+    const { error: upsertErr } = await adminClient
+      .from('user_profiles')
+      .upsert(upsertPayload, { onConflict: 'id' });
+
+    if (upsertErr) {
+      console.error('Subscription verify user_profiles upsert error:', upsertErr);
+      return NextResponse.json({ error: 'プラン情報の保存に失敗しました' }, { status: 500 });
     }
 
-    await adminClient.from('user_profiles').upsert(upsertPayload, { onConflict: 'id' });
+    const metaKey = `ultimate_meta_${user.id}`;
+    const existingMeta = await getFallbackJson<{
+      ultimate_started_at?: string | null;
+      anniversary_cert_used?: boolean;
+    }>(metaKey, {});
+
+    if (tier === 'ultimate') {
+      if (!existingMeta.ultimate_started_at) {
+        await setFallbackJson(metaKey, {
+          ...existingMeta,
+          ultimate_started_at: new Date().toISOString(),
+        });
+      }
+    } else if (existingMeta.ultimate_started_at) {
+      await setFallbackJson(metaKey, {
+        ...existingMeta,
+        ultimate_started_at: null,
+      });
+    }
 
     return NextResponse.json({
       success: true,

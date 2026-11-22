@@ -13,6 +13,33 @@ import { syncOfflineQueue } from '@/lib/offlineSync';
 
 export type IslandStatus = 'visited' | 'planning' | 'none' | 'verified_visited';
 
+function safeGetLocalStorage(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function safeSetLocalStorage(key: string, value: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(key, value);
+  } catch {
+    // Ignore storage errors in Safari Private Mode / LINE WebView
+  }
+}
+
+function safeRemoveLocalStorage(key: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.removeItem(key);
+  } catch {
+    // Ignore storage errors
+  }
+}
+
 const UNIFIED_PREFECTURE_MAP: Record<string, string> = {
   '北海道': 'hokkaido',
   '青森県': 'tohoku', '岩手県': 'tohoku', '秋田県': 'tohoku', '宮城県': 'tohoku', '山形県': 'tohoku', '福島県': 'tohoku',
@@ -100,8 +127,10 @@ interface TravelContextType {
   anniversaryCertUsed: boolean;
   setAnniversaryCertUsed: (val: boolean) => void;
   // Pending (Guest) check-in state
-  pendingIslandVisit: { islandId: string, islandObj: any } | null;
-  setPendingIslandVisit: (visit: { islandId: string, islandObj: any } | null) => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  pendingIslandVisit: { islandId: string; islandObj: any; isVerified?: boolean } | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setPendingIslandVisit: (visit: { islandId: string; islandObj: any; isVerified?: boolean } | null) => void;
   pendingFairyDiscovery: IslandFairy[];
   setPendingFairyDiscovery: (fairies: IslandFairy[]) => void;
 }
@@ -173,22 +202,50 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   const [ultimateStartedAt, setUltimateStartedAt] = useState<string | null>(null);
   const [anniversaryCertUsed, setAnniversaryCertUsed] = useState<boolean>(false);
   
-  const [pendingIslandVisit, setPendingIslandVisit] = useState<{ islandId: string, islandObj: any } | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [pendingIslandVisit, setPendingIslandVisit] = useState<{ islandId: string; islandObj: any; isVerified?: boolean } | null>(null);
   const [pendingFairyDiscovery, setPendingFairyDiscovery] = useState<IslandFairy[]>([]);
 
   // Auth & Data Load
   useEffect(() => {
     let isMounted = true;
-    const savedName = localStorage.getItem('kiratabi_traveler_name');
+    const savedName = safeGetLocalStorage('kiratabi_traveler_name');
     if (savedName && isMounted) setTravelerName(savedName);
 
-    const savedXP = localStorage.getItem('kiratabi_total_xp');
+    const savedXP = safeGetLocalStorage('kiratabi_total_xp');
     if (savedXP && isMounted) setTotalXP(Number(savedXP) || 0);
 
-    const savedComp = localStorage.getItem('kiratabi_companion_id') as CompanionId;
+    const savedComp = safeGetLocalStorage('kiratabi_companion_id') as CompanionId;
     if (savedComp && COMPANION_CHARACTERS[savedComp] && isMounted) {
       setSelectedCompanionId(savedComp);
     }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const applyProfileData = (data: any) => {
+      if (!data || !isMounted) return;
+      if (data.nickname) {
+        setTravelerName(data.nickname);
+        safeSetLocalStorage('kiratabi_traveler_name', data.nickname);
+      }
+      if (data.premium_until && new Date(data.premium_until).getTime() < Date.now()) {
+        setSubscriptionTier('free');
+      } else if (data.subscription_tier) {
+        setSubscriptionTier(data.subscription_tier as 'free' | 'premium' | 'ultimate');
+      }
+      if (data.premium_until) setPremiumUntil(data.premium_until);
+      if (data.ultimate_started_at) setUltimateStartedAt(data.ultimate_started_at);
+      if (data.anniversary_cert_used !== undefined) setAnniversaryCertUsed(!!data.anniversary_cert_used);
+    };
+
+    const parseSafeJson = async (res: Response) => {
+      const rawText = await res.text();
+      if (!rawText) return null;
+      try {
+        return JSON.parse(rawText);
+      } catch {
+        return null;
+      }
+    };
 
     // Fetch dynamic fairies from Supabase
     supabase.from('fairies').select('*').then(({ data, error }) => {
@@ -229,17 +286,9 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
               'Authorization': `Bearer ${session?.access_token || ''}`
             }
           });
-          const json = await res.json();
-          const data = json.profile;
-          if (data && isMounted) {
-            if (data.nickname) {
-              setTravelerName(data.nickname);
-              localStorage.setItem('kiratabi_traveler_name', data.nickname);
-            }
-            if (data.subscription_tier) setSubscriptionTier(data.subscription_tier as 'free' | 'premium' | 'ultimate');
-            if (data.premium_until) setPremiumUntil(data.premium_until);
-            if (data.ultimate_started_at) setUltimateStartedAt(data.ultimate_started_at);
-            if (data.anniversary_cert_used !== undefined) setAnniversaryCertUsed(!!data.anniversary_cert_used);
+          const json = await parseSafeJson(res);
+          if (res.ok && json?.profile) {
+            applyProfileData(json.profile);
           }
         } catch (err) { console.error("Profile fetch error", err); }
         
@@ -270,10 +319,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         setTravelerName('名無しの旅人');
         setBio('');
         setTotalXP(0);
-        try {
-          localStorage.removeItem('kiratabi_traveler_name');
-          localStorage.removeItem('kiratabi_total_xp');
-        } catch {}
+        safeRemoveLocalStorage('kiratabi_traveler_name');
+        safeRemoveLocalStorage('kiratabi_total_xp');
         setIsDataLoaded(false);
       }
       const currentUser = session?.user || null;
@@ -286,18 +333,11 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
             headers: {
               'Authorization': `Bearer ${session?.access_token || ''}`
             }
-          }).then(res => res.json()).then(json => {
-            const data = json.profile;
-            if (data && isMounted) {
-              localStorage.setItem('kiratabi_has_logged_in_before', 'true');
-              if (data.nickname) {
-                setTravelerName(data.nickname);
-                localStorage.setItem('kiratabi_traveler_name', data.nickname);
-              }
-              if (data.subscription_tier) setSubscriptionTier(data.subscription_tier as 'free' | 'premium' | 'ultimate');
-              if (data.premium_until) setPremiumUntil(data.premium_until);
-              if (data.ultimate_started_at) setUltimateStartedAt(data.ultimate_started_at);
-              if (data.anniversary_cert_used !== undefined) setAnniversaryCertUsed(!!data.anniversary_cert_used);
+          }).then(async res => {
+            const json = await parseSafeJson(res);
+            if (res.ok && json?.profile && isMounted) {
+              safeSetLocalStorage('kiratabi_has_logged_in_before', 'true');
+              applyProfileData(json.profile);
             }
           }).catch(err => console.error("Profile fetch error on auth change", err));
           
@@ -320,7 +360,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // データがロードされる前に空の状態でlocalStorageを上書きしてしまうのを防ぐ
     if (!isDataLoaded || !user) return;
 
-    localStorage.setItem(`travel_app_statuses_${user.id}`, JSON.stringify(islandStatuses));
+    safeSetLocalStorage(`travel_app_statuses_${user.id}`, JSON.stringify(islandStatuses));
   }, [islandStatuses, user, isDataLoaded]);
 
   // オフライン（圏外）キューの自動同期ハンドラー（ログインユーザーのみDB同期）
@@ -331,10 +371,35 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       if (typeof window === 'undefined' || !navigator.onLine || !user) return;
 
       const { syncedCount } = await syncOfflineQueue(async (item) => {
-        const island = ALL_ISLANDS_MASTER_DICTIONARY[item.islandId] || { id: item.islandId, name: item.islandName };
-        const result = addIslandVisit(item.islandId, island, 0, true);
-        // 重複エラーは同期済み扱いとし、それ以外の成功時に削除を許可
-        return result?.error !== 'failed';
+        const islandKey = String(item.islandId);
+        const island = ALL_ISLANDS_MASTER_DICTIONARY[islandKey] || { id: islandKey, name: item.islandName };
+        const visitedIso = item.checkinDate
+          ? (() => {
+              const normalized = item.checkinDate.replace(/\./g, '-');
+              const d = new Date(normalized);
+              return !isNaN(d.getTime()) ? d.toISOString() : new Date(item.timestamp || Date.now()).toISOString();
+            })()
+          : new Date(item.timestamp || Date.now()).toISOString();
+
+        const { error: dbError } = await supabase
+          .from('island_visits')
+          .upsert(
+            {
+              user_id: user.id,
+              island_id: islandKey,
+              status: 'verified_visited',
+              visited_at: visitedIso,
+            },
+            { onConflict: 'user_id,island_id' }
+          );
+
+        if (dbError) {
+          console.error('Offline queue DB upsert failed:', dbError);
+          return false;
+        }
+
+        addIslandVisit(islandKey, island, 0, true);
+        return true;
       });
 
       if (syncedCount > 0) {
@@ -365,7 +430,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     const storageKey = userId ? `travel_app_statuses_${userId}` : '';
     
     if (userId) {
-      const userStored = localStorage.getItem(storageKey);
+      const userStored = safeGetLocalStorage(storageKey);
       if (userStored) {
         try {
           const parsed = JSON.parse(userStored);
@@ -381,7 +446,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // 訪問回数〜妖精日付のローカル復元
     let vLocal: Record<string, number> = {};
     if (userId) {
-       const userVStored = localStorage.getItem(`island_visits_count_${userId}`);
+       const userVStored = safeGetLocalStorage(`island_visits_count_${userId}`);
        if (userVStored) { try { const p = JSON.parse(userVStored); if(p) vLocal = p; } catch{} }
     }
     if (Object.keys(vLocal).length === 0) {
@@ -392,25 +457,25 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
     let lvLocal: Record<string, string> = {};
     if (userId) {
-       const userLVStored = localStorage.getItem(`island_last_visit_dates_${userId}`);
+       const userLVStored = safeGetLocalStorage(`island_last_visit_dates_${userId}`);
        if (userLVStored) { try { const p = JSON.parse(userLVStored); if(p) lvLocal = p; } catch{} }
     }
 
     let sLocal: Record<string, number> = {};
     if (userId) {
-       const userSStored = localStorage.getItem(`island_spots_${userId}`);
+       const userSStored = safeGetLocalStorage(`island_spots_${userId}`);
        if (userSStored) { try { const p = JSON.parse(userSStored); if(p) sLocal = p; } catch{} }
     }
 
     let fLocal: string[] = [];
     if (userId) {
-       const userFStored = localStorage.getItem(`island_fairies_${userId}`);
+       const userFStored = safeGetLocalStorage(`island_fairies_${userId}`);
        if (userFStored) { try { const p = JSON.parse(userFStored); if(Array.isArray(p)) fLocal = p; } catch{} }
     }
     
     let dLocal: Record<string, string> = {};
     if (userId) {
-       const userDStored = localStorage.getItem(`island_fairies_dates_${userId}`);
+       const userDStored = safeGetLocalStorage(`island_fairies_dates_${userId}`);
        if (userDStored) { try { const p = JSON.parse(userDStored); if(p) dLocal = p; } catch{} }
     }
 
@@ -505,7 +570,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
           }
 
           setIslandStatuses(merged);
-          localStorage.setItem(storageKey, JSON.stringify(merged));
+          safeSetLocalStorage(storageKey, JSON.stringify(merged));
         }
       } catch (err) {
         console.error('Supabase sync error:', err);
@@ -516,7 +581,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     // islandStatusesはあるが、キャッシュクリア等で妖精が消えている場合の復旧
     const targetStatuses = (userId && isMounted) ? (() => {
       try {
-        const stored = localStorage.getItem(storageKey);
+        const stored = safeGetLocalStorage(storageKey);
         if (stored) return JSON.parse(stored);
       } catch{}
       return localData;
@@ -548,8 +613,8 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         setCollectedFairyDates(currentD);
       }
       if (userId) {
-        localStorage.setItem(`island_fairies_${userId}`, JSON.stringify(currentF));
-        localStorage.setItem(`island_fairies_dates_${userId}`, JSON.stringify(currentD));
+        safeSetLocalStorage(`island_fairies_${userId}`, JSON.stringify(currentF));
+        safeSetLocalStorage(`island_fairies_dates_${userId}`, JSON.stringify(currentD));
       }
     }
     // ----------------------------
@@ -562,11 +627,11 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
   // --- Guest Registration Handoff ---
   useEffect(() => {
     if (user && isDataLoaded && pendingIslandVisit) {
-      const { islandId, islandObj } = pendingIslandVisit;
+      const { islandId, islandObj, isVerified } = pendingIslandVisit;
       setPendingIslandVisit(null);
       setPendingFairyDiscovery([]);
       
-      const result = addIslandVisit(islandId, islandObj, 0, false);
+      const result = addIslandVisit(islandId, islandObj, 0, Boolean(isVerified));
       if (result.error !== 'already_visited_today') {
         toast.success('ゲスト状態での到達記録が無事にアカウントへ保存されました！', { icon: '🎉' });
       }
@@ -585,14 +650,14 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       return next;
     });
 
-    if (status === 'visited') {
+    if (status === 'visited' || status === 'verified_visited') {
       // 自動で初回訪問または訪問1回目を記録
       setVisitCounts(prev => {
         const currentCount = prev[islandId] || 0;
         if (currentCount === 0) {
           const nextV = { ...prev, [islandId]: 1 };
           const vKey = user ? `island_visits_count_${user.id}` : 'island_visits_count_anon';
-          localStorage.setItem(vKey, JSON.stringify(nextV));
+          safeSetLocalStorage(vKey, JSON.stringify(nextV));
           return nextV;
         }
         return prev;
@@ -615,7 +680,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
               user_id: user.id,
               island_id: islandId,
               status,
-              visited_at: status === 'visited' ? new Date().toISOString() : null,
+              visited_at: status === 'visited' || status === 'verified_visited' ? new Date().toISOString() : null,
             }, { onConflict: 'user_id,island_id' });
         }
       } catch (err) {
@@ -633,7 +698,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         const nextV = { ...prev };
         delete nextV[islandId];
         const vKey = user ? `island_visits_count_${user.id}` : 'island_visits_count_anon';
-        localStorage.setItem(vKey, JSON.stringify(nextV));
+        safeSetLocalStorage(vKey, JSON.stringify(nextV));
         return nextV;
       });
     } else {
@@ -641,7 +706,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       setVisitCounts(prev => {
         const nextV = { ...prev, [islandId]: currentCount - 1 };
         const vKey = user ? `island_visits_count_${user.id}` : 'island_visits_count_anon';
-        localStorage.setItem(vKey, JSON.stringify(nextV));
+        safeSetLocalStorage(vKey, JSON.stringify(nextV));
         return nextV;
       });
     }
@@ -655,13 +720,16 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     if (!user) {
       updateStatus(islandId, isVerified ? 'verified_visited' : 'visited');
       if (lastVisitDates[islandId] === todayStr) {
+        if (isVerified) {
+          setPendingIslandVisit({ islandId, islandObj: islandObj || { id: islandId, name: islandId }, isVerified: true });
+        }
         return { xpGained: 0, error: 'already_visited_today' };
       }
       
       const isFirstVisit = (visitCounts[islandId] || 0) === 0;
       
-      // 保留中の到達記録をセット
-      setPendingIslandVisit({ islandId, islandObj: islandObj || { id: islandId, name: islandId } });
+      // 保留中の到達記録をセット (GPS/EXIF認証済みフラグも保持)
+      setPendingIslandVisit({ islandId, islandObj: islandObj || { id: islandId, name: islandId }, isVerified });
 
       // ご当地妖精の発見判定（ゲスト用）
       if (isFirstVisit) {
@@ -689,7 +757,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     setVisitCounts(prev => {
       const nextV = { ...prev, [islandId]: (prev[islandId] || 0) + 1 };
       const vKey = `island_visits_count_${user.id}`;
-      localStorage.setItem(vKey, JSON.stringify(nextV));
+      safeSetLocalStorage(vKey, JSON.stringify(nextV));
       return nextV;
     });
 
@@ -697,7 +765,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     setLastVisitDates(prev => {
       const nextLV = { ...prev, [islandId]: todayStr };
       const lvKey = `island_last_visit_dates_${user.id}`;
-      localStorage.setItem(lvKey, JSON.stringify(nextLV));
+      safeSetLocalStorage(lvKey, JSON.stringify(nextLV));
       return nextLV;
     });
 
@@ -706,7 +774,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       setSpotsVisited(prev => {
         const nextS = { ...prev, [islandId]: (prev[islandId] || 0) + newSpots };
         const sKey = `island_spots_${user.id}`;
-        localStorage.setItem(sKey, JSON.stringify(nextS));
+        safeSetLocalStorage(sKey, JSON.stringify(nextS));
         return nextS;
       });
     }
@@ -730,13 +798,13 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
           if (hasNew) {
             const fKey = user ? `island_fairies_${user.id}` : 'island_fairies_anon';
-            localStorage.setItem(fKey, JSON.stringify(nextF));
+            safeSetLocalStorage(fKey, JSON.stringify(nextF));
             
             setCollectedFairyDates(prevD => {
               const nextD = { ...prevD };
               newF.forEach(f => { nextD[f.id] = new Date().toISOString(); });
               const dKey = user ? `island_fairies_dates_${user.id}` : 'island_fairies_dates_anon';
-              localStorage.setItem(dKey, JSON.stringify(nextD));
+              safeSetLocalStorage(dKey, JSON.stringify(nextD));
               return nextD;
             });
 
@@ -748,45 +816,17 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    // XP加算
+    // XP加算 (total_xp は user_gamification テーブルに同期保存される)
     if (gained > 0) {
       setTotalXP(prev => {
         const nextXP = prev + gained;
-        localStorage.setItem('kiratabi_total_xp', String(nextXP));
+        safeSetLocalStorage('kiratabi_total_xp', String(nextXP));
         return nextXP;
       });
     }
 
     // ステータスを同期
     updateStatus(islandId, isVerified ? 'verified_visited' : 'visited');
-
-    // SupabaseDB同期 (Phase 4: island_visit_logs と user_profiles の更新)
-    if (user) {
-      // 1. Visit Logの追加 (テーブル未作成時は無視)
-      supabase.from('island_visit_logs').insert({
-        user_id: user.id,
-        island_id: islandId,
-        visited_at: new Date().toISOString(),
-        is_verified: isVerified,
-        earned_xp: gained
-      }).then(() => {});
-
-      // 2. プレイヤーレベルと累計ポイントの更新 (カラム存在時のみ)
-      if (gained > 0) {
-        supabase.from('user_profiles').select('*').eq('id', user.id).single().then(({ data }) => {
-          if (data && 'total_points' in data) {
-            const currentPts = (data as any).total_points || 0;
-            const newTotal = currentPts + gained;
-            const newLevelInfo = getPlayerLevelInfo(newTotal);
-            
-            supabase.from('user_profiles').update({
-              total_points: newTotal,
-              player_level: newLevelInfo.level
-            }).eq('id', user.id).then(() => {});
-          }
-        });
-      }
-    }
 
     return { xpGained: gained };
   };
@@ -795,7 +835,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
     const trimmed = name.trim();
     if (!trimmed) return;
     setTravelerName(trimmed);
-    localStorage.setItem('kiratabi_traveler_name', trimmed);
+    safeSetLocalStorage('kiratabi_traveler_name', trimmed);
     if (user) {
       try {
         const { data: { session } } = await supabase.auth.getSession();
@@ -808,8 +848,6 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
             },
             body: JSON.stringify({ nickname: trimmed }),
           });
-        } else {
-          await supabase.from('user_profiles').update({ nickname: trimmed }).eq('id', user.id);
         }
       } catch (e) {
         console.error('Failed to update nickname in DB', e);
@@ -832,7 +870,7 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
 
   const updateCompanionId = (id: CompanionId) => {
     setSelectedCompanionId(id);
-    localStorage.setItem('kiratabi_companion_id', id);
+    safeSetLocalStorage('kiratabi_companion_id', id);
   };
 
   const clearDiscoveredFairy = (fairyId: string) => {
@@ -850,13 +888,13 @@ export function TravelProvider({ children }: { children: React.ReactNode }) {
         setCollectedFairies(prev => {
           const next = [...prev, fairyId];
           const fKey = user ? `island_fairies_${user.id}` : 'island_fairies_anon';
-          localStorage.setItem(fKey, JSON.stringify(next));
+          safeSetLocalStorage(fKey, JSON.stringify(next));
           return next;
         });
         setCollectedFairyDates(prev => {
           const next = { ...prev, [fairyId]: new Date().toISOString() };
           const dKey = user ? `island_fairies_dates_${user.id}` : 'island_fairies_dates_anon';
-          localStorage.setItem(dKey, JSON.stringify(next));
+          safeSetLocalStorage(dKey, JSON.stringify(next));
           return next;
         });
         setNewlyDiscoveredFairies(prev => [...prev, fairy]);

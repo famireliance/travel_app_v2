@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getStripeConfig } from '@/lib/stripeConfig';
 import { verifyUserAuth } from '@/lib/userAuth';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 // プラン別の価格・名称定義
@@ -155,6 +156,7 @@ export async function POST(req: NextRequest) {
           auth: { autoRefreshToken: false, persistSession: false }
         });
 
+        const savedIds: string[] = [session.id];
         let savedInPhysical = false;
         if (verifiedUserId !== 'anonymous') {
           const orderRecord = {
@@ -169,34 +171,26 @@ export async function POST(req: NextRequest) {
             stripe_session_id: session.id,
             ordered_at: new Date().toISOString(),
           };
-          const { error: physErr } = await adminClient.from('physical_orders').insert([orderRecord]);
+          const { data: physRow, error: physErr } = await adminClient
+            .from('physical_orders')
+            .insert([orderRecord])
+            .select('id')
+            .maybeSingle();
           if (!physErr) {
             savedInPhysical = true;
+            if (physRow?.id) savedIds.push(String(physRow.id));
           }
         }
 
         if (!savedInPhysical) {
           const formattedAddress = `${country && country !== 'Japan' ? `[${country}] ` : ''}〒${postalCode} ${address}${phone ? ` (TEL: ${phone})` : ''}`;
-          const { error: ordErr } = await adminClient.from('orders').insert([{
-            order_number: orderNumber,
-            serial_number: pendingSerial,
-            stripe_session_id: session.id,
-            ...(verifiedUserId !== 'anonymous' ? { user_id: verifiedUserId } : {}),
-            island_id: canonicalIslandId,
-            island_name: resolvedIslandName,
-            plan: planKey,
-            traveler_name: travelerName,
-            recipient_name: recipientName,
-            address: formattedAddress,
-            visit_date: visitDate || new Date().toISOString().slice(0, 10),
-            status: 'pending_payment',
-            created_at: new Date().toISOString(),
-          }]);
-          if (ordErr) {
-            // スキーマ差分がある場合でも確実に orders に記録を残す最小構成フォールバック
-            await adminClient.from('orders').insert([{
+          const { data: ordRow, error: ordErr } = await adminClient
+            .from('orders')
+            .insert([{
               order_number: orderNumber,
               serial_number: pendingSerial,
+              stripe_session_id: session.id,
+              ...(verifiedUserId !== 'anonymous' ? { user_id: verifiedUserId } : {}),
               island_id: canonicalIslandId,
               island_name: resolvedIslandName,
               plan: planKey,
@@ -205,9 +199,51 @@ export async function POST(req: NextRequest) {
               address: formattedAddress,
               visit_date: visitDate || new Date().toISOString().slice(0, 10),
               status: 'pending_payment',
-            }]);
+              created_at: new Date().toISOString(),
+            }])
+            .select('id')
+            .maybeSingle();
+          if (!ordErr) {
+            if (ordRow?.id) savedIds.push(String(ordRow.id));
+          } else {
+            // スキーマ差分がある場合でも確実に orders に記録を残す最小構成フォールバック
+            const { data: minRow } = await adminClient
+              .from('orders')
+              .insert([{
+                order_number: orderNumber,
+                serial_number: pendingSerial,
+                island_id: canonicalIslandId,
+                island_name: resolvedIslandName,
+                plan: planKey,
+                traveler_name: travelerName,
+                recipient_name: recipientName,
+                address: formattedAddress,
+                visit_date: visitDate || new Date().toISOString().slice(0, 10),
+                status: 'pending_payment',
+              }])
+              .select('id')
+              .maybeSingle();
+            if (minRow?.id) savedIds.push(String(minRow.id));
           }
         }
+
+        const shippingOv = await getFallbackJson<Record<string, any>>('fallback_order_shipping', {});
+        const extMeta = {
+          laminated: isLaminated,
+          design: String(design || 'horizontal'),
+          amount: unitAmount,
+          shipping_phone: String(phone || '').trim(),
+          country: String(country || 'Japan'),
+          traveler_name: String(travelerName).trim(),
+          visit_date: String(visitDate || new Date().toISOString().slice(0, 10)),
+          order_number: orderNumber,
+          serial_number: pendingSerial,
+        };
+        for (const key of savedIds) {
+          if (!key) continue;
+          shippingOv[key] = { ...(shippingOv[key] || {}), ...extMeta };
+        }
+        await setFallbackJson('fallback_order_shipping', shippingOv);
       } catch (dbErr) {
         console.warn('Order pre-save warning:', dbErr);
       }

@@ -2,13 +2,51 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 import { createClient } from '@supabase/supabase-js';
 import { getStripeConfig } from '@/lib/stripeConfig';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+interface UltimateMeta {
+  ultimate_started_at?: string | null;
+  anniversary_cert_used?: boolean;
+}
+
+async function syncUltimateMeta(userId: string, tier: string) {
+  if (!userId) return;
+  const key = `ultimate_meta_${userId}`;
+  const meta = await getFallbackJson<UltimateMeta>(key, {});
+  if (tier === 'ultimate') {
+    if (!meta.ultimate_started_at) {
+      await setFallbackJson<UltimateMeta>(key, {
+        ...meta,
+        ultimate_started_at: new Date().toISOString(),
+      });
+    }
+  } else if (meta.ultimate_started_at) {
+    await setFallbackJson<UltimateMeta>(key, {
+      ...meta,
+      ultimate_started_at: null,
+    });
+  }
+}
 
 export async function POST(req: NextRequest) {
-  const { stripe, webhookSecret, priceIdUltimate } = await getStripeConfig();
-  if (!webhookSecret || !SERVICE_ROLE_KEY || SERVICE_ROLE_KEY.startsWith('REPLACE')) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  let stripe: Stripe;
+  let webhookSecret: string;
+  let priceIdUltimate: string;
+
+  try {
+    const cfg = await getStripeConfig();
+    stripe = cfg.stripe;
+    webhookSecret = cfg.webhookSecret;
+    priceIdUltimate = cfg.priceIdUltimate;
+  } catch (err: any) {
+    console.error('Stripe config load failed in webhook:', err?.message || err);
+    return NextResponse.json({ error: err?.message || 'Stripe configuration error' }, { status: 500 });
+  }
+
+  if (!webhookSecret || !supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
     console.error('Webhook secret or Supabase Service Key is not configured');
     return NextResponse.json({ error: 'Server configuration error' }, { status: 500 });
   }
@@ -28,7 +66,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: `Webhook Error: ${err.message}` }, { status: 400 });
   }
 
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
+  const adminClient = createClient(supabaseUrl, serviceRoleKey, {
     auth: { autoRefreshToken: false, persistSession: false }
   });
 
@@ -37,43 +75,40 @@ export async function POST(req: NextRequest) {
       case 'checkout.session.completed': {
         const session = event.data.object as Stripe.Checkout.Session;
         if (session.mode === 'subscription') {
-          const userId = session.client_reference_id;
-          const customerId = session.customer as string;
-          const subscriptionId = session.subscription as string;
-          
-          if (userId) {
-            // Check subscription to get the tier from metadata
+          const userId = session.client_reference_id || session.metadata?.user_id || '';
+          const rawCustomer = session.customer;
+          const customerId = typeof rawCustomer === 'string' ? rawCustomer : rawCustomer?.id || null;
+          const rawSub = session.subscription;
+          const subscriptionId = typeof rawSub === 'string' ? rawSub : rawSub?.id || null;
+
+          if (userId && subscriptionId) {
             const subscription = await stripe.subscriptions.retrieve(subscriptionId) as Stripe.Subscription;
             const priceId = subscription.items?.data?.[0]?.price?.id;
-            let tier = 'premium';
-            if (priceId === priceIdUltimate) {
-              tier = 'ultimate';
-            }
+            const tier =
+              (priceId && priceIdUltimate && priceId === priceIdUltimate) ||
+              subscription.metadata?.tier === 'ultimate' ||
+              session.metadata?.tier === 'ultimate'
+                ? 'ultimate'
+                : 'premium';
 
             const periodEndUnix = (subscription as any).current_period_end || (subscription as any).trial_end || (subscription.items?.data?.[0] as any)?.current_period_end || (Date.now()/1000 + 30*24*60*60);
             const periodEnd = new Date(periodEndUnix * 1000);
 
-            const { data: existingProfile } = await adminClient
-              .from('user_profiles')
-              .select('id, ultimate_started_at')
-              .eq('id', userId)
-              .maybeSingle();
-
-            // Build upsert payload (set ultimate_started_at on new ultimate checkout if not already set)
-            const upsertPayload: Record<string, unknown> = {
+            const upsertPayload = {
               id: userId,
               subscription_tier: tier,
               stripe_customer_id: customerId,
               stripe_subscription_id: subscriptionId,
               premium_until: periodEnd.toISOString(),
+              is_premium: true,
             };
-            if (tier === 'ultimate' && !existingProfile?.ultimate_started_at) {
-              upsertPayload.ultimate_started_at = new Date().toISOString();
-            }
 
-            await adminClient
+            const { error: upsertErr } = await adminClient
               .from('user_profiles')
               .upsert(upsertPayload, { onConflict: 'id' });
+            if (upsertErr) throw upsertErr;
+
+            await syncUltimateMeta(userId, tier);
             console.log(`Updated user ${userId} to ${tier}`);
           }
         } else if (session.mode === 'payment') {
@@ -112,52 +147,80 @@ export async function POST(req: NextRequest) {
         if (subscriptionId) {
           const subscription = await stripe.subscriptions.retrieve(subscriptionId) as Stripe.Subscription;
           const priceId = subscription.items?.data?.[0]?.price?.id;
-          let tier = 'premium';
-          if (priceId === priceIdUltimate) {
-            tier = 'ultimate';
-          }
+          const tier =
+            (priceId && priceIdUltimate && priceId === priceIdUltimate) ||
+            subscription.metadata?.tier === 'ultimate'
+              ? 'ultimate'
+              : 'premium';
           const periodEndUnix = (subscription as any).current_period_end || (subscription as any).trial_end || (subscription.items?.data?.[0] as any)?.current_period_end || (Date.now()/1000 + 30*24*60*60);
           const periodEnd = new Date(periodEndUnix * 1000);
 
+          const { data: matchedProfiles } = await adminClient
+            .from('user_profiles')
+            .select('id')
+            .eq('stripe_subscription_id', subscriptionId);
+
+          const targetUserIds = Array.from(
+            new Set([
+              ...(matchedProfiles || []).map((p: any) => String(p.id)),
+              ...(subscription.metadata?.user_id ? [String(subscription.metadata.user_id)] : []),
+            ])
+          ).filter(Boolean);
+
           if (subscription.status === 'active' || subscription.status === 'trialing') {
-            const updateData: Record<string, unknown> = {
-              subscription_tier: tier,
-              premium_until: periodEnd.toISOString(),
-            };
-            if (tier === 'ultimate') {
-              const { data: existingSubProfile } = await adminClient
-                .from('user_profiles')
-                .select('ultimate_started_at')
-                .eq('stripe_subscription_id', subscriptionId)
-                .maybeSingle();
-              if (!existingSubProfile?.ultimate_started_at) {
-                updateData.ultimate_started_at = new Date().toISOString();
-              }
-            }
             await adminClient
               .from('user_profiles')
-              .update(updateData)
+              .update({
+                subscription_tier: tier,
+                premium_until: periodEnd.toISOString(),
+                is_premium: true,
+              })
               .eq('stripe_subscription_id', subscriptionId);
+
+            for (const uid of targetUserIds) {
+              await syncUltimateMeta(uid, tier);
+            }
           } else if (subscription.status === 'canceled' || subscription.status === 'unpaid') {
-             await adminClient
+            await adminClient
               .from('user_profiles')
               .update({
                 subscription_tier: 'free',
-                // Keep premium_until as is, or set to now
+                is_premium: false,
               })
               .eq('stripe_subscription_id', subscriptionId);
+
+            for (const uid of targetUserIds) {
+              await syncUltimateMeta(uid, 'free');
+            }
           }
         }
         break;
       }
       case 'customer.subscription.deleted': {
         const subscription = event.data.object as Stripe.Subscription;
+        const { data: matchedProfiles } = await adminClient
+          .from('user_profiles')
+          .select('id')
+          .eq('stripe_subscription_id', subscription.id);
+
+        const targetUserIds = Array.from(
+          new Set([
+            ...(matchedProfiles || []).map((p: any) => String(p.id)),
+            ...(subscription.metadata?.user_id ? [String(subscription.metadata.user_id)] : []),
+          ])
+        ).filter(Boolean);
+
         await adminClient
           .from('user_profiles')
           .update({
-            subscription_tier: 'free'
+            subscription_tier: 'free',
+            is_premium: false,
           })
           .eq('stripe_subscription_id', subscription.id);
+
+        for (const uid of targetUserIds) {
+          await syncUltimateMeta(uid, 'free');
+        }
         break;
       }
     }

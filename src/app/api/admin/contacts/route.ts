@@ -6,7 +6,19 @@ import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 
-const VALID_STATUSES = ['unread', 'in_progress', 'resolved'];
+const VALID_STATUSES = ['unread', 'in_progress', 'resolved', 'replied'];
+const STATUS_OVERRIDES_KEY = 'fallback_contact_status_overrides';
+
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
+    return null;
+  }
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+}
 
 async function verifyAuth(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -14,25 +26,32 @@ async function verifyAuth(req: NextRequest) {
 }
 
 export async function GET(req: NextRequest) {
-  if (!await verifyAuth(req)) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
-    const { data: contacts, error } = await adminClient
-      .from('contacts')
-      .select('*')
-      .order('created_at', { ascending: false });
+    if (!await verifyAuth(req)) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    const [{ data: contacts, error }, statusOverrides] = await Promise.all([
+      adminClient.from('contacts').select('*').order('created_at', { ascending: false }),
+      getFallbackJson<Record<string, string>>(STATUS_OVERRIDES_KEY, {}),
+    ]);
 
     if (error) {
       const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
       return NextResponse.json({ contacts: Array.isArray(fbContacts) ? fbContacts : [] });
     }
-    return NextResponse.json({ contacts: contacts || [] });
+
+    const merged = (contacts || []).map((c: any) => {
+      const ovStatus = statusOverrides?.[String(c.id)];
+      return ovStatus ? { ...c, status: ovStatus } : c;
+    });
+
+    return NextResponse.json({ contacts: merged });
   } catch (err: any) {
     console.error('[contacts GET]', err);
     const fbContacts = await getFallbackJson<any[]>('fallback_contacts', []);
@@ -41,24 +60,31 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
   try {
-    const body = await req.json();
-    const { name, email, category, message } = body;
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const { name, email, category, message } = body || {};
     if (!name || !email || !message) {
       return NextResponse.json({ error: '必須項目が不足しています' }, { status: 400 });
     }
-
-    const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-      auth: { autoRefreshToken: false, persistSession: false }
-    });
 
     const record = {
       id: crypto.randomUUID(),
@@ -86,22 +112,33 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, contact: data });
   } catch (err: any) {
-    return NextResponse.json({ error: err.message || '登録に失敗しました' }, { status: 500 });
+    return NextResponse.json({ error: err?.message || '登録に失敗しました' }, { status: 500 });
   }
 }
 
 export async function PUT(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
   try {
-    const body = await req.json();
-    const { id, status, admin_note, reply_text } = body;
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const { id, status, admin_note, reply_text } = body || {};
 
     if (!id) {
       return NextResponse.json({ error: '必須項目が不足しています' }, { status: 400 });
@@ -110,19 +147,35 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: '無効なステータスです' }, { status: 400 });
     }
 
-    const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-      auth: { autoRefreshToken: false, persistSession: false }
-    });
-
     const updateData: any = { updated_at: new Date().toISOString() };
     if (status) updateData.status = status;
     if (admin_note !== undefined) updateData.admin_note = admin_note;
     if (reply_text !== undefined) updateData.reply_text = reply_text;
 
-    const { error } = await adminClient
+    let { error } = await adminClient
       .from('contacts')
       .update(updateData)
       .eq('id', id);
+
+    // If 'replied' fails DB CHECK constraint ('unread'/'in_progress'/'resolved'), retry DB update with 'resolved'
+    if (error && status === 'replied') {
+      const retry = await adminClient
+        .from('contacts')
+        .update({ ...updateData, status: 'resolved' })
+        .eq('id', id);
+      error = retry.error;
+      if (!error) {
+        const overrides = await getFallbackJson<Record<string, string>>(STATUS_OVERRIDES_KEY, {});
+        overrides[String(id)] = 'replied';
+        await setFallbackJson(STATUS_OVERRIDES_KEY, overrides);
+      }
+    } else if (!error && status && status !== 'replied') {
+      const overrides = await getFallbackJson<Record<string, string>>(STATUS_OVERRIDES_KEY, {});
+      if (overrides && overrides[String(id)]) {
+        delete overrides[String(id)];
+        await setFallbackJson(STATUS_OVERRIDES_KEY, overrides);
+      }
+    }
 
     if (error) {
       // Fallback to admin_config storage

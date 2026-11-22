@@ -19,9 +19,45 @@ function escapeHtml(str: string): string {
 }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const RATE_LIMIT_WINDOW_MS = 10 * 60 * 1000; // 10 minutes
+const RATE_LIMIT_MAX = 5;
+const contactRateMap = new Map<string, number[]>();
+
+function getClientIp(req: NextRequest): string {
+  const forwarded = req.headers.get('x-forwarded-for');
+  if (forwarded) return forwarded.split(',')[0].trim();
+  return req.headers.get('x-real-ip') || '127.0.0.1';
+}
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const timestamps = (contactRateMap.get(ip) || []).filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
+  if (timestamps.length >= RATE_LIMIT_MAX) {
+    contactRateMap.set(ip, timestamps);
+    return true;
+  }
+  timestamps.push(now);
+  contactRateMap.set(ip, timestamps);
+  if (contactRateMap.size > 1000) {
+    for (const [k, v] of contactRateMap.entries()) {
+      const active = v.filter((ts) => now - ts < RATE_LIMIT_WINDOW_MS);
+      if (active.length === 0) contactRateMap.delete(k);
+      else contactRateMap.set(k, active);
+    }
+  }
+  return false;
+}
 
 export async function POST(req: NextRequest) {
   try {
+    const clientIp = getClientIp(req);
+    if (isRateLimited(clientIp)) {
+      return NextResponse.json(
+        { error: '送信回数が上限に達しました。しばらく時間をおいて再度お試しください。' },
+        { status: 429 }
+      );
+    }
+
     let body: any;
     try {
       body = await req.json();
@@ -57,9 +93,18 @@ export async function POST(req: NextRequest) {
     };
     const categoryLabel = categoryLabels[category] || category;
 
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    const resendApiKey = process.env.RESEND_API_KEY;
+
+    let savedToDb = false;
+    let sentViaResend = false;
+
     // 1. Save to Supabase DB (or fallback_contacts in admin_config if table not created yet)
-    if (SUPABASE_URL && SUPABASE_SERVICE_KEY && SUPABASE_SERVICE_KEY !== 'REPLACE_WITH_YOUR_SERVICE_ROLE_KEY') {
-      const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY);
+    if (supabaseUrl && supabaseServiceKey && !supabaseServiceKey.startsWith('REPLACE')) {
+      const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+        auth: { autoRefreshToken: false, persistSession: false },
+      });
       const { error: dbError } = await supabase.from('contacts').insert({
         name,
         email,
@@ -67,8 +112,11 @@ export async function POST(req: NextRequest) {
         message,
         status: 'unread'
       });
-      if (dbError) {
-        const list = await getFallbackJson<any[]>('fallback_contacts', []);
+      if (!dbError) {
+        savedToDb = true;
+      } else {
+        const rawList = await getFallbackJson<any[]>('fallback_contacts', []);
+        const list = Array.isArray(rawList) ? rawList : [];
         list.unshift({
           id: crypto.randomUUID(),
           name,
@@ -81,12 +129,12 @@ export async function POST(req: NextRequest) {
           created_at: new Date().toISOString(),
           updated_at: new Date().toISOString(),
         });
-        await setFallbackJson('fallback_contacts', list);
+        savedToDb = await setFallbackJson('fallback_contacts', list);
       }
     }
 
     // 2. Send email via Resend
-    if (RESEND_API_KEY) {
+    if (resendApiKey && !resendApiKey.startsWith('REPLACE')) {
       // Determine recipients
       let toEmails = [CONTACT_EMAIL];
       if (ADMIN_EMAILS) {
@@ -130,19 +178,33 @@ export async function POST(req: NextRequest) {
         `,
       };
 
-      const resendRes = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${RESEND_API_KEY}`,
-        },
-        body: JSON.stringify(emailBody),
-      });
+      try {
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${resendApiKey}`,
+          },
+          body: JSON.stringify(emailBody),
+          signal: AbortSignal.timeout(8000),
+        });
 
-      if (!resendRes.ok) {
-        const err = await resendRes.json();
-        console.error('Resend error:', err);
+        if (!resendRes.ok) {
+          const errText = await resendRes.text().catch(() => '');
+          console.error('Resend error:', errText);
+        } else {
+          sentViaResend = true;
+        }
+      } catch (resendErr) {
+        console.error('Resend request failed:', resendErr);
       }
+    }
+
+    if (!savedToDb && !sentViaResend) {
+      return NextResponse.json(
+        { error: '現在お問い合わせサービスが一時的に利用できません。時間をおいて再度お試しください。' },
+        { status: 503 }
+      );
     }
 
     return NextResponse.json({ success: true });

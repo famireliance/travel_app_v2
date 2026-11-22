@@ -5,6 +5,32 @@ import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 
 const ALLOWED_CERTIFICATE_TYPES = ['card', 'standard', 'high_quality'] as const;
 
+function getJstStartOfMonthIso(): string {
+  const jstNow = new Date(Date.now() + 9 * 60 * 60 * 1000);
+  const yyyy = jstNow.getUTCFullYear();
+  const mm = String(jstNow.getUTCMonth() + 1).padStart(2, '0');
+  return new Date(`${yyyy}-${mm}-01T00:00:00+09:00`).toISOString();
+}
+
+function validateSupabaseImageUrl(rawUrl: unknown, supabaseUrl: string): { valid: boolean; url: string | null } {
+  if (rawUrl === undefined || rawUrl === null || rawUrl === '') {
+    return { valid: true, url: null };
+  }
+  if (typeof rawUrl !== 'string') {
+    return { valid: false, url: null };
+  }
+  try {
+    const parsed = new URL(rawUrl.trim());
+    const expectedHost = new URL(supabaseUrl).hostname;
+    if (parsed.protocol !== 'https:' || parsed.hostname !== expectedHost) {
+      return { valid: false, url: null };
+    }
+    return { valid: true, url: parsed.toString() };
+  } catch {
+    return { valid: false, url: null };
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -21,18 +47,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: auth.error || '認証が必要です' }, { status: 401 });
     }
 
-    const body = await request.json();
-    const { islandId: rawIslandId, type = 'high_quality', imageUrl } = body;
+    let body: any;
+    try {
+      body = await request.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const { islandId: rawIslandId, type = 'high_quality', imageUrl } = body || {};
     const rawStr = rawIslandId !== undefined && rawIslandId !== null ? String(rawIslandId).trim() : '';
     const userId = auth.user.id;
 
-    if (body.userId && body.userId !== userId) {
+    if (body?.userId && body.userId !== userId) {
       return NextResponse.json({ error: '不正なユーザーIDです' }, { status: 403 });
     }
 
     if (!rawStr) {
       return NextResponse.json({ error: 'Missing islandId' }, { status: 400 });
     }
+
+    const imgCheck = validateSupabaseImageUrl(imageUrl, supabaseUrl);
+    if (!imgCheck.valid) {
+      return NextResponse.json({ error: '無効な画像URLです（公式ストレージのみ許可されています）' }, { status: 400 });
+    }
+    const safeImageUrl = imgCheck.url;
 
     // Normalize islandId via ALL_ISLANDS_MASTER_DICTIONARY so slug vs numeric ID never splits serial numbers
     const lowerRaw = rawStr.toLowerCase();
@@ -47,6 +85,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: '無効な証明書タイプです' }, { status: 400 });
     }
 
+    // Verify user actually visited this island in island_visits
+    const candidateIslandIds = Array.from(
+      new Set(
+        [rawStr, islandId, masterEntry?.slug, masterEntry?.name]
+          .filter((v): v is string => Boolean(v && String(v).trim()))
+          .map((v) => String(v).trim())
+      )
+    );
+
+    const { data: visitRows, error: visitErr } = await supabase
+      .from('island_visits')
+      .select('island_id, status')
+      .eq('user_id', userId)
+      .in('island_id', candidateIslandIds);
+
+    if (visitErr) {
+      console.error('Error checking island_visits:', visitErr);
+      return NextResponse.json({ error: '訪問履歴の確認に失敗しました' }, { status: 500 });
+    }
+
+    const hasVisited = (visitRows || []).some(
+      (r: any) => !r.status || r.status === 'visited' || r.status === 'verified_visited'
+    );
+    if (!hasVisited) {
+      return NextResponse.json({ error: '未訪問の島の公式証明書は発行できません' }, { status: 403 });
+    }
+
     // Check if certificate already exists for this user and island (same type) BEFORE checking monthly quota
     const { data: existingCert, error: existingError } = await supabase
       .from('certificates')
@@ -58,10 +123,10 @@ export async function POST(request: Request) {
 
     if (existingCert) {
       // If a newer imageUrl was uploaded, update it
-      if (imageUrl && imageUrl !== existingCert.image_url) {
+      if (safeImageUrl && safeImageUrl !== existingCert.image_url) {
         const { data: updatedCert } = await supabase
           .from('certificates')
-          .update({ image_url: imageUrl })
+          .update({ image_url: safeImageUrl })
           .eq('id', existingCert.id)
           .select()
           .single();
@@ -75,24 +140,33 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database error checking certificate' }, { status: 500 });
     }
 
-    // Check user tier and tickets
-    const profileRes = await supabase.from('user_profiles').select('subscription_tier, high_quality_tickets').eq('id', userId).single();
-    const tier = profileRes.data?.subscription_tier || 'free';
+    // Check user tier (respecting premium_until expiration) and tickets
+    const profileRes = await supabase
+      .from('user_profiles')
+      .select('subscription_tier, premium_until, high_quality_tickets')
+      .eq('id', userId)
+      .maybeSingle();
+
+    const rawTier = profileRes.data?.subscription_tier || 'free';
+    const premiumUntil = profileRes.data?.premium_until;
+    const isExpired =
+      rawTier !== 'free' &&
+      Boolean(premiumUntil) &&
+      new Date(premiumUntil as string).getTime() < Date.now();
+    const tier = isExpired ? 'free' : rawTier;
     const tickets = profileRes.data?.high_quality_tickets || 0;
 
     let useTicket = false;
 
-    // Apply limits for high_quality
+    // Apply limits for high_quality (startOfMonth in JST UTC+9)
     if (type === 'high_quality') {
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
+      const startOfMonthIso = getJstStartOfMonthIso();
 
       const { count } = await supabase.from('certificates')
         .select('id', { count: 'exact', head: true })
         .eq('user_id', userId)
         .eq('type', 'high_quality')
-        .gte('created_at', startOfMonth.toISOString());
+        .gte('created_at', startOfMonthIso);
       
       const monthlyCount = count || 0;
 
@@ -148,7 +222,7 @@ export async function POST(request: Request) {
         serial_number: nextSerial,
         payment_status: 'pending',
         type: type,
-        image_url: imageUrl || null
+        image_url: safeImageUrl
       })
       .select()
       .single();

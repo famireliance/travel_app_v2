@@ -3,8 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
 import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
+    return null;
+  }
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+}
 
 async function verifyAuth(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -27,18 +35,19 @@ async function loadOfficialCertOverrides(): Promise<Record<string, any>> {
 
 // 公的証明書の設定を取得・更新・販売期間延長を行うAPI
 export async function GET(req: NextRequest) {
-  if (!await verifyAuth(req)) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
-  const { searchParams } = new URL(req.url);
-  const islandId = searchParams.get('islandId');
-
   try {
+    if (!await verifyAuth(req)) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const islandId = searchParams.get('islandId');
+
     let query = adminClient.from('islands').select('*');
 
     if (islandId) {
@@ -74,20 +83,26 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
-    const body = await req.json();
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
     const {
       islandId,
       official_cert_enabled,
@@ -98,7 +113,7 @@ export async function PUT(req: NextRequest) {
       official_sales_end_at,
       official_template_id,
       extendDays
-    } = body;
+    } = body || {};
 
     if (!islandId) {
       return NextResponse.json({ error: 'islandId が必要です' }, { status: 400 });

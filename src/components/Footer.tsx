@@ -7,6 +7,7 @@ import { Compass, FileText, Mail, ShieldAlert } from 'lucide-react';
 
 export default function Footer() {
   const pathname = usePathname();
+  const isGlobePage = pathname === '/globe' || pathname?.startsWith('/globe/');
   const isRestrictedPortal =
     pathname?.startsWith('/kira-system-panel-9f2') ||
     pathname?.startsWith('/biz-portal-secure-8f92a1b3') ||
@@ -15,7 +16,7 @@ export default function Footer() {
         window.location.hostname.startsWith('partner.') ||
         window.location.hostname.startsWith('biz.')));
 
-  if (pathname === '/map' || isRestrictedPortal) return null;
+  if (pathname === '/map' || isGlobePage || isRestrictedPortal) return null;
 
   return (
     <footer className="bg-slate-900 text-slate-300 py-12 px-6 lg:px-12 border-t border-slate-800">

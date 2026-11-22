@@ -23,19 +23,11 @@ export async function trackFacilityEvent(
   eventType: 'phone_call_click' | 'website_click' | 'lp_view'
 ) {
   try {
-    const { error } = await supabase
-      .from('tracking_events')
-      .insert([
-        {
-          facility_id: facilityId,
-          event_type: eventType,
-          user_agent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown',
-          session_id: typeof sessionStorage !== 'undefined' ? sessionStorage.getItem('kiratabi_session_id') : null
-        }
-      ]);
-    if (error) {
-      console.error('Tracking event failed:', error);
-    }
+    await fetch('/api/tracking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ facilityId, eventType }),
+    });
   } catch (err) {
     // ユーザーの体験を阻害しないよう、エラーは裏側でキャッチのみ
   }
@@ -44,17 +36,21 @@ export async function trackFacilityEvent(
 
 export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
   try {
-    // Fetch published islands from Supabase and merge strictly against authoritative ALL_ISLANDS_MASTER_DICTIONARY
+    // Fetch all island rows from Supabase (including unpublished rows) and merge strictly against authoritative ALL_ISLANDS_MASTER_DICTIONARY
     const { data, error } = await supabase
       .from('islands')
       .select('*')
-      .eq('is_published', true)
       .order('popularity_score', { ascending: false });
       
     if (!error && data && data.length > 0) {
+      const unpublishedIds = new Set<string>();
       const dbById = new Map<string, Record<string, any>>();
       for (const row of data) {
         const idStr = String(row.id);
+        if (row.is_published === false) {
+          unpublishedIds.add(idStr);
+          continue;
+        }
         if (ALL_ISLANDS_MASTER_DICTIONARY[idStr]) {
           dbById.set(idStr, row);
         }
@@ -62,8 +58,15 @@ export async function fetchAllIslands(): Promise<Record<string, unknown>[]> {
 
       const merged: Record<string, unknown>[] = [];
       for (const master of Object.values(ALL_ISLANDS_MASTER_DICTIONARY) as any[]) {
-        if (master.is_conquest_target === false || !master.coordinates) continue;
         const idStr = String(master.id);
+        if (
+          master.is_conquest_target === false ||
+          !master.coordinates ||
+          master.is_published === false ||
+          unpublishedIds.has(idStr)
+        ) {
+          continue;
+        }
         const row = dbById.get(idStr);
 
         if (row) {

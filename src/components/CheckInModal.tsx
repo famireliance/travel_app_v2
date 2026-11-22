@@ -84,6 +84,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
   const [isLocating, setIsLocating] = useState(false);
   const [resultStatus, setResultStatus] = useState<'idle' | 'success' | 'offline_saved' | 'error' | 'no_gps'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [successHeadline, setSuccessHeadline] = useState('');
   const [distanceInfo, setDistanceInfo] = useState<number | null>(null);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -95,6 +96,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
     setIsProcessing(true);
     setResultStatus('idle');
     setErrorMessage('');
+    setSuccessHeadline('');
     setDistanceInfo(null);
 
     try {
@@ -187,8 +189,10 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
           if (result.error === 'already_visited_today') {
             // 同日すでに到達記録がある場合も、写真付き公認認定（verified_visited）へ昇格し証明書発行を許可する
             updateStatus(String(island.id), 'verified_visited');
+            setSuccessHeadline('すでに上陸認定済みです！');
             setResultStatus('success');
           } else {
+            setSuccessHeadline('');
             setResultStatus('success');
           }
         }
@@ -221,6 +225,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
     setIsLocating(true);
     setResultStatus('idle');
     setErrorMessage('');
+    setSuccessHeadline('');
     setDistanceInfo(null);
 
     navigator.geolocation.getCurrentPosition(
@@ -258,11 +263,22 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
             addIslandVisit(island.id, island, 0, true);
             setResultStatus('offline_saved');
           } else {
-            const result = addIslandVisit(island.id, island, 0, true);
+            const today = new Date();
+            const finalDateStr = `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+            setTempCheckInDate(finalDateStr);
+            try {
+              sessionStorage.setItem(`kiratabi_checkin_date_${island.id}`, finalDateStr);
+              localStorage.setItem(`kiratabi_checkin_date_${island.id}`, finalDateStr);
+            } catch {
+              // Ignore storage errors
+            }
+            const result = addIslandVisit(String(island.id), island, 0, true);
             if (result.error === 'already_visited_today') {
-              setResultStatus('error');
-              setErrorMessage('本日はすでにこの島の到達記録を追加済みです。回数のカウントアップは1日1回までとなります！');
+              updateStatus(String(island.id), 'verified_visited');
+              setSuccessHeadline('すでに上陸認定済みです！');
+              setResultStatus('success');
             } else {
+              setSuccessHeadline('');
               setResultStatus('success');
             }
           }
@@ -288,6 +304,7 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
   const handleClose = () => {
     setResultStatus('idle');
     setErrorMessage('');
+    setSuccessHeadline('');
     setDistanceInfo(null);
     onClose();
   };
@@ -399,9 +416,9 @@ export default function CheckInModal({ isOpen, onClose, island, onOpenCertificat
                   <div className="w-16 h-16 rounded-full bg-emerald-500 text-white flex items-center justify-center mx-auto mb-4 shadow-lg shadow-emerald-500/30">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h4 className="text-xl font-bold text-emerald-800 mb-2">到達認定 成功！</h4>
+                  <h4 className="text-xl font-bold text-emerald-800 mb-2">{successHeadline || '到達認定 成功！'}</h4>
                   <p className="text-sm text-emerald-600 mb-3">
-                    写真のGPS座標が島の中心から <strong>{distanceInfo?.toFixed(1)}km</strong> 以内であることを確認しました。
+                    GPS座標が島の中心から <strong>{distanceInfo?.toFixed(1)}km</strong> 以内であることを確認しました。
                   </p>
                   <p className="text-xs font-bold px-3 py-1 bg-emerald-200/50 text-emerald-700 rounded-full inline-block">
                     OFFICIAL RECORD OF ARRIVAL 獲得

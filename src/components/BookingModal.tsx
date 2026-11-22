@@ -10,6 +10,7 @@ import { supabase } from '@/lib/supabase';
 import toast from 'react-hot-toast';
 import { useTravel } from '@/context/TravelContext';
 import { useRouter } from 'next/navigation';
+import AuthModal from './AuthModal';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -54,6 +55,7 @@ export default function BookingModal({
   const [notes, setNotes] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmittedSuccess, setIsSubmittedSuccess] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
   // 初期値セット
   useEffect(() => {
@@ -451,11 +453,20 @@ export default function BookingModal({
               {/* Action */}
               <div className="pt-2 border-t border-slate-100 space-y-3">
                 {!user ? (
-                  <div className="text-center p-4 bg-amber-50 border border-amber-200 rounded-2xl">
-                    <p className="text-xs font-bold text-amber-800 mb-1">KIRATABI へのログインが必要です</p>
-                    <p className="text-[0.7rem] text-amber-700">
-                      予約履歴の管理や到達証明との連動のため、ログイン後にリクエストを送信してください。
-                    </p>
+                  <div className="text-center p-4 bg-amber-50 border border-amber-200 rounded-2xl space-y-3">
+                    <div>
+                      <p className="text-xs font-bold text-amber-800 mb-1">KIRATABI へのログインが必要です</p>
+                      <p className="text-[0.7rem] text-amber-700">
+                        予約履歴の管理や到達証明との連動のため、ログイン後にリクエストを送信してください（入力済みの内容は保持されます）。
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsAuthOpen(true)}
+                      className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs md:text-sm rounded-xl shadow-md transition-all flex items-center justify-center gap-2"
+                    >
+                      ログイン / 無料登録して予約へ進む <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
                 ) : (
                   <button 
@@ -482,6 +493,11 @@ export default function BookingModal({
 
         </motion.div>
       </div>
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+        onAuthSuccess={() => setIsAuthOpen(false)}
+      />
     </AnimatePresence>
   );
 }

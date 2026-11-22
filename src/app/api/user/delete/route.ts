@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 import { getStripeConfig } from '@/lib/stripeConfig';
+import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
 export async function POST(req: NextRequest) {
   try {
@@ -8,22 +9,22 @@ export async function POST(req: NextRequest) {
     const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-    const authHeader = req.headers.get('authorization');
+    const authHeader = req.headers.get('authorization') || req.headers.get('Authorization');
     if (!authHeader) {
       return NextResponse.json({ error: '認証ヘッダーがありません' }, { status: 401 });
     }
-    const token = authHeader.replace('Bearer ', '');
+    const token = authHeader.replace(/^Bearer\s+/i, '').trim();
 
     if (!supabaseUrl || !supabaseAnonKey || !supabaseServiceRoleKey || supabaseServiceRoleKey.startsWith('REPLACE')) {
       return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
     }
-    
+
     // Validate token and get user id using anon client
     const anonClient = createClient(supabaseUrl, supabaseAnonKey, {
       auth: { autoRefreshToken: false, persistSession: false },
     });
     const { data: { user }, error: authError } = await anonClient.auth.getUser(token);
-    
+
     if (authError || !user) {
       return NextResponse.json({ error: '認証エラー' }, { status: 401 });
     }
@@ -51,33 +52,68 @@ export async function POST(req: NextRequest) {
         // Ignore resource_missing / already canceled errors, but abort if active subscription cancel failed unexpectedly
         const code = stripeErr?.code || '';
         const msg = String(stripeErr?.message || '');
-        if (code !== 'resource_missing' && !msg.includes('No such subscription') && !msg.includes('canceled')) {
+        if (
+          code !== 'resource_missing' &&
+          !msg.includes('No such subscription') &&
+          !msg.includes('canceled') &&
+          !msg.includes('未設定')
+        ) {
           console.error('Failed to cancel Stripe subscription before user deletion:', stripeErr);
-          return NextResponse.json({ error: 'サブスクリプションの自動解約に失敗しました。お支払い管理から解約後にお試しください。' }, { status: 502 });
+          return NextResponse.json(
+            { error: 'サブスクリプションの自動解約に失敗しました。お支払い管理から解約後にお試しください。' },
+            { status: 502 }
+          );
         }
       }
     }
 
-    // 1. Soft delete user profile (anonymize for public view)
+    // 1. Delete user's rows from island_visits, user_gamification, and certificates
+    await Promise.allSettled([
+      adminClient.from('island_visits').delete().eq('user_id', user.id),
+      adminClient.from('user_gamification').delete().eq('user_id', user.id),
+      adminClient.from('certificates').delete().eq('user_id', user.id),
+    ]);
+
+    // Clear Ultimate metadata in admin_config
+    const metaKey = `ultimate_meta_${user.id}`;
+    const existingMeta = await getFallbackJson<Record<string, any>>(metaKey, {});
+    if (existingMeta && Object.keys(existingMeta).length > 0) {
+      await setFallbackJson(metaKey, {
+        ...existingMeta,
+        ultimate_started_at: null,
+      });
+    }
+
+    // 2. Soft delete user profile (anonymize for public view; fallback on optional columns so deleteUser is never blocked)
     const { error: profileError } = await adminClient
       .from('user_profiles')
       .update({
         deleted_at: new Date().toISOString(),
         nickname: '退会済みユーザー',
         subscription_tier: 'free',
+        is_premium: false,
         stripe_subscription_id: null,
       })
       .eq('id', user.id);
 
     if (profileError) {
-      console.error('Failed to soft delete profile', profileError);
-      return NextResponse.json({ error: 'プロフィール削除に失敗しました' }, { status: 500 });
+      const { error: retryError } = await adminClient
+        .from('user_profiles')
+        .update({
+          nickname: '退会済みユーザー',
+          subscription_tier: 'free',
+          stripe_subscription_id: null,
+        })
+        .eq('id', user.id);
+
+      if (retryError) {
+        console.warn('Profile anonymize retry warning (continuing to deleteUser):', retryError);
+      }
     }
 
-    // 2. We can also choose to delete from auth.users so they can't login again,
-    // but keep the user_profiles row for referential integrity of UGC.
+    // 3. Delete from auth.users so they can't login again
     const { error: deleteAuthError } = await adminClient.auth.admin.deleteUser(user.id);
-    
+
     if (deleteAuthError) {
       console.error('Failed to delete auth user', deleteAuthError);
       return NextResponse.json({ error: 'アカウントの完全削除に失敗しました' }, { status: 500 });

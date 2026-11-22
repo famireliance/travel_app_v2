@@ -21,6 +21,15 @@ export interface CustomPackingItem {
   createdAt: number;
 }
 
+function safeSavePackingStorage(key: string, value: unknown): void {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {
+    // Ignore storage quota / private mode errors
+  }
+}
+
 export default function PackingListPage() {
   const router = useRouter();
   const [checkedIds, setCheckedIds] = useState<string[]>([]);
@@ -61,7 +70,7 @@ export default function PackingListPage() {
         next = [...prev, id];
         toast.success('チェックリストを完了にしました！', { id: `check-${id}` });
       }
-      localStorage.setItem('kiratabi_packing_checked', JSON.stringify(next));
+      safeSavePackingStorage('kiratabi_packing_checked', next);
       return next;
     });
   };
@@ -80,7 +89,7 @@ export default function PackingListPage() {
 
     const nextCustom = [newItem, ...customItems];
     setCustomItems(nextCustom);
-    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(nextCustom));
+    safeSavePackingStorage('kiratabi_packing_custom', nextCustom);
     setNewItemName('');
     toast.success(`「${newItem.name}」を持ち物に追加しました！`);
   };
@@ -92,37 +101,37 @@ export default function PackingListPage() {
       return item;
     });
     setCustomItems(nextCustom);
-    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(nextCustom));
+    safeSavePackingStorage('kiratabi_packing_custom', nextCustom);
   };
 
   // Delete Custom Item
   const handleDeleteCustomItem = (id: string) => {
     const nextCustom = customItems.filter(item => item.id !== id);
     setCustomItems(nextCustom);
-    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(nextCustom));
+    safeSavePackingStorage('kiratabi_packing_custom', nextCustom);
     toast('アイテムを削除しました', { icon: '🗑️' });
   };
 
   const handleSelectAll = () => {
     const allPresetIds = AFFILIATE_PRODUCTS.map(p => p.id);
     setCheckedIds(allPresetIds);
-    localStorage.setItem('kiratabi_packing_checked', JSON.stringify(allPresetIds));
+    safeSavePackingStorage('kiratabi_packing_checked', allPresetIds);
 
     // Also check custom items
     const allCustomChecked = customItems.map(item => ({ ...item, isChecked: true }));
     setCustomItems(allCustomChecked);
-    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(allCustomChecked));
+    safeSavePackingStorage('kiratabi_packing_custom', allCustomChecked);
 
     toast.success('すべてのアイテムを完了にしました！');
   };
 
   const handleClearAll = () => {
     setCheckedIds([]);
-    localStorage.setItem('kiratabi_packing_checked', JSON.stringify([]));
+    safeSavePackingStorage('kiratabi_packing_checked', []);
 
     const allCustomUnchecked = customItems.map(item => ({ ...item, isChecked: false }));
     setCustomItems(allCustomUnchecked);
-    localStorage.setItem('kiratabi_packing_custom', JSON.stringify(allCustomUnchecked));
+    safeSavePackingStorage('kiratabi_packing_custom', allCustomUnchecked);
 
     toast('チェックをリセットしました', { icon: '🔄' });
   };

@@ -15,8 +15,8 @@ interface CompanionModalProps {
 
 export default function CompanionModal({ isOpen, onClose }: CompanionModalProps) {
   const router = useRouter();
-  const { totalXP, selectedCompanionId, updateCompanionId, companionChar, companionStage } = useTravel();
-  const playerLvInfo = getPlayerLevelInfo(totalXP);
+  const { totalXP, totalPoints, selectedCompanionId, updateCompanionId, companionChar, companionStage, subscriptionTier } = useTravel();
+  const playerLvInfo = getPlayerLevelInfo(Math.max(totalXP || 0, totalPoints || 0));
 
   if (!isOpen) return null;
 
@@ -92,7 +92,10 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
                   // Get current player stage for this char
                   let activeStage = char.stages[0];
                   for (const st of char.stages) {
-                    if (playerLvInfo.level >= st.minLevel) activeStage = st;
+                    if (playerLvInfo.level >= st.minLevel) {
+                      if (st.stage === 4 && subscriptionTier !== 'ultimate') continue;
+                      activeStage = st;
+                    }
                   }
 
                   return (
@@ -160,7 +163,9 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {companionChar.stages.map((st) => {
-                  const isUnlocked = playerLvInfo.level >= st.minLevel;
+                  const isUltimateLocked = st.stage === 4 && subscriptionTier !== 'ultimate';
+                  const isLevelMet = playerLvInfo.level >= st.minLevel;
+                  const isUnlocked = isLevelMet && !isUltimateLocked;
                   const isCurrentStage = companionStage.stage === st.stage;
 
                   return (
@@ -182,10 +187,17 @@ export default function CompanionModal({ isOpen, onClose }: CompanionModalProps)
                             STAGE {st.stage}
                           </span>
                           {!isUnlocked ? (
-                            <span className="text-xs text-slate-400 flex items-center gap-1 font-bold">
-                              <Lock className="w-3 h-3" />
-                              Lv.{st.minLevel}〜
-                            </span>
+                            isLevelMet && isUltimateLocked ? (
+                              <span className="text-xs text-amber-700 bg-amber-100 border border-amber-200 px-2 py-0.5 rounded flex items-center gap-1 font-bold">
+                                <Lock className="w-3 h-3" />
+                                Ultimate限定
+                              </span>
+                            ) : (
+                              <span className="text-xs text-slate-400 flex items-center gap-1 font-bold">
+                                <Lock className="w-3 h-3" />
+                                {st.stage === 4 ? `Lv.${st.minLevel}〜 / Ultimate限定` : `Lv.${st.minLevel}〜`}
+                              </span>
+                            )
                           ) : (
                             <span className="text-xs text-emerald-600 font-bold">開放済</span>
                           )}

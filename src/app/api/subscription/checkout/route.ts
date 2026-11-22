@@ -44,20 +44,55 @@ export async function POST(req: NextRequest) {
     const rawOrigin = req.headers.get('origin') || '';
     const origin = ALLOWED_ORIGINS.includes(rawOrigin) ? rawOrigin : 'https://island.kira-tabi.com';
 
-    // 1. Supabaseから既存のStripe Customer IDを取得する（存在する場合）
-    let customerId = undefined;
+    // 1. Supabaseから既存のStripe Customer ID / Subscription IDを取得し、二重課金を防止する
+    let customerId: string | undefined = undefined;
     if (SERVICE_ROLE_KEY && !SERVICE_ROLE_KEY.startsWith('REPLACE')) {
       const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
         auth: { autoRefreshToken: false, persistSession: false }
       });
       const { data: profile } = await adminClient
         .from('user_profiles')
-        .select('stripe_customer_id')
+        .select('stripe_customer_id, stripe_subscription_id')
         .eq('id', userId)
-        .single();
-      
+        .maybeSingle();
+
+      if (profile?.stripe_subscription_id) {
+        try {
+          const existingSub = await stripe.subscriptions.retrieve(profile.stripe_subscription_id);
+          if (existingSub && (existingSub.status === 'active' || existingSub.status === 'trialing')) {
+            return NextResponse.json(
+              { error: 'すでに有料プランをご契約中です。マイページのプラン変更からお手続きください。' },
+              { status: 409 }
+            );
+          }
+        } catch {
+          // 既に削除済み・別環境のIDの場合は新規作成を許可
+        }
+      }
+
       if (profile?.stripe_customer_id) {
-        customerId = profile.stripe_customer_id;
+        try {
+          const existingCustomer = await stripe.customers.retrieve(profile.stripe_customer_id);
+          if (existingCustomer && !('deleted' in existingCustomer && existingCustomer.deleted)) {
+            customerId = profile.stripe_customer_id;
+            const customerSubs = await stripe.subscriptions.list({
+              customer: customerId,
+              status: 'all',
+              limit: 5,
+            });
+            const hasActiveSub = customerSubs.data.some(
+              (s) => s.status === 'active' || s.status === 'trialing'
+            );
+            if (hasActiveSub) {
+              return NextResponse.json(
+                { error: 'すでに有料プランをご契約中です。マイページのプラン変更からお手続きください。' },
+                { status: 409 }
+              );
+            }
+          }
+        } catch {
+          customerId = undefined;
+        }
       }
     }
 

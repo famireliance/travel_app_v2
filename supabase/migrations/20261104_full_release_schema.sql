@@ -15,15 +15,16 @@ ALTER TABLE public.islands
   ADD COLUMN IF NOT EXISTS official_template_id      TEXT         DEFAULT 'standard';
 
 -- 2. user_profiles テーブルの拡張カラム追加
-ALTER TABLE public.user_profiles
+ALTER TABLE IF EXISTS public.user_profiles
   ADD COLUMN IF NOT EXISTS total_points              INTEGER      NOT NULL DEFAULT 0,
   ADD COLUMN IF NOT EXISTS player_level              INTEGER      NOT NULL DEFAULT 1,
   ADD COLUMN IF NOT EXISTS ultimate_started_at       TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS anniversary_cert_used     BOOLEAN      NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS deleted_at                TIMESTAMPTZ,
   ADD COLUMN IF NOT EXISTS avatar_url                TEXT;
 
 -- 3. orders テーブルの配送追跡カラム追加
-ALTER TABLE public.orders
+ALTER TABLE IF EXISTS public.orders
   ADD COLUMN IF NOT EXISTS tracking_number           TEXT,
   ADD COLUMN IF NOT EXISTS carrier                   TEXT,
   ADD COLUMN IF NOT EXISTS notes                     TEXT,

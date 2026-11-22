@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { IslandFairy } from '@/lib/fairies';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { Maximize2, Sparkles, MapPin, Lock, RotateCw } from 'lucide-react';
 import FairyTeaserSilhouette from './FairyTeaserSilhouette';
 
@@ -25,6 +26,11 @@ export default function FairyCard({ fairy, isRevealed, onClick, onZoom }: FairyC
   };
 
   const style = rarityConfig[fairy.rarity] || rarityConfig.NORMAL;
+  const resolvedIslandName = fairy.island_id
+    ? (ALL_ISLANDS_MASTER_DICTIONARY[String(fairy.island_id)]?.name ||
+       (fairy as { island_name?: string }).island_name ||
+       String(fairy.island_id))
+    : ((fairy as { island_name?: string }).island_name || '');
 
   const handleToggleFlip = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -106,7 +112,7 @@ export default function FairyCard({ fairy, isRevealed, onClick, onZoom }: FairyC
           {/* フッター */}
           <div className="h-10 bg-slate-950 flex items-center justify-between px-2.5 text-center border-t border-slate-800/80">
             <span className="text-[10px] text-slate-300 truncate max-w-[110px] sm:max-w-[130px]">
-              {isRevealed ? fairy.theme : `🔒 ${fairy.island_id ? `${fairy.island_id}の妖精` : '未発見の妖精'}`}
+              {isRevealed ? fairy.theme : `🔒 ${resolvedIslandName ? `「${resolvedIslandName}」の未知なる守護妖精` : '未発見の妖精'}`}
             </span>
             <span className="text-[9px] text-blue-400 font-medium whitespace-nowrap flex items-center gap-0.5">
               <span>詳細</span>
@@ -144,7 +150,7 @@ export default function FairyCard({ fairy, isRevealed, onClick, onZoom }: FairyC
                {isRevealed ? fairy.name : '？？？（未発見）'}
              </h3>
              <p className="text-[10px] text-blue-400 font-medium mb-1.5 truncate max-w-full">
-               {isRevealed ? fairy.theme : `${fairy.island_id || '離島'}に眠る守護精霊`}
+               {isRevealed ? fairy.theme : `${resolvedIslandName || '離島'}に眠る守護精霊`}
              </p>
              <div className="w-full h-px bg-slate-800 mb-1.5"></div>
              
@@ -153,7 +159,7 @@ export default function FairyCard({ fairy, isRevealed, onClick, onZoom }: FairyC
                <p className="text-[10px] text-slate-200 leading-relaxed">
                  {isRevealed
                    ? fairy.description
-                   : `この妖精は未発見です。${fairy.island_id ? `「${fairy.island_id}」` : '該当の島'}を訪れてチェックインまたは到達証明を発行することで、真の姿と生態が図鑑にアンロックされます。`}
+                   : `この妖精は未発見です。${resolvedIslandName ? `「${resolvedIslandName}」` : '該当の島'}を訪れてチェックインまたは到達証明を発行することで、真の姿と生態が図鑑にアンロックされます。`}
                </p>
              </div>
           </div>

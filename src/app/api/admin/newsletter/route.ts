@@ -3,6 +3,8 @@ import { createClient } from '@supabase/supabase-js';
 import { getAuthUser, isSuperAdmin } from '@/lib/adminAuth';
 import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
+export const maxDuration = 60;
+
 function getSupabaseAdmin() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -15,40 +17,44 @@ function getSupabaseAdmin() {
 }
 
 export async function GET(request: NextRequest) {
-  const user = await getAuthUser(request);
-  if (!user) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-  }
-  if (!isSuperAdmin(user)) {
-    return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
-  }
+  try {
+    const user = await getAuthUser(request);
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    if (!isSuperAdmin(user)) {
+      return NextResponse.json({ error: '最高管理者権限が必要です' }, { status: 403 });
+    }
 
-  const supabase = getSupabaseAdmin();
-  if (!supabase) {
-    return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です' }, { status: 503 });
+    const supabase = getSupabaseAdmin();
+    if (!supabase) {
+      return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です' }, { status: 503 });
+    }
+
+    const [codesRes, historyRes] = await Promise.all([
+      supabase.from('app_promo_codes').select('id, code, reward_amount').order('created_at', { ascending: false }),
+      supabase.from('newsletters').select('*, app_promo_codes(code)').order('sent_at', { ascending: false }).limit(10),
+    ]);
+
+    let promoCodes = !codesRes.error && Array.isArray(codesRes.data) ? codesRes.data : null;
+    if (!promoCodes) {
+      const fbCodes = await getFallbackJson<any[]>('fallback_promo_codes', []);
+      promoCodes = Array.isArray(fbCodes) ? fbCodes : [];
+    }
+
+    let history = !historyRes.error && Array.isArray(historyRes.data) ? historyRes.data : null;
+    if (!history) {
+      const fbHistory = await getFallbackJson<any[]>('fallback_newsletters', []);
+      history = (Array.isArray(fbHistory) ? fbHistory : []).slice(0, 10);
+    }
+
+    return NextResponse.json({
+      promoCodes,
+      history,
+    });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || 'Internal Server Error' }, { status: 500 });
   }
-
-  const [codesRes, historyRes] = await Promise.all([
-    supabase.from('app_promo_codes').select('id, code, reward_amount').order('created_at', { ascending: false }),
-    supabase.from('newsletters').select('*, app_promo_codes(code)').order('sent_at', { ascending: false }).limit(10),
-  ]);
-
-  let promoCodes = !codesRes.error && Array.isArray(codesRes.data) ? codesRes.data : null;
-  if (!promoCodes) {
-    const fbCodes = await getFallbackJson<any[]>('fallback_promo_codes', []);
-    promoCodes = Array.isArray(fbCodes) ? fbCodes : [];
-  }
-
-  let history = !historyRes.error && Array.isArray(historyRes.data) ? historyRes.data : null;
-  if (!history) {
-    const fbHistory = await getFallbackJson<any[]>('fallback_newsletters', []);
-    history = (Array.isArray(fbHistory) ? fbHistory : []).slice(0, 10);
-  }
-
-  return NextResponse.json({
-    promoCodes,
-    history,
-  });
 }
 
 export async function POST(request: NextRequest) {
@@ -70,7 +76,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'SUPABASE_SERVICE_ROLE_KEY が未設定です' }, { status: 503 });
     }
 
-    const { subject, body, targetTier, promoCodeId } = await request.json();
+    let reqBody: any;
+    try {
+      reqBody = await request.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const { subject, body, targetTier, promoCodeId } = reqBody || {};
 
     if (!subject || !body || !targetTier) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -122,27 +135,37 @@ export async function POST(request: NextRequest) {
     for (let i = 0; i < emails.length; i += BATCH_SIZE) {
       const batch = emails.slice(i, i + BATCH_SIZE);
 
-      const resendRes = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${resendApiKey}`,
-        },
-        body: JSON.stringify({
-          from: fromEmail,
-          to: fromEmail, // Send to self, BCC to users to protect privacy
-          bcc: batch,
-          subject,
-          text: body,
-        }),
-      });
+      try {
+        const resendRes = await fetch('https://api.resend.com/emails', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${resendApiKey}`,
+          },
+          body: JSON.stringify({
+            from: fromEmail,
+            to: fromEmail, // Send to self, BCC to users to protect privacy
+            bcc: batch,
+            subject,
+            text: body,
+          }),
+          signal: AbortSignal.timeout(8000),
+        });
 
-      if (!resendRes.ok) {
-        const err = await resendRes.json().catch(() => ({ message: resendRes.statusText }));
-        lastResendError = err?.message || err?.error || `Resend HTTP ${resendRes.status}`;
-        console.error(`Resend API Error on batch ${i}:`, err);
-      } else {
-        sentCount += batch.length;
+        if (!resendRes.ok) {
+          const errText = await resendRes.text().catch(() => resendRes.statusText);
+          let parsedErr: any = null;
+          try {
+            parsedErr = JSON.parse(errText);
+          } catch {}
+          lastResendError = parsedErr?.message || parsedErr?.error || errText || `Resend HTTP ${resendRes.status}`;
+          console.error(`Resend API Error on batch ${i}:`, lastResendError);
+        } else {
+          sentCount += batch.length;
+        }
+      } catch (fetchErr: any) {
+        lastResendError = fetchErr?.message || 'Resend timeout';
+        console.error(`Resend fetch timeout/error on batch ${i}:`, fetchErr);
       }
     }
 

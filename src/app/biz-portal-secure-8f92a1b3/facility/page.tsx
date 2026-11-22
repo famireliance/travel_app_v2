@@ -6,7 +6,7 @@ import {
   Loader2, Save, Image as ImageIcon, MapPin, CheckCircle, Info, 
   ExternalLink, Sparkles, BedDouble, ShieldCheck, Plus, Trash2, Eye,
   MessageCircle, Globe, Mail, Clock, Award, ArrowUp, ArrowDown, Tag,
-  Printer, Wifi, Phone
+  Printer, Wifi, Phone, Copy, Check
 } from 'lucide-react';
 import { getPublicStayUrl } from '@/lib/bizPortalPath';
 
@@ -60,6 +60,18 @@ export default function BizPortalFacility() {
   const [extraPhotoUrls, setExtraPhotoUrls] = useState<string[]>([]);
   const [catchphrases, setCatchphrases] = useState<string[]>(['']);
   const [plans, setPlans] = useState<PlanItem[]>(DEFAULT_PLANS);
+  const [copiedWifiField, setCopiedWifiField] = useState<'ssid' | 'password' | null>(null);
+
+  const handleCopyWifiValue = async (field: 'ssid' | 'password', value: string) => {
+    if (!value) return;
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedWifiField(field);
+      setTimeout(() => setCopiedWifiField(null), 2000);
+    } catch {
+      // ignore clipboard failures
+    }
+  };
 
   const [formData, setFormData] = useState({
     name: '',
@@ -626,41 +638,51 @@ export default function BizPortalFacility() {
                   <span>客室フリーWi-Fi</span>
                 </div>
                 <h5 className="text-[11px] font-black text-slate-800">
-                  スマホをかざすだけで接続！
+                  Wi-Fi 接続情報（館内専用・外部送信なし）
                 </h5>
               </div>
 
-              {/* QRコード画像 */}
-              <div className="p-2 bg-slate-50 rounded-lg border border-slate-200 inline-block">
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=300x300&margin=8&data=${encodeURIComponent(
-                    !formData.wifi_password
-                      ? `WIFI:T:nopass;S:${formData.wifi_ssid || 'HOTEL_WIFI'};;`
-                      : `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password};;`
-                  )}`}
-                  alt="Wi-Fi接続用QRコードプレビュー"
-                  className="w-28 h-28 object-contain mx-auto"
-                />
+              {/* ローカルWi-Fi認証情報プレビュー ＆ ワンタップコピー */}
+              <div className="p-3 bg-emerald-50/70 rounded-xl border border-emerald-200 space-y-2 text-left">
+                <div className="bg-white rounded-lg border border-emerald-100 p-2 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <span className="text-[9px] text-slate-400 font-bold block uppercase">SSID (ネットワーク名)</span>
+                    <span className="font-mono font-bold text-xs text-slate-900 truncate block">
+                      {formData.wifi_ssid || '（未設定）'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!formData.wifi_ssid}
+                    onClick={() => handleCopyWifiValue('ssid', formData.wifi_ssid)}
+                    className="px-2 py-1 rounded-md bg-slate-100 hover:bg-emerald-100 text-slate-700 text-[10px] font-bold flex items-center gap-1 shrink-0 disabled:opacity-40 transition-colors"
+                  >
+                    {copiedWifiField === 'ssid' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedWifiField === 'ssid' ? 'コピー済' : 'コピー'}</span>
+                  </button>
+                </div>
+
+                <div className="bg-white rounded-lg border border-emerald-100 p-2 flex items-center justify-between gap-2">
+                  <div className="min-w-0">
+                    <span className="text-[9px] text-slate-400 font-bold block uppercase">PASSWORD (暗号化キー)</span>
+                    <span className="font-mono font-bold text-xs text-emerald-800 truncate block">
+                      {formData.wifi_password || '（パスワードなし）'}
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={!formData.wifi_password}
+                    onClick={() => handleCopyWifiValue('password', formData.wifi_password)}
+                    className="px-2 py-1 rounded-md bg-slate-100 hover:bg-emerald-100 text-slate-700 text-[10px] font-bold flex items-center gap-1 shrink-0 disabled:opacity-40 transition-colors"
+                  >
+                    {copiedWifiField === 'password' ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                    <span>{copiedWifiField === 'password' ? 'コピー済' : 'コピー'}</span>
+                  </button>
+                </div>
               </div>
 
-              {/* SSID & パスワード */}
-              <div className="p-2 bg-slate-100 rounded-lg text-[9px] font-mono space-y-0.5 text-left">
-                <div>
-                  <span className="text-slate-400 font-bold block">SSID:</span>
-                  <span className="font-bold text-slate-800 truncate block">
-                    {formData.wifi_ssid || '（未設定）'}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-slate-400 font-bold block">PASSWORD:</span>
-                  <span className="font-bold text-slate-800 truncate block">
-                    {formData.wifi_password || '（パスワードなし）'}
-                  </span>
-                </div>
-              </div>
-
-              <p className="text-[8px] text-slate-400 leading-tight">
-                iPhone / Android標準カメラをかざすと接続通知が出ます
+              <p className="text-[8px] text-slate-500 leading-tight">
+                🔒 セキュリティ保護のためパスワードは外部サーバーへ一切送信されません
               </p>
             </div>
 
@@ -1233,55 +1255,46 @@ export default function BizPortalFacility() {
           </p>
         </div>
 
-        {/* POP Center QR & Guide */}
-        <div className="my-auto py-6 flex flex-col items-center justify-center text-center space-y-5">
+        {/* POP Center Local Wi-Fi Guide */}
+        <div className="my-auto py-6 flex flex-col items-center justify-center text-center space-y-6">
           <div className="space-y-1">
-            <span className="text-sm font-bold text-emerald-700 tracking-wider">スマホをかざすだけ！手入力不要</span>
+            <span className="text-sm font-bold text-emerald-700 tracking-wider">客室専用フリーWi-Fiのご案内</span>
             <h2 className="text-3xl font-black text-slate-900">
-              かんたんWi-Fi接続
+              Wi-Fi 接続情報
             </h2>
           </div>
 
-          {/* 超特大QRコード */}
-          <div className="p-4 bg-white rounded-3xl border-4 border-emerald-600 shadow-xl inline-block relative">
-            <img
-              src={`https://api.qrserver.com/v1/create-qr-code/?size=600x600&margin=12&data=${encodeURIComponent(
-                !formData.wifi_password
-                  ? `WIFI:T:nopass;S:${formData.wifi_ssid || 'HOTEL_WIFI'};;`
-                  : `WIFI:S:${formData.wifi_ssid || 'HOTEL_WIFI'};T:WPA;P:${formData.wifi_password};;`
-              )}`}
-              alt="Wi-Fi接続用QRコード"
-              className="w-64 h-64 object-contain"
-            />
-          </div>
+          <div className="w-full max-w-lg p-8 bg-emerald-50/50 rounded-3xl border-4 border-emerald-600 shadow-sm text-left space-y-5">
+            <div className="flex items-center gap-3 border-b border-emerald-200 pb-3">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-600 text-white flex items-center justify-center shrink-0">
+                <Wifi className="w-7 h-7" />
+              </div>
+              <div>
+                <span className="text-xs font-bold text-emerald-700 block">STEP 1: スマートフォン・PCのWi-Fi設定を開く</span>
+                <span className="text-xs text-slate-600">以下のSSIDを選択し、パスワードを入力してください。</span>
+              </div>
+            </div>
 
-          <div className="max-w-md space-y-2">
-            <p className="text-sm font-bold text-slate-800">
-              📷 スマートフォンの標準カメラをかざしてください
-            </p>
-            <p className="text-xs text-slate-600 leading-relaxed">
-              iPhone・Androidともにカメラを向けると「ネットワークに接続」と通知が出ます。<br />
-              通知をタップして「接続」を押すだけで、パスワードの入力なしで即座に接続されます。
-            </p>
-          </div>
-
-          {/* 手動接続用SSID・パスワード */}
-          <div className="w-full max-w-md p-4 bg-slate-50 border-2 border-slate-200 rounded-2xl text-left space-y-2 font-mono">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block font-sans">
-              手動で接続される場合（PC・ゲーム機等）
-            </span>
-            <div className="flex items-center justify-between border-b border-slate-200 pb-1.5">
-              <span className="text-xs text-slate-500 font-bold font-sans">SSID（ネットワーク名）:</span>
-              <span className="text-sm font-black text-slate-900 select-all">
+            <div className="bg-white p-4 rounded-2xl border-2 border-slate-200 space-y-1">
+              <span className="text-xs text-slate-500 font-bold block">① ネットワーク名（SSID）</span>
+              <p className="text-2xl font-mono font-black text-slate-900 tracking-wide break-all">
                 {formData.wifi_ssid || '（未設定）'}
-              </span>
+              </p>
             </div>
-            <div className="flex items-center justify-between pt-0.5">
-              <span className="text-xs text-slate-500 font-bold font-sans">パスワード（暗証キー）:</span>
-              <span className="text-base font-black text-emerald-800 select-all">
+
+            <div className="bg-white p-4 rounded-2xl border-2 border-emerald-300 space-y-1">
+              <span className="text-xs text-slate-500 font-bold block">② パスワード（暗号化キー / WPA）</span>
+              <p className="text-2xl font-mono font-black text-emerald-800 tracking-wide break-all">
                 {formData.wifi_password || '（パスワードなし）'}
-              </span>
+              </p>
             </div>
+          </div>
+
+          <div className="max-w-md space-y-1">
+            <p className="text-xs text-slate-600 leading-relaxed">
+              スマートフォン・タブレット・ノートPC等から無料でご利用いただけます。<br />
+              大文字・小文字を区別してご入力ください。
+            </p>
           </div>
         </div>
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
+import imageCompression from 'browser-image-compression';
 import {
   Sparkles,
   Plus,
@@ -65,9 +66,9 @@ export default function FairyManagement({ password }: { password: string }) {
       try {
         data = JSON.parse(rawText);
       } catch {
-        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+        throw new Error('通信またはサーバー処理に失敗しました');
       }
-      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
+      if (!res.ok) throw new Error(data.error || '通信またはサーバー処理に失敗しました');
       setFairies(data.data || []);
     } catch (err: any) {
       toast.error(`妖精データの取得に失敗しました: ${err.message}`);
@@ -126,9 +127,9 @@ export default function FairyManagement({ password }: { password: string }) {
       try {
         data = JSON.parse(rawText);
       } catch {
-        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+        throw new Error('通信またはサーバー処理に失敗しました');
       }
-      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
+      if (!res.ok) throw new Error(data.error || '通信またはサーバー処理に失敗しました');
       toast.success(data.message || '保存しました');
       fetchFairies();
       setSelectedFairy(null);
@@ -152,9 +153,9 @@ export default function FairyManagement({ password }: { password: string }) {
       try {
         data = JSON.parse(rawText);
       } catch {
-        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+        throw new Error('通信またはサーバー処理に失敗しました');
       }
-      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
+      if (!res.ok) throw new Error(data.error || '通信またはサーバー処理に失敗しました');
       toast.success(data.message || '削除しました');
       if (selectedFairy?.id === fairy.id) setSelectedFairy(null);
       fetchFairies();
@@ -224,10 +225,27 @@ export default function FairyManagement({ password }: { password: string }) {
     if (!file) return;
 
     setUploading(true);
-    const toastId = toast.loading('妖精画像をアップロード中...');
+    const toastId = toast.loading('妖精画像を圧縮・アップロード中...');
     try {
+      let uploadFile: File = file;
+      if (file.type !== 'image/gif') {
+        try {
+          const compressed: Blob = await imageCompression(file, {
+            maxSizeMB: 1.2,
+            maxWidthOrHeight: 1600,
+            useWebWorker: false,
+          });
+          uploadFile =
+            compressed instanceof File
+              ? compressed
+              : new File([compressed], file.name, { type: compressed.type || file.type });
+        } catch {
+          uploadFile = file;
+        }
+      }
+
       const body = new FormData();
-      body.append('file', file);
+      body.append('file', uploadFile);
       body.append('bucket', 'fairies');
 
       const res = await fetch('/api/admin/upload', {
@@ -240,9 +258,9 @@ export default function FairyManagement({ password }: { password: string }) {
       try {
         data = JSON.parse(rawText);
       } catch {
-        throw new Error('AIサーバーが混雑しています。もう一度お試しください。');
+        throw new Error('通信またはサーバー処理に失敗しました');
       }
-      if (!res.ok) throw new Error(data.error || 'AI生成に失敗しました');
+      if (!res.ok) throw new Error(data.error || '通信またはサーバー処理に失敗しました');
 
       setFormData(prev => ({ ...prev, custom_photo_url: data.url }));
       toast.success('画像をアップロードしました', { id: toastId });
@@ -250,6 +268,7 @@ export default function FairyManagement({ password }: { password: string }) {
       toast.error(`アップロード失敗: ${err.message}`, { id: toastId });
     } finally {
       setUploading(false);
+      e.target.value = '';
     }
   };
 

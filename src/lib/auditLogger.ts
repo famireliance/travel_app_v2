@@ -67,7 +67,7 @@ async function persistFallbackAuditLog(newLog: AuditLogEntry): Promise<void> {
 
 export async function logAuditEvent(entry: Omit<AuditLogEntry, 'id' | 'created_at'>): Promise<AuditLogEntry> {
   const newLog: AuditLogEntry = {
-    id: `log_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`,
+    id: crypto.randomUUID(),
     created_at: new Date().toISOString(),
     ...entry
   };
@@ -78,19 +78,24 @@ export async function logAuditEvent(entry: Omit<AuditLogEntry, 'id' | 'created_a
   }
 
   try {
-    const { error } = await client.from('admin_audit_logs').insert([
-      {
-        id: newLog.id,
-        actor: newLog.actor,
-        client: newLog.client,
-        action: newLog.action,
-        target: newLog.target,
-        diff: newLog.diff,
-        created_at: newLog.created_at
-      }
-    ]);
+    const { data, error } = await client
+      .from('audit_logs')
+      .insert([
+        {
+          actor: newLog.actor,
+          client: newLog.client,
+          action: newLog.action,
+          target: newLog.target,
+          diff: newLog.diff,
+          created_at: newLog.created_at
+        }
+      ])
+      .select('id')
+      .maybeSingle();
     if (error) {
       await persistFallbackAuditLog(newLog);
+    } else if (data?.id) {
+      newLog.id = data.id;
     }
   } catch {
     await persistFallbackAuditLog(newLog);
@@ -188,7 +193,7 @@ export async function getAuditLogs(options?: {
 
   try {
     const { data, error } = await client
-      .from('admin_audit_logs')
+      .from('audit_logs')
       .select('*')
       .order('created_at', { ascending: false })
       .limit(MAX_FALLBACK_LOGS);

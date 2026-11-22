@@ -28,7 +28,7 @@ interface TimelineProfile {
 }
 
 export default function TimelineClient() {
-  const { updateStatus } = useTravel();
+  const { updateStatus, islandStatuses } = useTravel();
   const [diaries, setDiaries] = useState<TimelineDiary[]>([]);
   const [loading, setLoading] = useState(true);
   const [profiles, setProfiles] = useState<Record<string, TimelineProfile>>({});
@@ -41,7 +41,7 @@ export default function TimelineClient() {
 
   const filteredDiaries = useMemo(() => {
     return diaries.filter(diary => {
-      const island = ALL_ISLANDS_MASTER_DICTIONARY[diary.island_id];
+      const island = ALL_ISLANDS_MASTER_DICTIONARY[String(diary.island_id)];
       if (selectedPrefecture && island?.prefecture !== selectedPrefecture) return false;
       if (selectedStyle) {
         if (selectedStyle === 'カップル') {
@@ -76,21 +76,25 @@ export default function TimelineClient() {
 
       setDiaries(diariesData);
 
-      // Collect unique user_ids to fetch profiles
-      const userIds = [...new Set(diariesData.map(d => d.user_id))];
+      // Collect unique user_ids to fetch public nicknames safely via server API
+      const uniqueUserIds = Array.from(new Set(diariesData.map(d => d.user_id).filter(Boolean)));
       
-      if (userIds.length > 0) {
-        const { data: profilesData, error: profilesError } = await supabase
-          .from('user_profiles')
-          .select('*')
-          .in('id', userIds);
-
-        if (!profilesError && profilesData) {
-          const profileMap: Record<string, TimelineProfile> = {};
-          profilesData.forEach(p => {
-            profileMap[p.id] = p;
-          });
-          setProfiles(profileMap);
+      if (uniqueUserIds.length > 0) {
+        try {
+          const res = await fetch(`/api/public-profiles?ids=${encodeURIComponent(uniqueUserIds.join(','))}`);
+          const rawText = await res.text();
+          const json = rawText ? JSON.parse(rawText) : null;
+          if (res.ok && json?.profiles && typeof json.profiles === 'object') {
+            const profileMap: Record<string, TimelineProfile> = {};
+            Object.entries(json.profiles as Record<string, { nickname?: string; avatar_url?: string }>).forEach(([uid, info]) => {
+              if (info?.nickname) {
+                profileMap[uid] = { id: uid, nickname: info.nickname, avatar_url: info.avatar_url };
+              }
+            });
+            setProfiles(profileMap);
+          }
+        } catch (profileErr) {
+          console.warn('Failed to fetch public profiles:', profileErr);
         }
       }
     } catch (error) {
@@ -165,9 +169,12 @@ export default function TimelineClient() {
           <div className="columns-1 md:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
             <AnimatePresence>
               {filteredDiaries.map((diary, index) => {
-                const island = ALL_ISLANDS_MASTER_DICTIONARY[diary.island_id];
+                const island = ALL_ISLANDS_MASTER_DICTIONARY[String(diary.island_id)];
                 const profile = profiles[diary.user_id];
                 const hasPhoto = !!diary.photo_url;
+                const currentStatus = islandStatuses[String(diary.island_id)];
+                const isVisited = currentStatus === 'visited' || currentStatus === 'verified_visited';
+                const isPlanning = currentStatus === 'planning';
                 
                 return (
                   <motion.div
@@ -245,7 +252,9 @@ export default function TimelineClient() {
                                   if (res.status === 401) {
                                     toast.error('通報にはログインが必要です');
                                   } else if (!res.ok) {
-                                    const errData = await res.json().catch(() => ({}));
+                                    const rawErr = await res.text().catch(() => '');
+                                    let errData: { error?: string } = {};
+                                    try { errData = rawErr ? JSON.parse(rawErr) : {}; } catch {}
                                     toast.error(errData.error || '通報の送信に失敗しました');
                                   } else {
                                     toast.success('通報を受理しました。運営チームで確認を行います。');
@@ -261,10 +270,33 @@ export default function TimelineClient() {
                             <Flag className="w-3 h-3" />
                           </button>
                           <button 
-                            onClick={(e) => { e.preventDefault(); e.stopPropagation(); updateStatus(diary.island_id, 'planning'); }}
-                            className="bg-rose-50 text-rose-500 hover:bg-rose-100 px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-colors pointer-events-auto"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              const targetKey = String(diary.island_id);
+                              const islandLabel = island ? `「${island.name}」` : 'この島';
+                              if (isVisited) {
+                                toast(`${islandLabel}はすでに到達済みです！`, { icon: '🏝️' });
+                                return;
+                              }
+                              if (isPlanning) {
+                                updateStatus(targetKey, 'none');
+                                toast(`${islandLabel}を「行きたい」リストから解除しました`, { icon: '🤍' });
+                              } else {
+                                updateStatus(targetKey, 'planning');
+                                toast.success(`${islandLabel}を「行きたい」リストに保存しました！`, { icon: '💖' });
+                              }
+                            }}
+                            className={`px-3 py-1.5 rounded-full text-[10px] font-bold flex items-center gap-1 transition-colors pointer-events-auto ${
+                              isPlanning
+                                ? 'bg-rose-500 text-white hover:bg-rose-600 shadow-sm'
+                                : isVisited
+                                ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100'
+                                : 'bg-rose-50 text-rose-500 hover:bg-rose-100'
+                            }`}
                           >
-                            <Heart className="w-3 h-3" /> 行きたい
+                            <Heart className={`w-3 h-3 ${isPlanning ? 'fill-current' : ''}`} />
+                            {isPlanning ? '行きたい済' : isVisited ? '到達済' : '行きたい'}
                           </button>
                           <span className="text-[10px] text-slate-400 font-mono pointer-events-auto">
                             {new Date(diary.created_at).toLocaleDateString('ja-JP')}

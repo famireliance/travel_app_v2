@@ -15,10 +15,16 @@ export default function AuthReminderBanner() {
 
   React.useEffect(() => {
     if (typeof window !== 'undefined') {
-      const loggedInBefore = localStorage.getItem('kiratabi_has_logged_in_before') === 'true';
-      setHasLoggedInBefore(loggedInBefore);
+      try {
+        const loggedInBefore = localStorage.getItem('kiratabi_has_logged_in_before') === 'true';
+        setHasLoggedInBefore(loggedInBefore);
+      } catch {
+        // Ignore storage access errors in private browsing / WebViews
+      }
     }
   }, []);
+
+  const isGlobePage = pathname === '/globe' || pathname?.startsWith('/globe/');
 
   const isRestrictedPortal =
     pathname?.startsWith('/kira-system-panel-9f2') ||
@@ -28,8 +34,8 @@ export default function AuthReminderBanner() {
         window.location.hostname.startsWith('partner.') ||
         window.location.hostname.startsWith('biz.')));
 
-  // If user is logged in, banner was dismissed, on map page, or on admin/B2B portal, don't show
-  if (!isDataLoaded || user || isDismissed || pathname === '/map' || isRestrictedPortal) return null;
+  // If user is logged in, banner was dismissed, on map/globe page, or on admin/B2B portal, don't show
+  if (!isDataLoaded || user || isDismissed || pathname === '/map' || isGlobePage || isRestrictedPortal) return null;
 
   return (
     <>
@@ -45,7 +51,7 @@ export default function AuthReminderBanner() {
                 </p>
               ) : (
                 <p className="text-xs md:text-sm font-medium leading-tight">
-                  無料ユーザー登録で、妖精コレクションをクラウド保存！ <strong className="text-yellow-300">今なら公式証明書が3ヶ月無料！</strong>
+                  無料登録で到達記録・妖精図鑑をクラウド永久保存！<strong className="text-yellow-300">デジタル到達証も発行可能</strong>
                 </p>
               )}
             </div>

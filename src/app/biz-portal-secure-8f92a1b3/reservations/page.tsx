@@ -41,6 +41,7 @@ export default function BizPortalReservations() {
     reason?: string;
   } | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState('');
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   // ゲスト情報パースヘルパー（氏名・電話番号・メールアドレス）
   const parseGuestContact = (res: any) => {
@@ -203,7 +204,8 @@ export default function BizPortalReservations() {
     status: string,
     reason?: string,
     message?: string
-  ) => {
+  ): Promise<boolean> => {
+    setUpdatingStatus(true);
     try {
       const {
         data: { session },
@@ -211,7 +213,7 @@ export default function BizPortalReservations() {
 
       if (!session) {
         alert('セッションが切れました。再ログインしてください。');
-        return;
+        return false;
       }
 
       const payload: Record<string, any> = { id, status };
@@ -232,12 +234,17 @@ export default function BizPortalReservations() {
       const json = await resp.json().catch(() => ({}));
       if (resp.ok && json.success) {
         setReplyModal(null);
-        fetchReservations();
+        await fetchReservations();
+        return true;
       } else {
         alert('更新に失敗しました: ' + (json.error || resp.statusText));
+        return false;
       }
     } catch (err: any) {
       alert('更新に失敗しました: ' + (err.message || '通信エラー'));
+      return false;
+    } finally {
+      setUpdatingStatus(false);
     }
   };
 
@@ -787,22 +794,25 @@ export default function BizPortalReservations() {
               <div className="pt-2 border-t border-slate-100 space-y-3">
                 <div className="flex flex-col gap-2.5">
                   <button
-                    onClick={() => {
-                      const res = reservations.find((r) => r.id === replyModal?.resId);
+                    disabled={updatingStatus}
+                    onClick={async () => {
+                      if (!replyModal) return;
+                      const res = reservations.find((r) => r.id === replyModal.resId);
                       const contact = res ? parseGuestContact(res) : { email: '' };
-                      if (contact.email) {
-                        window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(
-                          `【${accName || 'KIRATABI'}】宿泊予約についてのご案内`
-                        )}&body=${encodeURIComponent(selectedTemplate)}`;
-                      }
-                      executeStatusUpdate(
+                      const templateText = selectedTemplate;
+                      const ok = await executeStatusUpdate(
                         replyModal.resId,
                         replyModal.status,
                         replyModal.reason,
-                        selectedTemplate
+                        templateText
                       );
+                      if (ok && contact.email) {
+                        window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(
+                          `【${accName || 'KIRATABI'}】宿泊予約についてのご案内`
+                        )}&body=${encodeURIComponent(templateText)}`;
+                      }
                     }}
-                    className={`w-full py-3.5 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 ${
+                    className={`w-full py-3.5 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
                       replyModal.status === 'confirmed'
                         ? 'bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20'
                         : 'bg-rose-600 hover:bg-rose-700 shadow-rose-600/20'
@@ -812,32 +822,39 @@ export default function BizPortalReservations() {
                   </button>
 
                   <button
-                    onClick={() => {
-                      window.location.href = `line://msg/text/${encodeURIComponent(
-                        selectedTemplate
-                      )}`;
-                      executeStatusUpdate(
+                    disabled={updatingStatus}
+                    onClick={async () => {
+                      if (!replyModal) return;
+                      const templateText = selectedTemplate;
+                      const ok = await executeStatusUpdate(
                         replyModal.resId,
                         replyModal.status,
                         replyModal.reason,
-                        selectedTemplate
+                        templateText
                       );
+                      if (ok) {
+                        window.location.href = `line://msg/text/${encodeURIComponent(
+                          templateText
+                        )}`;
+                      }
                     }}
-                    className="w-full py-2.5 bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs rounded-xl shadow-sm flex items-center justify-center gap-2 transition-colors"
+                    className="w-full py-2.5 bg-[#06C755] hover:bg-[#05b34c] text-white font-bold text-xs rounded-xl shadow-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
                   >
                     💬 LINEアプリを開いてステータス更新
                   </button>
 
                   <button
-                    onClick={() => {
-                      executeStatusUpdate(
+                    disabled={updatingStatus}
+                    onClick={async () => {
+                      if (!replyModal) return;
+                      await executeStatusUpdate(
                         replyModal.resId,
                         replyModal.status,
                         replyModal.reason,
                         selectedTemplate
                       );
                     }}
-                    className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors"
+                    className="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-xl transition-colors disabled:opacity-50"
                   >
                     外部アプリを起動せずステータスのみ更新
                   </button>

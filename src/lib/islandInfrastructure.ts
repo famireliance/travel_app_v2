@@ -237,7 +237,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 屋久島 (鹿児島県)
-  '457': {
+  '340': {
     has_atm: true,
     atm_status: 'あり',
     atm_desc: '鹿児島銀行、JA種子屋久、郵便局（各集落）ATMあり。',
@@ -260,7 +260,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 佐渡島 (新潟県)
-  '355': {
+  '76': {
     has_atm: true,
     atm_status: 'あり',
     atm_desc: '第四北越銀行、JA佐渡、郵便局、ローソン等コンビニATM多数あり。',
@@ -283,7 +283,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 淡路島 (兵庫県)
-  '372': {
+  '114': {
     has_atm: true,
     atm_status: 'あり',
     atm_desc: '三井住友銀行、みなと銀行、郵便局、セブンイレブン・ローソン等コンビニATM多数。',
@@ -304,7 +304,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 小豆島 (香川県)
-  '389': {
+  '197': {
     has_atm: true,
     atm_status: 'あり',
     atm_desc: '百十四銀行、香川銀行、郵便局、セブンイレブン等コンビニATMあり。',
@@ -392,7 +392,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 八丈島 (東京都)
-  '57': {
+  '56': {
     has_atm: true,
     atm_status: 'あり',
     atm_desc: 'みずほ銀行ATM、七島信用組合、八丈島郵便局、スーパーあさぬま等にATM多数。',
@@ -436,7 +436,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 奄美大島 (鹿児島県)
-  '185': {
+  '352': {
     has_atm: true,
     atm_status: 'あり',
     atm_desc: '鹿児島銀行、奄美大島信用金庫、郵便局、ファミリーマート設置ATM多数あり。',
@@ -459,7 +459,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 友ヶ島 (和歌山県・無人島)
-  '701': {
+  '125': {
     has_atm: false,
     atm_status: 'なし',
     atm_desc: '島内にATMや金融機関は一切ありません。乗船前の加太港周辺で準備してください。',
@@ -483,7 +483,7 @@ const VERIFIED_INFRASTRUCTURE_MAP: Record<string, Partial<IslandInfrastructureIn
   },
 
   // 猿島 (神奈川県・無人島)
-  '702': {
+  '74': {
     has_atm: false,
     atm_status: 'なし',
     atm_desc: '島内にATMはありません。三笠桟橋（横須賀側）でご用意ください。',
@@ -516,9 +516,9 @@ export function getIslandInfrastructure(island: any): IslandInfrastructureInfo {
   }
 
   const islandId = String(island.id || '');
-  const islandName = String(island.name || '');
+  const islandName = String(island.name || '').trim();
 
-  // 1. 完全一致（ID）または個別検証辞書から引当
+  // 1. 完全一致（ID）から引当
   if (VERIFIED_INFRASTRUCTURE_MAP[islandId]) {
     return {
       ...createDefaultFallback(island.is_uninhabited === true),
@@ -526,30 +526,31 @@ export function getIslandInfrastructure(island: any): IslandInfrastructureInfo {
     };
   }
 
-  // 2. 島名による部分一致引当
-  const verifiedKey = Object.keys(VERIFIED_INFRASTRUCTURE_MAP).find(k => {
-    const item = VERIFIED_INFRASTRUCTURE_MAP[k];
-    return islandName.includes(item.atm_desc?.substring(0, 3) || 'xxx') || 
-           (k === '58' && islandName.includes('青ヶ島')) ||
-           (k === '63' && islandName.includes('父島')) ||
-           (k === '64' && islandName.includes('母島')) ||
-           (k === '392' && islandName.includes('石垣')) ||
-           (k === '393' && islandName.includes('竹富')) ||
-           (k === '396' && islandName.includes('西表')) ||
-           (k === '400' && islandName.includes('波照間')) ||
-           (k === '401' && islandName.includes('与那国')) ||
-           (k === '386' && islandName.includes('宮古')) ||
-           (k === '457' && islandName.includes('屋久島')) ||
-           (k === '355' && islandName.includes('佐渡')) ||
-           (k === '372' && islandName.includes('淡路')) ||
-           (k === '389' && islandName.includes('小豆')) ||
-           (k === '1' && islandName.includes('礼文')) ||
-           (k === '2' && islandName.includes('利尻')) ||
-           (k === '49' && islandName.includes('大島')) ||
-           (k === '57' && islandName.includes('八丈')) ||
-           (k === '52' && islandName.includes('式根')) ||
-           (k === '185' && islandName.includes('奄美大島'));
-  });
+  // 2. 島名による厳密一致引当（部分文字列による誤一致を完全に防止）
+  const verifiedKey = (() => {
+    if (islandName === '青ヶ島') return '58';
+    if (islandName === '父島' || islandName.startsWith('父島（')) return '63';
+    if (islandName === '母島' || islandName.startsWith('母島（')) return '64';
+    if (islandName === '石垣島') return '392';
+    if (islandName === '竹富島') return '393';
+    if (islandName === '西表島') return '396';
+    if (islandName === '波照間島') return '400';
+    if (islandName === '与那国島') return '401';
+    if (islandName === '宮古島') return '386';
+    if (islandName === '屋久島') return '340';
+    if (islandName === '佐渡島' || islandName === '佐渡ヶ島') return '76';
+    if (islandName === '淡路島') return '114';
+    if (islandName === '小豆島') return '197';
+    if (islandName === '礼文島') return '1';
+    if (islandName === '利尻島') return '2';
+    if (islandName === '伊豆大島' || (islandName === '大島' && island.prefecture === '東京都')) return '49';
+    if (islandName === '八丈島') return '56';
+    if (islandName === '式根島') return '52';
+    if (islandName === '奄美大島') return '352';
+    if (islandName === '友ヶ島' || islandName.startsWith('友ヶ島（')) return '125';
+    if (islandName === '猿島' && (!island.prefecture || island.prefecture === '神奈川県')) return '74';
+    return undefined;
+  })();
 
   if (verifiedKey && VERIFIED_INFRASTRUCTURE_MAP[verifiedKey]) {
     return {
@@ -564,6 +565,7 @@ export function getIslandInfrastructure(island: any): IslandInfrastructureInfo {
     islandName.includes('沖ノ鳥島') || 
     islandName.includes('南鳥島') || 
     islandName.includes('無人島') ||
+    String(island.description || '').includes('無人島') ||
     island.difficulty === '上級冒険' ||
     (island.population !== undefined && Number(island.population) === 0);
 

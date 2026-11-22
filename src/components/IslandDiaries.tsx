@@ -66,18 +66,21 @@ export default function IslandDiaries({
       }
       
       if (diaryList && diaryList.length > 0) {
-        // 投稿者のニックネームを取得
-        const userIds = Array.from(new Set(diaryList.map(d => d.user_id).filter(Boolean)));
-        let userMap: Record<string, string> = {};
-        if (userIds.length > 0) {
-          const { data: profiles } = await supabase
-            .from('user_profiles')
-            .select('id, nickname')
-            .in('id', userIds);
-          if (profiles) {
-            profiles.forEach(p => {
-              if (p.nickname) userMap[p.id] = p.nickname;
-            });
+        // 投稿者の公開ニックネームをサーバーAPI経由で取得（RLS・PII保護）
+        const uniqueUserIds = Array.from(new Set(diaryList.map(d => d.user_id).filter(Boolean)));
+        const userMap: Record<string, string> = {};
+        if (uniqueUserIds.length > 0) {
+          try {
+            const res = await fetch(`/api/public-profiles?ids=${encodeURIComponent(uniqueUserIds.join(','))}`);
+            const rawText = await res.text();
+            const json = rawText ? JSON.parse(rawText) : null;
+            if (res.ok && json?.profiles && typeof json.profiles === 'object') {
+              Object.entries(json.profiles as Record<string, { nickname?: string }>).forEach(([uid, info]) => {
+                if (info?.nickname) userMap[uid] = info.nickname;
+              });
+            }
+          } catch (profileErr) {
+            console.warn('Failed to fetch public profiles:', profileErr);
           }
         }
 

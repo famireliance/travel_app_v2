@@ -855,7 +855,7 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
             : (facilityData.accommodations || []).filter(isSafePublicAcc);
 
           const ferryBoats = FERRY_BOATS_DICTIONARY[island.id] || FERRY_BOATS_DICTIONARY[island.name] || [];
-          const activities = ACTIVITIES_DICTIONARY[island.id] || ACTIVITIES_DICTIONARY[island.name] || ACTIVITIES_DICTIONARY['392'] || [];
+          const activities = ACTIVITIES_DICTIONARY[island.id] || ACTIVITIES_DICTIONARY[island.name] || [];
           const guideLink = getIslandGuideArticle(island.name);
 
           return (
@@ -2080,10 +2080,13 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
           {island.transport_info && (
             <div className="mt-6 pt-6 border-t border-slate-100">
               <h3 className="text-xs font-bold tracking-widest text-slate-400 mb-3">島内移動・詳細アクセス情報</h3>
-              <div 
-                className="prose prose-sm prose-slate max-w-none text-slate-600 font-serif"
-                dangerouslySetInnerHTML={{ __html: island.transport_info }}
-              />
+              <p className="text-sm text-slate-600 font-serif leading-relaxed whitespace-pre-line">
+                {String(island.transport_info)
+                  .replace(/<br\s*\/?>/gi, '\n')
+                  .replace(/<\/p>/gi, '\n')
+                  .replace(/<[^>]*>/g, '')
+                  .trim()}
+              </p>
             </div>
           )}
         </div>

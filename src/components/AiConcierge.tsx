@@ -70,9 +70,15 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
       if (!res.ok) throw new Error(data?.error || 'おすすめ離島の取得に失敗しました');
 
       // Map AI returned IDs to real local DB objects to prevent hallucination
-      const verifiedPlans = data.plans.map((p: AiPlan) => {
+      const rawPlans = Array.isArray(data?.plans)
+        ? data.plans
+        : Array.isArray(data)
+        ? data
+        : [];
+      const verifiedPlans = rawPlans.map((p: AiPlan) => {
+        if (!p) return null;
         const localData =
-          ALL_ISLANDS_MASTER_DICTIONARY[p.id] ||
+          (p.id != null ? ALL_ISLANDS_MASTER_DICTIONARY[String(p.id)] : undefined) ||
           Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
             (isl) => isl.name === p.name || isl.slug === p.id
           );
@@ -80,7 +86,7 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
           return { ...p, ...localData };
         }
         return null;
-      }).filter(Boolean); // Filter out any hallucinations
+      }).filter(Boolean) as AiPlan[]; // Filter out any hallucinations
 
       setPlans(verifiedPlans);
     } catch (err: unknown) {

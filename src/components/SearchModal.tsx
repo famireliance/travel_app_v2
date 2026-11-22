@@ -277,9 +277,9 @@ export default function SearchModal({ isOpen, onClose, onSelectIsland }: SearchM
                     key={d.level}
                     onClick={() => setSelectedDifficulty(selectedDifficulty === d.level ? null : d.level)}
                     className={`px-3 py-1.5 rounded-full text-xs font-bold border transition-all ${
-                      selectedDifficulty === d.level 
-                        ? d.color.replace('100', '500').replace('text-', 'text-white border-transparent')
-                        : `bg-white border-slate-200 text-slate-600 hover:${d.color.split(' ')[0]}`
+                      selectedDifficulty === d.level
+                        ? 'bg-slate-800 text-white border-slate-800 shadow-sm'
+                        : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-100'
                     }`}
                   >
                     {d.label}

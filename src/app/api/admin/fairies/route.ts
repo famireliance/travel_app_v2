@@ -3,8 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
 import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
-const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+function getAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!supabaseUrl || !serviceRoleKey || serviceRoleKey.startsWith('REPLACE')) {
+    return null;
+  }
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: { autoRefreshToken: false, persistSession: false }
+  });
+}
 
 async function verifyAuth(req: NextRequest) {
   const user = await getAuthUser(req);
@@ -30,37 +38,36 @@ async function loadFallbackFairiesState(): Promise<FallbackFairiesState> {
 }
 
 export async function GET(req: NextRequest) {
-  if (!await verifyAuth(req)) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-
-  const { searchParams } = new URL(req.url);
-  const search = searchParams.get('search') || '';
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
-    let query = adminClient.from('fairies').select('*', { count: 'exact' }).order('created_at', { ascending: false });
+    if (!await verifyAuth(req)) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
 
-    if (search) {
-      const cleanSearch = search.replace(/[^a-zA-Z0-9_\-\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\s]/g, '').trim();
-      if (cleanSearch) {
-        query = query.or(`name.ilike.%${cleanSearch}%,theme.ilike.%${cleanSearch}%,fairy_key.ilike.%${cleanSearch}%`);
+    const { searchParams } = new URL(req.url);
+    const search = searchParams.get('search') || '';
+    const adminClient = getAdminClient();
+
+    if (adminClient) {
+      try {
+        let query = adminClient.from('fairies').select('*', { count: 'exact' }).order('created_at', { ascending: false });
+
+        if (search) {
+          const cleanSearch = search.replace(/[^a-zA-Z0-9_\-\u3040-\u30ff\u3400-\u4dbf\u4e00-\u9fff\s]/g, '').trim();
+          if (cleanSearch) {
+            query = query.or(`name.ilike.%${cleanSearch}%,theme.ilike.%${cleanSearch}%,fairy_key.ilike.%${cleanSearch}%`);
+          }
+        }
+
+        const { data, count, error } = await query;
+        if (!error && Array.isArray(data) && data.length > 0) {
+          return NextResponse.json({ data, count });
+        }
+      } catch {
+        // standalone fairies table does not exist — fallback below
       }
     }
 
-    const { data, count, error } = await query;
-    if (!error && Array.isArray(data) && data.length > 0) {
-      return NextResponse.json({ data, count });
-    }
-  } catch {
-    // standalone fairies table does not exist — fallback below
-  }
-
-  // DBテーブル未作成時は FAIRIES_MASTER + fallback_fairies にフォールバック
-  try {
+    // DBテーブル未作成時は FAIRIES_MASTER + fallback_fairies にフォールバック
     const [{ FAIRIES_MASTER }, customState] = await Promise.all([
       import('@/lib/fairies'),
       loadFallbackFairiesState()
@@ -135,20 +142,27 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
-    const body = await req.json();
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
     const { data, error } = await adminClient
       .from('fairies')
       .insert([body])
@@ -183,21 +197,27 @@ export async function POST(req: NextRequest) {
 }
 
 export async function PUT(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
-    const body = await req.json();
-    const { id, ...updates } = body;
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    let body: any;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+    const { id, ...updates } = body || {};
 
     if (!id) {
       return NextResponse.json({ error: '更新対象のIDが必要です' }, { status: 400 });
@@ -241,19 +261,20 @@ export async function PUT(req: NextRequest) {
 }
 
 export async function DELETE(req: NextRequest) {
-  const user = await getAuthUser(req);
-  if (!user) {
-    return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
-  }
-  if (user.role === 'viewer') {
-    return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
-  }
-
-  const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY!, {
-    auth: { autoRefreshToken: false, persistSession: false }
-  });
-
   try {
+    const user = await getAuthUser(req);
+    if (!user) {
+      return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
+    }
+    if (user.role === 'viewer') {
+      return NextResponse.json({ error: '閲覧専用アカウントのため変更操作はできません' }, { status: 403 });
+    }
+
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
 

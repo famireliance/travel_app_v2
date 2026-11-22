@@ -14,13 +14,17 @@ function getAdminClient() {
       ? process.env.SUPABASE_SERVICE_ROLE_KEY
       : process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
+  if (!supabaseUrl || !serviceKey) {
+    return null;
+  }
+
   return createClient(supabaseUrl, serviceKey, {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 }
 
 async function readAdminConfigJson<T>(
-  client: ReturnType<typeof getAdminClient>,
+  client: NonNullable<ReturnType<typeof getAdminClient>>,
   key: string,
   fallback: T
 ): Promise<T> {
@@ -47,12 +51,16 @@ function resolveIslandName(islandId: unknown): string {
 }
 
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const isPublic = searchParams.get('public') === '1';
-  const requestedId = (searchParams.get('id') || '').trim();
-  const adminClient = getAdminClient();
+  try {
+    const { searchParams } = new URL(req.url);
+    const isPublic = searchParams.get('public') === '1';
+    const requestedId = (searchParams.get('id') || '').trim();
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー', accommodation: null }, { status: 503 });
+    }
 
-  if (isPublic) {
+    if (isPublic) {
     const cleanId = requestedId.replace(/[^a-zA-Z0-9_\-]/g, '');
     if (!cleanId) {
       return NextResponse.json({ error: 'id が必要です', accommodation: null }, { status: 400 });
@@ -157,133 +165,157 @@ export async function GET(req: NextRequest) {
   }
 
   // Authenticated B2B Owner / Super Admin mode
-  const { user, error: authError } = await verifyUserAuth(req);
-  if (!user) {
-    return NextResponse.json({ error: authError || '認証が必要です' }, { status: 401 });
-  }
+    const { user, error: authError } = await verifyUserAuth(req);
+    if (!user) {
+      return NextResponse.json({ error: authError || '認証が必要です' }, { status: 401 });
+    }
 
-  const { data: profile } = await adminClient
-    .from('user_profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  const role = profile?.role || 'user';
-  if (role !== 'owner' && role !== 'super_admin') {
-    return NextResponse.json({ error: 'オーナー権限が必要です' }, { status: 403 });
-  }
-
-  let acc: any = null;
-  if (requestedId && role === 'super_admin') {
-    const { data } = await adminClient
-      .from('accommodations')
-      .select('*')
-      .eq('id', requestedId)
-      .limit(1)
+    const { data: profile } = await adminClient
+      .from('user_profiles')
+      .select('role')
+      .eq('id', user.id)
       .maybeSingle();
-    acc = data;
-  }
 
-  if (!acc) {
-    const { data } = await adminClient
+    const role = profile?.role || 'user';
+    if (role !== 'owner' && role !== 'super_admin') {
+      return NextResponse.json({ error: 'オーナー権限が必要です' }, { status: 403 });
+    }
+
+    // Fetch ALL accommodations owned by this owner so multi-property owners are never locked out
+    const { data: ownedRows } = await adminClient
       .from('accommodations')
       .select('*')
       .eq('owner_id', user.id)
-      .limit(1)
-      .maybeSingle();
-    acc = data;
+      .order('created_at', { ascending: true });
+    const ownedList = Array.isArray(ownedRows) ? ownedRows : [];
+
+    let acc: any = null;
+    if (requestedId) {
+      acc = ownedList.find((a: any) => String(a.id) === requestedId) || null;
+      if (!acc && role === 'super_admin') {
+        const { data } = await adminClient
+          .from('accommodations')
+          .select('*')
+          .eq('id', requestedId)
+          .limit(1)
+          .maybeSingle();
+        acc = data;
+      } else if (!acc) {
+        return NextResponse.json({ error: 'この宿泊施設を参照する権限がありません' }, { status: 403 });
+      }
+    } else {
+      acc = ownedList[0] || null;
+      if (!acc && role === 'super_admin') {
+        const { data } = await adminClient
+          .from('accommodations')
+          .select('*')
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        acc = data;
+      }
+    }
+
+    if (!acc) {
+      return NextResponse.json({ accommodation: null, accommodations: [] });
+    }
+
+    const ext = await readAdminConfigJson<Record<string, any>>(
+      adminClient,
+      `b2b_facility_ext_${acc.id}`,
+      {}
+    );
+
+    return NextResponse.json({
+      accommodation: {
+        ...acc,
+        island_name: resolveIslandName(acc.island_id),
+        ...ext,
+      },
+      accommodations: ownedList.map((a: any) => ({
+        id: a.id,
+        name: a.name,
+        island_id: a.island_id,
+        island_name: resolveIslandName(a.island_id),
+      })),
+    });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || '施設情報の取得に失敗しました' }, { status: 500 });
   }
-
-  if (!acc && role === 'super_admin') {
-    const { data } = await adminClient
-      .from('accommodations')
-      .select('*')
-      .order('created_at', { ascending: true })
-      .limit(1)
-      .maybeSingle();
-    acc = data;
-  }
-
-  if (!acc) {
-    return NextResponse.json({ accommodation: null });
-  }
-
-  const ext = await readAdminConfigJson<Record<string, any>>(
-    adminClient,
-    `b2b_facility_ext_${acc.id}`,
-    {}
-  );
-
-  return NextResponse.json({
-    accommodation: {
-      ...acc,
-      island_name: resolveIslandName(acc.island_id),
-      ...ext,
-    },
-  });
 }
 
 export async function PUT(req: NextRequest) {
-  const { user, error: authError } = await verifyUserAuth(req);
-  if (!user) {
-    return NextResponse.json({ error: authError || '認証が必要です' }, { status: 401 });
-  }
-
-  const adminClient = getAdminClient();
-  const { data: profile } = await adminClient
-    .from('user_profiles')
-    .select('role')
-    .eq('id', user.id)
-    .maybeSingle();
-
-  const role = profile?.role || 'user';
-  if (role !== 'owner' && role !== 'super_admin') {
-    return NextResponse.json({ error: 'オーナー権限が必要です' }, { status: 403 });
-  }
-
-  let body: Record<string, any>;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
-  }
+    const { user, error: authError } = await verifyUserAuth(req);
+    if (!user) {
+      return NextResponse.json({ error: authError || '認証が必要です' }, { status: 401 });
+    }
 
-  let acc: any = null;
-  if (body.id) {
-    const { data } = await adminClient
-      .from('accommodations')
-      .select('*')
-      .eq('id', String(body.id))
-      .limit(1)
+    const adminClient = getAdminClient();
+    if (!adminClient) {
+      return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
+    }
+
+    const { data: profile } = await adminClient
+      .from('user_profiles')
+      .select('role')
+      .eq('id', user.id)
       .maybeSingle();
-    acc = data;
-  } else {
-    const { data } = await adminClient
+
+    const role = profile?.role || 'user';
+    if (role !== 'owner' && role !== 'super_admin') {
+      return NextResponse.json({ error: 'オーナー権限が必要です' }, { status: 403 });
+    }
+
+    let body: Record<string, any>;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json({ error: '不正なリクエスト形式です' }, { status: 400 });
+    }
+
+    const { data: ownedRows } = await adminClient
       .from('accommodations')
       .select('*')
       .eq('owner_id', user.id)
-      .limit(1)
-      .maybeSingle();
-    acc = data;
+      .order('created_at', { ascending: true });
+    const ownedList = Array.isArray(ownedRows) ? ownedRows : [];
 
-    if (!acc && role === 'super_admin') {
-      const { data: firstAcc } = await adminClient
-        .from('accommodations')
-        .select('*')
-        .order('created_at', { ascending: true })
-        .limit(1)
-        .maybeSingle();
-      acc = firstAcc;
+    let acc: any = null;
+    if (body?.id) {
+      const targetId = String(body.id);
+      acc = ownedList.find((a: any) => String(a.id) === targetId) || null;
+      if (!acc) {
+        const { data } = await adminClient
+          .from('accommodations')
+          .select('*')
+          .eq('id', targetId)
+          .limit(1)
+          .maybeSingle();
+        acc = data;
+      }
+    } else {
+      acc = ownedList[0] || null;
+      if (!acc && role === 'super_admin') {
+        const { data: firstAcc } = await adminClient
+          .from('accommodations')
+          .select('*')
+          .order('created_at', { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        acc = firstAcc;
+      }
     }
-  }
 
-  if (!acc) {
-    return NextResponse.json({ error: '対象の宿泊施設が見つかりません' }, { status: 404 });
-  }
+    if (!acc) {
+      return NextResponse.json({ error: '対象の宿泊施設が見つかりません' }, { status: 404 });
+    }
 
-  if (acc.owner_id !== user.id && role !== 'super_admin') {
-    return NextResponse.json({ error: 'この宿泊施設を編集する権限がありません' }, { status: 403 });
-  }
+    const ownsTarget =
+      acc.owner_id === user.id || ownedList.some((a: any) => String(a.id) === String(acc.id));
+    if (!ownsTarget && role !== 'super_admin') {
+      return NextResponse.json({ error: 'この宿泊施設を編集する権限がありません' }, { status: 403 });
+    }
 
   // Strictly update ONLY real columns that exist on public.accommodations
   const realUpdateData: Record<string, any> = {
@@ -395,4 +427,7 @@ export async function PUT(req: NextRequest) {
       ...nextExt,
     },
   });
+  } catch (err: any) {
+    return NextResponse.json({ error: err?.message || '施設情報の保存に失敗しました' }, { status: 500 });
+  }
 }

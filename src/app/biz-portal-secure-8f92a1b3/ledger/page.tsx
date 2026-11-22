@@ -38,22 +38,29 @@ export default function BizPortalLedger() {
 
       if (resp.ok) {
         const json = await resp.json();
-        if (json.accommodation) {
-          setAccId(json.accommodation.id);
-          setAccName(json.accommodation.name || '');
+        const primaryAcc =
+          json.accommodation ||
+          (Array.isArray(json.accommodations) && json.accommodations.length > 0
+            ? json.accommodations[0]
+            : null);
+
+        if (primaryAcc) {
+          setAccId(primaryAcc.id);
+          setAccName(primaryAcc.name || '');
           setIslandName(
-            json.accommodation.island_name ||
-              ALL_ISLANDS_MASTER_DICTIONARY[String(json.accommodation.island_id || '').trim()]
-                ?.name ||
+            primaryAcc.island_name ||
+              ALL_ISLANDS_MASTER_DICTIONARY[String(primaryAcc.island_id || '').trim()]?.name ||
               ''
           );
-          setLedgers(Array.isArray(json.ledgers) ? json.ledgers : []);
+        }
+        if (Array.isArray(json.ledgers)) {
+          setLedgers(json.ledgers);
         }
         setLoading(false);
         return;
       }
 
-      // Fallback client query with .maybeSingle() and super_admin support
+      // Fallback client query ONLY when /api/b2b/reservations itself failed
       const user = session.user;
       const { data: profile } = await supabase
         .from('user_profiles')
@@ -61,12 +68,17 @@ export default function BizPortalLedger() {
         .eq('id', user.id)
         .maybeSingle();
 
-      let { data: acc } = await supabase
+      const { data: ownedRows } = await supabase
         .from('accommodations')
         .select('id, name, island_id')
         .eq('owner_id', user.id)
-        .limit(1)
-        .maybeSingle();
+        .order('created_at', { ascending: true });
+
+      let acc: any = Array.isArray(ownedRows) && ownedRows.length > 0 ? ownedRows[0] : null;
+      const ownedIds =
+        Array.isArray(ownedRows) && ownedRows.length > 0
+          ? ownedRows.map((a: any) => a.id)
+          : [];
 
       if (!acc && profile?.role === 'super_admin') {
         const { data: fallbackAcc } = await supabase
@@ -84,6 +96,7 @@ export default function BizPortalLedger() {
         setIslandName(
           ALL_ISLANDS_MASTER_DICTIONARY[String(acc.island_id || '').trim()]?.name || ''
         );
+        const targetIds = ownedIds.length > 0 ? ownedIds : [acc.id];
         const { data: ledgerData } = await supabase
           .from('guest_ledgers')
           .select(
@@ -92,10 +105,13 @@ export default function BizPortalLedger() {
             reservations(check_in_date, check_out_date, guest_count)
           `
           )
-          .eq('accommodation_id', acc.id)
+          .in('accommodation_id', targetIds)
           .order('created_at', { ascending: false });
 
-        if (ledgerData) setLedgers(ledgerData);
+        // Never overwrite existing non-empty fallback ledgers with an empty client query result
+        if (Array.isArray(ledgerData) && ledgerData.length > 0) {
+          setLedgers(ledgerData);
+        }
       }
     } catch (err) {
       console.error('Failed to load ledgers:', err);

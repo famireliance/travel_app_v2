@@ -159,6 +159,8 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
   const [filterAttribute, setFilterAttribute] = useState<FairyAttribute | 'ALL'>('ALL');
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'COLLECTED' | 'UNCOLLECTED'>('ALL');
   const [previewAll, setPreviewAll] = useState(false);
+  const isDev = process.env.NODE_ENV === 'development';
+  const effectivePreviewAll = isDev && previewAll;
 
   // 表示サイズ切り替え (小・中・大)
   const [gridSize, setGridSize] = useState<CardGridSize>('md');
@@ -195,8 +197,8 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
         const qHira = toHiragana(q);
-        const masterIsland = fairy.island_id ? ALL_ISLANDS_MASTER_DICTIONARY[fairy.island_id] : undefined;
-        const resolvedIslandName = masterIsland?.name || fairy.island_id || '';
+        const masterIsland = fairy.island_id ? ALL_ISLANDS_MASTER_DICTIONARY[String(fairy.island_id)] : undefined;
+        const resolvedIslandName = masterIsland?.name || (fairy as { island_name?: string }).island_name || (fairy.island_id ? String(fairy.island_id) : '');
         const resolvedIslandSlug = masterIsland?.slug || '';
         const resolvedPrefecture = masterIsland?.prefecture || '';
         const regionEntry = fairy.region_id ? regionsData.find(r => r.id === fairy.region_id) : undefined;
@@ -285,18 +287,20 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
               <span className="hidden sm:inline">{t.myPage}</span>
             </Link>
 
-            <button
-              onClick={() => setPreviewAll(!previewAll)}
-              className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition flex items-center gap-1.5 flex-shrink-0 ${
-                previewAll
-                  ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
-                  : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:border-slate-500'
-              }`}
-              title={previewAll ? t.myCollection : t.previewAll}
-            >
-              {previewAll ? <Lock className="w-3.5 h-3.5 text-amber-400" /> : <Eye className="w-3.5 h-3.5 text-blue-400" />}
-              <span>{previewAll ? t.myCollection : t.previewAll}</span>
-            </button>
+            {isDev && (
+              <button
+                onClick={() => setPreviewAll(!previewAll)}
+                className={`text-xs px-3 py-1.5 rounded-lg border font-medium transition flex items-center gap-1.5 flex-shrink-0 ${
+                  effectivePreviewAll
+                    ? 'bg-amber-500/20 border-amber-500 text-amber-300 shadow-[0_0_12px_rgba(245,158,11,0.25)]'
+                    : 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white hover:border-slate-500'
+                }`}
+                title={effectivePreviewAll ? t.myCollection : t.previewAll}
+              >
+                {effectivePreviewAll ? <Lock className="w-3.5 h-3.5 text-amber-400" /> : <Eye className="w-3.5 h-3.5 text-blue-400" />}
+                <span>{effectivePreviewAll ? t.myCollection : t.previewAll}</span>
+              </button>
+            )}
           </div>
         </div>
       </header>
@@ -340,7 +344,7 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
                   {t.collectionStatus}
                 </span>
                 <span className="text-sm font-bold font-mono">
-                  <span className="text-blue-400 text-lg">{previewAll ? totalCount : discoveredCount}</span>
+                  <span className="text-blue-400 text-lg">{effectivePreviewAll ? totalCount : discoveredCount}</span>
                   <span className="text-slate-500 text-xs"> / {totalCount}</span>
                 </span>
               </div>
@@ -349,12 +353,12 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
               <div className="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
                 <div
                   className="h-full bg-gradient-to-r from-blue-500 via-cyan-400 to-emerald-400 rounded-full transition-all duration-700"
-                  style={{ width: `${previewAll ? 100 : Math.max(progressPercent, 2)}%` }}
+                  style={{ width: `${effectivePreviewAll ? 100 : Math.max(progressPercent, 2)}%` }}
                 />
               </div>
 
               <div className="flex justify-between items-center mt-2 text-[11px] text-slate-400">
-                <span>{previewAll ? t.previewingAll : `${t.rate} ${progressPercent}%`}</span>
+                <span>{effectivePreviewAll ? t.previewingAll : `${t.rate} ${progressPercent}%`}</span>
                 <span className="text-slate-500">{t.cardZoomHint}</span>
               </div>
             </div>
@@ -538,7 +542,7 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
         {/* 4. 妖精一覧グリッド（選択したサイズでレンダリング） */}
         <div className={`${gridClasses[gridSize]} pb-20`}>
           {filteredFairies.map(fairy => {
-            const isRevealed = previewAll || collectedFairies.includes(fairy.id);
+            const isRevealed = effectivePreviewAll || collectedFairies.includes(fairy.id);
             return (
               <FairyCard
                 key={fairy.id}
@@ -570,7 +574,7 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
       {/* 5. 妖精詳細ポップアップモーダル */}
       <FairyDetailModal
         fairy={selectedFairy}
-        isRevealed={previewAll || (selectedFairy ? collectedFairies.includes(selectedFairy.id) : false)}
+        isRevealed={effectivePreviewAll || (selectedFairy ? collectedFairies.includes(selectedFairy.id) : false)}
         onClose={() => setSelectedFairy(null)}
         onOpenViewer={() => {
           if (selectedFairy) {
@@ -585,7 +589,7 @@ export default function FairyGalleryClient({ discoveredImages: _discoveredImages
         fairies={filteredFairies.length > 0 ? filteredFairies : fairiesList}
         currentFairyId={viewerFairyId}
         isOpen={Boolean(viewerFairyId)}
-        isRevealed={previewAll || (viewerFairyId ? collectedFairies.includes(viewerFairyId) : false)}
+        isRevealed={effectivePreviewAll || (viewerFairyId ? collectedFairies.includes(viewerFairyId) : false)}
         onClose={() => setViewerFairyId(null)}
         onSelectFairyId={(id) => setViewerFairyId(id)}
       />
