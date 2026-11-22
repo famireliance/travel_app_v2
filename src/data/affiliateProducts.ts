@@ -14,8 +14,10 @@ export interface AffiliateProduct {
   recommendReason: string;
 }
 
-export const DEFAULT_AMAZON_TAG: string = 'kiratabi-22';
-export const DEFAULT_RAKUTEN_ID: string = '56ebd0d5.3e11f68e.56ebd0d6.3ff60376';
+export const DEFAULT_AMAZON_TAG: string =
+  process.env.NEXT_PUBLIC_AMAZON_ASSOCIATE_TAG || 'kiratabi-22';
+export const DEFAULT_RAKUTEN_ID: string =
+  process.env.NEXT_PUBLIC_RAKUTEN_AFFILIATE_ID || '56ebd0d5.3e11f68e.56ebd0d6.3ff60376';
 
 export function createAmazonSearchUrl(query: string): string {
   return `https://www.amazon.co.jp/s?k=${encodeURIComponent(query)}&tag=${DEFAULT_AMAZON_TAG}`;

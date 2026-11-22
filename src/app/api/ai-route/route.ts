@@ -251,9 +251,15 @@ export async function POST(request: Request) {
         return true;
       });
 
-      // Pre-rank and select up to 135 candidate islands across all archipelagos (~6KB prompt for fast 2-4s inference)
+      // Pre-rank and select up to 85 candidate islands across all archipelagos (Japanese natural-language aware)
       const qRaw = `${startLocation || ''} ${preferences || ''}`.trim();
-      const qWords = qRaw.split(/[\s、,・。！？!?/]+/).filter((w) => w.length >= 2);
+      const DOMAIN_TERMS = ['サウナ', '温泉', '星空', 'ウミガメ', 'シュノーケル', 'ダイビング', '透明度', '海', 'アート', '美術館', 'カフェ', '猫', '世界遺産', '秘境', '無人島', '釣り', 'グルメ', '海鮮', '日帰り', '橋', 'ドライブ', 'サイクリング', '登山', 'トレッキング', '火山', 'リゾート', '家族', 'ひとり'];
+      const qWords = Array.from(
+        new Set([
+          ...qRaw.split(/[\s、,・。！？!?/とやでをにのへ]+/).filter((w) => w.length >= 2),
+          ...DOMAIN_TERMS.filter((t) => qRaw.includes(t)),
+        ])
+      );
       const regionCounts = new Map<string, number>();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const compactIslands = validIslands
@@ -371,16 +377,22 @@ ${islandsContext}
             );
         }
 
+        const normalizedActivity =
+          day.activity || day.description || day.plan || day.content || '';
+
         if (matched) {
           return {
             ...day,
+            activity: normalizedActivity,
             islandId: String(matched.id),
             slug: matched.slug || String(matched.id),
             islandName: matched.name,
+            prefecture: matched.prefecture || '',
           };
         }
         return {
           ...day,
+          activity: normalizedActivity,
           islandId: '',
         };
       });

@@ -6,6 +6,7 @@ import Breadcrumb from '@/components/Breadcrumb';
 import { useTravel } from '@/context/TravelContext';
 import { supabase } from '@/lib/supabase';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import { getRakutenTravelSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
 
 interface RoutePlan {
   planType: string;
@@ -268,12 +269,46 @@ export default function RoutePlannerPage() {
                         )}
                       </div>
                       
-                      <p className="text-sm text-slate-600 leading-relaxed mb-4">{day?.activity}</p>
-                      
-                      <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-start gap-2 text-xs font-medium text-slate-500">
-                        <Ship size={14} className="text-blue-400 mt-0.5 shrink-0" />
-                        <span>{day?.transportation}</span>
-                      </div>
+                        <p className="text-sm text-slate-600 leading-relaxed mb-4">
+                          {day?.activity || (day as any)?.description}
+                        </p>
+                        
+                        <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-start gap-2 text-xs font-medium text-slate-500 mb-3">
+                          <Ship size={14} className="text-blue-400 mt-0.5 shrink-0" />
+                          <span>{day?.transportation}</span>
+                        </div>
+
+                        {day?.islandName && (
+                          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-100">
+                            <span className="text-[10px] font-bold text-slate-400 px-1.5 py-0.5 bg-slate-100 rounded">PR</span>
+                            <a
+                              href={getRakutenTravelSearchUrl(
+                                day.islandName,
+                                (day as any)?.prefecture ||
+                                  (day.islandId && ALL_ISLANDS_MASTER_DICTIONARY[String(day.islandId)]?.prefecture) ||
+                                  undefined
+                              )}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              className="text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors"
+                            >
+                              楽天トラベルで宿を見る
+                            </a>
+                            <a
+                              href={getJalanSearchUrl(
+                                day.islandName,
+                                (day as any)?.prefecture ||
+                                  (day.islandId && ALL_ISLANDS_MASTER_DICTIONARY[String(day.islandId)]?.prefecture) ||
+                                  undefined
+                              )}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              className="text-[11px] font-bold px-2.5 py-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-colors"
+                            >
+                              じゃらんで宿を比較
+                            </a>
+                          </div>
+                        )}
                     </div>
                   </div>
                   );

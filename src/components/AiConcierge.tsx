@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Bot, Sparkles, Send, MapPin, X, Loader2, ArrowRight, Star } from 'lucide-react';
 import { useTravel } from '@/context/TravelContext';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import { getRakutenTravelSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
 import { supabase } from '@/lib/supabase';
 import Link from 'next/link';
 
@@ -238,14 +239,35 @@ export default function AiConcierge({ isOpen, onClose }: AiConciergeProps) {
                         )}
                       </div>
                     </div>
-                    <div className="flex items-end md:items-center justify-end shrink-0 md:pl-4 md:border-l border-slate-100">
+                    <div className="flex flex-col items-stretch md:items-end justify-center gap-2 shrink-0 md:pl-4 md:border-l border-slate-100">
                       <Link 
-                        href={`/island/${plan.id}`}
+                        href={`/island/${(plan as any).slug || plan.id}`}
                         onClick={onClose}
-                        className="flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-600 transition-colors"
+                        className="flex items-center justify-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold hover:bg-indigo-600 transition-colors"
                       >
                         島を詳しく見る <ArrowRight className="w-4 h-4" />
                       </Link>
+                      {plan.name && (
+                        <div className="flex items-center justify-end gap-1.5">
+                          <span className="text-[10px] font-bold text-slate-400">PR</span>
+                          <a
+                            href={getRakutenTravelSearchUrl(plan.name, plan.prefecture)}
+                            target="_blank"
+                            rel="noopener noreferrer sponsored"
+                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-colors"
+                          >
+                            楽天で宿検索
+                          </a>
+                          <a
+                            href={getJalanSearchUrl(plan.name, plan.prefecture)}
+                            target="_blank"
+                            rel="noopener noreferrer sponsored"
+                            className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 transition-colors"
+                          >
+                            じゃらん
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

@@ -10,6 +10,7 @@ import {
 } from '@/data/seoTaxonomies';
 import { getIslandDifficulty } from '@/lib/difficulty';
 import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
+import { getRakutenTravelSearchUrl, getJalanSearchUrl } from '@/data/islandFacilitiesData';
 import Breadcrumb from '@/components/Breadcrumb';
 import { AuthenticIslandCardImage } from '@/components/AuthenticIslandVisual';
 import { Sparkles, ArrowRight, Compass, MapPin } from 'lucide-react';
@@ -163,6 +164,45 @@ export default async function FeatureIslandsPage({
               </Link>
             );
           })}
+        </section>
+
+        {/* テーマ対象の宿・ツアー予約比較CTA */}
+        <section className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-3xl p-6 md:p-8 text-white shadow-md">
+          <div className="flex flex-wrap items-center justify-between gap-2 mb-2">
+            <h2 className="text-lg md:text-xl font-serif font-bold">
+              「{feature.shortLabel}」で人気の離島宿・ホテルを探す
+            </h2>
+            <span className="text-[10px] font-bold tracking-wider px-2 py-0.5 rounded bg-white/15 text-slate-200">
+              PR・プロモーションを含みます
+            </span>
+          </div>
+          <p className="text-xs md:text-sm text-slate-300 leading-relaxed mb-5">
+            気になる島の空室状況や宿泊プランを主要予約サイトで比較できます。
+          </p>
+          <div className="flex flex-wrap gap-3">
+            <a
+              href={getRakutenTravelSearchUrl(islands[0]?.name || '沖縄 離島', islands[0]?.prefecture)}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs md:text-sm font-bold transition-colors shadow-sm"
+            >
+              楽天トラベルで人気の離島宿を見る
+            </a>
+            <a
+              href={getJalanSearchUrl(islands[0]?.name || '沖縄 離島', islands[0]?.prefecture)}
+              target="_blank"
+              rel="noopener noreferrer sponsored"
+              className="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs md:text-sm font-bold transition-colors shadow-sm"
+            >
+              じゃらんで人気の離島宿を比較する
+            </a>
+            <Link
+              href="/packing-list"
+              className="px-5 py-3 rounded-xl bg-white/10 hover:bg-white/20 border border-white/20 text-white text-xs md:text-sm font-bold transition-colors"
+            >
+              離島旅の必須持ち物リストを見る
+            </Link>
+          </div>
         </section>
 
         {/* 他のテーマ特集＆都道府県リンク */}

@@ -173,9 +173,15 @@ export async function POST(req: NextRequest) {
     } else {
       const ai = new GoogleGenAI({ apiKey });
 
-      // Pre-rank and select top 130 candidate islands (~7KB prompt) for fast 1.5-3s Gemini inference
+      // Pre-rank and select top 130 candidate islands (~7KB prompt) with Japanese natural-language keyword matching
       const qStr = String(userInput || '').trim();
-      const qWords = qStr.split(/[\s、,・。！？!?/]+/).filter((w) => w.length >= 2);
+      const DOMAIN_TERMS = ['サウナ', '温泉', '星空', 'ウミガメ', 'シュノーケル', 'ダイビング', '透明度', '海', 'アート', '美術館', 'カフェ', '猫', '世界遺産', '秘境', '無人島', '釣り', 'グルメ', '海鮮', '日帰り', '橋', 'ドライブ', 'サイクリング', '登山', 'トレッキング', '火山', 'リゾート', '家族', 'ひとり'];
+      const qWords = Array.from(
+        new Set([
+          ...qStr.split(/[\s、,・。！？!?/とやでをにのへ]+/).filter((w) => w.length >= 2),
+          ...DOMAIN_TERMS.filter((t) => qStr.includes(t)),
+        ])
+      );
       const regionQuota = new Map<string, number>();
       const candidateIslands = [...availableIslands]
         .map((isl) => {
