@@ -179,7 +179,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalP
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[9999] bg-[#F8FAFC]/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 font-sans"
+          className="fixed inset-0 z-[12000] bg-[#F8FAFC]/95 backdrop-blur-xl flex flex-col items-center justify-center p-6 font-sans"
         >
           <button
             onClick={handleClose}

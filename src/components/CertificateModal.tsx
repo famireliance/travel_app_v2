@@ -2,8 +2,53 @@
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Download, Share2, Award, Camera, CheckCircle, Sparkles, Send, Calendar, User } from 'lucide-react';
+import {
+  X,
+  Download,
+  Share2,
+  Award,
+  Camera,
+  CheckCircle,
+  Sparkles,
+  Send,
+  Calendar,
+  User,
+  RefreshCw,
+  Lock,
+  Smartphone,
+  Crown,
+  Loader2,
+} from 'lucide-react';
 import imageCompression from 'browser-image-compression';
+
+import { useTravel } from '@/context/TravelContext';
+import { getIslandDifficulty } from '@/lib/difficulty';
+import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
+import { drawOfficialSquareHanko, drawOfficialMedallionSeal } from '@/lib/officialSeal';
+import regionsData from '@/data/regions.json';
+import { supabase } from '@/lib/supabase';
+import { toast } from 'react-hot-toast';
+import AuthModal from './AuthModal';
+import { PlanChangeModal } from './PlanChangeModal';
+
+interface ServerCertificateRecord {
+  id: string;
+  island_id: string;
+  user_id: string;
+  serial_number: number;
+  type: 'card' | 'standard' | 'high_quality';
+  image_url: string | null;
+  created_at: string;
+}
+
+interface CertificateQuotaInfo {
+  highQualityMonthlyLimit: number | null;
+  highQualityMonthlyUsed: number;
+  highQualityRemaining: number | null;
+  cardDailyLimit: number | null;
+  cardDailyUsed: number;
+  cardDailyRemaining: number | null;
+}
 
 interface CertificateModalProps {
   isOpen: boolean;
@@ -13,29 +58,110 @@ interface CertificateModalProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: any;
   anniversaryMode?: boolean;
+  initialCertificateType?: 'card' | 'high_quality';
+  onIssuedOrUpdated?: (cert: ServerCertificateRecord) => void;
 }
 
-import { useTravel } from '@/context/TravelContext';
-import { getFormattedSerial, getIslandDifficulty } from '@/lib/difficulty';
-import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
-import { drawOfficialSquareHanko, drawOfficialMedallionSeal } from '@/lib/officialSeal';
-import regionsData from '@/data/regions.json';
-import { supabase } from '@/lib/supabase';
-import { toast } from 'react-hot-toast';
-import AuthModal from './AuthModal';
+async function loadCorsSafeImage(src: string): Promise<HTMLImageElement | undefined> {
+  if (!src) return undefined;
 
-export default function CertificateModal({ isOpen, onClose, island, user: userProp, anniversaryMode = false }: CertificateModalProps) {
-  const { user: contextUser, travelerName: contextTravelerName, updateTravelerName, islandStatuses, tempCheckInPhotoUrl, setTempCheckInPhotoUrl, tempCheckInDate, subscriptionTier } = useTravel();
+  if (src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('/')) {
+    return new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => resolve(img);
+      img.onerror = () => resolve(undefined);
+      img.src = src;
+    });
+  }
+
+  // Remote http(s) URL: fetch as CORS blob first so cached non-CORS <img> entries
+  // on iOS Safari / Android Chrome NEVER taint the HTML5 <canvas>!
+  try {
+    const res = await fetch(src, { mode: 'cors', cache: 'reload' });
+    if (!res.ok) return undefined;
+    const blob = await res.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    return await new Promise((resolve) => {
+      const img = new Image();
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(img);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(undefined);
+      };
+      img.src = objectUrl;
+    });
+  } catch {
+    return undefined;
+  }
+}
+
+function buildCertificateFilename(islandName: string | undefined, visitDate: string, type: 'card' | 'high_quality', serial?: string): string {
+  const safeIslandName = (islandName || 'Island').replace(/[\\/:*?"<>|\s]/g, '_');
+  const safeDate = (visitDate || '').replace(/[^0-9]/g, '');
+  const serialPart = serial && serial.startsWith('No.') ? `_${serial.replace('.', '')}` : '';
+  const suffix = type === 'high_quality' ? '_HQ' : '_Card';
+  return `KIRATABI_Certificate_${safeIslandName}${serialPart}${safeDate ? '_' + safeDate : ''}${suffix}.png`;
+}
+
+export default function CertificateModal({
+  isOpen,
+  onClose,
+  island,
+  user: userProp,
+  anniversaryMode = false,
+  initialCertificateType,
+  onIssuedOrUpdated,
+}: CertificateModalProps) {
+  const {
+    user: contextUser,
+    travelerName: contextTravelerName,
+    updateTravelerName,
+    islandStatuses,
+    tempCheckInPhotoUrl,
+    setTempCheckInPhotoUrl,
+    tempCheckInDate,
+    subscriptionTier,
+  } = useTravel();
+
   const user = userProp || contextUser;
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const isPremium = subscriptionTier === 'premium' || subscriptionTier === 'ultimate';
-  const status = island
-    ? (islandStatuses[String(island.id)] || (island.slug ? islandStatuses[String(island.slug)] : undefined) || 'none')
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+
+  const localStatus = island
+    ? islandStatuses[String(island.id)] ||
+      (island.slug ? islandStatuses[String(island.slug)] : undefined) ||
+      'none'
     : 'none';
+
+  const [serverTier, setServerTier] = useState<'free' | 'premium' | 'ultimate' | null>(null);
+  const effectiveTier: 'free' | 'premium' | 'ultimate' =
+    serverTier || (subscriptionTier as 'free' | 'premium' | 'ultimate') || 'free';
+  const isPremium = effectiveTier === 'premium' || effectiveTier === 'ultimate';
+
+  const [serverHasVisited, setServerHasVisited] = useState(false);
+  const [serverTickets, setServerTickets] = useState(0);
+  const [serverQuota, setServerQuota] = useState<CertificateQuotaInfo | null>(null);
+  const [issuedCertMap, setIssuedCertMap] = useState<{
+    card?: ServerCertificateRecord;
+    high_quality?: ServerCertificateRecord;
+  }>({});
+  const [isLoadingQuota, setIsLoadingQuota] = useState(false);
+
+  const hasVisitedIsland =
+    localStatus === 'visited' ||
+    localStatus === 'verified_visited' ||
+    serverHasVisited ||
+    Boolean(issuedCertMap.card || issuedCertMap.high_quality);
+
   const [travelerName, setTravelerName] = useState<string>('');
   const [visitDate, setVisitDate] = useState<string>('');
   const [customImage, setCustomImage] = useState<string | null>(null);
-  const isVerified = status === 'verified_visited' || Boolean(tempCheckInPhotoUrl) || Boolean(customImage);
+  const isVerified =
+    localStatus === 'verified_visited' || Boolean(tempCheckInPhotoUrl) || Boolean(customImage);
+
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isOrdering, setIsOrdering] = useState(false);
@@ -43,192 +169,177 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
   const [orderDesign, setOrderDesign] = useState<'horizontal' | 'vertical'>('horizontal');
   const [isLaminated, setIsLaminated] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
-  
+
   // Mailing Form Fields
   const [recipientCountry, setRecipientCountry] = useState('Japan');
   const [recipientName, setRecipientName] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [address, setAddress] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  
-  const [assignedSerial, setAssignedSerial] = useState('');
+
+  const [assignedSerial, setAssignedSerial] = useState('No.----');
   const [orderSubmitting, setOrderSubmitting] = useState(false);
-  const [issuedTypes, setIssuedTypes] = useState<string[]>([]);
-  const [certificateType, setCertificateType] = useState<'card' | 'high_quality'>('high_quality');
+  const [certificateType, setCertificateType] = useState<'card' | 'high_quality'>(
+    initialCertificateType || 'high_quality'
+  );
   const [orientation, setOrientation] = useState<'horizontal' | 'vertical'>('horizontal');
   const [designTheme, setDesignTheme] = useState<'classic' | 'modern' | 'vintage'>('classic');
   const [isFullscreenPreview, setIsFullscreenPreview] = useState(false);
+
+  // Issuance / Ad / Save state
   const [isPlayingAd, setIsPlayingAd] = useState(false);
   const [adTimeLeft, setAdTimeLeft] = useState(0);
+  const [isIssuingServer, setIsIssuingServer] = useState(false);
+  const [justIssuedCert, setJustIssuedCert] = useState<ServerCertificateRecord | null>(null);
+  const [showSaveGuidePanel, setShowSaveGuidePanel] = useState(false);
+  const [latestPreviewDataUrl, setLatestPreviewDataUrl] = useState<string | null>(null);
   const [hasHologram, setHasHologram] = useState(false);
-  const [limitReachedError, setLimitReachedError] = useState(false);
-  const [limitErrorMessage, setLimitErrorMessage] = useState('');
+  const [limitErrorMessage, setLimitErrorMessage] = useState<string | null>(null);
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fullscreenCanvasRef = useRef<HTMLCanvasElement>(null);
   const renderSeqRef = useRef<number>(0);
   const initializedIslandKeyRef = useRef<string>('');
+  const latestPngBlobRef = useRef<Blob | null>(null);
+  const latestPngFileRef = useRef<File | null>(null);
+  const isMobileDevice =
+    typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
+  // Active issued record for currently selected certificateType
+  const activeIssuedCert =
+    certificateType === 'high_quality' ? issuedCertMap.high_quality : issuedCertMap.card;
+
+  const isHighQualityQuotaExhausted =
+    !issuedCertMap.high_quality &&
+    effectiveTier !== 'ultimate' &&
+    serverQuota !== null &&
+    serverQuota.highQualityRemaining !== null &&
+    serverQuota.highQualityRemaining <= 0 &&
+    serverTickets <= 0;
+
+  const isCardDailyQuotaExhausted =
+    !issuedCertMap.card &&
+    effectiveTier === 'free' &&
+    serverQuota !== null &&
+    serverQuota.cardDailyRemaining !== null &&
+    serverQuota.cardDailyRemaining <= 0;
+
+  const isCurrentSelectionLocked =
+    !hasVisitedIsland ||
+    !user ||
+    (certificateType === 'high_quality' && isHighQualityQuotaExhausted) ||
+    (certificateType === 'card' && isCardDailyQuotaExhausted);
+
+  // Check diary photo for hologram eligibility
   useEffect(() => {
     if (isOpen && island && user) {
-      // Check if user has uploaded a photo for this island
-      if (tempCheckInPhotoUrl) {
+      if (tempCheckInPhotoUrl || customImage) {
         setHasHologram(true);
       } else {
-        supabase.from('island_diaries')
+        supabase
+          .from('island_diaries')
           .select('photo_url')
           .eq('island_id', island.id)
           .eq('user_id', user.id)
           .not('photo_url', 'is', null)
           .limit(1)
           .then(({ data }) => {
-            if (data && data.length > 0) {
-              setHasHologram(true);
-            } else {
-              setHasHologram(false);
-            }
+            setHasHologram(Boolean(data && data.length > 0));
           });
       }
     } else {
       setHasHologram(false);
     }
-  }, [isOpen, island, user, tempCheckInPhotoUrl]);
+  }, [isOpen, island, user, tempCheckInPhotoUrl, customImage]);
 
-  // Use useEffect to check localStorage for daily issue count
-  useEffect(() => {
-    if (isOpen && island) {
-      setLimitReachedError(false);
-      // Check local storage for today's issue
-      const todayStr = new Date().toISOString().split('T')[0];
-      const types: string[] = [];
-      try {
-        if (localStorage.getItem(`kiratabi_issued_${island.id}_card`) === todayStr) types.push('card');
-        if (localStorage.getItem(`kiratabi_issued_${island.id}_high_quality`) === todayStr) types.push('high_quality');
-      } catch {
-        // Ignore storage errors
+  // Fetch authoritative server quota & existing issued certificates on modal open
+  const refreshServerCertificateState = useCallback(
+    async (autoSelectType = false) => {
+      if (!island || !user) {
+        setIssuedCertMap({});
+        setServerQuota(null);
+        setServerHasVisited(false);
+        return;
       }
-      setIssuedTypes(types);
-    }
-  }, [isOpen, island]);
-
-  const handleDigitalIssueClick = (type: 'card' | 'high_quality' = 'high_quality') => {
-    setCertificateType(type);
-    if (!isPremium) {
-      setIsPlayingAd(true);
-      setAdTimeLeft(5);
-    } else {
-      issueDigital(type);
-    }
-  };
-
-  const issueDigital = useCallback(async (type: string = certificateType) => {
-    if (!island) return;
-    
-    let uploadedImageUrl: string | undefined = undefined;
-
-    if (user && canvasRef.current) {
+      setIsLoadingQuota(true);
       try {
-        const blob = await new Promise<Blob | null>(resolve => {
-          try {
-            canvasRef.current?.toBlob(resolve, 'image/png', 0.92);
-          } catch {
-            resolve(null);
-          }
-        });
-        if (blob) {
-          const fileName = `certificates/${user.id}/${island.id}_${Date.now()}.png`;
-          const { error } = await supabase.storage.from('public-assets').upload(fileName, blob, { contentType: 'image/png', upsert: true });
-          if (!error) {
-            const { data: { publicUrl } } = supabase.storage.from('public-assets').getPublicUrl(fileName);
-            uploadedImageUrl = publicUrl;
-          } else {
-            // Fallback to certificates bucket if present
-            const altName = `${user.id}/${island.id}_${Date.now()}.png`;
-            const { error: altErr } = await supabase.storage.from('certificates').upload(altName, blob, { contentType: 'image/png', upsert: true });
-            if (!altErr) {
-              const { data: { publicUrl } } = supabase.storage.from('certificates').getPublicUrl(altName);
-              uploadedImageUrl = publicUrl;
-            }
-          }
-        }
-      } catch (err) {
-        console.error('Blob generation error:', err);
-      }
-    }
-
-    if (user) {
-      try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
         const token = session?.access_token || '';
-        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-        if (token) {
-          headers['Authorization'] = `Bearer ${token}`;
+        if (!token) {
+          setIsLoadingQuota(false);
+          return;
         }
-        const res = await fetch('/api/certificates', {
-          method: 'POST',
-          headers,
-          body: JSON.stringify({ islandId: String(island.id), userId: user.id, type, imageUrl: uploadedImageUrl })
-        });
-        const rawCertText = await res.text();
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let data: any = {};
-        try {
-          data = rawCertText ? JSON.parse(rawCertText) : {};
-        } catch {
-          data = {};
-        }
-        
-        if (!res.ok) {
-          if (data.error === 'FREE_LIMIT_REACHED' || data.error === 'PREMIUM_LIMIT_REACHED') {
-            setLimitReachedError(true);
-            setLimitErrorMessage(data.message || '今月の公式高画質版クラウド発行枠の上限に達しました（画像DLは引き続きご利用いただけます）。');
-          } else {
-            console.warn('Server certificate record warning:', data.error);
+        const res = await fetch(
+          `/api/certificates?islandId=${encodeURIComponent(String(island.id))}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            cache: 'no-store',
           }
-        } else if (data.certificate) {
-          setAssignedSerial(`No.${String(data.certificate.serial_number).padStart(4, '0')}`);
+        );
+        if (!res.ok) {
+          setIsLoadingQuota(false);
+          return;
+        }
+        const data = await res.json();
+        if (data.tier) setServerTier(data.tier);
+        if (typeof data.tickets === 'number') setServerTickets(data.tickets);
+        if (data.quota) setServerQuota(data.quota);
+        setServerHasVisited(Boolean(data.hasVisited));
+
+        const nextMap: { card?: ServerCertificateRecord; high_quality?: ServerCertificateRecord } = {};
+        for (const row of (data.existingCertificates || []) as ServerCertificateRecord[]) {
+          if (row.type === 'high_quality' && !nextMap.high_quality) {
+            nextMap.high_quality = row;
+          } else if ((row.type === 'card' || row.type === 'standard') && !nextMap.card) {
+            nextMap.card = row;
+          }
+        }
+        setIssuedCertMap(nextMap);
+
+        if (autoSelectType) {
+          if (initialCertificateType) {
+            setCertificateType(initialCertificateType);
+          } else if (nextMap.high_quality) {
+            setCertificateType('high_quality');
+          } else {
+            const hqRem = data.quota?.highQualityRemaining;
+            const tk = Number(data.tickets || 0);
+            const canIssueHq = data.tier === 'ultimate' || hqRem === null || hqRem > 0 || tk > 0;
+            setCertificateType(canIssueHq ? 'high_quality' : 'card');
+          }
         }
       } catch (err) {
-        console.error('Failed to issue certificate on server:', err);
+        console.error('Failed to fetch certificate status:', err);
+      } finally {
+        setIsLoadingQuota(false);
       }
-    }
+    },
+    [island, user, initialCertificateType]
+  );
 
-    const issuedKey = `kiratabi_issued_${island.id}_${type}`;
-    const todayStr = new Date().toISOString().split('T')[0];
-    try {
-      localStorage.setItem(issuedKey, todayStr);
-    } catch {
-      // Ignore storage errors
-    }
-
-    setIssuedTypes(prev => {
-      if (!prev.includes(type)) return [...prev, type];
-      return prev;
-    });
-  }, [island, user, certificateType]);
-
+  // Sync displayed serial number with activeIssuedCert
   useEffect(() => {
-    if (isPlayingAd && adTimeLeft > 0) {
-      const timer = setTimeout(() => {
-        setAdTimeLeft(adTimeLeft - 1);
-      }, 1000);
-      return () => clearTimeout(timer);
-    } else if (isPlayingAd && adTimeLeft === 0) {
-      // Ad finished
-      const timer = setTimeout(() => {
-        setIsPlayingAd(false);
-        issueDigital(certificateType);
-      }, 500);
-      return () => clearTimeout(timer);
+    if (activeIssuedCert && typeof activeIssuedCert.serial_number === 'number') {
+      setAssignedSerial(`No.${String(activeIssuedCert.serial_number).padStart(4, '0')}`);
+    } else {
+      setAssignedSerial('No.----');
     }
-  }, [isPlayingAd, adTimeLeft, issueDigital, certificateType]); 
+  }, [activeIssuedCert]);
 
+  // Initialize modal fields per island
   useEffect(() => {
     if (!isOpen || !island) {
       initializedIslandKeyRef.current = '';
+      setIsPlayingAd(false);
+      setJustIssuedCert(null);
+      setShowSaveGuidePanel(false);
+      setLimitErrorMessage(null);
       return;
     }
 
-    const initKey = `${island.id}`;
+    const initKey = `${island.id}_${user?.id || 'guest'}`;
     const isFirstOpenForIsland = initializedIslandKeyRef.current !== initKey;
 
     if (isFirstOpenForIsland) {
@@ -249,7 +360,9 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
       const dateStr =
         tempCheckInDate ||
         storedDate ||
-        `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(today.getDate()).padStart(2, '0')}`;
+        `${today.getFullYear()}.${String(today.getMonth() + 1).padStart(2, '0')}.${String(
+          today.getDate()
+        ).padStart(2, '0')}`;
       setVisitDate(dateStr);
       setCustomImage(tempCheckInPhotoUrl || storedPhoto || null);
       setTravelerName(contextTravelerName || user?.email?.split('@')[0] || '島旅トラベラー');
@@ -257,15 +370,44 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
       setOrderSuccess(false);
       setErrorMessage(null);
       setUploadError(null);
-      setAssignedSerial(getFormattedSerial(island.id || island.name));
+      setLimitErrorMessage(null);
+      setJustIssuedCert(null);
+      setShowSaveGuidePanel(false);
+      if (!user) {
+        setCertificateType('card');
+        setAssignedSerial('No.----');
+      } else {
+        void refreshServerCertificateState(true);
+      }
     } else if (tempCheckInPhotoUrl) {
-      // CheckInModalから新しい写真が渡された場合は確実に反映する
       setCustomImage(tempCheckInPhotoUrl);
       if (tempCheckInDate) setVisitDate(tempCheckInDate);
     }
-  }, [isOpen, island, user, contextTravelerName, tempCheckInDate, tempCheckInPhotoUrl]);
+  }, [
+    isOpen,
+    island,
+    user,
+    contextTravelerName,
+    tempCheckInDate,
+    tempCheckInPhotoUrl,
+    refreshServerCertificateState,
+  ]);
+
+  // Ad timer countdown (for Free users during official issuance)
+  useEffect(() => {
+    if (isPlayingAd && adTimeLeft > 0) {
+      const timer = setTimeout(() => {
+        setAdTimeLeft((prev) => Math.max(0, prev - 1));
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [isPlayingAd, adTimeLeft]);
 
   const handleOrderSubmit = async () => {
+    if (!hasVisitedIsland) {
+      setErrorMessage('未訪問の島の公式紙証明書はオーダーできません。');
+      return;
+    }
     if (!recipientName.trim() || !address.trim() || !postalCode.trim() || !phoneNumber.trim()) {
       setErrorMessage('すべての必須項目（お名前、郵便番号、ご住所、電話番号）を入力してください。');
       return;
@@ -273,7 +415,9 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
     setErrorMessage(null);
     setOrderSubmitting(true);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       const token = session?.access_token || '';
       const headers: Record<string, string> = { 'Content-Type': 'application/json' };
       if (token) {
@@ -296,8 +440,8 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
           islandId: island?.id,
           islandName: island?.name,
           visitDate,
-          userId: user?.id
-        })
+          userId: user?.id,
+        }),
       });
       const rawCheckoutText = await res.text();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -308,7 +452,6 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
         data = {};
       }
       if (res.ok && data.url) {
-        // Stripe Checkoutページへリダイレクト
         window.location.href = data.url;
       } else {
         setErrorMessage(data.error || '決済ページの準備中にエラーが発生しました。');
@@ -338,7 +481,6 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
       }
     }
   };
-
 
   // Handle Photo Upload (HEIC / 大容量JPEG・PNG 完全対応)
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -377,7 +519,6 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
       });
       saveUploadedDataUrl(dataUrl);
     } catch {
-      // Fallback: ObjectURL -> offscreen canvas or direct FileReader
       try {
         const objUrl = URL.createObjectURL(file);
         const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -427,599 +568,743 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
     }
   };
 
-  // Draw Certificate to Canvas
-  const drawCertificate = useCallback((): Promise<void> => {
-    const drawToCanvas = (canvas: HTMLCanvasElement | null, seq: number): Promise<void> => {
-      if (!canvas || !island) return Promise.resolve();
-      const ctx = canvas.getContext('2d');
-      if (!ctx) return Promise.resolve();
-
-      // 📐 統一仮想座標系 + 解像度スケール
-      // 横型: ISO A4比率 (1414 x 1000) / カード版は0.7倍 (990 x 700)
-      // 縦型: スマホ壁紙比率 (1080 x 1920) / カード版は0.65倍 (702 x 1248)
-      // 全ての描画座標を仮想サイズ(width x height)に統一し ctx.scale() で縮小するため、カード版でも一切の位置ズレ・はみ出しが起きない
-      const isVert = orientation === 'vertical';
-      const width = isVert ? 1080 : 1414;
-      const height = isVert ? 1920 : 1000;
-      const scaleRatio = certificateType === 'card' ? (isVert ? 0.65 : 0.7) : 1.0;
-
-      const fillFittedText = (
-        c: CanvasRenderingContext2D,
-        text: string,
-        x: number,
-        y: number,
-        maxWidth: number,
-        basePx: number,
-        minPx: number,
-        fontWeightAndFamily: string
-      ) => {
-        let px = basePx;
-        c.font = `${px}px ${fontWeightAndFamily}`.replace(/^(\d+px)\s+(bold|900|800)\s+/, '$2 $1 ');
-        while (px > minPx && c.measureText(text).width > maxWidth) {
-          px -= 2;
-          c.font = `${px}px ${fontWeightAndFamily}`.replace(/^(\d+px)\s+(bold|900|800)\s+/, '$2 $1 ');
-        }
-        c.fillText(text, x, y, maxWidth);
-      };
-
-      const regionObj = regionsData.find((r) => r.id === island.region_id);
-      const regionLabel = regionObj?.name || island.prefecture || '日本離島';
-      const prefPrefix = island.prefecture && !island.name?.startsWith(island.prefecture) ? `${island.prefecture} ` : '';
-
-      const renderContent = (ctx: CanvasRenderingContext2D, heroImg?: HTMLImageElement) => {
-        canvas.width = Math.round(width * scaleRatio);
-        canvas.height = Math.round(height * scaleRatio);
-        ctx.save();
-        ctx.scale(scaleRatio, scaleRatio);
-
-        if (anniversaryMode) {
-          // Anniversary mode logic (simplified for brevity or kept original)
-          ctx.fillStyle = '#0A0F2E';
-          ctx.fillRect(0, 0, width, height);
-          ctx.strokeStyle = '#C9A84C';
-          ctx.lineWidth = 14;
-          ctx.strokeRect(25, 25, width - 50, height - 50);
-          ctx.fillStyle = '#E8D5A3';
-          ctx.font = 'bold 40px serif';
-          ctx.textAlign = 'center';
-          ctx.fillText('★★★ 1ST ANNIVERSARY ★★★', width / 2, height / 2);
-          ctx.restore();
-          return;
-        }
-
-        // Background based on designTheme
-        if (designTheme === 'modern') {
-          const grad = ctx.createLinearGradient(0, 0, width, height);
-          grad.addColorStop(0, '#0F172A');
-          grad.addColorStop(1, '#1E3A8A');
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, width, height);
-          ctx.strokeStyle = '#94A3B8';
-          ctx.lineWidth = 8;
-          ctx.strokeRect(30, 30, width - 60, height - 60);
-          ctx.strokeStyle = '#38BDF8';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(42, 42, width - 84, height - 84);
-        } else if (designTheme === 'vintage') {
-          ctx.fillStyle = '#FCE3B6';
-          ctx.fillRect(0, 0, width, height);
-          ctx.strokeStyle = '#8B4513';
-          ctx.lineWidth = 10;
-          ctx.strokeRect(30, 30, width - 60, height - 60);
-          ctx.strokeStyle = '#A0522D';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(46, 46, width - 92, height - 92);
-        } else {
-          // Classic Gold (Rich Baroque Ornamentation)
-          const grad = ctx.createRadialGradient(width / 2, height / 2, 100, width / 2, height / 2, Math.max(width, height));
-          grad.addColorStop(0, '#1E293B');
-          grad.addColorStop(0.7, '#0F172A');
-          grad.addColorStop(1, '#090D16');
-          ctx.fillStyle = grad;
-          ctx.fillRect(0, 0, width, height);
-
-          // Background Nautical Compass Rose Watermark (背景航海羅針盤透かし)
-          ctx.save();
-          ctx.translate(width / 2, height / 2);
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.07)';
-          ctx.fillStyle = 'rgba(212, 175, 55, 0.04)';
-          ctx.lineWidth = 2;
-          const r = Math.min(width, height) * 0.35;
-          ctx.beginPath();
-          ctx.arc(0, 0, r, 0, Math.PI * 2);
-          ctx.stroke();
-          ctx.beginPath();
-          ctx.arc(0, 0, r * 0.85, 0, Math.PI * 2);
-          ctx.stroke();
-          for (let i = 0; i < 8; i++) {
-            const angle = (i * Math.PI) / 4;
-            const len = i % 2 === 0 ? r * 1.12 : r * 0.82;
-            const hw = i % 2 === 0 ? 14 : 7;
-            ctx.save();
-            ctx.rotate(angle);
-            ctx.beginPath();
-            ctx.moveTo(0, -len);
-            ctx.lineTo(hw, 0);
-            ctx.lineTo(0, 0);
-            ctx.closePath();
-            ctx.fill();
-            ctx.stroke();
-            ctx.restore();
+  // Sync pre-built PNG Blob + File cache from canvasRef so mobile Share / Download runs with ZERO await
+  const cacheLatestCanvasArtifacts = useCallback(
+    async (effectiveType: 'card' | 'high_quality', effectiveSerial: string) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      try {
+        const blob = await new Promise<Blob | null>((resolve) => {
+          try {
+            canvas.toBlob((b) => resolve(b), 'image/png', 1.0);
+          } catch {
+            resolve(null);
           }
-          ctx.restore();
-
-          // Ambient Gold Stardust Particles (背景金粉ダスト)
-          ctx.fillStyle = 'rgba(243, 229, 171, 0.12)';
-          for (let i = 0; i < 65; i++) {
-            const px = Math.sin(i * 17) * width * 0.45 + width / 2;
-            const py = Math.cos(i * 23) * height * 0.45 + height / 2;
-            const psize = (i % 3) + 1;
-            ctx.beginPath();
-            ctx.arc(px, py, psize, 0, Math.PI * 2);
-            ctx.fill();
-          }
-
-          // Triple Layered Gold Metallic Frames (三重彫刻金枠)
-          ctx.strokeStyle = '#D4AF37';
-          ctx.lineWidth = 14;
-          ctx.strokeRect(24, 24, width - 48, height - 48);
-
-          ctx.strokeStyle = '#F59E0B';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(36, 36, width - 72, height - 72);
-
-          ctx.strokeStyle = '#F3E5AB';
-          ctx.lineWidth = 3;
-          ctx.strokeRect(44, 44, width - 88, height - 88);
-
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.5)';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(52, 52, width - 104, height - 104);
-
-          // Baroque Gold Corner Filigree Ornaments (四隅の豪華な金箔アラベスクコーナー彫刻)
-          const cornerFiligree = (cx: number, cy: number, rot: number) => {
-            ctx.save();
-            ctx.translate(cx, cy);
-            ctx.rotate(rot);
-            ctx.strokeStyle = '#D4AF37';
-            ctx.fillStyle = '#F3E5AB';
-            ctx.lineWidth = 2.5;
-
-            ctx.beginPath();
-            ctx.arc(0, 0, 45, 0, Math.PI / 2);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(0, 0, 52, 0, Math.PI / 2);
-            ctx.stroke();
-
-            // Decorative swirls
-            ctx.beginPath();
-            ctx.arc(28, 28, 12, 0, Math.PI * 2);
-            ctx.stroke();
-
-            ctx.beginPath();
-            ctx.arc(16, 0, 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.beginPath();
-            ctx.arc(0, 16, 4, 0, Math.PI * 2);
-            ctx.fill();
-
-            ctx.restore();
-          };
-
-          cornerFiligree(52, 52, 0); // Top-Left
-          cornerFiligree(width - 52, 52, Math.PI / 2); // Top-Right
-          cornerFiligree(width - 52, height - 52, Math.PI); // Bottom-Right
-          cornerFiligree(52, height - 52, (Math.PI * 3) / 2); // Bottom-Left
-        }
-
-        // Holographic Overlay (if applicable)
-        if (hasHologram && certificateType === 'high_quality') {
-          const holoGrad = ctx.createLinearGradient(0, 0, width, height);
-          holoGrad.addColorStop(0, 'rgba(236, 72, 153, 0.15)');
-          holoGrad.addColorStop(0.5, 'rgba(14, 165, 233, 0.15)');
-          holoGrad.addColorStop(1, 'rgba(16, 185, 129, 0.15)');
-          ctx.fillStyle = holoGrad;
-          ctx.fillRect(0, 0, width, height);
-        }
-
-        // Text Colors
-        let primaryColor, secondaryColor, accentColor;
-        if (designTheme === 'modern') {
-          primaryColor = '#F8FAFC'; secondaryColor = '#94A3B8'; accentColor = '#38BDF8';
-        } else if (designTheme === 'vintage') {
-          primaryColor = '#3E2723'; secondaryColor = '#5D4037'; accentColor = '#D84315';
-        } else {
-          primaryColor = '#F3E5AB'; secondaryColor = '#94A3B8'; accentColor = '#D4AF37';
-        }
-
-        const cx = width / 2;
-        const displaySerial = assignedSerial || `No.0001`;
-        const diff = getIslandDifficulty(island);
-
-        // 🎨 縦型 (スマホ壁紙 9:16 = 1080x1920) vs 横型 (A4印刷 1.414:1 = 1414x1000) 専属レイアウトエンジン
-        if (isVert) {
-          // 📱 【縦型テンプレート】 (仮想 1080 x 1920 px / 全要素が非重複ゾーンに厳密配置)
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'alphabetic';
-
-          // Zone 1: Headers (y = 140..255)
-          ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 24px serif';
-          ctx.fillText(hasHologram ? 'KIRATABI VERIFIED PHOTO ARRIVAL RECORD' : 'KIRATABI OFFICIAL RECORD OF ARRIVAL', cx, 140);
-
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 62px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText(certificateType === 'card' ? '公 認 到 達 証' : '島 旅 到 達 公 認 証', cx, 224);
-
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
-          ctx.lineWidth = 2;
-          ctx.beginPath();
-          ctx.moveTo(cx - 260, 254);
-          ctx.lineTo(cx + 260, 254);
-          ctx.stroke();
-
-          // Zone 2: Name Ribbon Plate & Official Citation (y = 285..425)
-          const nameBoxTop = 285;
-          const nameBoxH = 82;
-          const nameBoxW = 760;
-          const bannerGrad = ctx.createLinearGradient(cx - nameBoxW / 2, 0, cx + nameBoxW / 2, 0);
-          bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
-          bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
-          bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
-          ctx.fillStyle = bannerGrad;
-          ctx.fillRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
-
-          ctx.strokeStyle = '#D4AF37';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
-          ctx.strokeStyle = '#F59E0B';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(cx - nameBoxW / 2 + 6, nameBoxTop + 6, nameBoxW - 12, nameBoxH - 12);
-
-          ctx.fillStyle = primaryColor;
-          fillFittedText(ctx, `${travelerName || '島旅トラベラー'}  殿`, cx, nameBoxTop + 57, nameBoxW - 48, 48, 28, 'bold "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif');
-
-          ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 21px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText('貴殿が下記離島へ実際に渡航・到達したことを公式に認定しこれを証します', cx, 412, 880);
-
-          // Zone 3: Island Info (y = 472..540)
-          ctx.fillStyle = accentColor;
-          fillFittedText(
-            ctx,
-            `【 到達離島 】 ${prefPrefix}${island.name}（${regionLabel}）`,
-            cx,
-            474,
-            900,
-            34,
-            22,
-            'bold "Hiragino Mincho ProN", "Yu Mincho", sans-serif'
-          );
-
-          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : designTheme === 'vintage' ? '#8D3B12' : '#F59E0B';
-          fillFittedText(
-            ctx,
-            `【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})   ｜   【 到達日 】 ${visitDate}`,
-            cx,
-            528,
-            900,
-            25,
-            18,
-            'bold sans-serif'
-          );
-
-          // Zone 4: Hero Photo or Official Maritime Plate (strictly bounded y = 575..1515)
-          if (heroImg) {
-            ctx.save();
-            const isPortraitPhoto = heroImg.height > heroImg.width;
-            const heroW = isPortraitPhoto ? 700 : 860;
-            const heroH = isPortraitPhoto ? 910 : 580;
-            const heroX = cx - heroW / 2;
-            const heroY = isPortraitPhoto ? 585 : 735;
-
-            ctx.beginPath();
-            ctx.rect(heroX, heroY, heroW, heroH);
-            ctx.clip();
-
-            const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
-            const dw = heroImg.width * scale;
-            const dh = heroImg.height * scale;
-            ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
-            ctx.restore();
-
-            ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 6;
-            ctx.strokeRect(heroX, heroY, heroW, heroH);
-            ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 2;
-            ctx.strokeRect(heroX - 7, heroY - 7, heroW + 14, heroH + 14);
-
-            const drawCornerBracket = (bx: number, by: number, rot: number) => {
-              ctx.save();
-              ctx.translate(bx, by);
-              ctx.rotate(rot);
-              ctx.strokeStyle = '#F3E5AB';
-              ctx.lineWidth = 3;
-              ctx.beginPath();
-              ctx.moveTo(-16, 0);
-              ctx.lineTo(0, 0);
-              ctx.lineTo(0, -16);
-              ctx.stroke();
-              ctx.restore();
-            };
-            drawCornerBracket(heroX - 7, heroY - 7, 0);
-            drawCornerBracket(heroX + heroW + 7, heroY - 7, Math.PI / 2);
-            drawCornerBracket(heroX + heroW + 7, heroY + heroH + 7, Math.PI);
-            drawCornerBracket(heroX - 7, heroY + heroH + 7, (Math.PI * 3) / 2);
-          } else {
-            const plateW = 840;
-            const plateH = 540;
-            const plateX = cx - plateW / 2;
-            const plateY = 755;
-            ctx.fillStyle = designTheme === 'vintage' ? 'rgba(93, 64, 55, 0.08)' : 'rgba(15, 23, 42, 0.55)';
-            ctx.fillRect(plateX, plateY, plateW, plateH);
-            ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 4;
-            ctx.strokeRect(plateX, plateY, plateW, plateH);
-            ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-            ctx.lineWidth = 1.5;
-            ctx.strokeRect(plateX + 12, plateY + 12, plateW - 24, plateH - 24);
-
-            ctx.textAlign = 'center';
-            ctx.fillStyle = accentColor;
-            ctx.font = 'bold 26px serif';
-            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 145);
-            ctx.fillStyle = primaryColor;
-            fillFittedText(ctx, island.name, cx, plateY + 250, plateW - 60, 54, 30, 'bold serif');
-            ctx.fillStyle = secondaryColor;
-            ctx.font = '24px monospace';
-            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 340, plateW - 60);
-            ctx.fillText(`REGION: ${prefPrefix}${regionLabel}`, cx, plateY + 395, plateW - 60);
-          }
-
-          // Zone 5: Official Footer & Dual Seals (strictly y = 1565..1835, zero overlap with photo or borders)
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(100, 1570);
-          ctx.lineTo(width - 100, 1570);
-          ctx.stroke();
-
-          // 左：40稜ギザ金縁・公式海事公証メダリオン丸印 (x = 185, r = 72 -> spans 113..257)
-          drawOfficialMedallionSeal(ctx, 185, 1715, 72, {
-            variant: designTheme === 'vintage' ? 'crimson' : 'gold',
-          });
-
-          // 中央：発行機関・シリアル署名ブロック (x = 540, maxWidth = 440 -> spans 320..760)
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'alphabetic';
-          ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 20px monospace';
-          ctx.fillText(`SERIAL NO: ${displaySerial}`, cx, 1650, 440);
-          ctx.font = '18px monospace';
-          ctx.fillText(`LAT/LON: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, 1684, 440);
-
-          ctx.fillStyle = primaryColor;
-          ctx.font = 'bold 31px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText('輝旅 島専科', cx, 1742, 440);
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 20px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText('離島到達公式認定委員会 発行', cx, 1780, 440);
-          ctx.fillStyle = secondaryColor;
-          ctx.font = '15px sans-serif';
-          ctx.fillText('KIRATABI SHIMASENKA OFFICIAL CERTIFICATION BOARD', cx, 1812, 440);
-
-          // 右：伝統二重枠・縦組み3列本朱官印「輝旅島専 / 公式到達 / 認定之印」 (x = 895, size = 138 -> spans 826..964)
-          drawOfficialSquareHanko(ctx, 895, 1715, 138, {
-            onDarkBackground: designTheme !== 'vintage',
-          });
-        } else {
-          // 📄 【横型テンプレート】 (仮想 1414 x 1000 px / 全要素が非重複ゾーンに厳密配置)
-          ctx.textAlign = 'center';
-          ctx.textBaseline = 'alphabetic';
-
-          // Zone 1: Headers (y = 102..192)
-          ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 20px serif';
-          ctx.fillText(hasHologram ? 'KIRATABI VERIFIED PHOTO ARRIVAL RECORD' : 'KIRATABI OFFICIAL RECORD OF ARRIVAL', cx, 102);
-
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 50px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText(certificateType === 'card' ? '公 認 到 達 証' : '島 旅 到 達 公 認 証', cx, 166);
-
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
-          ctx.lineWidth = 1.8;
-          ctx.beginPath();
-          ctx.moveTo(cx - 250, 190);
-          ctx.lineTo(cx + 250, 190);
-          ctx.stroke();
-
-          // Zone 2: Name Ribbon Plate & Citation (y = 212..320)
-          const nameBoxTop = 212;
-          const nameBoxH = 66;
-          const nameBoxW = 640;
-          const bannerGrad = ctx.createLinearGradient(cx - nameBoxW / 2, 0, cx + nameBoxW / 2, 0);
-          bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
-          bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
-          bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
-          ctx.fillStyle = bannerGrad;
-          ctx.fillRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
-
-          ctx.strokeStyle = '#D4AF37';
-          ctx.lineWidth = 2;
-          ctx.strokeRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
-          ctx.strokeStyle = '#F59E0B';
-          ctx.lineWidth = 1;
-          ctx.strokeRect(cx - nameBoxW / 2 + 5, nameBoxTop + 5, nameBoxW - 10, nameBoxH - 10);
-
-          ctx.fillStyle = primaryColor;
-          fillFittedText(ctx, `${travelerName || '島旅トラベラー'}  殿`, cx, nameBoxTop + 47, nameBoxW - 40, 40, 24, 'bold "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif');
-
-          ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 17px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText('貴殿が下記離島へ実際に渡航・到達したことを公式に認定しこれを証します', cx, 312, 1100);
-
-          // Zone 3: Island Info (y = 358..404)
-          ctx.fillStyle = accentColor;
-          fillFittedText(
-            ctx,
-            `【 到達離島 】 ${prefPrefix}${island.name}（${regionLabel}）`,
-            cx,
-            360,
-            1160,
-            28,
-            20,
-            'bold "Hiragino Mincho ProN", "Yu Mincho", sans-serif'
-          );
-
-          ctx.fillStyle = designTheme === 'modern' ? '#38BDF8' : designTheme === 'vintage' ? '#8D3B12' : '#F59E0B';
-          fillFittedText(
-            ctx,
-            `【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})   ｜   【 到達日 】 ${visitDate}`,
-            cx,
-            402,
-            1160,
-            21,
-            16,
-            'bold sans-serif'
-          );
-
-          // Zone 4: Hero Photo or Maritime Plate (strictly bounded y = 432..784)
-          if (heroImg) {
-            ctx.save();
-            const isPortraitPhoto = heroImg.height > heroImg.width;
-            const heroW = isPortraitPhoto ? 286 : 580;
-            const heroH = 342;
-            const heroX = cx - heroW / 2;
-            const heroY = 436;
-
-            ctx.beginPath();
-            ctx.rect(heroX, heroY, heroW, heroH);
-            ctx.clip();
-
-            const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
-            const dw = heroImg.width * scale;
-            const dh = heroImg.height * scale;
-            ctx.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
-            ctx.restore();
-
-            ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 5;
-            ctx.strokeRect(heroX, heroY, heroW, heroH);
-            ctx.strokeStyle = '#F59E0B';
-            ctx.lineWidth = 1.8;
-            ctx.strokeRect(heroX - 6, heroY - 6, heroW + 12, heroH + 12);
-          } else {
-            const plateW = 620;
-            const plateH = 324;
-            const plateX = cx - plateW / 2;
-            const plateY = 444;
-            ctx.fillStyle = designTheme === 'vintage' ? 'rgba(93, 64, 55, 0.08)' : 'rgba(15, 23, 42, 0.55)';
-            ctx.fillRect(plateX, plateY, plateW, plateH);
-            ctx.strokeStyle = accentColor;
-            ctx.lineWidth = 3.5;
-            ctx.strokeRect(plateX, plateY, plateW, plateH);
-            ctx.strokeStyle = 'rgba(212, 175, 55, 0.4)';
-            ctx.lineWidth = 1.5;
-            ctx.strokeRect(plateX + 10, plateY + 10, plateW - 20, plateH - 20);
-
-            ctx.textAlign = 'center';
-            ctx.fillStyle = accentColor;
-            ctx.font = 'bold 18px serif';
-            ctx.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 78);
-            ctx.fillStyle = primaryColor;
-            fillFittedText(ctx, `${prefPrefix}${island.name}`, cx, plateY + 156, plateW - 48, 38, 24, 'bold serif');
-            ctx.fillStyle = secondaryColor;
-            ctx.font = '18px monospace';
-            ctx.fillText(`COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, plateY + 220, plateW - 48);
-            ctx.fillText('KIRATABI VERIFIED ARCHIPELAGO ARCHIVE', cx, plateY + 256, plateW - 48);
-          }
-
-          // Zone 5: Official Footer & Dual Seals (strictly y = 805..932, zero overlap)
-          ctx.strokeStyle = 'rgba(212, 175, 55, 0.35)';
-          ctx.lineWidth = 1.5;
-          ctx.beginPath();
-          ctx.moveTo(96, 806);
-          ctx.lineTo(width - 96, 806);
-          ctx.stroke();
-
-          // 左：40稜ギザ金縁・公式海事公証メダリオン丸印 (x = 162, r = 54 -> spans 108..216) + シリアル情報 (x = 236..496)
-          drawOfficialMedallionSeal(ctx, 162, 872, 54, {
-            variant: designTheme === 'vintage' ? 'crimson' : 'gold',
-          });
-
-          ctx.textAlign = 'left';
-          ctx.textBaseline = 'alphabetic';
-          ctx.fillStyle = secondaryColor;
-          ctx.font = 'bold 17px monospace';
-          ctx.fillText(`SERIAL: ${displaySerial}`, 236, 864, 260);
-          ctx.font = '15px monospace';
-          ctx.fillText(`GPS: ${island.coordinates || 'JAPAN'}`, 236, 892, 260);
-
-          // 中央：発行機関署名ブロック (x = 707, maxWidth = 420 -> spans 497..917)
-          ctx.textAlign = 'center';
-          ctx.fillStyle = primaryColor;
-          ctx.font = 'bold 24px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText('輝旅 島専科（KIRATABI SHIMASENKA）', cx, 858, 420);
-          ctx.fillStyle = accentColor;
-          ctx.font = 'bold 17px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
-          ctx.fillText('離島到達公式認定委員会 発行', cx, 888, 420);
-          ctx.fillStyle = secondaryColor;
-          ctx.font = '13px sans-serif';
-          ctx.fillText('OFFICIAL ISLAND CONQUEST CERTIFICATION BOARD', cx, 914, 420);
-
-          // 右：伝統二重枠・縦組み3列本朱官印「輝旅島専 / 公式到達 / 認定之印」 (x = 1246, size = 110 -> spans 1191..1301)
-          drawOfficialSquareHanko(ctx, 1246, 870, 110, {
-            onDarkBackground: designTheme !== 'vintage',
-          });
-        }
-
-        ctx.restore();
-      };
-
-      const verifiedPhotos = getVerifiedIslandPhotos(island);
-      const verifiedFallbackUrl =
-        orientation === 'vertical'
-          ? (verifiedPhotos.mobileUrl || verifiedPhotos.desktopUrl)
-          : (verifiedPhotos.desktopUrl || verifiedPhotos.mobileUrl);
-      const activePhotoSrc = customImage || tempCheckInPhotoUrl || verifiedFallbackUrl || null;
-
-      if (activePhotoSrc) {
-        return new Promise<void>((resolve) => {
-          const img = new Image();
-          if (!activePhotoSrc.startsWith('data:') && !activePhotoSrc.startsWith('blob:')) {
-            img.crossOrigin = 'anonymous';
-          }
-          img.onload = () => {
-            if (seq === renderSeqRef.current) {
-              renderContent(ctx, img);
-            }
-            resolve();
-          };
-          img.onerror = () => {
-            if (seq === renderSeqRef.current) {
-              renderContent(ctx, undefined);
-            }
-            resolve();
-          };
-          img.src = activePhotoSrc;
         });
-      } else {
-        renderContent(ctx, undefined);
-        return Promise.resolve();
+        if (blob) {
+          latestPngBlobRef.current = blob;
+          const fileName = buildCertificateFilename(island?.name, visitDate, effectiveType, effectiveSerial);
+          latestPngFileRef.current = new File([blob], fileName, { type: 'image/png' });
+        }
+        try {
+          const previewUrl = canvas.toDataURL('image/png');
+          setLatestPreviewDataUrl(previewUrl);
+        } catch {
+          // Ignore preview dataUrl errors
+        }
+      } catch {
+        // Ignore export cache errors
       }
-    };
+    },
+    [island?.name, visitDate]
+  );
 
-    const seq = ++renderSeqRef.current;
-    const tasks = [drawToCanvas(canvasRef.current, seq)];
-    if (isFullscreenPreview) {
-      tasks.push(drawToCanvas(fullscreenCanvasRef.current, seq));
-    }
-    return Promise.all(tasks).then(() => {});
-  }, [island, anniversaryMode, travelerName, visitDate, hasHologram, customImage, tempCheckInPhotoUrl, certificateType, orientation, designTheme, isFullscreenPreview, assignedSerial]);
+  // Draw Certificate to Canvas (supports explicit overrides to prevent stale React state during issuance)
+  const drawCertificate = useCallback(
+    (overrides?: {
+      type?: 'card' | 'high_quality';
+      serial?: string;
+      forceCleanWatermark?: boolean;
+    }): Promise<void> => {
+      const targetType = overrides?.type || certificateType;
+      const targetSerial = overrides?.serial || assignedSerial || 'No.----';
+
+      let watermarkLabel: string | null = null;
+      if (!overrides?.forceCleanWatermark) {
+        const issuedForTarget =
+          targetType === 'high_quality' ? issuedCertMap.high_quality : issuedCertMap.card;
+        if (!hasVisitedIsland) {
+          watermarkLabel = 'SAMPLE / 見本（未到達）';
+        } else if (!user) {
+          watermarkLabel = 'SAMPLE / 無料ログイン後に発行可能';
+        } else if (!issuedForTarget) {
+          if (targetType === 'high_quality' && isHighQualityQuotaExhausted) {
+            watermarkLabel = 'SAMPLE / 今月の高画質枠上限';
+          } else if (targetType === 'card' && isCardDailyQuotaExhausted) {
+            watermarkLabel = 'SAMPLE / 本日の新規発行上限';
+          }
+        }
+      }
+
+      const drawToCanvas = async (canvas: HTMLCanvasElement | null, seq: number): Promise<void> => {
+        if (!canvas || !island) return;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return;
+
+        const isVert = orientation === 'vertical';
+        const width = isVert ? 1080 : 1414;
+        const height = isVert ? 1920 : 1000;
+        const scaleRatio = targetType === 'card' ? (isVert ? 0.65 : 0.7) : 1.0;
+
+        const fillFittedText = (
+          c: CanvasRenderingContext2D,
+          text: string,
+          x: number,
+          y: number,
+          maxWidth: number,
+          basePx: number,
+          minPx: number,
+          fontWeightAndFamily: string
+        ) => {
+          let px = basePx;
+          c.font = `${px}px ${fontWeightAndFamily}`.replace(/^(\d+px)\s+(bold|900|800)\s+/, '$2 $1 ');
+          while (px > minPx && c.measureText(text).width > maxWidth) {
+            px -= 2;
+            c.font = `${px}px ${fontWeightAndFamily}`.replace(/^(\d+px)\s+(bold|900|800)\s+/, '$2 $1 ');
+          }
+          c.fillText(text, x, y, maxWidth);
+        };
+
+        const regionObj = regionsData.find((r) => r.id === island.region_id);
+        const regionLabel = regionObj?.name || island.prefecture || '日本離島';
+        const prefPrefix =
+          island.prefecture && !island.name?.startsWith(island.prefecture)
+            ? `${island.prefecture} `
+            : '';
+
+        const drawProtectiveWatermark = (c: CanvasRenderingContext2D, label: string) => {
+          c.save();
+          c.translate(width / 2, height / 2);
+          c.rotate(-Math.PI / 7);
+          c.textAlign = 'center';
+          c.textBaseline = 'middle';
+
+          // Repeat subtle diagonal bands + central bold stamp
+          c.font = 'bold 34px sans-serif';
+          c.fillStyle = 'rgba(255, 255, 255, 0.14)';
+          for (let dy = -height; dy <= height; dy += 240) {
+            c.fillText(`${label}   •   KIRATABI PREVIEW`, 0, dy);
+          }
+
+          const bannerW = Math.min(width * 0.92, 980);
+          const bannerH = 128;
+          c.fillStyle = 'rgba(15, 23, 42, 0.78)';
+          c.fillRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
+          c.strokeStyle = 'rgba(245, 158, 11, 0.85)';
+          c.lineWidth = 4;
+          c.strokeRect(-bannerW / 2, -bannerH / 2, bannerW, bannerH);
+
+          c.fillStyle = '#FBBF24';
+          fillFittedText(c, label, 0, 4, bannerW - 48, 52, 28, 'bold sans-serif');
+          c.restore();
+        };
+
+        const renderContent = (c: CanvasRenderingContext2D, heroImg?: HTMLImageElement) => {
+          canvas.width = Math.round(width * scaleRatio);
+          canvas.height = Math.round(height * scaleRatio);
+          c.save();
+          c.scale(scaleRatio, scaleRatio);
+
+          if (anniversaryMode) {
+            c.fillStyle = '#0A0F2E';
+            c.fillRect(0, 0, width, height);
+            c.strokeStyle = '#C9A84C';
+            c.lineWidth = 14;
+            c.strokeRect(25, 25, width - 50, height - 50);
+            c.fillStyle = '#E8D5A3';
+            c.font = 'bold 40px serif';
+            c.textAlign = 'center';
+            c.fillText('★★★ 1ST ANNIVERSARY ★★★', width / 2, height / 2);
+            c.restore();
+            return;
+          }
+
+          if (designTheme === 'modern') {
+            const grad = c.createLinearGradient(0, 0, width, height);
+            grad.addColorStop(0, '#0F172A');
+            grad.addColorStop(1, '#1E3A8A');
+            c.fillStyle = grad;
+            c.fillRect(0, 0, width, height);
+            c.strokeStyle = '#94A3B8';
+            c.lineWidth = 8;
+            c.strokeRect(30, 30, width - 60, height - 60);
+            c.strokeStyle = '#38BDF8';
+            c.lineWidth = 2;
+            c.strokeRect(42, 42, width - 84, height - 84);
+          } else if (designTheme === 'vintage') {
+            c.fillStyle = '#FCE3B6';
+            c.fillRect(0, 0, width, height);
+            c.strokeStyle = '#8B4513';
+            c.lineWidth = 10;
+            c.strokeRect(30, 30, width - 60, height - 60);
+            c.strokeStyle = '#A0522D';
+            c.lineWidth = 2;
+            c.strokeRect(46, 46, width - 92, height - 92);
+          } else {
+            const grad = c.createRadialGradient(
+              width / 2,
+              height / 2,
+              100,
+              width / 2,
+              height / 2,
+              Math.max(width, height)
+            );
+            grad.addColorStop(0, '#1E293B');
+            grad.addColorStop(0.7, '#0F172A');
+            grad.addColorStop(1, '#090D16');
+            c.fillStyle = grad;
+            c.fillRect(0, 0, width, height);
+
+            c.save();
+            c.translate(width / 2, height / 2);
+            c.strokeStyle = 'rgba(212, 175, 55, 0.07)';
+            c.fillStyle = 'rgba(212, 175, 55, 0.04)';
+            c.lineWidth = 2;
+            const r = Math.min(width, height) * 0.35;
+            c.beginPath();
+            c.arc(0, 0, r, 0, Math.PI * 2);
+            c.stroke();
+            c.beginPath();
+            c.arc(0, 0, r * 0.85, 0, Math.PI * 2);
+            c.stroke();
+            for (let i = 0; i < 8; i++) {
+              const angle = (i * Math.PI) / 4;
+              const len = i % 2 === 0 ? r * 1.12 : r * 0.82;
+              const hw = i % 2 === 0 ? 14 : 7;
+              c.save();
+              c.rotate(angle);
+              c.beginPath();
+              c.moveTo(0, -len);
+              c.lineTo(hw, 0);
+              c.lineTo(0, 0);
+              c.closePath();
+              c.fill();
+              c.stroke();
+              c.restore();
+            }
+            c.restore();
+
+            c.fillStyle = 'rgba(243, 229, 171, 0.12)';
+            for (let i = 0; i < 65; i++) {
+              const px = Math.sin(i * 17) * width * 0.45 + width / 2;
+              const py = Math.cos(i * 23) * height * 0.45 + height / 2;
+              const psize = (i % 3) + 1;
+              c.beginPath();
+              c.arc(px, py, psize, 0, Math.PI * 2);
+              c.fill();
+            }
+
+            c.strokeStyle = '#D4AF37';
+            c.lineWidth = 14;
+            c.strokeRect(24, 24, width - 48, height - 48);
+
+            c.strokeStyle = '#F59E0B';
+            c.lineWidth = 2;
+            c.strokeRect(36, 36, width - 72, height - 72);
+
+            c.strokeStyle = '#F3E5AB';
+            c.lineWidth = 3;
+            c.strokeRect(44, 44, width - 88, height - 88);
+
+            c.strokeStyle = 'rgba(212, 175, 55, 0.5)';
+            c.lineWidth = 1;
+            c.strokeRect(52, 52, width - 104, height - 104);
+
+            const cornerFiligree = (cxCorner: number, cyCorner: number, rot: number) => {
+              c.save();
+              c.translate(cxCorner, cyCorner);
+              c.rotate(rot);
+              c.strokeStyle = '#D4AF37';
+              c.fillStyle = '#F3E5AB';
+              c.lineWidth = 2.5;
+              c.beginPath();
+              c.arc(0, 0, 45, 0, Math.PI / 2);
+              c.stroke();
+              c.beginPath();
+              c.arc(0, 0, 52, 0, Math.PI / 2);
+              c.stroke();
+              c.beginPath();
+              c.arc(28, 28, 12, 0, Math.PI * 2);
+              c.stroke();
+              c.beginPath();
+              c.arc(16, 0, 4, 0, Math.PI * 2);
+              c.fill();
+              c.beginPath();
+              c.arc(0, 16, 4, 0, Math.PI * 2);
+              c.fill();
+              c.restore();
+            };
+
+            cornerFiligree(52, 52, 0);
+            cornerFiligree(width - 52, 52, Math.PI / 2);
+            cornerFiligree(width - 52, height - 52, Math.PI);
+            cornerFiligree(52, height - 52, (Math.PI * 3) / 2);
+          }
+
+          if (hasHologram && targetType === 'high_quality') {
+            const holoGrad = c.createLinearGradient(0, 0, width, height);
+            holoGrad.addColorStop(0, 'rgba(236, 72, 153, 0.15)');
+            holoGrad.addColorStop(0.5, 'rgba(14, 165, 233, 0.15)');
+            holoGrad.addColorStop(1, 'rgba(16, 185, 129, 0.15)');
+            c.fillStyle = holoGrad;
+            c.fillRect(0, 0, width, height);
+          }
+
+          let primaryColor: string, secondaryColor: string, accentColor: string;
+          if (designTheme === 'modern') {
+            primaryColor = '#F8FAFC';
+            secondaryColor = '#94A3B8';
+            accentColor = '#38BDF8';
+          } else if (designTheme === 'vintage') {
+            primaryColor = '#3E2723';
+            secondaryColor = '#5D4037';
+            accentColor = '#D84315';
+          } else {
+            primaryColor = '#F3E5AB';
+            secondaryColor = '#94A3B8';
+            accentColor = '#D4AF37';
+          }
+
+          const cx = width / 2;
+          const displaySerial = targetSerial;
+          const diff = getIslandDifficulty(island);
+
+          if (isVert) {
+            c.textAlign = 'center';
+            c.textBaseline = 'alphabetic';
+
+            c.fillStyle = secondaryColor;
+            c.font = 'bold 24px serif';
+            c.fillText(
+              hasHologram
+                ? 'KIRATABI VERIFIED PHOTO ARRIVAL RECORD'
+                : 'KIRATABI OFFICIAL RECORD OF ARRIVAL',
+              cx,
+              140
+            );
+
+            c.fillStyle = accentColor;
+            c.font = 'bold 62px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText(targetType === 'card' ? '公 認 到 達 証' : '島 旅 到 達 公 認 証', cx, 224);
+
+            c.strokeStyle = 'rgba(212, 175, 55, 0.45)';
+            c.lineWidth = 2;
+            c.beginPath();
+            c.moveTo(cx - 260, 254);
+            c.lineTo(cx + 260, 254);
+            c.stroke();
+
+            const nameBoxTop = 285;
+            const nameBoxH = 82;
+            const nameBoxW = 760;
+            const bannerGrad = c.createLinearGradient(cx - nameBoxW / 2, 0, cx + nameBoxW / 2, 0);
+            bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
+            bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
+            bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
+            c.fillStyle = bannerGrad;
+            c.fillRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
+
+            c.strokeStyle = '#D4AF37';
+            c.lineWidth = 2;
+            c.strokeRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
+            c.strokeStyle = '#F59E0B';
+            c.lineWidth = 1;
+            c.strokeRect(cx - nameBoxW / 2 + 6, nameBoxTop + 6, nameBoxW - 12, nameBoxH - 12);
+
+            c.fillStyle = primaryColor;
+            fillFittedText(
+              c,
+              `${travelerName || '島旅トラベラー'}  殿`,
+              cx,
+              nameBoxTop + 57,
+              nameBoxW - 48,
+              48,
+              28,
+              'bold "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif'
+            );
+
+            c.fillStyle = secondaryColor;
+            c.font = 'bold 21px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText(
+              '貴殿が下記離島へ実際に渡航・到達したことを公式に認定しこれを証します',
+              cx,
+              412,
+              880
+            );
+
+            c.fillStyle = accentColor;
+            fillFittedText(
+              c,
+              `【 到達離島 】 ${prefPrefix}${island.name}（${regionLabel}）`,
+              cx,
+              474,
+              900,
+              34,
+              22,
+              'bold "Hiragino Mincho ProN", "Yu Mincho", sans-serif'
+            );
+
+            c.fillStyle =
+              designTheme === 'modern'
+                ? '#38BDF8'
+                : designTheme === 'vintage'
+                ? '#8D3B12'
+                : '#F59E0B';
+            fillFittedText(
+              c,
+              `【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})   ｜   【 到達日 】 ${visitDate}`,
+              cx,
+              528,
+              900,
+              25,
+              18,
+              'bold sans-serif'
+            );
+
+            if (heroImg) {
+              c.save();
+              const isPortraitPhoto = heroImg.height > heroImg.width;
+              const heroW = isPortraitPhoto ? 700 : 860;
+              const heroH = isPortraitPhoto ? 910 : 580;
+              const heroX = cx - heroW / 2;
+              const heroY = isPortraitPhoto ? 585 : 735;
+
+              c.beginPath();
+              c.rect(heroX, heroY, heroW, heroH);
+              c.clip();
+
+              const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
+              const dw = heroImg.width * scale;
+              const dh = heroImg.height * scale;
+              c.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
+              c.restore();
+
+              c.strokeStyle = accentColor;
+              c.lineWidth = 6;
+              c.strokeRect(heroX, heroY, heroW, heroH);
+              c.strokeStyle = '#F59E0B';
+              c.lineWidth = 2;
+              c.strokeRect(heroX - 7, heroY - 7, heroW + 14, heroH + 14);
+
+              const drawCornerBracket = (bx: number, by: number, rot: number) => {
+                c.save();
+                c.translate(bx, by);
+                c.rotate(rot);
+                c.strokeStyle = '#F3E5AB';
+                c.lineWidth = 3;
+                c.beginPath();
+                c.moveTo(-16, 0);
+                c.lineTo(0, 0);
+                c.lineTo(0, -16);
+                c.stroke();
+                c.restore();
+              };
+              drawCornerBracket(heroX - 7, heroY - 7, 0);
+              drawCornerBracket(heroX + heroW + 7, heroY - 7, Math.PI / 2);
+              drawCornerBracket(heroX + heroW + 7, heroY + heroH + 7, Math.PI);
+              drawCornerBracket(heroX - 7, heroY + heroH + 7, (Math.PI * 3) / 2);
+            } else {
+              const plateW = 840;
+              const plateH = 540;
+              const plateX = cx - plateW / 2;
+              const plateY = 755;
+              c.fillStyle =
+                designTheme === 'vintage' ? 'rgba(93, 64, 55, 0.08)' : 'rgba(15, 23, 42, 0.55)';
+              c.fillRect(plateX, plateY, plateW, plateH);
+              c.strokeStyle = accentColor;
+              c.lineWidth = 4;
+              c.strokeRect(plateX, plateY, plateW, plateH);
+              c.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+              c.lineWidth = 1.5;
+              c.strokeRect(plateX + 12, plateY + 12, plateW - 24, plateH - 24);
+
+              c.textAlign = 'center';
+              c.fillStyle = accentColor;
+              c.font = 'bold 26px serif';
+              c.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 145);
+              c.fillStyle = primaryColor;
+              fillFittedText(c, island.name, cx, plateY + 250, plateW - 60, 54, 30, 'bold serif');
+              c.fillStyle = secondaryColor;
+              c.font = '24px monospace';
+              c.fillText(
+                `COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`,
+                cx,
+                plateY + 340,
+                plateW - 60
+              );
+              c.fillText(`REGION: ${prefPrefix}${regionLabel}`, cx, plateY + 395, plateW - 60);
+            }
+
+            c.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+            c.lineWidth = 1.5;
+            c.beginPath();
+            c.moveTo(100, 1570);
+            c.lineTo(width - 100, 1570);
+            c.stroke();
+
+            drawOfficialMedallionSeal(c, 185, 1715, 72, {
+              variant: designTheme === 'vintage' ? 'crimson' : 'gold',
+            });
+
+            c.textAlign = 'center';
+            c.textBaseline = 'alphabetic';
+            c.fillStyle = secondaryColor;
+            c.font = 'bold 20px monospace';
+            c.fillText(`SERIAL NO: ${displaySerial}`, cx, 1650, 440);
+            c.font = '18px monospace';
+            c.fillText(`LAT/LON: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`, cx, 1684, 440);
+
+            c.fillStyle = primaryColor;
+            c.font = 'bold 31px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText('輝旅 島専科', cx, 1742, 440);
+            c.fillStyle = accentColor;
+            c.font = 'bold 20px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText('離島到達公式認定委員会 発行', cx, 1780, 440);
+            c.fillStyle = secondaryColor;
+            c.font = '15px sans-serif';
+            c.fillText('KIRATABI SHIMASENKA OFFICIAL CERTIFICATION BOARD', cx, 1812, 440);
+
+            drawOfficialSquareHanko(c, 895, 1715, 138, {
+              onDarkBackground: designTheme !== 'vintage',
+            });
+          } else {
+            c.textAlign = 'center';
+            c.textBaseline = 'alphabetic';
+
+            c.fillStyle = secondaryColor;
+            c.font = 'bold 20px serif';
+            c.fillText(
+              hasHologram
+                ? 'KIRATABI VERIFIED PHOTO ARRIVAL RECORD'
+                : 'KIRATABI OFFICIAL RECORD OF ARRIVAL',
+              cx,
+              102
+            );
+
+            c.fillStyle = accentColor;
+            c.font = 'bold 50px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText(targetType === 'card' ? '公 認 到 達 証' : '島 旅 到 達 公 認 証', cx, 166);
+
+            c.strokeStyle = 'rgba(212, 175, 55, 0.45)';
+            c.lineWidth = 1.8;
+            c.beginPath();
+            c.moveTo(cx - 250, 190);
+            c.lineTo(cx + 250, 190);
+            c.stroke();
+
+            const nameBoxTop = 212;
+            const nameBoxH = 66;
+            const nameBoxW = 640;
+            const bannerGrad = c.createLinearGradient(cx - nameBoxW / 2, 0, cx + nameBoxW / 2, 0);
+            bannerGrad.addColorStop(0, 'rgba(212, 175, 55, 0.05)');
+            bannerGrad.addColorStop(0.5, 'rgba(212, 175, 55, 0.25)');
+            bannerGrad.addColorStop(1, 'rgba(212, 175, 55, 0.05)');
+            c.fillStyle = bannerGrad;
+            c.fillRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
+
+            c.strokeStyle = '#D4AF37';
+            c.lineWidth = 2;
+            c.strokeRect(cx - nameBoxW / 2, nameBoxTop, nameBoxW, nameBoxH);
+            c.strokeStyle = '#F59E0B';
+            c.lineWidth = 1;
+            c.strokeRect(cx - nameBoxW / 2 + 5, nameBoxTop + 5, nameBoxW - 10, nameBoxH - 10);
+
+            c.fillStyle = primaryColor;
+            fillFittedText(
+              c,
+              `${travelerName || '島旅トラベラー'}  殿`,
+              cx,
+              nameBoxTop + 47,
+              nameBoxW - 40,
+              40,
+              24,
+              'bold "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif'
+            );
+
+            c.fillStyle = secondaryColor;
+            c.font = 'bold 17px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText(
+              '貴殿が下記離島へ実際に渡航・到達したことを公式に認定しこれを証します',
+              cx,
+              312,
+              1100
+            );
+
+            c.fillStyle = accentColor;
+            fillFittedText(
+              c,
+              `【 到達離島 】 ${prefPrefix}${island.name}（${regionLabel}）`,
+              cx,
+              360,
+              1160,
+              28,
+              20,
+              'bold "Hiragino Mincho ProN", "Yu Mincho", sans-serif'
+            );
+
+            c.fillStyle =
+              designTheme === 'modern'
+                ? '#38BDF8'
+                : designTheme === 'vintage'
+                ? '#8D3B12'
+                : '#F59E0B';
+            fillFittedText(
+              c,
+              `【 冒険難易度 】 ${diff.stars} (${diff.shortLabel})   ｜   【 到達日 】 ${visitDate}`,
+              cx,
+              402,
+              1160,
+              21,
+              16,
+              'bold sans-serif'
+            );
+
+            if (heroImg) {
+              c.save();
+              const isPortraitPhoto = heroImg.height > heroImg.width;
+              const heroW = isPortraitPhoto ? 286 : 580;
+              const heroH = 342;
+              const heroX = cx - heroW / 2;
+              const heroY = 436;
+
+              c.beginPath();
+              c.rect(heroX, heroY, heroW, heroH);
+              c.clip();
+
+              const scale = Math.max(heroW / heroImg.width, heroH / heroImg.height);
+              const dw = heroImg.width * scale;
+              const dh = heroImg.height * scale;
+              c.drawImage(heroImg, heroX + (heroW - dw) / 2, heroY + (heroH - dh) / 2, dw, dh);
+              c.restore();
+
+              c.strokeStyle = accentColor;
+              c.lineWidth = 5;
+              c.strokeRect(heroX, heroY, heroW, heroH);
+              c.strokeStyle = '#F59E0B';
+              c.lineWidth = 1.8;
+              c.strokeRect(heroX - 6, heroY - 6, heroW + 12, heroH + 12);
+            } else {
+              const plateW = 620;
+              const plateH = 324;
+              const plateX = cx - plateW / 2;
+              const plateY = 444;
+              c.fillStyle =
+                designTheme === 'vintage' ? 'rgba(93, 64, 55, 0.08)' : 'rgba(15, 23, 42, 0.55)';
+              c.fillRect(plateX, plateY, plateW, plateH);
+              c.strokeStyle = accentColor;
+              c.lineWidth = 3.5;
+              c.strokeRect(plateX, plateY, plateW, plateH);
+              c.strokeStyle = 'rgba(212, 175, 55, 0.4)';
+              c.lineWidth = 1.5;
+              c.strokeRect(plateX + 10, plateY + 10, plateW - 20, plateH - 20);
+
+              c.textAlign = 'center';
+              c.fillStyle = accentColor;
+              c.font = 'bold 18px serif';
+              c.fillText('OFFICIAL MARITIME EXPEDITION RECORD', cx, plateY + 78);
+              c.fillStyle = primaryColor;
+              fillFittedText(
+                c,
+                `${prefPrefix}${island.name}`,
+                cx,
+                plateY + 156,
+                plateW - 48,
+                38,
+                24,
+                'bold serif'
+              );
+              c.fillStyle = secondaryColor;
+              c.font = '18px monospace';
+              c.fillText(
+                `COORDINATES: ${island.coordinates || 'JAPAN ARCHIPELAGO'}`,
+                cx,
+                plateY + 220,
+                plateW - 48
+              );
+              c.fillText('KIRATABI VERIFIED ARCHIPELAGO ARCHIVE', cx, plateY + 256, plateW - 48);
+            }
+
+            c.strokeStyle = 'rgba(212, 175, 55, 0.35)';
+            c.lineWidth = 1.5;
+            c.beginPath();
+            c.moveTo(96, 806);
+            c.lineTo(width - 96, 806);
+            c.stroke();
+
+            drawOfficialMedallionSeal(c, 162, 872, 54, {
+              variant: designTheme === 'vintage' ? 'crimson' : 'gold',
+            });
+
+            c.textAlign = 'left';
+            c.textBaseline = 'alphabetic';
+            c.fillStyle = secondaryColor;
+            c.font = 'bold 17px monospace';
+            c.fillText(`SERIAL: ${displaySerial}`, 236, 864, 260);
+            c.font = '15px monospace';
+            c.fillText(`GPS: ${island.coordinates || 'JAPAN'}`, 236, 892, 260);
+
+            c.textAlign = 'center';
+            c.fillStyle = primaryColor;
+            c.font = 'bold 24px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText('輝旅 島専科（KIRATABI SHIMASENKA）', cx, 858, 420);
+            c.fillStyle = accentColor;
+            c.font = 'bold 17px "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif JP", serif';
+            c.fillText('離島到達公式認定委員会 発行', cx, 888, 420);
+            c.fillStyle = secondaryColor;
+            c.font = '13px sans-serif';
+            c.fillText('OFFICIAL ISLAND CONQUEST CERTIFICATION BOARD', cx, 914, 420);
+
+            drawOfficialSquareHanko(c, 1246, 870, 110, {
+              onDarkBackground: designTheme !== 'vintage',
+            });
+          }
+
+          if (watermarkLabel) {
+            drawProtectiveWatermark(c, watermarkLabel);
+          }
+
+          c.restore();
+        };
+
+        const verifiedPhotos = getVerifiedIslandPhotos(island);
+        const verifiedFallbackUrl =
+          orientation === 'vertical'
+            ? verifiedPhotos.mobileUrl || verifiedPhotos.desktopUrl
+            : verifiedPhotos.desktopUrl || verifiedPhotos.mobileUrl;
+        const activePhotoSrc = customImage || tempCheckInPhotoUrl || verifiedFallbackUrl || '';
+
+        const heroImg = activePhotoSrc ? await loadCorsSafeImage(activePhotoSrc) : undefined;
+        if (seq === renderSeqRef.current) {
+          renderContent(ctx, heroImg);
+        }
+      };
+
+      const seq = ++renderSeqRef.current;
+      const tasks = [drawToCanvas(canvasRef.current, seq)];
+      if (isFullscreenPreview) {
+        tasks.push(drawToCanvas(fullscreenCanvasRef.current, seq));
+      }
+      return Promise.all(tasks).then(async () => {
+        if (!watermarkLabel && seq === renderSeqRef.current) {
+          await cacheLatestCanvasArtifacts(targetType, targetSerial);
+        } else {
+          latestPngBlobRef.current = null;
+          latestPngFileRef.current = null;
+          setLatestPreviewDataUrl(null);
+        }
+      });
+    },
+    [
+      island,
+      anniversaryMode,
+      travelerName,
+      visitDate,
+      hasHologram,
+      customImage,
+      tempCheckInPhotoUrl,
+      certificateType,
+      orientation,
+      designTheme,
+      isFullscreenPreview,
+      assignedSerial,
+      hasVisitedIsland,
+      user,
+      issuedCertMap,
+      isHighQualityQuotaExhausted,
+      isCardDailyQuotaExhausted,
+      cacheLatestCanvasArtifacts,
+    ]
+  );
 
   useEffect(() => {
     if (isFullscreenPreview) {
@@ -1030,7 +1315,6 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
     }
   }, [isFullscreenPreview, drawCertificate]);
 
-
   useEffect(() => {
     if (!isOpen || !island) return;
     const timer = setTimeout(() => {
@@ -1039,119 +1323,289 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
     return () => clearTimeout(timer);
   }, [isOpen, island, drawCertificate]);
 
-  // Handle Download (Safari / Mobile / Desktop 完全対応)
-  const handleDownload = async () => {
-    const canvas = canvasRef.current;
-    if (!canvas) {
-      toast.error('証明書キャンバスの準備中です。もう一度お試しください。');
-      return;
-    }
+  // Synchronous File Download helper (uses server attachment proxy if cloud URL exists, else synchronous Blob/DataURL)
+  const triggerSynchronousFileDownload = useCallback(
+    (cloudImageUrl?: string | null, overrideType?: 'card' | 'high_quality', overrideSerial?: string) => {
+      const targetType = overrideType || certificateType;
+      const targetSerial = overrideSerial || assignedSerial;
+      const fileName = buildCertificateFilename(island?.name, visitDate, targetType, targetSerial);
 
-    // 最新の写真・名前・テーマが確実にCanvasへ描画完了してからエクスポートする
-    await drawCertificate();
-
-    const safeIslandName = (island?.name || 'Island').replace(/[\\/:*?"<>|]/g, '_');
-    const safeDate = (visitDate || '').replace(/[^0-9]/g, '');
-    const fileName = `KIRATABI_Certificate_${safeIslandName}${safeDate ? '_' + safeDate : ''}.png`;
-
-    const triggerDownloadLink = (href: string, revokeAfterMs = 0) => {
-      const link = document.createElement('a');
-      link.download = fileName;
-      link.href = href;
-      link.style.display = 'none';
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => {
-        if (document.body.contains(link)) {
-          document.body.removeChild(link);
-        }
-        if (revokeAfterMs > 0) {
-          URL.revokeObjectURL(href);
-        }
-      }, revokeAfterMs || 500);
-    };
-
-    try {
-      const blob = await new Promise<Blob | null>((resolve) => {
-        try {
-          canvas.toBlob((b) => resolve(b), 'image/png', 1.0);
-        } catch {
-          resolve(null);
-        }
-      });
-
-      if (blob) {
-        const blobUrl = URL.createObjectURL(blob);
-        triggerDownloadLink(blobUrl, 15000);
-        toast.success('📸 到達証明書をダウンロードしました！');
-      } else {
-        const dataUrl = canvas.toDataURL('image/png');
-        triggerDownloadLink(dataUrl, 0);
-        toast.success('📸 到達証明書をダウンロードしました！');
+      // Priority 1: Local lossless PNG Blob from Canvas (always includes latest text/photo edits!)
+      if (latestPngBlobRef.current) {
+        const blobUrl = URL.createObjectURL(latestPngBlobRef.current);
+        const link = document.createElement('a');
+        link.download = fileName;
+        link.href = blobUrl;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => {
+          if (document.body.contains(link)) document.body.removeChild(link);
+          URL.revokeObjectURL(blobUrl);
+        }, 15000);
+        setShowSaveGuidePanel(true);
+        toast.success('📥 証明書のダウンロードを開始しました！');
+        return;
       }
 
-      if (!issuedTypes.includes(certificateType)) {
-        issueDigital(certificateType);
+      // Priority 2: Server Content-Disposition: attachment proxy for cloud URL
+      if (cloudImageUrl && cloudImageUrl.startsWith('https://')) {
+        const proxyHref = `/api/certificates/download?url=${encodeURIComponent(
+          cloudImageUrl
+        )}&name=${encodeURIComponent(fileName)}`;
+        const link = document.createElement('a');
+        link.href = proxyHref;
+        link.download = fileName;
+        link.style.display = 'none';
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => {
+          if (document.body.contains(link)) document.body.removeChild(link);
+        }, 5000);
+        setShowSaveGuidePanel(true);
+        toast.success('📥 証明書のダウンロードを開始しました！');
+        return;
       }
-    } catch (e) {
-      console.error('Download error:', e);
+
+      toast.error('証明書画像の準備中です。もう一度ボタンを押してください。');
+    },
+    [certificateType, assignedSerial, island?.name, visitDate]
+  );
+
+  // Synchronous iOS/Android Camera Roll Share Sheet ("画像を保存")
+  const triggerMobilePhotoShare = useCallback(async () => {
+    const file = latestPngFileRef.current;
+    if (file && typeof navigator !== 'undefined' && navigator.share && navigator.canShare) {
       try {
-        const dataUrl = canvas.toDataURL('image/png');
-        triggerDownloadLink(dataUrl, 0);
-        toast.success('📸 到達証明書をダウンロードしました！');
-      } catch (err) {
-        console.error('Fallback toDataURL error:', err);
-        setErrorMessage('画像の保存に失敗しました。別の写真でお試しください。');
-        toast.error('画像の保存に失敗しました。');
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({
+            files: [file],
+            title: `【キラ旅】${island?.name} 到達証明書`,
+          });
+          return;
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error && err.name === 'AbortError') return;
       }
+    }
+    // Fallback if browser doesn't support file sharing (e.g. desktop or LINE in-app browser)
+    setShowSaveGuidePanel(true);
+    triggerSynchronousFileDownload(activeIssuedCert?.image_url);
+  }, [island?.name, activeIssuedCert?.image_url, triggerSynchronousFileDownload]);
+
+  // Build size-safe DataURL for server storage (< 3.2MB base64 so Vercel 4.5MB limit is never exceeded)
+  const buildCloudUploadDataUrl = (): string | undefined => {
+    const canvas = canvasRef.current;
+    if (!canvas) return undefined;
+    try {
+      const pngDataUrl = canvas.toDataURL('image/png');
+      if (pngDataUrl.length <= 3_200_000) {
+        return pngDataUrl;
+      }
+      return canvas.toDataURL('image/jpeg', 0.94);
+    } catch {
+      return undefined;
     }
   };
 
-  // Handle Web Share API & Twitter/X Direct Share
+  // Official Server Issuance / Re-save Flow (strictly enforces quota BEFORE unlocking download!)
+  const executeOfficialIssuance = useCallback(
+    async (targetType: 'card' | 'high_quality', isDesignUpdate = false) => {
+      if (!island || !user) {
+        setIsAuthModalOpen(true);
+        return;
+      }
+      if (!hasVisitedIsland) {
+        toast.error('未訪問の島の公式証明書は発行できません。');
+        return;
+      }
+
+      setLimitErrorMessage(null);
+      setErrorMessage(null);
+      setCertificateType(targetType);
+      setIsIssuingServer(true);
+
+      const existingForType =
+        targetType === 'high_quality' ? issuedCertMap.high_quality : issuedCertMap.card;
+
+      // Play 5s Sponsor PR ONLY on initial new issuance for Free tier (never on re-downloads or design updates!)
+      const shouldShowSponsorPr = !isPremium && !existingForType && !isDesignUpdate;
+      if (shouldShowSponsorPr) {
+        setJustIssuedCert(null);
+        setIsPlayingAd(true);
+        setAdTimeLeft(5);
+      }
+
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        const token = session?.access_token || '';
+        const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        // Step 1: Reserve / verify official serial number & quota on server
+        let officialSerialStr = existingForType
+          ? `No.${String(existingForType.serial_number).padStart(4, '0')}`
+          : '';
+        let issuedRecord: ServerCertificateRecord | null = existingForType || null;
+
+        if (!existingForType) {
+          const reserveRes = await fetch('/api/certificates', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              islandId: String(island.id),
+              userId: user.id,
+              type: targetType,
+            }),
+          });
+          const rawReserve = await reserveRes.text();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          let reserveData: any = {};
+          try {
+            reserveData = rawReserve ? JSON.parse(rawReserve) : {};
+          } catch {
+            reserveData = {};
+          }
+
+          if (reserveData.tier) setServerTier(reserveData.tier);
+          if (typeof reserveData.tickets === 'number') setServerTickets(reserveData.tickets);
+          if (reserveData.quota) setServerQuota(reserveData.quota);
+
+          if (!reserveRes.ok) {
+            setIsPlayingAd(false);
+            const msg =
+              reserveData.message ||
+              reserveData.error ||
+              '発行枠の上限に達したため発行できませんでした。';
+            setLimitErrorMessage(msg);
+            toast.error(msg);
+            return;
+          }
+
+          issuedRecord = reserveData.certificate as ServerCertificateRecord;
+          officialSerialStr = `No.${String(issuedRecord.serial_number).padStart(4, '0')}`;
+          setAssignedSerial(officialSerialStr);
+        }
+
+        // Step 2: Render clean official certificate onto <canvas> with TRUE DB serial number
+        await drawCertificate({
+          type: targetType,
+          serial: officialSerialStr,
+          forceCleanWatermark: true,
+        });
+
+        // Step 3: Upload rendered certificate image to Supabase Storage via server (re-issue path = 0 quota consumed!)
+        const imageDataUrl = buildCloudUploadDataUrl();
+        if (imageDataUrl) {
+          const uploadRes = await fetch('/api/certificates', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              islandId: String(island.id),
+              userId: user.id,
+              type: targetType,
+              imageDataUrl,
+            }),
+          });
+          if (uploadRes.ok) {
+            const uploadData = await uploadRes.json();
+            if (uploadData.certificate) {
+              issuedRecord = uploadData.certificate as ServerCertificateRecord;
+            }
+            if (uploadData.quota) setServerQuota(uploadData.quota);
+            if (typeof uploadData.tickets === 'number') setServerTickets(uploadData.tickets);
+          }
+        }
+
+        if (issuedRecord) {
+          setIssuedCertMap((prev) => ({
+            ...prev,
+            [targetType]: issuedRecord!,
+          }));
+          setJustIssuedCert(issuedRecord);
+          setShowSaveGuidePanel(true);
+          if (onIssuedOrUpdated) {
+            onIssuedOrUpdated(issuedRecord);
+          }
+
+          // For Premium/Ultimate or Design Re-save (no 5s PR modal), trigger immediate download on desktop
+          // and show the synchronous save panel for mobile!
+          if (!shouldShowSponsorPr) {
+            if (!isMobileDevice) {
+              triggerSynchronousFileDownload(
+                issuedRecord.image_url,
+                targetType,
+                officialSerialStr
+              );
+            } else {
+              toast.success(
+                isDesignUpdate
+                  ? '✨ デザインを更新しました！下のボタンから写真に保存できます'
+                  : `🎉 公認証明書（${officialSerialStr}）を発行しました！下のボタンから保存してください`
+              );
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Failed to issue certificate:', err);
+        setIsPlayingAd(false);
+        toast.error('証明書の発行中に通信エラーが発生しました。もう一度お試しください。');
+      } finally {
+        setIsIssuingServer(false);
+      }
+    },
+    [
+      island,
+      user,
+      hasVisitedIsland,
+      issuedCertMap,
+      isPremium,
+      drawCertificate,
+      onIssuedOrUpdated,
+      isMobileDevice,
+      triggerSynchronousFileDownload,
+    ]
+  );
+
+  // Handle SNS Share (only allowed when activeIssuedCert exists!)
   const handleNativeShare = async () => {
-    await drawCertificate();
-    const text = `【キラ旅 到達証明】\n日本の離島「${island?.name}」への到達を正式証明！到達証明書を獲得しました 🏝️✨\n\n#キラ旅 #${island?.name || '離島'}到達証明書 #離島旅 #キラ旅島専科`;
+    if (!activeIssuedCert) {
+      toast('先に証明書を発行してからシェアしてください。', { icon: 'ℹ️' });
+      return;
+    }
+    const text = `【キラ旅 到達証明】\n日本の離島「${island?.name}」への到達を正式証明！到達証明書（${assignedSerial}）を獲得しました 🏝️✨\n\n#キラ旅 #${island?.name || '離島'}到達証明書 #離島旅 #キラ旅島専科`;
     const slugOrId = island?.slug || island?.id;
-    const shareUrl = window.location.origin ? `${window.location.origin}/island/${slugOrId}` : `https://island.kira-tabi.com/island/${slugOrId}`;
-    
+    const shareUrl = window.location.origin
+      ? `${window.location.origin}/island/${slugOrId}`
+      : `https://island.kira-tabi.com/island/${slugOrId}`;
+
     if (navigator.share) {
       try {
         let shareData: ShareData = {
           title: `【キラ旅】${island?.name} 到達証明書`,
-          text: text,
-          url: shareUrl
+          text,
+          url: shareUrl,
         };
-        if (canvasRef.current && typeof navigator.canShare === 'function') {
-          const blob = await new Promise<Blob | null>((resolve) => {
-            try {
-              canvasRef.current?.toBlob((b) => resolve(b), 'image/png', 0.95);
-            } catch {
-              resolve(null);
-            }
-          });
-          if (blob) {
-            const file = new File([blob], `KIRATABI_${island?.name || 'Certificate'}.png`, { type: 'image/png' });
-            if (navigator.canShare({ files: [file] })) {
-              shareData = { ...shareData, files: [file] };
-            }
-          }
+        const file = latestPngFileRef.current;
+        if (file && typeof navigator.canShare === 'function' && navigator.canShare({ files: [file] })) {
+          shareData = { ...shareData, files: [file] };
         }
         await navigator.share(shareData);
       } catch (err: unknown) {
         if (err instanceof Error && err.name === 'AbortError') return;
-        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+        const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          text
+        )}&url=${encodeURIComponent(shareUrl)}`;
         window.open(twitterUrl, '_blank', 'noopener,noreferrer');
       }
     } else {
-      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(shareUrl)}`;
+      const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+        text
+      )}&url=${encodeURIComponent(shareUrl)}`;
       window.open(twitterUrl, '_blank', 'noopener,noreferrer');
     }
-  };
-
-  // Handle Instagram specific instruction
-  const handleInstagramShare = () => {
-    toast('Instagramでシェアするには、まず画像をダウンロード（保存）し、Instagramアプリを開いて投稿してください。', { icon: '📸', duration: 4000 });
-    handleDownload();
   };
 
   if (!isOpen || !island) return null;
@@ -1162,103 +1616,255 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[9999] bg-slate-900/90 backdrop-blur-xl flex items-center justify-center p-4 lg:p-8 overflow-y-auto"
+        className="fixed inset-0 z-[9999] bg-slate-900/90 backdrop-blur-xl flex items-center justify-center p-3 sm:p-6 lg:p-8 overflow-y-auto"
       >
         <motion.div
           initial={{ scale: 0.95, opacity: 0, y: 20 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          className={`w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] ${
-            isVerified ? 'bg-gradient-to-br from-amber-50 to-orange-50 border border-amber-200' : 'bg-slate-800 border border-slate-700'
+          className={`w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh] ${
+            isVerified
+              ? 'bg-gradient-to-br from-slate-900 via-slate-900 to-amber-950/60 border border-amber-400/50'
+              : 'bg-slate-800 border border-slate-700'
           }`}
         >
-          {/* Inject AuthModal just in case they need to login */}
-          {/* Note: We need to import AuthModal at the top, but we can do it inline or assume it's available via context, 
-              actually it's better to just prompt them to close and login via the top right, but let's render a simple message */}
           {/* Modal Header */}
-          <div className={`flex items-center justify-between px-6 py-4 border-b sticky top-0 z-10 ${
-            isVerified ? 'bg-amber-100/80 border-amber-200' : 'border-slate-700 bg-slate-800/80'
-          }`}>
-            <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                isVerified ? 'bg-amber-500 text-white shadow-lg shadow-amber-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
-              }`}>
+          <div className="flex items-center justify-between px-5 sm:px-6 py-4 border-b border-slate-700 bg-slate-900/90 sticky top-0 z-10">
+            <div className="flex items-center gap-3 min-w-0">
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${
+                  hasVisitedIsland
+                    ? 'bg-amber-500 text-slate-950 shadow-lg shadow-amber-500/20'
+                    : 'bg-amber-500/10 text-amber-400 border border-amber-500/30'
+                }`}
+              >
                 <Award className="w-5 h-5" />
               </div>
-              <div>
-                <h3 className={`font-serif font-bold text-lg ${isVerified ? 'text-amber-900' : 'text-white'}`}>
-                  {isVerified ? 'KIRATABI公認 到達証明書' : 'KIRATABI公認 到達証明書の発行'}
+              <div className="min-w-0">
+                <h3 className="font-serif font-bold text-base sm:text-lg text-white truncate">
+                  {hasVisitedIsland
+                    ? `${island.name} 公認到達証明書`
+                    : `${island.name} 到達証明書（見本プレビュー）`}
                 </h3>
-                <p className={`text-xs tracking-wider ${isVerified ? 'text-amber-700/70' : 'text-slate-400'}`}>
-                  KIRATABI VERIFIED ARRIVAL CERTIFICATE
+                <p className="text-[11px] tracking-wider text-slate-400 truncate">
+                  {activeIssuedCert
+                    ? `発行済みシリアル ${assignedSerial} • 再ダウンロード無制限`
+                    : 'KIRATABI OFFICIAL ARRIVAL CERTIFICATE'}
                 </p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className={`p-2 rounded-full transition-colors ${isVerified ? 'text-amber-900/60 hover:text-amber-900' : 'text-slate-400 hover:text-white'}`}
+              className="p-2 rounded-full transition-colors text-slate-400 hover:text-white hover:bg-slate-800"
             >
               <X className="w-6 h-6" />
             </button>
           </div>
 
           {/* Modal Body */}
-          <div className="p-6 overflow-y-auto space-y-8 flex-1">
-            
+          <div className="p-4 sm:p-6 overflow-y-auto space-y-5 flex-1">
             {!isOrdering ? (
               <>
+                {/* Monthly Quota & Issuance Status Bar (Logged-in Users) */}
+                {user && (
+                  <div className="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-3.5 sm:p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span
+                          className={`px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                            effectiveTier === 'ultimate'
+                              ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40'
+                              : effectiveTier === 'premium'
+                              ? 'bg-amber-500/20 text-amber-300 border border-amber-500/40'
+                              : 'bg-slate-700 text-slate-300'
+                          }`}
+                        >
+                          {effectiveTier.toUpperCase()} PLAN
+                        </span>
+                        <span className="text-xs font-bold text-white">
+                          今月の公式高画質枠:{' '}
+                          {isLoadingQuota ? (
+                            <span className="text-slate-400">確認中...</span>
+                          ) : effectiveTier === 'ultimate' ? (
+                            <span className="text-emerald-400">無制限</span>
+                          ) : serverQuota ? (
+                            <span
+                              className={
+                                (serverQuota.highQualityRemaining ?? 0) > 0
+                                  ? 'text-emerald-400'
+                                  : 'text-rose-400'
+                              }
+                            >
+                              残り {serverQuota.highQualityRemaining} /{' '}
+                              {serverQuota.highQualityMonthlyLimit} 枚
+                            </span>
+                          ) : (
+                            <span className="text-slate-300">
+                              {effectiveTier === 'premium' ? '月5枚' : '月1枚'}
+                            </span>
+                          )}
+                        </span>
+                        {serverTickets > 0 && (
+                          <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-500/30">
+                            🎫 追加チケット {serverTickets}枚保有
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-400">
+                        ※一度発行した島の証明書は、枠消費なし・待ち時間なしでいつでも再ダウンロード＆写真・デザイン更新が可能です。
+                      </p>
+                    </div>
+                    {effectiveTier !== 'ultimate' && (
+                      <button
+                        type="button"
+                        onClick={() => setIsPlanModalOpen(true)}
+                        className="shrink-0 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 border border-amber-400/40 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                      >
+                        <Crown className="w-3.5 h-3.5" />
+                        枠を増やす
+                      </button>
+                    )}
+                  </div>
+                )}
+
                 {/* Customizer Inputs */}
-                <div className="space-y-4 bg-slate-900/50 p-4 rounded-2xl border border-slate-700/50 mb-4">
-                  {/* Basic Info */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-4 bg-slate-900/60 p-4 rounded-2xl border border-slate-700/60">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                     <div>
                       <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                         <User className="w-3.5 h-3.5 text-amber-400" /> 旅人ネーム
                       </label>
-                      <input type="text" value={travelerName} onChange={(e) => { setTravelerName(e.target.value); updateTravelerName(e.target.value); }} placeholder="お名前" className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500" />
+                      <input
+                        type="text"
+                        value={travelerName}
+                        onChange={(e) => {
+                          setTravelerName(e.target.value);
+                          updateTravelerName(e.target.value);
+                        }}
+                        placeholder="お名前"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500"
+                      />
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1 flex items-center gap-1.5">
                         <Calendar className="w-3.5 h-3.5 text-amber-400" /> 到達日
                       </label>
-                      <input type="text" value={visitDate} onChange={(e) => setVisitDate(e.target.value)} placeholder="YYYY.MM.DD" className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500" />
+                      <input
+                        type="text"
+                        value={visitDate}
+                        onChange={(e) => setVisitDate(e.target.value)}
+                        placeholder="YYYY.MM.DD"
+                        className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2 text-white text-sm focus:outline-none focus:border-amber-500"
+                      />
                     </div>
                   </div>
 
                   {/* Certificate Configuration */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2 border-t border-slate-700/60">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-3 border-t border-slate-700/60">
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase mb-1">種類 (Type)</label>
-                      <div className="flex bg-slate-800 rounded-lg p-1">
-                        <button onClick={() => setCertificateType('card')} className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-colors ${certificateType === 'card' ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-white'}`}>カード版</button>
-                        <button onClick={() => setCertificateType('high_quality')} className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-colors ${certificateType === 'high_quality' ? 'bg-amber-500 text-slate-900' : 'text-slate-400 hover:text-white'}`}>高画質版</button>
+                      <label className="block text-xs font-bold text-slate-400 uppercase mb-1">
+                        種類 (Type)
+                      </label>
+                      <div className="flex bg-slate-800 rounded-lg p-1 gap-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCertificateType('card');
+                            setLimitErrorMessage(null);
+                          }}
+                          className={`flex-1 py-1.5 px-2 text-xs font-bold rounded-md transition-colors flex items-center justify-center gap-1 ${
+                            certificateType === 'card'
+                              ? 'bg-amber-500 text-slate-950'
+                              : 'text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          <span>カード版(無料)</span>
+                          {issuedCertMap.card && <CheckCircle className="w-3 h-3 shrink-0" />}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCertificateType('high_quality');
+                            setLimitErrorMessage(null);
+                          }}
+                          className={`flex-1 py-1.5 px-2 text-xs font-bold rounded-md transition-colors flex items-center justify-center gap-1 ${
+                            certificateType === 'high_quality'
+                              ? 'bg-amber-500 text-slate-950'
+                              : 'text-slate-300 hover:text-white'
+                          }`}
+                        >
+                          {isHighQualityQuotaExhausted && !issuedCertMap.high_quality && (
+                            <Lock className="w-3 h-3 shrink-0" />
+                          )}
+                          <span>公式高画質版</span>
+                          {issuedCertMap.high_quality && (
+                            <CheckCircle className="w-3 h-3 shrink-0" />
+                          )}
+                        </button>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase mb-1">向き (Orientation)</label>
+                      <label className="block text-xs font-bold text-slate-400 uppercase mb-1">
+                        向き (Orientation)
+                      </label>
                       <div className="flex bg-slate-800 rounded-lg p-1">
-                        <button onClick={() => setOrientation('horizontal')} className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-colors ${orientation === 'horizontal' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white'}`}>横型</button>
-                        <button onClick={() => setOrientation('vertical')} className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-colors ${orientation === 'vertical' ? 'bg-blue-500 text-white' : 'text-slate-400 hover:text-white'}`}>縦型</button>
+                        <button
+                          type="button"
+                          onClick={() => setOrientation('horizontal')}
+                          className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-colors ${
+                            orientation === 'horizontal'
+                              ? 'bg-blue-500 text-white'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          横型 (A4比率)
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setOrientation('vertical')}
+                          className={`flex-1 py-1.5 text-xs font-bold rounded-md transition-colors ${
+                            orientation === 'vertical'
+                              ? 'bg-blue-500 text-white'
+                              : 'text-slate-400 hover:text-white'
+                          }`}
+                        >
+                          縦型 (スマホ壁紙)
+                        </button>
                       </div>
                     </div>
                     <div>
-                      <label className="block text-xs font-bold text-slate-400 uppercase mb-1">デザイン (Theme)</label>
-                      <select value={designTheme} onChange={(e: any) => setDesignTheme(e.target.value)} className="w-full bg-slate-800 border-none rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500">
+                      <label className="block text-xs font-bold text-slate-400 uppercase mb-1">
+                        デザイン (Theme)
+                      </label>
+                      <select
+                        value={designTheme}
+                        onChange={(e) =>
+                          setDesignTheme(e.target.value as 'classic' | 'modern' | 'vintage')
+                        }
+                        className="w-full bg-slate-800 border-none rounded-lg px-2 py-2 text-white text-xs focus:outline-none focus:ring-2 focus:ring-amber-500"
+                      >
                         <option value="classic">クラシックゴールド</option>
                         <option value="modern">モダンサファイア</option>
                         <option value="vintage">ヴィンテージパーチメント</option>
                       </select>
                     </div>
                   </div>
-                  
-                  {/* Guardian Spirit & Photo */}
-                  <div className="pt-2 border-t border-slate-700/60">
-                    <div className="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
-                      <div className="flex items-center gap-3 w-full md:w-auto">
+
+                  {/* Photo Upload */}
+                  <div className="pt-3 border-t border-slate-700/60">
+                    <div className="flex flex-col md:flex-row gap-3 items-start md:items-center justify-between">
+                      <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                         <Camera className="w-4 h-4 text-amber-400 shrink-0" />
-                        <input type="file" accept="image/*,.heic,.heif" onChange={handleImageUpload} className="text-xs text-slate-300 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold hover:file:bg-amber-400 cursor-pointer" />
+                        <span className="text-xs text-slate-300 font-bold">思い出の写真を入れる:</span>
+                        <input
+                          type="file"
+                          accept="image/*,.heic,.heif"
+                          onChange={handleImageUpload}
+                          className="text-xs text-slate-300 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-amber-500 file:text-slate-950 file:font-bold hover:file:bg-amber-400 cursor-pointer"
+                        />
                         {customImage && (
                           <button
+                            type="button"
                             onClick={() => {
                               setCustomImage(null);
                               setTempCheckInPhotoUrl(null);
@@ -1271,186 +1877,425 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
                             }}
                             className="text-xs text-rose-400 hover:underline shrink-0"
                           >
-                            写真を削除
+                            写真を元に戻す
                           </button>
                         )}
                       </div>
                       {uploadError && (
                         <p className="text-xs text-rose-400 font-bold">{uploadError}</p>
                       )}
-
                     </div>
                   </div>
                 </div>
 
                 {/* Canvas Preview Box */}
-                <div className="flex flex-col items-center relative mb-6">
+                <div className="flex flex-col items-center relative">
                   <div className="w-full flex items-center justify-between mb-2">
                     <p className="text-xs text-slate-400 tracking-widest uppercase flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" /> プレビュー
+                      <Sparkles className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                      {isCurrentSelectionLocked ? '見本プレビュー（透かし入り）' : '公式プレビュー'}
                     </p>
-                    <button onClick={() => setIsFullscreenPreview(true)} className="text-xs font-bold text-blue-400 hover:text-blue-300">拡大表示</button>
+                    <button
+                      type="button"
+                      onClick={() => setIsFullscreenPreview(true)}
+                      className="text-xs font-bold text-blue-400 hover:text-blue-300"
+                    >
+                      拡大表示
+                    </button>
                   </div>
-                  
-                  <div className="w-full bg-slate-950 p-4 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center cursor-zoom-in overflow-hidden" onClick={() => setIsFullscreenPreview(true)}>
-                    <canvas ref={canvasRef} className="max-w-full max-h-[420px] w-auto h-auto object-contain rounded-lg shadow-2xl border border-slate-800 transition-all duration-300" />
+
+                  <div
+                    className="w-full bg-slate-950 p-3 sm:p-4 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center cursor-zoom-in overflow-hidden"
+                    onClick={() => setIsFullscreenPreview(true)}
+                  >
+                    <canvas
+                      ref={canvasRef}
+                      className="max-w-full max-h-[380px] sm:max-h-[420px] w-auto h-auto object-contain rounded-lg shadow-2xl border border-slate-800 transition-all duration-300"
+                    />
                   </div>
                 </div>
 
-                {/* Issuance Action Buttons */}
-                <div className="bg-slate-900 border border-slate-700 p-4 rounded-2xl mb-4">
-                  <h4 className="text-white font-bold text-sm mb-3 flex items-center gap-2"><Award className="w-4 h-4 text-amber-400"/> デジタル証明書の発行</h4>
-                  {!user ? (
-                    <div className="text-center p-4 bg-slate-800 rounded-xl">
-                      <p className="text-xs text-slate-400 mb-3">公式証明書を発行・保存するにはログインが必要です。</p>
-                      <button onClick={() => setIsAuthModalOpen(true)} className="py-2 px-4 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs rounded-lg transition-colors">ログイン画面へ</button>
+                {/* Unified Issuance, Save & Re-Download Control Center */}
+                <div className="bg-slate-900 border border-slate-700 p-4 sm:p-5 rounded-2xl space-y-4">
+                  {/* CASE 1: Unvisited Island */}
+                  {!hasVisitedIsland ? (
+                    <div className="text-center p-4 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-2">
+                      <div className="inline-flex items-center gap-1.5 text-amber-300 font-bold text-sm">
+                        <Lock className="w-4 h-4" /> 未到達のため現在は「見本プレビュー」です
+                      </div>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        島のページで現地GPSチェックインまたは「行った！(到達)」を記録すると、透かしなしの公式到達証明書を発行・保存できます。
+                      </p>
                     </div>
-                  ) : limitReachedError ? (
-                    <div className="text-center p-4 bg-rose-500/10 border border-rose-500/30 rounded-xl">
-                      <p className="text-xs text-rose-400 mb-2">{limitErrorMessage}</p>
+                  ) : !user ? (
+                    /* CASE 2: Visited Locally, Not Logged In */
+                    <div className="text-center p-4 bg-slate-800 border border-slate-700 rounded-xl space-y-3">
+                      <p className="text-xs sm:text-sm text-slate-200 font-bold">
+                        公式シリアル採番・証明書のダウンロード・マイページ永久保存には無料ログインが必要です
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setIsAuthModalOpen(true)}
+                        className="py-3 px-6 bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs sm:text-sm rounded-xl transition-colors shadow-lg"
+                      >
+                        無料ログイン / アカウント作成して発行する
+                      </button>
+                    </div>
+                  ) : activeIssuedCert ? (
+                    /* CASE 3: ALREADY ISSUED FOR THIS ISLAND & TYPE -> UNLIMITED FREE RE-DOWNLOAD & DESIGN UPDATE! */
+                    <div className="space-y-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-3">
+                        <div className="flex items-center gap-2 text-emerald-300 font-bold text-xs sm:text-sm">
+                          <CheckCircle className="w-4 h-4 shrink-0 text-emerald-400" />
+                          <span>
+                            {certificateType === 'high_quality' ? '公式高画質版' : 'カード版'} 発行済み（公認シリアル {assignedSerial}）
+                          </span>
+                        </div>
+                        <span className="text-[11px] text-emerald-200/80">
+                          枠消費なし・何度でも再保存可能
+                        </span>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {isMobileDevice && (
+                          <button
+                            type="button"
+                            onClick={triggerMobilePhotoShare}
+                            className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all"
+                          >
+                            <Smartphone className="w-4 h-4 shrink-0" />
+                            写真アプリに保存 / 共有（推奨）
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => triggerSynchronousFileDownload(activeIssuedCert.image_url)}
+                          className={`w-full py-3.5 px-4 rounded-xl font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all ${
+                            isMobileDevice
+                              ? 'bg-slate-800 hover:bg-slate-700 text-white border border-slate-600'
+                              : 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950'
+                          }`}
+                        >
+                          <Download className="w-4 h-4 shrink-0" />
+                          PNGを再ダウンロード（枠消費なし）
+                        </button>
+                        <button
+                          type="button"
+                          disabled={isIssuingServer}
+                          onClick={() => executeOfficialIssuance(certificateType, true)}
+                          className="w-full py-3.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all"
+                        >
+                          {isIssuingServer ? (
+                            <Loader2 className="w-4 h-4 animate-spin shrink-0" />
+                          ) : (
+                            <RefreshCw className="w-4 h-4 shrink-0" />
+                          )}
+                          現在の名前・写真・向きでクラウド再保存
+                        </button>
+                        <button
+                          type="button"
+                          onClick={handleNativeShare}
+                          className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg transition-all"
+                        >
+                          <Share2 className="w-4 h-4 shrink-0" />
+                          SNSで到達証明をシェア
+                        </button>
+                      </div>
+
+                      {/* Switch to High-Quality CTA if user currently only has Card issued and HQ is available */}
+                      {certificateType === 'card' && !issuedCertMap.high_quality && (
+                        <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-3">
+                          <span className="text-xs text-slate-400">
+                            A4印刷・ホログラム対応の「公式高画質版」も発行できます
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => setCertificateType('high_quality')}
+                            className="shrink-0 text-xs font-bold text-amber-400 hover:text-amber-300 underline"
+                          >
+                            公式高画質版へ切替 →
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  ) : certificateType === 'high_quality' && isHighQualityQuotaExhausted ? (
+                    /* CASE 4A: High-Quality Monthly Quota Exhausted */
+                    <div className="p-4 sm:p-5 bg-rose-500/10 border border-rose-500/30 rounded-xl space-y-3.5">
+                      <div className="flex items-start gap-2.5">
+                        <Lock className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
+                        <div className="space-y-1">
+                          <p className="text-xs sm:text-sm font-bold text-rose-300">
+                            今月の公式高画質版の発行枠（
+                            {effectiveTier === 'premium' ? 'Premium: 月5枚' : 'Free: 月1枚'}
+                            ）を使い切りました
+                          </p>
+                          <p className="text-xs text-slate-300 leading-relaxed">
+                            無料の「カード版」に切り替えて今すぐ発行・保存するか、プランのアップグレード（Premium: 月5枚 / Ultimate: 無制限）をご検討ください。
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col sm:flex-row gap-2.5">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setCertificateType('card');
+                            setLimitErrorMessage(null);
+                          }}
+                          className="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm transition-colors"
+                        >
+                          カード版（無料）に切り替えて発行・保存
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsPlanModalOpen(true)}
+                          className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors"
+                        >
+                          <Crown className="w-4 h-4" />
+                          プランをアップグレード
+                        </button>
+                      </div>
+                    </div>
+                  ) : certificateType === 'card' && isCardDailyQuotaExhausted ? (
+                    /* CASE 4B: Free Daily New-Island Card Cap Reached */
+                    <div className="p-4 sm:p-5 bg-rose-500/10 border border-rose-500/30 rounded-xl space-y-3">
+                      <p className="text-xs sm:text-sm font-bold text-rose-300">
+                        本日の無料「カード版」新規発行上限（1日3島まで）に達しました
+                      </p>
+                      <p className="text-xs text-slate-300 leading-relaxed">
+                        ※すでに発行済みの島の証明書は、マイページや各島ページからいつでも無制限で再ダウンロードできます。明日以降に再度発行するか、回数無制限＆広告スキップのPremium / Ultimateプランをご検討ください。
+                      </p>
+                      <button
+                        type="button"
+                        onClick={() => setIsPlanModalOpen(true)}
+                        className="w-full sm:w-auto py-2.5 px-5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 text-slate-950 font-extrabold text-xs flex items-center justify-center gap-1.5"
+                      >
+                        <Crown className="w-4 h-4" />
+                        Premium / Ultimateプランを見る
+                      </button>
                     </div>
                   ) : (
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <button 
-                        onClick={() => handleDigitalIssueClick('card')} 
-                        disabled={issuedTypes.includes('card')}
-                        className={`flex-1 py-3 rounded-xl font-bold text-xs transition-colors border ${issuedTypes.includes('card') ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed' : 'bg-slate-800 border-slate-600 text-white hover:bg-slate-700'}`}
+                    /* CASE 5: Ready to Issue Official Certificate (Quota Available!) */
+                    <div className="space-y-3">
+                      {limitErrorMessage && (
+                        <div className="p-3 bg-rose-500/10 border border-rose-500/30 rounded-xl text-xs text-rose-300">
+                          {limitErrorMessage}
+                        </div>
+                      )}
+
+                      <button
+                        type="button"
+                        disabled={isIssuingServer}
+                        onClick={() => executeOfficialIssuance(certificateType, false)}
+                        className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-amber-400 via-amber-500 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 disabled:opacity-60 text-slate-950 font-extrabold text-sm sm:text-base tracking-wide shadow-xl shadow-amber-500/20 flex items-center justify-center gap-2.5 transition-all"
                       >
-                        {issuedTypes.includes('card') ? 'カード版 発行済み' : '【無料】カード版を発行'}
+                        {isIssuingServer ? (
+                          <>
+                            <Loader2 className="w-5 h-5 animate-spin shrink-0" />
+                            <span>公認シリアル採番＆証明書を生成中...</span>
+                          </>
+                        ) : certificateType === 'high_quality' ? (
+                          <>
+                            <Sparkles className="w-5 h-5 shrink-0" />
+                            <span>
+                              公式高画質版を発行して保存する
+                              {effectiveTier === 'ultimate'
+                                ? '（無制限）'
+                                : serverQuota && serverQuota.highQualityRemaining !== null
+                                ? `（今月残り ${serverQuota.highQualityRemaining}枚${
+                                    serverTickets > 0 ? ` + チケット${serverTickets}枚` : ''
+                                  }）`
+                                : ''}
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <Award className="w-5 h-5 shrink-0" />
+                            <span>
+                              【無料】カード版を発行して保存する
+                              {effectiveTier === 'free' &&
+                              serverQuota &&
+                              serverQuota.cardDailyRemaining !== null
+                                ? `（本日残り ${serverQuota.cardDailyRemaining}島）`
+                                : ''}
+                            </span>
+                          </>
+                        )}
                       </button>
-                      <button 
-                        onClick={() => handleDigitalIssueClick('high_quality')} 
-                        disabled={issuedTypes.includes('high_quality')}
-                        className={`flex-1 py-3 rounded-xl font-bold text-xs transition-colors flex items-center justify-center gap-1.5 ${issuedTypes.includes('high_quality') ? 'bg-slate-800 border-slate-700 text-slate-500 cursor-not-allowed' : 'bg-blue-600 border-blue-500 text-white hover:bg-blue-500'}`}
-                      >
-                        <Sparkles className="w-3.5 h-3.5" /> 
-                        {issuedTypes.includes('high_quality')
-                          ? '高画質版 発行済み'
-                          : subscriptionTier === 'ultimate'
-                          ? '公式高画質版を発行 (無制限)'
-                          : '公式高画質版を発行 (Free:月1枚 / Premium:月5枚)'}
-                      </button>
+
+                      <p className="text-[11px] text-slate-400 text-center">
+                        {!isPremium
+                          ? '※無料プランでは初回発行時に5秒間のスポンサーPRが表示されます（発行後の再ダウンロードは待ち時間ゼロ・無制限です）。'
+                          : '※会員特典により広告スキップで即座に発行・マイページへ永久保存されます。'}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Long-Press Save Fallback Image (for iPhone / Android / LINE / Instagram in-app browsers) */}
+                  {activeIssuedCert && (showSaveGuidePanel || isMobileDevice) && latestPreviewDataUrl && (
+                    <div className="pt-3 border-t border-slate-800 space-y-2">
+                      <p className="text-[11px] text-amber-300 font-bold flex items-center gap-1.5">
+                        <Smartphone className="w-3.5 h-3.5 shrink-0" />
+                        スマホ・LINE等でダウンロードできない場合は、下の証明書画像を「長押し」➔「写真に保存」でも保存できます：
+                      </p>
+                      <div className="bg-slate-950 p-2 rounded-xl border border-amber-500/30 flex justify-center">
+                        <img
+                          src={latestPreviewDataUrl}
+                          alt={`${island.name} 到達証明書 (${assignedSerial})`}
+                          className="max-h-56 w-auto rounded-lg object-contain select-auto"
+                        />
+                      </div>
                     </div>
                   )}
                 </div>
 
-                {/* Viral & Free Download Actions */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-2 transition-all duration-500">
-                  <button
-                    onClick={handleNativeShare}
-                    className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    シェア(X/LINE等)
-                  </button>
-                  <button
-                    onClick={handleInstagramShare}
-                    className="w-full py-3.5 px-4 rounded-xl bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 hover:from-pink-400 hover:to-yellow-400 text-white font-bold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
-                  >
-                    <Camera className="w-4 h-4" />
-                    Instagramへ
-                  </button>
-                  <button
-                    onClick={handleDownload}
-                    className="w-full py-3.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs tracking-wide flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
-                  >
-                    <Download className="w-4 h-4" />
-                    画像DL(無料・即時保存)
-                  </button>
-                </div>
-
-                {/* Monetization Banner (Physical Mail Order) */}
-                <div className="mt-6 bg-gradient-to-br from-amber-500/10 via-slate-800 to-amber-500/5 p-6 rounded-3xl border border-amber-500/30 flex flex-col md:flex-row items-center justify-between gap-6">
-                  <div className="space-y-1 text-center md:text-left">
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold tracking-wider mb-1">
-                      <Sparkles className="w-3.5 h-3.5" /> オフィシャル郵送オーダー
+                {/* Monetization Banner (Physical Mail Order — only for visited islands) */}
+                {hasVisitedIsland && (
+                  <div className="mt-4 bg-gradient-to-br from-amber-500/10 via-slate-800 to-amber-500/5 p-5 sm:p-6 rounded-3xl border border-amber-500/30 flex flex-col md:flex-row items-center justify-between gap-5">
+                    <div className="space-y-1 text-center md:text-left">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 text-xs font-bold tracking-wider mb-1">
+                        <Sparkles className="w-3.5 h-3.5" /> オフィシャル郵送オーダー
+                      </div>
+                      <h4 className="font-serif font-bold text-white text-base sm:text-lg">
+                        世界にひとつだけの紙証明書をお手元へ
+                      </h4>
+                      <p className="text-xs text-slate-300 leading-relaxed max-w-md">
+                        高品質な厚紙・金箔押し調の印刷仕上げで、ご自宅やオフィスに飾れるオフィシャル紙証明書を郵送いたします（日本国内送料無料・通常3〜7営業日以内に発送）。
+                      </p>
                     </div>
-                    <h4 className="font-serif font-bold text-white text-lg">世界にひとつだけの紙証明書をお手元へ</h4>
-                    <p className="text-xs text-slate-300 leading-relaxed max-w-md">
-                      高品質な厚紙・金箔押し調の印刷仕上げで、ご自宅やオフィスに飾れるオフィシャル紙証明書を郵送いたします（日本国内送料無料・通常3〜7営業日以内に発送）。
-                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setIsOrdering(true)}
+                      className="shrink-0 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-sm tracking-wider shadow-xl transition-all hover:scale-105"
+                    >
+                      郵送オーダーを申し込む →
+                    </button>
                   </div>
-                  <button
-                    onClick={() => setIsOrdering(true)}
-                    className="shrink-0 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-sm tracking-wider shadow-xl transition-all hover:scale-105"
-                  >
-                    郵送オーダーを申し込む →
-                  </button>
-                </div>
+                )}
               </>
             ) : (
               /* Physical Mail Order Flow */
               <div className="space-y-6 max-w-xl mx-auto py-4">
                 <div className="flex items-center justify-between">
                   <button
+                    type="button"
                     onClick={() => setIsOrdering(false)}
                     className="text-xs font-bold text-slate-400 hover:text-white flex items-center gap-1 transition-colors"
                   >
                     ← プレビューに戻る
                   </button>
-                  <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Physical Certificate Order</span>
+                  <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">
+                    Physical Certificate Order
+                  </span>
                 </div>
 
                 {!orderSuccess ? (
                   <div className="space-y-6 bg-slate-900/60 p-6 rounded-3xl border border-slate-700">
-                    <h4 className="font-serif font-bold text-white text-xl text-center">プラン選択と配送先入力</h4>
+                    <h4 className="font-serif font-bold text-white text-xl text-center">
+                      プラン選択と配送先入力
+                    </h4>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div
                         onClick={() => setOrderPlan('standard')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'standard' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                          orderPlan === 'standard'
+                            ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+                            : 'border-slate-700 bg-slate-800'
                         }`}
                       >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">台紙付き (基本)</span>
+                        <span className="text-xs font-bold text-amber-400 block mb-1">
+                          台紙付き (基本)
+                        </span>
                         <div className="text-lg font-bold text-white mb-2">¥1,500</div>
                         <p className="text-[10px] text-slate-300">A4高品質印刷・特製台紙付き。</p>
                       </div>
                       <div
                         onClick={() => setOrderPlan('frame_simple')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'frame_simple' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                          orderPlan === 'frame_simple'
+                            ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+                            : 'border-slate-700 bg-slate-800'
                         }`}
                       >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">簡易フレーム [OP]</span>
+                        <span className="text-xs font-bold text-amber-400 block mb-1">
+                          簡易フレーム [OP]
+                        </span>
                         <div className="text-lg font-bold text-white mb-2">¥3,000</div>
-                        <p className="text-[10px] text-slate-300">壁掛け・卓上両対応の軽量フレーム。</p>
+                        <p className="text-[10px] text-slate-300">
+                          壁掛け・卓上両対応の軽量フレーム。
+                        </p>
                       </div>
                       <div
                         onClick={() => setOrderPlan('frame_wood')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'frame_wood' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                          orderPlan === 'frame_wood'
+                            ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+                            : 'border-slate-700 bg-slate-800'
                         }`}
                       >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">高級木製フレーム [OP]</span>
+                        <span className="text-xs font-bold text-amber-400 block mb-1">
+                          高級木製フレーム [OP]
+                        </span>
                         <div className="text-lg font-bold text-white mb-2">¥6,000</div>
                         <p className="text-[10px] text-slate-300">重厚感のある木製フレーム装飾。</p>
                       </div>
                       <div
                         onClick={() => setOrderPlan('frame_acrylic')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
-                          orderPlan === 'frame_acrylic' ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]' : 'border-slate-700 bg-slate-800'
+                          orderPlan === 'frame_acrylic'
+                            ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
+                            : 'border-slate-700 bg-slate-800'
                         }`}
                       >
-                        <span className="text-xs font-bold text-amber-400 block mb-1">アクリル額装プレミアム [OP]</span>
+                        <span className="text-xs font-bold text-amber-400 block mb-1">
+                          アクリル額装プレミアム [OP]
+                        </span>
                         <div className="text-lg font-bold text-white mb-2">¥10,000</div>
                         <p className="text-[10px] text-slate-300">浮き出し加工の最高級アクリル額。</p>
                       </div>
                     </div>
 
-                    {/* Options (Lamination & Design) */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                        <label className="block text-xs font-bold text-slate-400 mb-3">デザイン方向</label>
+                        <label className="block text-xs font-bold text-slate-400 mb-3">
+                          デザイン方向
+                        </label>
                         <div className="flex gap-2">
-                          <button onClick={() => setOrderDesign('horizontal')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${orderDesign === 'horizontal' ? 'bg-amber-500 text-slate-900' : 'bg-slate-900 text-slate-400'}`}>横版</button>
-                          <button onClick={() => setOrderDesign('vertical')} className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${orderDesign === 'vertical' ? 'bg-amber-500 text-slate-900' : 'bg-slate-900 text-slate-400'}`}>縦版</button>
+                          <button
+                            type="button"
+                            onClick={() => setOrderDesign('horizontal')}
+                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                              orderDesign === 'horizontal'
+                                ? 'bg-amber-500 text-slate-900'
+                                : 'bg-slate-900 text-slate-400'
+                            }`}
+                          >
+                            横版
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setOrderDesign('vertical')}
+                            className={`flex-1 py-2 rounded-lg text-xs font-bold transition-all ${
+                              orderDesign === 'vertical'
+                                ? 'bg-amber-500 text-slate-900'
+                                : 'bg-slate-900 text-slate-400'
+                            }`}
+                          >
+                            縦版
+                          </button>
                         </div>
                       </div>
                       <div className="bg-slate-800 p-4 rounded-2xl border border-slate-700">
-                        <label className="block text-xs font-bold text-slate-400 mb-3">ラミネート加工 (+¥300)</label>
+                        <label className="block text-xs font-bold text-slate-400 mb-3">
+                          ラミネート加工 (+¥300)
+                        </label>
                         <label className="flex items-center gap-2 cursor-pointer text-sm font-bold text-white">
-                          <input type="checkbox" checked={isLaminated} onChange={e => setIsLaminated(e.target.checked)} className="w-5 h-5 rounded text-amber-500 bg-slate-900 border-slate-600 focus:ring-amber-400" />
+                          <input
+                            type="checkbox"
+                            checked={isLaminated}
+                            onChange={(e) => setIsLaminated(e.target.checked)}
+                            className="w-5 h-5 rounded text-amber-500 bg-slate-900 border-slate-600 focus:ring-amber-400"
+                          />
                           追加する (耐久性・光沢UP)
                         </label>
                       </div>
@@ -1458,56 +2303,68 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
 
                     <div className="space-y-4 pt-4 border-t border-slate-700/50">
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1">配送先地域</label>
-                        <select 
+                        <label className="block text-xs font-bold text-slate-400 mb-1">
+                          配送先地域
+                        </label>
+                        <select
                           value={recipientCountry}
-                          onChange={e => setRecipientCountry(e.target.value)}
+                          onChange={(e) => setRecipientCountry(e.target.value)}
                           className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
                         >
                           <option value="Japan">日本国内 (Japan・送料無料)</option>
                         </select>
-                        <p className="text-[11px] text-slate-400 mt-1">※現在、郵送証明書は日本国内のみ（全国送料無料・通常3〜7営業日以内に発送）承っております。</p>
+                        <p className="text-[11px] text-slate-400 mt-1">
+                          ※現在、郵送証明書は日本国内のみ（全国送料無料・通常3〜7営業日以内に発送）承っております。
+                        </p>
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                          <label className="block text-xs font-bold text-slate-400 mb-1">郵便番号</label>
-                          <input 
-                            type="text" 
+                          <label className="block text-xs font-bold text-slate-400 mb-1">
+                            郵便番号
+                          </label>
+                          <input
+                            type="text"
                             value={postalCode}
                             onChange={handlePostalCodeChange}
-                            placeholder="例: 1000001 (ハイフンなし)" 
-                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
+                            placeholder="例: 1000001 (ハイフンなし)"
+                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-slate-400 mb-1">電話番号 / Phone Number</label>
-                          <input 
-                            type="text" 
+                          <label className="block text-xs font-bold text-slate-400 mb-1">
+                            電話番号 / Phone Number
+                          </label>
+                          <input
+                            type="text"
                             value={phoneNumber}
-                            onChange={e => setPhoneNumber(e.target.value)}
-                            placeholder="例: 090-1234-5678" 
-                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
+                            onChange={(e) => setPhoneNumber(e.target.value)}
+                            placeholder="例: 090-1234-5678"
+                            className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
                           />
                         </div>
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1">住所 / Address (自動入力可)</label>
-                        <input 
-                          type="text" 
+                        <label className="block text-xs font-bold text-slate-400 mb-1">
+                          住所 / Address (自動入力可)
+                        </label>
+                        <input
+                          type="text"
                           value={address}
-                          onChange={e => setAddress(e.target.value)}
-                          placeholder="都道府県・市区町村・番地・マンション名" 
-                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
+                          onChange={(e) => setAddress(e.target.value)}
+                          placeholder="都道府県・市区町村・番地・マンション名"
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
                         />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-slate-400 mb-1">お名前 / Full Name</label>
-                        <input 
-                          type="text" 
+                        <label className="block text-xs font-bold text-slate-400 mb-1">
+                          お名前 / Full Name
+                        </label>
+                        <input
+                          type="text"
                           value={recipientName}
-                          onChange={e => setRecipientName(e.target.value)}
-                          placeholder="山田 太郎" 
-                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500" 
+                          onChange={(e) => setRecipientName(e.target.value)}
+                          placeholder="山田 太郎"
+                          className="w-full bg-slate-800 border border-slate-700 rounded-xl px-4 py-2.5 text-white text-sm focus:outline-none focus:border-amber-500"
                         />
                       </div>
                     </div>
@@ -1519,6 +2376,7 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
                     )}
 
                     <button
+                      type="button"
                       onClick={handleOrderSubmit}
                       disabled={orderSubmitting}
                       className="w-full py-4 rounded-2xl bg-gradient-to-r from-amber-500 to-yellow-600 hover:from-amber-400 hover:to-yellow-500 text-slate-950 font-bold text-sm tracking-widest shadow-lg flex items-center justify-center gap-2 disabled:opacity-50"
@@ -1534,17 +2392,8 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
                     <p className="text-slate-300 text-sm leading-relaxed max-w-md mx-auto">
                       「{island.name}」の到達証明書のオーダーおよび連番シリアル発行が確定いたしました。ご指定住所宛に通常3〜7営業日以内に発送いたします。
                     </p>
-                    <div className="bg-slate-800/80 border border-amber-500/40 rounded-2xl p-4 max-w-sm mx-auto text-left space-y-2 my-4">
-                      <div className="text-xs text-slate-400 flex justify-between">
-                        <span>受付状況:</span>
-                        <strong className="text-amber-400 font-mono">決済完了・発送準備中</strong>
-                      </div>
-                      <div className="text-xs text-slate-400 flex justify-between">
-                        <span>公認シリアルNo:</span>
-                        <strong className="text-emerald-400 font-mono">{assignedSerial}</strong>
-                      </div>
-                    </div>
                     <button
+                      type="button"
                       onClick={onClose}
                       className="mt-4 px-8 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold text-sm rounded-xl border border-slate-700 transition-colors"
                     >
@@ -1554,7 +2403,6 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
                 )}
               </div>
             )}
-
           </div>
         </motion.div>
       </motion.div>
@@ -1566,15 +2414,22 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[10000] bg-slate-950/95 backdrop-blur-xl flex flex-col"
+            className="fixed inset-0 z-[10500] bg-slate-950/95 backdrop-blur-xl flex flex-col"
           >
             <div className="flex items-center justify-between p-4 bg-slate-900 border-b border-slate-800">
               <h3 className="text-white font-bold text-sm">証明書プレビュー (拡大表示)</h3>
-              <button onClick={() => setIsFullscreenPreview(false)} className="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300">
+              <button
+                type="button"
+                onClick={() => setIsFullscreenPreview(false)}
+                className="p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300"
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <div className="flex-1 overflow-auto p-4 flex items-center justify-center cursor-zoom-out" onClick={() => setIsFullscreenPreview(false)}>
+            <div
+              className="flex-1 overflow-auto p-4 flex items-center justify-center cursor-zoom-out"
+              onClick={() => setIsFullscreenPreview(false)}
+            >
               <canvas
                 ref={fullscreenCanvasRef}
                 className="max-w-full max-h-[82vh] w-auto h-auto object-contain rounded-lg shadow-2xl border border-slate-800"
@@ -1584,45 +2439,92 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
         )}
       </AnimatePresence>
 
-      {/* Official Sponsor / PR Issuance Overlay */}
+      {/* Official Sponsor PR & Synchronous Mobile Save Completion Overlay */}
       <AnimatePresence>
         {isPlayingAd && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[11000] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-6"
+            className="fixed inset-0 z-[11000] bg-slate-950/95 backdrop-blur-xl flex flex-col items-center justify-center p-5 overflow-y-auto"
           >
-            <div className="absolute top-8 right-8 text-white font-mono text-sm bg-slate-900/80 px-4 py-2 rounded-xl border border-amber-500/30 shadow-lg">
-              {adTimeLeft > 0 ? `証明書を生成中... 残り ${adTimeLeft}秒` : '生成完了！証明書を発行します...'}
+            <div className="mb-4 text-white font-mono text-xs sm:text-sm bg-slate-900/90 px-4 py-2 rounded-xl border border-amber-500/30 shadow-lg">
+              {adTimeLeft > 0 || isIssuingServer
+                ? `公認シリアル採番＆証明書を生成中... ${adTimeLeft > 0 ? `残り ${adTimeLeft}秒` : ''}`
+                : `🎉 公認到達証明書（${assignedSerial}）の発行が完了しました！`}
             </div>
-            
+
             {/* Official Sponsor & Premium PR Card */}
-            <div className="w-full max-w-lg aspect-video bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl overflow-hidden border border-amber-500/40 relative shadow-2xl p-6 flex flex-col items-center justify-center text-center">
+            <div className="w-full max-w-lg bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl overflow-hidden border border-amber-500/40 relative shadow-2xl p-6 flex flex-col items-center justify-center text-center">
               <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold tracking-widest uppercase mb-3">
                 KIRATABI OFFICIAL SPONSOR PR
               </span>
-              <Sparkles className="w-12 h-12 mb-3 text-amber-400 animate-pulse" />
-              <h2 className="text-xl sm:text-2xl font-bold font-serif text-white mb-2 tracking-wide">
+              <Sparkles className="w-10 h-10 mb-3 text-amber-400 animate-pulse" />
+              <h2 className="text-lg sm:text-2xl font-bold font-serif text-white mb-2 tracking-wide">
                 輝旅 島専科 プレミアムパスポート
               </h2>
               <p className="text-xs sm:text-sm text-slate-300 max-w-md leading-relaxed">
-                Premiumなら広告スキップ＆月5枚、Ultimateなら無制限発行！さらに特製の金箔調・公式紙証明書の郵送オーダー（1枚 ¥1,500〜）もどなたでもご注文いただけます。
+                Premiumなら待ち時間ゼロ＆公式高画質版を月5枚まで、Ultimateなら無制限に即時発行！さらに特製の金箔調・公式紙証明書の郵送オーダー（1枚 ¥1,500〜）もご注文いただけます。
               </p>
-              <div className="mt-6 flex items-center gap-2">
-                <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping"></div>
-                <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" style={{ animationDelay: '0.2s' }}></div>
-                <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" style={{ animationDelay: '0.4s' }}></div>
-              </div>
+              {(adTimeLeft > 0 || isIssuingServer) && (
+                <div className="mt-5 flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                  <div
+                    className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
+                    style={{ animationDelay: '0.2s' }}
+                  />
+                  <div
+                    className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
+                    style={{ animationDelay: '0.4s' }}
+                  />
+                </div>
+              )}
             </div>
-            
-            {adTimeLeft === 0 && (
-              <button 
-                onClick={() => { setIsPlayingAd(false); issueDigital(certificateType); }}
-                className="mt-8 px-6 py-2.5 bg-amber-500 text-slate-950 font-bold rounded-full hover:bg-amber-400 transition-colors shadow-lg"
-              >
-                公認到達証明書を受け取る
-              </button>
+
+            {/* Fresh Synchronous User-Gesture Save Buttons once countdown & server issuance finish */}
+            {adTimeLeft === 0 && !isIssuingServer && justIssuedCert && (
+              <div className="mt-6 w-full max-w-lg bg-slate-900 border border-emerald-500/40 rounded-2xl p-5 space-y-3 shadow-2xl">
+                <p className="text-center text-emerald-300 font-bold text-sm">
+                  ✓ マイページへのクラウド保存完了（{assignedSerial}）
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {isMobileDevice && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await triggerMobilePhotoShare();
+                        setIsPlayingAd(false);
+                      }}
+                      className="w-full py-3.5 px-4 bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg"
+                    >
+                      <Smartphone className="w-4 h-4 shrink-0" />
+                      写真アプリに保存 / 共有
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    onClick={() => {
+                      triggerSynchronousFileDownload(
+                        justIssuedCert.image_url,
+                        certificateType,
+                        assignedSerial
+                      );
+                      setIsPlayingAd(false);
+                    }}
+                    className="w-full py-3.5 px-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm rounded-xl flex items-center justify-center gap-2 shadow-lg"
+                  >
+                    <Download className="w-4 h-4 shrink-0" />
+                    PNGファイルとして保存
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsPlayingAd(false)}
+                  className="w-full py-2 text-xs text-slate-400 hover:text-white transition-colors"
+                >
+                  証明書プレビュー画面に戻る（あとからでも保存可能）
+                </button>
+              </div>
             )}
           </motion.div>
         )}
@@ -1631,7 +2533,22 @@ export default function CertificateModal({ isOpen, onClose, island, user: userPr
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onAuthSuccess={() => setIsAuthModalOpen(false)}
+        onAuthSuccess={() => {
+          setIsAuthModalOpen(false);
+          void refreshServerCertificateState(true);
+        }}
+      />
+
+      <PlanChangeModal
+        isOpen={isPlanModalOpen}
+        onClose={() => setIsPlanModalOpen(false)}
+        currentTier={effectiveTier}
+        onPlanChanged={(newTier) => {
+          setServerTier(newTier);
+          setIsPlanModalOpen(false);
+          toast.success(`KIRATABI ${newTier === 'ultimate' ? 'Ultimate' : 'Premium'} に変更しました！`);
+          void refreshServerCertificateState(true);
+        }}
       />
     </AnimatePresence>
   );

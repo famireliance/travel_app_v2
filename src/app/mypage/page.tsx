@@ -4,8 +4,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTravel } from '@/context/TravelContext';
 import Breadcrumb from '@/components/Breadcrumb';
-import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard, Calendar, FileText, ArrowRight, UserCircle } from 'lucide-react';
+import { ArrowLeft, LogOut, Award, Star, MapPin, Edit3, Check, Sparkles, Globe as GlobeIcon, Video, History, BookOpen, Compass, Heart, Map, CreditCard, Calendar, FileText, ArrowRight, UserCircle, Download, RefreshCw } from 'lucide-react';
 import { PlanChangeModal } from '@/components/PlanChangeModal';
+import CertificateModal from '@/components/CertificateModal';
 import AuthModal from '@/components/AuthModal';
 import OrderHistory from '@/components/OrderHistory';
 import ArchipelagoProgressModal from '@/components/ArchipelagoProgressModal';
@@ -203,7 +204,16 @@ export default function MyPage() {
     setNameInput(travelerName || '');
   }, [travelerName]);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [myCertificates, setMyCertificates] = useState<any[]>([]);
+  const [myCertQuota, setMyCertQuota] = useState<{
+    highQualityMonthlyLimit: number | null;
+    highQualityMonthlyUsed: number;
+    highQualityRemaining: number | null;
+  } | null>(null);
+  const [myCertTickets, setMyCertTickets] = useState<number>(0);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const [editingCertificateTarget, setEditingCertificateTarget] = useState<{ island: any; type: 'card' | 'high_quality' } | null>(null);
 
   useEffect(() => {
     Promise.all([
@@ -216,9 +226,25 @@ export default function MyPage() {
           try {
             const { data: diariesData } = await supabase.from('island_diaries').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
             setMyDiaries(diariesData || []);
-            
-            const { data: certsData } = await supabase.from('certificates').select('*').eq('user_id', user.id).not('image_url', 'is', null).order('created_at', { ascending: false });
+
+            const { data: certsData } = await supabase.from('certificates').select('*').eq('user_id', user.id).order('created_at', { ascending: false });
             setMyCertificates(certsData || []);
+
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session?.access_token) {
+              const quotaRes = await fetch('/api/certificates', {
+                headers: { Authorization: `Bearer ${session.access_token}` },
+                cache: 'no-store',
+              });
+              if (quotaRes.ok) {
+                const quotaData = await quotaRes.json();
+                if (Array.isArray(quotaData.certificates)) {
+                  setMyCertificates(quotaData.certificates);
+                }
+                if (quotaData.quota) setMyCertQuota(quotaData.quota);
+                if (typeof quotaData.tickets === 'number') setMyCertTickets(quotaData.tickets);
+              }
+            }
           } catch (e) { console.error(e); }
         }
       })()
@@ -568,9 +594,9 @@ export default function MyPage() {
                 )}
                 <p className="text-xs text-slate-600 mt-1">
                   {subscriptionTier === 'free'
-                    ? '無料プランでは公式高画質デジタル証明書を月1枚まで発行・クラウド保存可能です（カード版・画像DLは無料）。枠の拡大や広告スキップには有料プランをご利用ください。'
+                    ? '無料プランでは公式高画質デジタル証明書を月1枚まで発行・保存可能です（カード版は無料・新規1日3島まで・発行済みの再ダウンロードは無制限）。枠の拡大や広告スキップには有料プランをご利用ください。'
                     : subscriptionTier === 'premium'
-                    ? 'Premium特典が適用されています（広告スキップ・公式高画質版を月5枚まで発行可能）。'
+                    ? 'Premium特典が適用されています（広告スキップ・公式高画質版を月5枚まで発行可能・再ダウンロード無制限）。'
                     : 'Ultimate特典が適用されています（広告スキップ・相棒精霊の最終進化解放・公式高画質版を無制限で発行可能）。'}
                 </p>
               </div>
@@ -717,7 +743,46 @@ export default function MyPage() {
 
           {/* Certificates Tab */}
           {activeTab === 'certificates' && (
-            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2">
+            <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2 space-y-5">
+              {/* Monthly Quota & Re-Download Info Banner */}
+              <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-5 rounded-3xl border border-slate-700 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                      <Award className="w-4 h-4" /> 今月の公式高画質版 発行枠:
+                    </span>
+                    <span className="text-sm font-extrabold">
+                      {subscriptionTier === 'ultimate' ? (
+                        <span className="text-emerald-400">無制限</span>
+                      ) : myCertQuota ? (
+                        <span className={(myCertQuota.highQualityRemaining ?? 0) > 0 ? 'text-emerald-400' : 'text-rose-400'}>
+                          残り {myCertQuota.highQualityRemaining} / {myCertQuota.highQualityMonthlyLimit} 枚
+                        </span>
+                      ) : (
+                        <span>{subscriptionTier === 'premium' ? '月5枚' : '月1枚'}</span>
+                      )}
+                    </span>
+                    {myCertTickets > 0 && (
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
+                        🎫 チケット {myCertTickets}枚保有
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-300">
+                    発行済みの証明書は、枠消費なし・待ち時間なしで何度でも「再ダウンロード」および「写真・縦横デザインの変更保存」が可能です。
+                  </p>
+                </div>
+                {subscriptionTier !== 'ultimate' && (
+                  <button
+                    type="button"
+                    onClick={() => setShowPlanModal(true)}
+                    className="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold text-xs shadow-md transition-all"
+                  >
+                    発行枠を増やす
+                  </button>
+                )}
+              </div>
+
               {myCertificates.length === 0 ? (
                 <div className="bg-white p-10 rounded-3xl border border-slate-200 text-center shadow-sm">
                   <Award className="w-12 h-12 text-slate-300 mx-auto mb-3" />
@@ -730,44 +795,117 @@ export default function MyPage() {
                     const island = allIslandsData.find(
                       i => String(i.id) === String(cert.island_id) || (i.slug && String(i.slug) === String(cert.island_id))
                     );
-                    const certIslandName =
-                      island?.name ||
-                      ALL_ISLANDS_MASTER_DICTIONARY[String(cert.island_id)]?.name ||
-                      cert.island_name ||
-                      (cert.island_id ? String(cert.island_id) : '離島');
+                    const masterFallback = ALL_ISLANDS_MASTER_DICTIONARY[String(cert.island_id)];
+                    const certIslandObj = island || (masterFallback ? {
+                      id: masterFallback.id,
+                      slug: masterFallback.slug,
+                      name: masterFallback.name,
+                      prefecture: masterFallback.prefecture,
+                      region_id: masterFallback.region_id,
+                      coordinates: `${masterFallback.lat.toFixed(4)}°N, ${masterFallback.lng.toFixed(4)}°E`,
+                    } : { id: String(cert.island_id), name: cert.island_name || '離島' });
+                    const certIslandName = certIslandObj.name || '離島';
+                    const serialLabel = cert.serial_number ? `No.${String(cert.serial_number).padStart(4, '0')}` : 'NO SERIAL';
                     const safeCertUrl =
                       typeof cert.image_url === 'string' && cert.image_url.startsWith('https://')
                         ? cert.image_url
                         : null;
+                    const certTypeNormalized: 'card' | 'high_quality' =
+                      cert.type === 'high_quality' ? 'high_quality' : 'card';
+                    const downloadFilename = `KIRATABI_Certificate_${certIslandName.replace(/[\\/:*?"<>|\s]/g, '_')}_${serialLabel.replace('.', '')}.png`;
+                    const downloadHref = safeCertUrl
+                      ? `/api/certificates/download?url=${encodeURIComponent(safeCertUrl)}&name=${encodeURIComponent(downloadFilename)}`
+                      : null;
+
                     return (
                       <div
                         key={cert.id}
-                        className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-slate-700 hover:border-amber-500 transition-colors cursor-pointer group"
-                        onClick={() => {
-                          if (safeCertUrl) {
-                            window.open(safeCertUrl, '_blank', 'noopener,noreferrer');
-                          }
-                        }}
+                        className="bg-slate-900 rounded-2xl overflow-hidden shadow-lg border border-slate-700 hover:border-amber-500/70 transition-colors flex flex-col group"
                       >
-                        <div className="aspect-[4/3] bg-slate-950 relative overflow-hidden flex items-center justify-center p-2">
+                        <div
+                          className="aspect-[4/3] bg-slate-950 relative overflow-hidden flex items-center justify-center p-2 cursor-pointer"
+                          onClick={() => {
+                            setEditingCertificateTarget({
+                              island: certIslandObj,
+                              type: certTypeNormalized,
+                            });
+                          }}
+                        >
                           {safeCertUrl ? (
-                            <img src={safeCertUrl} alt="Certificate" className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
+                            <img src={safeCertUrl} alt={`${certIslandName} 到達証明書`} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500" />
                           ) : (
-                            <span className="text-slate-500 text-xs">画像データがありません</span>
+                            <div className="text-center px-4 space-y-1.5">
+                              <Award className="w-8 h-8 text-amber-400/70 mx-auto" />
+                              <p className="text-slate-300 text-xs font-bold">画像データが未生成です</p>
+                              <p className="text-amber-400 text-[11px]">タップして枠消費なしで即時生成・保存</p>
+                            </div>
                           )}
-                          <div className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur text-white text-[10px] px-2 py-1 rounded font-mono border border-slate-700">
-                            {cert.serial_number ? `No.${String(cert.serial_number).padStart(4, '0')}` : 'NO SERIAL'}
+                          <div className="absolute top-3 right-3 bg-slate-900/85 backdrop-blur text-white text-[10px] px-2.5 py-1 rounded font-mono border border-slate-700">
+                            {serialLabel}
                           </div>
                         </div>
-                        <div className="p-4 bg-slate-800">
-                          <h4 className="font-bold text-white text-sm font-serif mb-1 line-clamp-1">{certIslandName} 到達証明書</h4>
-                          <div className="flex justify-between items-center mt-3">
-                            <span className="text-[10px] text-slate-400 font-mono bg-slate-900 px-2 py-1 rounded">
-                              {new Date(cert.created_at).toLocaleDateString('ja-JP')}
+
+                        <div className="p-4 bg-slate-800 flex-1 flex flex-col justify-between gap-3">
+                          <div>
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <h4
+                                onClick={() => router.push(`/island/${certIslandObj.slug || certIslandObj.id}`)}
+                                className="font-bold text-white hover:text-amber-300 text-sm font-serif line-clamp-1 cursor-pointer transition-colors"
+                              >
+                                {certIslandName} 到達証明書
+                              </h4>
+                              <span className={`shrink-0 text-[10px] font-bold px-2 py-0.5 rounded border ${
+                                cert.type === 'high_quality'
+                                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                                  : 'bg-slate-700 text-slate-300 border-slate-600'
+                              }`}>
+                                {cert.type === 'high_quality' ? '公式高画質版' : 'カード版'}
+                              </span>
+                            </div>
+                            <span className="text-[10px] text-slate-400 font-mono">
+                              発行日: {new Date(cert.created_at).toLocaleDateString('ja-JP')}
                             </span>
-                            <span className="text-[10px] font-bold px-2 py-1 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                              {cert.type === 'high_quality' ? '公式版' : '簡易版'}
-                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-700/70">
+                            {downloadHref ? (
+                              <a
+                                href={downloadHref}
+                                download={downloadFilename}
+                                onClick={() => toast.success('📥 証明書の再ダウンロードを開始しました')}
+                                className="py-2 px-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-[11px] flex items-center justify-center gap-1.5 transition-colors shadow"
+                              >
+                                <Download className="w-3.5 h-3.5 shrink-0" />
+                                再ダウンロード
+                              </a>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setEditingCertificateTarget({
+                                    island: certIslandObj,
+                                    type: certTypeNormalized,
+                                  })
+                                }
+                                className="py-2 px-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-[11px] flex items-center justify-center gap-1.5 transition-colors shadow"
+                              >
+                                <Download className="w-3.5 h-3.5 shrink-0" />
+                                生成して保存
+                              </button>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                setEditingCertificateTarget({
+                                  island: certIslandObj,
+                                  type: certTypeNormalized,
+                                })
+                              }
+                              className="py-2 px-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-bold text-[11px] flex items-center justify-center gap-1.5 transition-colors border border-slate-600"
+                            >
+                              <RefreshCw className="w-3.5 h-3.5 shrink-0" />
+                              再編集・共有
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -1374,6 +1512,22 @@ export default function MyPage() {
       <ArchipelagoProgressModal
         isOpen={showArchipelagoModal}
         onClose={() => setShowArchipelagoModal(false)}
+      />
+      <CertificateModal
+        isOpen={Boolean(editingCertificateTarget)}
+        onClose={() => setEditingCertificateTarget(null)}
+        island={editingCertificateTarget?.island || null}
+        user={user}
+        initialCertificateType={editingCertificateTarget?.type}
+        onIssuedOrUpdated={(updatedCert) => {
+          setMyCertificates((prev) => {
+            const exists = prev.some((c) => c.id === updatedCert.id);
+            if (exists) {
+              return prev.map((c) => (c.id === updatedCert.id ? updatedCert : c));
+            }
+            return [updatedCert, ...prev];
+          });
+        }}
       />
     </main>
   );

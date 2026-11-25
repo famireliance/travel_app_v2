@@ -1309,8 +1309,8 @@ export default function Home() {
                 <div className="text-3xl font-serif mb-8">¥0<span className="text-sm text-slate-400 font-sans"> / 永遠に無料</span></div>
                 <ul className="space-y-3.5 text-sm text-slate-300">
                   <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>全{totalIslandsCount}島のGPS・写真チェックイン</span></li>
-                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>カード版証明書・画像DL無料</span></li>
-                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>公式高画質デジタル証明書のクラウド保存 <strong className="text-white">月1枚まで</strong></span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>カード版証明書無料（新規1日3島まで・再DL無制限）</span></li>
+                  <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>公式高画質デジタル証明書の発行・保存 <strong className="text-white">月1枚まで</strong></span></li>
                   <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>島ノート写真投稿無制限・全国ランキング参加</span></li>
                   <li className="flex gap-3 items-start"><CheckCircle className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5"/> <span>ご当地妖精収集＆相棒精霊の第1〜第3形態進化（レベル到達で解放）</span></li>
                 </ul>
