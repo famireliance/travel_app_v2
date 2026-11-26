@@ -3,6 +3,30 @@ import { createClient } from '@supabase/supabase-js';
 import { getAuthUser } from '@/lib/adminAuth';
 import { getFallbackJson, setFallbackJson } from '@/lib/adminConfigFallback';
 
+const VALID_PARTNER_TYPES = [
+  'transport',
+  'lodging',
+  'dining',
+  'shop',
+  'activity',
+  'municipality',
+] as const;
+
+type PartnerType = (typeof VALID_PARTNER_TYPES)[number];
+
+const DEFAULT_CATEGORY_BY_TYPE: Record<PartnerType, string> = {
+  transport: '交通・レンタカー',
+  lodging: '宿泊施設',
+  dining: '飲食店・カフェ',
+  shop: 'お土産・特産店',
+  activity: 'マリン・体験',
+  municipality: '自治体・観光協会',
+};
+
+function isValidPartnerType(val: unknown): val is PartnerType {
+  return typeof val === 'string' && (VALID_PARTNER_TYPES as readonly string[]).includes(val);
+}
+
 function getAdminClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
@@ -30,20 +54,29 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: 'サーバー設定エラー' }, { status: 503 });
     }
 
-    const { data: partners, error } = await adminClient
-      .from('b2b_partners')
-      .select('*')
-      .order('contract_end', { ascending: true });
+    const [{ data: partners, error }, fbPartners] = await Promise.all([
+      adminClient
+        .from('b2b_partners')
+        .select('*')
+        .order('contract_end', { ascending: true }),
+      getFallbackJson<Record<string, unknown>[]>('fallback_b2b_partners', []),
+    ]);
 
+    const safeFb = Array.isArray(fbPartners) ? fbPartners : [];
     if (error) {
-      const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
-      const sorted = [...(Array.isArray(fbPartners) ? fbPartners : [])].sort((a, b) =>
+      const sorted = [...safeFb].sort((a, b) =>
         String(a?.contract_end || '').localeCompare(String(b?.contract_end || ''))
       );
       return NextResponse.json({ partners: sorted });
     }
 
-    return NextResponse.json({ partners: partners || [] });
+    const dbList = Array.isArray(partners) ? partners : [];
+    const seenIds = new Set(dbList.map((p) => String(p.id)));
+    const merged = [...dbList, ...safeFb.filter((p) => p?.id && !seenIds.has(String(p.id)))].sort(
+      (a, b) => String(a?.contract_end || '').localeCompare(String(b?.contract_end || ''))
+    );
+
+    return NextResponse.json({ partners: merged });
   } catch (err: any) {
     const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
     return NextResponse.json({ partners: Array.isArray(fbPartners) ? fbPartners : [] });
@@ -90,17 +123,21 @@ export async function POST(req: NextRequest) {
     if (!name || !island_id || !type) {
       return NextResponse.json({ error: 'パートナー名、対象島ID、業種種別は必須です' }, { status: 400 });
     }
-    if (!['transport', 'lodging'].includes(type)) {
-      return NextResponse.json({ error: '業種種別は transport または lodging を指定してください' }, { status: 400 });
+    if (!isValidPartnerType(type)) {
+      return NextResponse.json(
+        { error: '業種種別は transport / lodging / dining / shop / activity / municipality のいずれかを指定してください' },
+        { status: 400 }
+      );
     }
     if (sponsor_tier && !['GOLD', 'SILVER', 'STANDARD'].includes(sponsor_tier)) {
       return NextResponse.json({ error: 'スポンサーランクが無効です' }, { status: 400 });
     }
 
+    const trimmedCategory = typeof category_detail === 'string' ? category_detail.trim() : '';
     const partnerData = {
       name,
       type,
-      category_detail: category_detail || (type === 'transport' ? '交通機関' : '宿泊施設'),
+      category_detail: trimmedCategory || DEFAULT_CATEGORY_BY_TYPE[type],
       island_id,
       logo_url: logo_url || '',
       banner_photo_url: banner_photo_url || '',
@@ -180,8 +217,13 @@ export async function PUT(req: NextRequest) {
       if (rawUpdates[key] !== undefined) updates[key] = rawUpdates[key];
     }
 
-    if (updates.type && !['transport', 'lodging'].includes(updates.type)) {
-      return NextResponse.json({ error: '業種種別が無効です' }, { status: 400 });
+    if (updates.type !== undefined) {
+      if (!isValidPartnerType(updates.type)) {
+        return NextResponse.json({ error: '業種種別が無効です' }, { status: 400 });
+      }
+      if (typeof updates.category_detail === 'string' && !updates.category_detail.trim()) {
+        updates.category_detail = DEFAULT_CATEGORY_BY_TYPE[updates.type];
+      }
     }
     if (updates.sponsor_tier && !['GOLD', 'SILVER', 'STANDARD'].includes(updates.sponsor_tier)) {
       return NextResponse.json({ error: 'スポンサーランクが無効です' }, { status: 400 });
@@ -260,14 +302,14 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'id が必要です' }, { status: 400 });
     }
 
-    const { error } = await adminClient
+    await adminClient
       .from('b2b_partners')
       .delete()
       .eq('id', id);
 
-    if (error) {
-      const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
-      const filtered = fbPartners.filter((p: any) => p.id !== id);
+    const fbPartners = await getFallbackJson<Record<string, unknown>[]>('fallback_b2b_partners', []);
+    if (Array.isArray(fbPartners) && fbPartners.some((p) => String(p?.id) === id)) {
+      const filtered = fbPartners.filter((p) => String(p?.id) !== id);
       await setFallbackJson('fallback_b2b_partners', filtered);
     }
 

@@ -35,7 +35,8 @@ import {
   BarChart3,
   Wifi,
   ShieldCheck,
-  BedDouble
+  BedDouble,
+  Camera
 } from 'lucide-react';
 
 import AdminDashboard from '@/components/admin/AdminDashboard';
@@ -54,6 +55,7 @@ import AdminAnalytics from '@/components/admin/AdminAnalytics';
 import AdminWifiManagement from '@/components/admin/AdminWifiManagement';
 import AdminAuditLogs from '@/components/admin/AdminAuditLogs';
 import AdminAccommodations from '@/components/admin/AdminAccommodations';
+import AdminPhotoAdoption from '@/components/admin/AdminPhotoAdoption';
 
 export default function AdminPage() {
   const [password, setPassword] = useState('');
@@ -600,8 +602,9 @@ export default function AdminPage() {
     { id: 'orders', label: '発送・注文管理', icon: Package },
     { id: 'user', label: 'ユーザー・権限管理', icon: Users },
     { id: 'official_certs', label: '公的証明書販売準備', icon: Award },
-    { id: 'partners', label: '宿・交通パートナー', icon: Ship },
+    { id: 'partners', label: '宿・交通・店舗CM管理', icon: Ship },
     { id: 'distributors', label: '売店・加盟店パートナー', icon: Store },
+    { id: 'photo-adoption', label: '投稿写真の公式採用', icon: Camera },
     { id: 'moderation', label: '投稿モデレーション', icon: ShieldAlert },
     { id: 'islands', label: '島マスター管理', icon: Palmtree },
     { id: 'users', label: '組織・スタッフ管理', icon: Users },
@@ -1314,6 +1317,11 @@ export default function AdminPage() {
         {/* 6. Distributors / Stores Tab */}
         {activeTab === 'distributors' && (
           <AdminDistributors password={password} />
+        )}
+
+        {/* UGC Photo Official Adoption Tab */}
+        {activeTab === 'photo-adoption' && (
+          <AdminPhotoAdoption password={password} />
         )}
 
         {/* 7. Moderation Tab */}

@@ -25,8 +25,11 @@ import { getFerryInfoForIsland } from '@/lib/ferryRoutes';
 import { getIslandServicesByIslandId } from '@/data/islandServicesData';
 import { trackFacilityEvent } from '@/lib/supabase';
 import NearbyIslands from '@/components/NearbyIslands';
-import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building, Key, Info, HelpCircle } from 'lucide-react';
+import { Tent, Car, Ship, CloudLightning, Droplets, Moon, Store, CreditCard, Stethoscope, Sunrise, Mountain, PhoneCall, Phone, Radio, ShieldAlert, Hotel, Bike, LifeBuoy, Waves, Ticket, Building, Key, Info, HelpCircle, Camera, Gift, Clock, Wallet, Calendar, ChevronDown } from 'lucide-react';
 import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
+import { getIslandAccessSpecs } from '@/lib/islandAccessSpecs';
+import { getIslandMonetizationPlan } from '@/lib/islandMonetization';
+import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 import IslandWifiGuide from '@/components/IslandWifiGuide';
 import { AuthenticIslandHero } from '@/components/AuthenticIslandVisual';
 
@@ -303,6 +306,25 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
   };
 
   const difficultyInfo = island ? getIslandDifficulty(island) : null;
+  const accessSpecs = getIslandAccessSpecs(island);
+  const monetizationPlan = getIslandMonetizationPlan(island);
+  const verifiedPhotos = getVerifiedIslandPhotos(island);
+
+  const logAffiliateClick = (slot: string) => {
+    try {
+      fetch('/api/tracking', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          facilityId: `${slot}:${canonicalIslandId}`.slice(0, 120),
+          eventType: 'website_click',
+        }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {
+      // ignore tracking errors
+    }
+  };
 
   return (
     <main className="min-h-screen bg-[#F8FAFC] pb-36 font-sans relative">
@@ -540,6 +562,132 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
                 <Award className="w-3.5 h-3.5" />
                 <span>{(status === 'visited' || status === 'verified_visited') ? '公式証明書を見る・発行' : '証明書見本を見る'}</span>
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ⛴️ 行き方・アクセス・旅の基本スペック早見表 (全529島 SEO・実用スペックカード) */}
+        <div className="mb-10 bg-white rounded-3xl shadow-sm border border-slate-200 overflow-hidden">
+          <div className="bg-gradient-to-r from-sky-50 via-blue-50/60 to-indigo-50/40 border-b border-slate-200/80 px-5 sm:px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <span className="text-[10px] font-bold tracking-widest uppercase text-blue-700 block mb-0.5">
+                QUICK ACCESS & TRAVEL SPECS
+              </span>
+              <h2 className="text-sm sm:text-base font-serif font-bold text-slate-900 flex items-center gap-2">
+                <span>⛴️ 行き方・アクセス・旅の基本スペック早見表</span>
+              </h2>
+            </div>
+            <span
+              className={`self-start sm:self-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-extrabold border shadow-2xs ${
+                accessSpecs.dayTripBadge.tone === 'emerald'
+                  ? 'bg-emerald-100 text-emerald-900 border-emerald-300'
+                  : accessSpecs.dayTripBadge.tone === 'amber'
+                    ? 'bg-amber-100 text-amber-900 border-amber-300'
+                    : 'bg-rose-100 text-rose-900 border-rose-300'
+              }`}
+            >
+              {accessSpecs.dayTripBadge.label}
+            </span>
+          </div>
+
+          <div className="p-5 sm:p-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+              {/* 1. 出発港 */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                  <Ship className="w-3.5 h-3.5 text-blue-600 shrink-0" />
+                  出発港・玄関口
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                  {accessSpecs.departureHub}
+                </p>
+              </div>
+
+              {/* 2. アクセス手段 */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                  <Navigation className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                  アクセス手段
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                  {accessSpecs.accessMethod}
+                </p>
+              </div>
+
+              {/* 3. 所要時間目安 */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5 text-sky-600 shrink-0" />
+                  所要時間目安
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                  {accessSpecs.durationEstimate}
+                </p>
+              </div>
+
+              {/* 4. 往復交通費目安 */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                  <Wallet className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  往復交通費目安
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                  {accessSpecs.roundTripBudget}
+                </p>
+              </div>
+
+              {/* 5. 日帰り判定詳細 */}
+              <div
+                className={`p-4 rounded-2xl border flex flex-col justify-between gap-1.5 ${
+                  accessSpecs.dayTripBadge.tone === 'emerald'
+                    ? 'bg-emerald-50/60 border-emerald-200'
+                    : accessSpecs.dayTripBadge.tone === 'amber'
+                      ? 'bg-amber-50/60 border-amber-200'
+                      : 'bg-rose-50/60 border-rose-200'
+                }`}
+              >
+                <span className="text-[11px] font-bold text-slate-600 flex items-center gap-1.5">
+                  <Sunrise className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  日帰り可否・滞在判定
+                </span>
+                <p className="text-xs font-medium text-slate-800 leading-relaxed">
+                  <strong className="block text-slate-900 mb-0.5">{accessSpecs.dayTripBadge.label}</strong>
+                  {accessSpecs.dayTripBadge.detail}
+                </p>
+              </div>
+
+              {/* 6. 推奨滞在日数 */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                  <BedDouble className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+                  推奨滞在日数
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                  {accessSpecs.recommendedStay}
+                </p>
+              </div>
+
+              {/* 7. 島内の足 */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                  <Bike className="w-3.5 h-3.5 text-teal-600 shrink-0" />
+                  島内の足・移動手段
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                  {accessSpecs.islandMobility}
+                </p>
+              </div>
+
+              {/* 8. ベストシーズン */}
+              <div className="p-4 rounded-2xl bg-slate-50/90 border border-slate-200/80 flex flex-col justify-between gap-1.5">
+                <span className="text-[11px] font-bold text-slate-500 flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                  ベストシーズン
+                </span>
+                <p className="text-xs font-bold text-slate-900 leading-relaxed">
+                  {accessSpecs.bestSeason}
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -1589,6 +1737,159 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
                 </div>
               </div>
 
+              {/* ========================================== */}
+              {/* COMMON 3: 🚢 乗船前後泊・拠点づくり（出発港エリア宿＆レンタカー） */}
+              {/* ========================================== */}
+              <div className="bg-white rounded-3xl shadow-sm border border-sky-200 overflow-hidden">
+                <div className="bg-gradient-to-r from-sky-600/10 via-blue-500/5 to-indigo-500/10 border-b border-sky-200/70 px-6 py-5 flex flex-col md:flex-row md:items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[0.65rem] font-bold text-sky-700 uppercase tracking-widest block mb-1">
+                      DEPARTURE PORT GATEWAY HOTEL & CAR
+                    </span>
+                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                      <span>🚢 乗船前後泊・拠点づくりに：{monetizationPlan.gatewayHub.hubName}の宿＆レンタカー</span>
+                    </h3>
+                  </div>
+                  <span className="self-start md:self-auto px-3 py-1 rounded-full bg-sky-100 text-sky-900 border border-sky-200 text-[11px] font-bold shrink-0">
+                    朝便乗船・欠航対策に安心
+                  </span>
+                </div>
+
+                <div className="p-6 space-y-5">
+                  <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-serif bg-sky-50/70 border border-sky-100 rounded-2xl p-4">
+                    {monetizationPlan.gatewayHub.reason}
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <a
+                      href={monetizationPlan.gatewayHub.rakutenGatewayHotelUrl}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      onClick={() => logAffiliateClick('gateway_hotel_rakuten')}
+                      className="px-4 py-3.5 rounded-2xl bg-[#BF0000] hover:bg-[#a60000] text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-102 text-center"
+                    >
+                      <Hotel className="w-4 h-4 shrink-0" />
+                      <span>楽天トラベルで拠点の宿を探す</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    </a>
+
+                    <a
+                      href={monetizationPlan.gatewayHub.jalanGatewayHotelUrl}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      onClick={() => logAffiliateClick('gateway_hotel_jalan')}
+                      className="px-4 py-3.5 rounded-2xl bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-102 text-center"
+                    >
+                      <BedDouble className="w-4 h-4 shrink-0" />
+                      <span>じゃらんで拠点ホテルを比較</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    </a>
+
+                    <a
+                      href={monetizationPlan.gatewayHub.gatewayRentalCarUrl}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      onClick={() => logAffiliateClick('gateway_rentacar_rakuten')}
+                      className="px-4 py-3.5 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-bold text-xs shadow-sm flex items-center justify-center gap-2 transition-all hover:scale-102 text-center"
+                    >
+                      <Car className="w-4 h-4 shrink-0" />
+                      <span>出発地・拠点レンタカーを予約</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    </a>
+                  </div>
+
+                  {monetizationPlan.essentialGear.length > 0 && (
+                    <div className="pt-4 border-t border-slate-100">
+                      <span className="text-[11px] font-bold text-slate-500 block mb-2.5">
+                        🎒 {island.name}への船旅・島滞在あると安心の必需アイテム:
+                      </span>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        {monetizationPlan.essentialGear.map((gear) => (
+                          <div
+                            key={gear.id}
+                            className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between gap-3"
+                          >
+                            <div className="min-w-0 flex items-center gap-2.5">
+                              <span className="text-xl shrink-0">{gear.icon}</span>
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold text-slate-800 truncate">{gear.name}</p>
+                                <p className="text-[10px] text-slate-500 truncate">{gear.subtitle}</p>
+                              </div>
+                            </div>
+                            {gear.rakutenUrl && (
+                              <a
+                                href={gear.rakutenUrl}
+                                target="_blank"
+                                rel="noopener noreferrer sponsored"
+                                onClick={() => logAffiliateClick(`gear_${gear.id}`)}
+                                className="px-2.5 py-1.5 rounded-lg bg-white hover:bg-rose-50 text-[#BF0000] border border-rose-200 text-[11px] font-bold shrink-0 flex items-center gap-1 transition-colors"
+                              >
+                                <span>見る</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* ========================================== */}
+              {/* COMMON 4: 🎁 ふるさと納税で島ゆかりの地域を応援・名産品お取り寄せ */}
+              {/* ========================================== */}
+              <div className="bg-gradient-to-br from-rose-50/80 via-white to-amber-50/60 rounded-3xl shadow-sm border border-rose-200/90 overflow-hidden">
+                <div className="px-6 py-5 border-b border-rose-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div>
+                    <span className="text-[0.65rem] font-bold text-rose-700 uppercase tracking-widest block mb-1">
+                      ISLAND HOMETOWN TAX & SPECIALTIES
+                    </span>
+                    <h3 className="text-base md:text-lg font-serif font-bold text-slate-900 flex items-center gap-2">
+                      <span>🎁 ふるさと納税で『{island.name}』ゆかりの地域を応援・名産品お取り寄せ</span>
+                    </h3>
+                  </div>
+                  <span className="self-start sm:self-auto px-3 py-1 rounded-full bg-rose-100 text-rose-900 border border-rose-200 text-xs font-bold shrink-0">
+                    対象地域：{monetizationPlan.furusatoNozei.municipalityLabel}
+                  </span>
+                </div>
+
+                <div className="p-6 space-y-4">
+                  <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-serif">
+                    {monetizationPlan.furusatoNozei.catchCopy}
+                  </p>
+
+                  <div className="flex flex-wrap gap-2">
+                    {monetizationPlan.furusatoNozei.specialties.map((spec, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white border border-amber-200 text-amber-950 text-xs font-bold shadow-2xs"
+                      >
+                        <Gift className="w-3.5 h-3.5 text-rose-500 shrink-0" />
+                        {spec}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <span className="text-[11px] text-slate-500">
+                      ※楽天ポイント付与対象・ワンストップ特例オンライン申請対応の返礼品も多数掲載
+                    </span>
+                    <a
+                      href={monetizationPlan.furusatoNozei.rakutenFurusatoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      onClick={() => logAffiliateClick('furusato_rakuten')}
+                      className="px-5 py-3.5 rounded-2xl bg-gradient-to-r from-[#BF0000] to-rose-600 hover:from-[#a60000] hover:to-rose-500 text-white font-extrabold text-xs tracking-wider shadow-md flex items-center justify-center gap-2 transition-all hover:scale-102 shrink-0"
+                    >
+                      <Gift className="w-4 h-4 shrink-0" />
+                      <span>楽天ふるさと納税で特産品・宿泊券を見る</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    </a>
+                  </div>
+                </div>
+              </div>
+
             </div>
           );
         })()}
@@ -2168,8 +2469,112 @@ export default function IslandDetail({ islandId: propIslandId, initialIsland, in
         {/* Nearby Islands Carousel (周辺の島々) */}
         <NearbyIslands currentIsland={island} />
 
+        {/* 📸 現地写真オーナー募集バナー（未登録島は特別ハイライト表示） */}
+        <div
+          className={`mb-6 rounded-3xl p-5 sm:p-6 border shadow-sm relative overflow-hidden ${
+            !verifiedPhotos.hasVerifiedPhoto
+              ? 'bg-gradient-to-br from-amber-950 via-slate-900 to-indigo-950 text-white border-amber-400/60 shadow-lg'
+              : 'bg-gradient-to-r from-amber-50 via-white to-indigo-50/70 text-slate-900 border-amber-200'
+          }`}
+        >
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+            <div className="space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                {!verifiedPhotos.hasVerifiedPhoto ? (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[11px] font-extrabold tracking-wide shadow-xs">
+                    🔥 第1号・公式現地写真 未登録！一番乗りチャンス
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 text-[11px] font-bold">
+                    ✨ ベストショット・季節別写真も随時募集
+                  </span>
+                )}
+              </div>
+
+              <h3
+                className={`text-sm sm:text-base font-serif font-bold flex items-start sm:items-center gap-2 ${
+                  !verifiedPhotos.hasVerifiedPhoto ? 'text-white' : 'text-slate-900'
+                }`}
+              >
+                <Camera
+                  className={`w-5 h-5 shrink-0 mt-0.5 sm:mt-0 ${
+                    !verifiedPhotos.hasVerifiedPhoto ? 'text-amber-400' : 'text-amber-600'
+                  }`}
+                />
+                <span>
+                  📸 現地写真オーナー募集中（公式採用で『公認フォトグラファー称号 ＋ 高画質証明書チケット1枚』進呈！）
+                </span>
+              </h3>
+
+              <p
+                className={`text-xs leading-relaxed ${
+                  !verifiedPhotos.hasVerifiedPhoto ? 'text-slate-200' : 'text-slate-600'
+                }`}
+              >
+                {!verifiedPhotos.hasVerifiedPhoto
+                  ? `現在「${island.name}」は衛星地形表示モードとなっており、地上から撮影された第1号の公式メイン写真がまだ登録されていません！過去に上陸・訪問された方は、ぜひ下の島ログから現地のお写真をご投稿ください（公式採用でお名前クレジット＆特典を進呈いたします）。`
+                  : `「${island.name}」で撮影された風景・港・グルメ・夕景などの素敵な現地写真を下の島ログからご投稿いただくと、公式ギャラリー採用時に『公認フォトグラファー称号 ＋ 高画質証明書チケット1枚』を進呈いたします！`}
+              </p>
+            </div>
+
+            <a
+              href="#island-diaries-section"
+              className={`shrink-0 self-start md:self-auto px-4 py-3 rounded-2xl font-extrabold text-xs tracking-wider flex items-center gap-1.5 transition-all hover:scale-102 shadow-md ${
+                !verifiedPhotos.hasVerifiedPhoto
+                  ? 'bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950'
+                  : 'bg-slate-900 hover:bg-slate-800 text-white'
+              }`}
+            >
+              <Camera className="w-4 h-4 shrink-0" />
+              <span>{!verifiedPhotos.hasVerifiedPhoto ? '第1号の写真を投稿する' : '島ログに写真を投稿する'}</span>
+              <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+            </a>
+          </div>
+        </div>
+
         {/* Island Diaries (島ログ) - SEOのために初期データを渡す */}
-        <IslandDiaries islandId={canonicalIslandId} islandName={island.name} initialDiaries={initialDiaries} />
+        <div id="island-diaries-section" className="scroll-mt-24">
+          <IslandDiaries islandId={canonicalIslandId} islandName={island.name} initialDiaries={initialDiaries} />
+        </div>
+
+        {/* ❓ よくある質問（行き方・日帰り・設備FAQ） — FAQPage JSON-LD 完全同期 */}
+        <div className="mt-12 mb-8 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+          <div className="flex items-center gap-2.5 mb-5">
+            <div className="w-9 h-9 rounded-2xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+              <HelpCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <span className="text-[10px] font-bold tracking-widest uppercase text-blue-600 block">
+                FREQUENTLY ASKED QUESTIONS
+              </span>
+              <h2 className="text-base sm:text-lg font-serif font-bold text-slate-900">
+                ❓ {island.name}のよくある質問（行き方・日帰り・設備FAQ）
+              </h2>
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            {accessSpecs.seoFaqs.map((faq, idx) => (
+              <details
+                key={idx}
+                open={idx === 0}
+                className="group rounded-2xl bg-slate-50/90 border border-slate-200/80 open:bg-white open:border-blue-200 open:shadow-xs transition-all"
+              >
+                <summary className="cursor-pointer list-none px-4 sm:px-5 py-4 flex items-center justify-between gap-3 font-bold text-slate-900 text-xs sm:text-sm select-none">
+                  <span className="flex items-start gap-2">
+                    <span className="text-blue-600 font-extrabold shrink-0">Q{idx + 1}.</span>
+                    <span>{faq.question}</span>
+                  </span>
+                  <ChevronDown className="w-4 h-4 text-slate-400 shrink-0 transition-transform duration-200 group-open:rotate-180 group-open:text-blue-600" />
+                </summary>
+                <div className="px-4 sm:px-5 pb-4 pt-1 border-t border-slate-100 text-xs sm:text-sm text-slate-600 leading-relaxed">
+                  <span className="font-extrabold text-emerald-700 mr-1.5">A.</span>
+                  {faq.answer}
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
 
         {/* Action Buttons (画面下部固定アクションバー) */}
         <div className="fixed bottom-0 left-0 right-0 p-3 sm:p-4 lg:p-6 bg-white/95 backdrop-blur-xl border-t border-slate-200/80 flex items-center justify-center gap-2 sm:gap-3 z-40 max-w-lg mx-auto md:max-w-2xl lg:max-w-4xl shadow-2xl">

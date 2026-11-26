@@ -32,8 +32,9 @@ export default function Footer() {
             日本全国の有人離島・無人離島を巡る冒険トラッカー。あなたの人生に、一生モノの探求心を。
           </p>
           <div className="flex flex-col items-start gap-1.5 mt-2">
-            <span className="text-[0.6rem] font-bold text-amber-500 tracking-widest uppercase bg-black/20 px-1.5 py-0.5 rounded border border-amber-500/20">近日公開予定</span>
-            <p className="text-[0.65rem] text-slate-400 leading-relaxed mt-1">iOS / Android 公式ネイティブアプリ<br/>現在開発中</p>
+            <span className="text-[0.65rem] font-bold text-emerald-300 tracking-wider bg-emerald-500/15 px-2.5 py-1 rounded-lg border border-emerald-400/30">
+              📲 PWAホーム画面アプリ対応（オフラインGPS記録対応）
+            </span>
           </div>
         </div>
 
@@ -59,6 +60,11 @@ export default function Footer() {
           <ul className="space-y-2 text-sm text-slate-400 font-medium">
             <li><a href="https://kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><Compass size={14}/> KIRATABI</a></li>
             <li><a href="https://guide.kira-tabi.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors flex items-center gap-1.5"><FileText size={14}/> KIRATABIガイド</a></li>
+            <li className="pt-1">
+              <Link href="/partners" className="hover:text-amber-300 text-amber-400 font-bold transition-colors leading-relaxed inline-block">
+                🏛️ 自治体・観光協会・島内店舗様へ（CM・タイアップ掲載）
+              </Link>
+            </li>
           </ul>
         </div>
 

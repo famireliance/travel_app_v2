@@ -10,6 +10,7 @@ import CertificateModal from '@/components/CertificateModal';
 import AuthModal from '@/components/AuthModal';
 import OrderHistory from '@/components/OrderHistory';
 import ArchipelagoProgressModal from '@/components/ArchipelagoProgressModal';
+import ConquestMapShareModal from '@/components/ConquestMapShareModal';
 import AgentPass from '@/components/AgentPass';
 import { supabase, fetchAllIslands } from '@/lib/supabase';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -28,11 +29,58 @@ export default function MyPage() {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [showArchipelagoModal, setShowArchipelagoModal] = useState(false);
+  const [showConquestShareModal, setShowConquestShareModal] = useState(false);
   const [showGuestAuthModal, setShowGuestAuthModal] = useState(true);
+  const [adoptedPhotosCount, setAdoptedPhotosCount] = useState<number>(0);
+  const [isBuyingTickets, setIsBuyingTickets] = useState<number | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
+    if (params.get('ticket_success') === '1') {
+      const ticketSessionId = params.get('session_id');
+      window.history.replaceState({}, '', '/mypage');
+      setActiveTab('certificates');
+      (async () => {
+        try {
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session?.access_token && ticketSessionId) {
+            const res = await fetch('/api/tickets/verify', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${session.access_token}`,
+              },
+              body: JSON.stringify({ sessionId: ticketSessionId }),
+            });
+            const rawText = await res.text();
+            let verifyJson: { tickets?: number; added?: number } = {};
+            try { verifyJson = rawText ? JSON.parse(rawText) : {}; } catch {}
+            if (typeof verifyJson.tickets === 'number') {
+              setMyCertTickets(verifyJson.tickets);
+            } else if (typeof verifyJson.added === 'number') {
+              setMyCertTickets((prev) => prev + (verifyJson.added || 0));
+            } else {
+              const qRes = await fetch('/api/certificates', {
+                headers: { Authorization: `Bearer ${session.access_token}` },
+                cache: 'no-store',
+              });
+              if (qRes.ok) {
+                const qData = await qRes.json();
+                if (typeof qData.tickets === 'number') setMyCertTickets(qData.tickets);
+              }
+            }
+          }
+        } catch {}
+        toast.success('🎫 高画質証明書チケットを追加しました！', { duration: 5000 });
+      })();
+      return;
+    }
+    if (params.get('ticket_canceled') === '1' || params.get('ticket_canceled') === 'true') {
+      toast('チケット購入の手続きをキャンセルしました。', { icon: 'ℹ️' });
+      window.history.replaceState({}, '', '/mypage');
+      return;
+    }
     if (params.get('subscription_activated') === '1') {
       toast.success('サブスクリプション登録が完了しました！特典が有効になりました🎉', { duration: 5000 });
       window.history.replaceState({}, '', '/mypage');
@@ -243,6 +291,9 @@ export default function MyPage() {
                 }
                 if (quotaData.quota) setMyCertQuota(quotaData.quota);
                 if (typeof quotaData.tickets === 'number') setMyCertTickets(quotaData.tickets);
+                if (typeof quotaData.adoptedPhotosCount === 'number') {
+                  setAdoptedPhotosCount(quotaData.adoptedPhotosCount);
+                }
               }
             }
           } catch (e) { console.error(e); }
@@ -271,6 +322,43 @@ export default function MyPage() {
         });
     }
   }, [activeTab, user?.id]);
+
+  const handleBuyTickets = async (packCount: 3 | 10) => {
+    if (!user) {
+      setShowGuestAuthModal(true);
+      return;
+    }
+    setIsBuyingTickets(packCount);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const res = await fetch('/api/tickets/checkout', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.access_token || ''}`,
+        },
+        body: JSON.stringify({
+          pack: String(packCount),
+          packId: `pack_${packCount}`,
+          tickets: packCount,
+          count: packCount,
+          quantity: packCount,
+        }),
+      });
+      const raw = await res.text();
+      let data: { url?: string; error?: string } = {};
+      try { data = raw ? JSON.parse(raw) : {}; } catch {}
+      if (!res.ok || !data.url) {
+        throw new Error(data.error || 'チケット購入手続きの開始に失敗しました');
+      }
+      window.location.href = data.url;
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'チケット購入手続きの開始に失敗しました';
+      toast.error(msg);
+    } finally {
+      setIsBuyingTickets(null);
+    }
+  };
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -412,7 +500,7 @@ export default function MyPage() {
     { id: 'history', label: 'トラベルヒストリー', icon: History, count: visitedList.length },
     { id: 'diaries', label: '島ログ', icon: BookOpen, count: myDiaries.length },
     { id: 'reservations', label: '予約・宿泊履歴', icon: Calendar, count: reservations.length > 0 ? reservations.length : undefined },
-    ...(subscriptionTier === 'premium' || subscriptionTier === 'ultimate' || myCertificates.length > 0 ? [{ id: 'certificates', label: '証明書', icon: Award, count: myCertificates.length }] : []),
+    { id: 'certificates', label: '証明書', icon: Award, count: myCertificates.length },
     { id: 'quests', label: 'クエスト・称号', icon: Award, count: specialTitles.filter(t => t.unlocked).length },
     { id: 'fairies', label: '妖精図鑑', icon: Sparkles, count: unlockedFairies.filter(f => f.unlocked).length },
     { id: 'planning', label: 'お気に入り', icon: Heart, count: planningList.length },
@@ -523,6 +611,11 @@ export default function MyPage() {
                   <span>{reporterTitle.name}</span>
                 </div>
               )}
+              {adoptedPhotosCount > 0 && (
+                <div className="text-xs font-extrabold text-amber-900 bg-gradient-to-r from-amber-100 via-yellow-100 to-emerald-100 px-3 py-1 rounded-lg border border-amber-300 flex items-center gap-1.5 shadow-sm">
+                  <span>📸 KIRATABI公認フォトグラファー（公式採用 {adoptedPhotosCount}枚）</span>
+                </div>
+              )}
             </div>
             
             <div className="mb-8 max-w-lg mx-auto md:mx-0">
@@ -574,41 +667,73 @@ export default function MyPage() {
               </div>
             )}
 
-            {/* Subscription Status */}
-            <div className="mb-8 p-4 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-bold text-slate-500">現在のプラン</span>
-                  <span className={`px-2 py-0.5 rounded-md text-[0.65rem] font-bold uppercase tracking-wider ${
-                    subscriptionTier === 'ultimate' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
-                    subscriptionTier === 'premium' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
-                    'bg-slate-100 text-slate-600 border border-slate-200'
-                  }`}>
-                    {subscriptionTier === 'ultimate' ? 'KIRATABI Ultimate' : subscriptionTier === 'premium' ? 'KIRATABI Premium' : 'Free (無料ユーザー)'}
-                  </span>
-                </div>
-                {subscriptionTier !== 'free' && premiumUntil && (
-                  <p className="text-[0.65rem] text-slate-500">
-                    有効期限: {new Date(premiumUntil).toLocaleDateString('ja-JP')}
+            {/* Subscription Status & One-Time Ticket Pack */}
+            <div className="mb-8 p-4 rounded-2xl border border-blue-100 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 space-y-3">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                <div>
+                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                    <span className="text-xs font-bold text-slate-500">現在のプラン</span>
+                    <span className={`px-2 py-0.5 rounded-md text-[0.65rem] font-bold uppercase tracking-wider ${
+                      subscriptionTier === 'ultimate' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
+                      subscriptionTier === 'premium' ? 'bg-amber-100 text-amber-700 border border-amber-200' :
+                      'bg-slate-100 text-slate-600 border border-slate-200'
+                    }`}>
+                      {subscriptionTier === 'ultimate' ? 'KIRATABI Ultimate' : subscriptionTier === 'premium' ? 'KIRATABI Premium' : 'Free (無料ユーザー)'}
+                    </span>
+                    {myCertTickets > 0 && (
+                      <span className="px-2 py-0.5 rounded-md text-[0.65rem] font-bold bg-emerald-100 text-emerald-800 border border-emerald-200">
+                        🎫 高画質チケット {myCertTickets}枚保有
+                      </span>
+                    )}
+                  </div>
+                  {subscriptionTier !== 'free' && premiumUntil && (
+                    <p className="text-[0.65rem] text-slate-500">
+                      有効期限: {new Date(premiumUntil).toLocaleDateString('ja-JP')}
+                    </p>
+                  )}
+                  <p className="text-xs text-slate-600 mt-1">
+                    {subscriptionTier === 'free'
+                      ? '無料プランでは公式高画質デジタル証明書を月1枚まで発行・保存可能です（カード版は無料・新規1日3島まで・発行済みの再ダウンロードは無制限）。枠の拡大には有料プランまたは買い切りチケットをご利用ください。'
+                      : subscriptionTier === 'premium'
+                      ? 'Premium特典が適用されています（広告スキップ・公式高画質版を月5枚まで発行可能・再ダウンロード無制限）。'
+                      : 'Ultimate特典が適用されています（広告スキップ・相棒精霊の最終進化解放・公式高画質版を無制限で発行可能）。'}
                   </p>
-                )}
-                <p className="text-xs text-slate-600 mt-1">
-                  {subscriptionTier === 'free'
-                    ? '無料プランでは公式高画質デジタル証明書を月1枚まで発行・保存可能です（カード版は無料・新規1日3島まで・発行済みの再ダウンロードは無制限）。枠の拡大や広告スキップには有料プランをご利用ください。'
-                    : subscriptionTier === 'premium'
-                    ? 'Premium特典が適用されています（広告スキップ・公式高画質版を月5枚まで発行可能・再ダウンロード無制限）。'
-                    : 'Ultimate特典が適用されています（広告スキップ・相棒精霊の最終進化解放・公式高画質版を無制限で発行可能）。'}
-                </p>
+                </div>
+                <button 
+                  onClick={() => {
+                    setShowPlanModal(true);
+                  }}
+                  className="shrink-0 px-4 py-2 bg-white hover:bg-slate-50 text-blue-600 border border-blue-200 text-xs font-bold rounded-xl shadow-sm transition-colors"
+                >
+                  {subscriptionTier === 'free' ? 'プランをアップグレード' : 'プラン変更・管理'}
+                </button>
               </div>
-              <button 
-                onClick={() => {
-                  setShowPlanModal(true);
-                }}
-                className="shrink-0 px-4 py-2 bg-white hover:bg-slate-50 text-blue-600 border border-blue-200 text-xs font-bold rounded-xl shadow-sm transition-colors"
-              >
-                {subscriptionTier === 'free' ? 'プランをアップグレード' : 'プラン変更・管理'}
-              </button>
 
+              {subscriptionTier !== 'ultimate' && (
+                <div className="pt-3 border-t border-blue-200/60 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+                  <span className="text-xs font-bold text-slate-700">
+                    🎫 買い切りチケット購入（サブスク不要・有効期限なし）
+                  </span>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      type="button"
+                      disabled={isBuyingTickets !== null}
+                      onClick={() => handleBuyTickets(3)}
+                      className="px-3 py-1.5 rounded-xl bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-slate-950 font-extrabold text-xs shadow-sm transition-colors"
+                    >
+                      {isBuyingTickets === 3 ? '準備中...' : '🎫 3枚 ¥450'}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={isBuyingTickets !== null}
+                      onClick={() => handleBuyTickets(10)}
+                      className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 disabled:opacity-60 text-white font-extrabold text-xs shadow-sm transition-colors"
+                    >
+                      {isBuyingTickets === 10 ? '準備中...' : '🎫 10枚 ¥1,200（お得）'}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Stats Grid */}
@@ -629,6 +754,18 @@ export default function MyPage() {
                 <div className="text-emerald-700 text-[0.65rem] font-bold mb-1.5 flex items-center gap-1.5 uppercase tracking-widest"><GlobeIcon size={12} className="text-emerald-500"/> 踏破率</div>
                 <div className="text-3xl font-serif font-bold text-emerald-600">{progressPct.toFixed(1)}%</div>
               </div>
+            </div>
+
+            {/* Viral Conquest Map Share CTA */}
+            <div className="mt-5">
+              <button
+                type="button"
+                onClick={() => setShowConquestShareModal(true)}
+                className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 hover:from-slate-800 hover:to-indigo-900 text-amber-300 border border-amber-400/50 font-extrabold text-sm shadow-lg flex items-center justify-center gap-2 transition-transform hover:scale-[1.01]"
+              >
+                <Map className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>🗺️ 離島制覇マップ画像を生成・SNSシェア</span>
+              </button>
             </div>
           </div>
         </div>
@@ -745,41 +882,69 @@ export default function MyPage() {
           {activeTab === 'certificates' && (
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="pt-2 space-y-5">
               {/* Monthly Quota & Re-Download Info Banner */}
-              <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-5 rounded-3xl border border-slate-700 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div className="space-y-1">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-                      <Award className="w-4 h-4" /> 今月の公式高画質版 発行枠:
-                    </span>
-                    <span className="text-sm font-extrabold">
-                      {subscriptionTier === 'ultimate' ? (
-                        <span className="text-emerald-400">無制限</span>
-                      ) : myCertQuota ? (
-                        <span className={(myCertQuota.highQualityRemaining ?? 0) > 0 ? 'text-emerald-400' : 'text-rose-400'}>
-                          残り {myCertQuota.highQualityRemaining} / {myCertQuota.highQualityMonthlyLimit} 枚
-                        </span>
-                      ) : (
-                        <span>{subscriptionTier === 'premium' ? '月5枚' : '月1枚'}</span>
-                      )}
-                    </span>
-                    {myCertTickets > 0 && (
-                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
-                        🎫 チケット {myCertTickets}枚保有
+              <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 text-white p-5 rounded-3xl border border-slate-700 shadow-md space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                        <Award className="w-4 h-4" /> 今月の公式高画質版 発行枠:
                       </span>
-                    )}
+                      <span className="text-sm font-extrabold">
+                        {subscriptionTier === 'ultimate' ? (
+                          <span className="text-emerald-400">無制限</span>
+                        ) : myCertQuota ? (
+                          <span className={(myCertQuota.highQualityRemaining ?? 0) > 0 ? 'text-emerald-400' : 'text-rose-400'}>
+                            残り {myCertQuota.highQualityRemaining} / {myCertQuota.highQualityMonthlyLimit} 枚
+                          </span>
+                        ) : (
+                          <span>{subscriptionTier === 'premium' ? '月5枚' : '月1枚'}</span>
+                        )}
+                      </span>
+                      {myCertTickets > 0 && (
+                        <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 text-[11px] font-bold border border-emerald-500/30">
+                          🎫 チケット {myCertTickets}枚保有
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-xs text-slate-300">
+                      発行済みの証明書は、枠消費なし・待ち時間なしで何度でも「再ダウンロード」および「写真・縦横デザインの変更保存」が可能です。
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-300">
-                    発行済みの証明書は、枠消費なし・待ち時間なしで何度でも「再ダウンロード」および「写真・縦横デザインの変更保存」が可能です。
-                  </p>
+                  {subscriptionTier !== 'ultimate' && (
+                    <button
+                      type="button"
+                      onClick={() => setShowPlanModal(true)}
+                      className="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold text-xs shadow-md transition-all"
+                    >
+                      月額プランで枠を増やす
+                    </button>
+                  )}
                 </div>
+
                 {subscriptionTier !== 'ultimate' && (
-                  <button
-                    type="button"
-                    onClick={() => setShowPlanModal(true)}
-                    className="shrink-0 px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold text-xs shadow-md transition-all"
-                  >
-                    発行枠を増やす
-                  </button>
+                  <div className="pt-3 border-t border-slate-700/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <span className="text-xs font-bold text-amber-200">
+                      🎫 買い切りチケット購入（3枚 ¥450 / 10枚 ¥1,200・有効期限なし）
+                    </span>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        disabled={isBuyingTickets !== null}
+                        onClick={() => handleBuyTickets(3)}
+                        className="px-3.5 py-2 rounded-xl bg-slate-700 hover:bg-slate-600 disabled:opacity-60 border border-amber-400/40 text-amber-300 font-extrabold text-xs transition-colors"
+                      >
+                        {isBuyingTickets === 3 ? '準備中...' : '🎫 3枚パック ¥450'}
+                      </button>
+                      <button
+                        type="button"
+                        disabled={isBuyingTickets !== null}
+                        onClick={() => handleBuyTickets(10)}
+                        className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 disabled:opacity-60 text-slate-950 font-extrabold text-xs shadow transition-colors"
+                      >
+                        {isBuyingTickets === 10 ? '準備中...' : '🎫 10枚パック ¥1,200'}
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
 
@@ -1512,6 +1677,10 @@ export default function MyPage() {
       <ArchipelagoProgressModal
         isOpen={showArchipelagoModal}
         onClose={() => setShowArchipelagoModal(false)}
+      />
+      <ConquestMapShareModal
+        isOpen={showConquestShareModal}
+        onClose={() => setShowConquestShareModal(false)}
       />
       <CertificateModal
         isOpen={Boolean(editingCertificateTarget)}

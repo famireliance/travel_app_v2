@@ -112,24 +112,78 @@ export async function POST(req: NextRequest) {
             console.log(`Updated user ${userId} to ${tier}`);
           }
         } else if (session.mode === 'payment') {
-          // Physical order payment completed
           const sessionId = session.id;
-          
-          try {
-            await adminClient
-              .from('physical_orders')
-              .update({ status: 'ordered' })
-              .eq('stripe_session_id', sessionId);
-          } catch {}
 
-          try {
-            await adminClient
-              .from('orders')
-              .update({ status: 'ordered' })
-              .eq('stripe_session_id', sessionId);
-          } catch {}
-            
-          console.log(`Updated order for session ${sessionId} to ordered`);
+          if (session.metadata?.purchase_type === 'hq_ticket_pack') {
+            if (session.payment_status === 'paid') {
+              const ticketUserId = session.metadata?.user_id || session.client_reference_id || '';
+              const rawTicketCount = Number(
+                session.metadata?.ticket_count || (session.metadata?.pack_key === 'pack_10' ? 10 : 3)
+              );
+              const ticketCount =
+                Number.isFinite(rawTicketCount) && rawTicketCount > 0 ? Math.floor(rawTicketCount) : 3;
+
+              if (ticketUserId && ticketCount > 0) {
+                const fulfilledMap = await getFallbackJson<
+                  Record<string, { userId: string; tickets: number; at: string }>
+                >('fallback_fulfilled_ticket_sessions', {});
+
+                if (!fulfilledMap[sessionId]) {
+                  const { data: existingProfile } = await adminClient
+                    .from('user_profiles')
+                    .select('id, high_quality_tickets')
+                    .eq('id', ticketUserId)
+                    .maybeSingle();
+
+                  const nextTickets =
+                    Number(existingProfile?.high_quality_tickets || 0) + ticketCount;
+
+                  if (existingProfile) {
+                    const { error: updErr } = await adminClient
+                      .from('user_profiles')
+                      .update({ high_quality_tickets: nextTickets })
+                      .eq('id', ticketUserId);
+                    if (updErr) throw updErr;
+                  } else {
+                    const { error: upsErr } = await adminClient
+                      .from('user_profiles')
+                      .upsert(
+                        { id: ticketUserId, high_quality_tickets: nextTickets },
+                        { onConflict: 'id' }
+                      );
+                    if (upsErr) throw upsErr;
+                  }
+
+                  fulfilledMap[sessionId] = {
+                    userId: ticketUserId,
+                    tickets: ticketCount,
+                    at: new Date().toISOString(),
+                  };
+                  await setFallbackJson('fallback_fulfilled_ticket_sessions', fulfilledMap);
+                  console.log(
+                    `Credited ${ticketCount} HQ tickets to user ${ticketUserId} via webhook (${sessionId})`
+                  );
+                }
+              }
+            }
+          } else {
+            // Physical order payment completed
+            try {
+              await adminClient
+                .from('physical_orders')
+                .update({ status: 'ordered' })
+                .eq('stripe_session_id', sessionId);
+            } catch {}
+
+            try {
+              await adminClient
+                .from('orders')
+                .update({ status: 'ordered' })
+                .eq('stripe_session_id', sessionId);
+            } catch {}
+
+            console.log(`Updated order for session ${sessionId} to ordered`);
+          }
         }
         break;
       }

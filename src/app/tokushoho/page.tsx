@@ -95,11 +95,21 @@ export default function TokushohoPage() {
                   <p className="text-xs text-slate-500 mt-1">※基本機能（Freeプラン）は0円（無料）でご利用いただけます。</p>
                 </div>
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">2. 公式物理到達証明書（郵送オーダー・都度課金）</p>
+                  <p className="font-bold text-slate-800 mb-1">2. 公式高画質証明書チケット（買い切りデジタルチケット・都度課金）</p>
+                  <ul className="list-disc pl-5 space-y-1">
+                    <li><strong>3枚パック：</strong>450円（税込・有効期限なし）</li>
+                    <li><strong>10枚周遊お得パック：</strong>1,200円（税込・有効期限なし）</li>
+                  </ul>
+                  <p className="text-xs text-slate-500 mt-1">※月間の公式高画質デジタル証明書発行枠を超えた際に1枚につき1島分の発行にご利用いただけます。</p>
+                </div>
+                <div>
+                  <p className="font-bold text-slate-800 mb-1">3. 公式物理到達証明書（郵送オーダー・都度課金）</p>
                   <p className="mb-1">1,500円〜10,000円（税込）、ラミネート加工オプション+300円（税込）、日本国内送料無料</p>
                   <ul className="list-disc pl-5 space-y-1 text-xs sm:text-sm text-slate-500">
                     <li>スタンダード版（特製台紙付き）：1,500円（税込）</li>
+                    <li>3島まとめ刷りセット割（特製台紙付き・訪問済み最大3島分）：3,800円（税込）</li>
                     <li>簡易フレーム装飾版：3,000円（税込）</li>
+                    <li>群島完全制覇・公式額装公認証：4,800円（税込）</li>
                     <li>高級木製フレーム版：6,000円（税込）</li>
                     <li>アクリル額装プレミアム版：10,000円（税込）</li>
                     <li>ラミネート加工オプション：+300円（税込）</li>
@@ -127,7 +137,7 @@ export default function TokushohoPage() {
               <div className="md:w-1/3 font-bold text-slate-900 mb-2 md:mb-0">代金の支払時期</div>
               <div className="md:w-2/3 text-slate-600">
                 <ul className="list-disc pl-5 space-y-1">
-                  <li><strong>都度課金（物理到達証明書）：</strong>注文・決済手続き完了時</li>
+                  <li><strong>都度課金（公式高画質証明書チケット・物理到達証明書）：</strong>注文・決済手続き完了時</li>
                   <li><strong>定期課金（サブスクリプション）：</strong>初回登録時、以降は毎月自動更新時（上位プランへの変更時は残り期間に応じた日割り差額が次回請求時に合算されます）</li>
                 </ul>
               </div>
@@ -137,7 +147,7 @@ export default function TokushohoPage() {
               <div className="md:w-1/3 font-bold text-slate-900 mb-2 md:mb-0">商品引渡しまたはサービス提供の時期</div>
               <div className="md:w-2/3 text-slate-600">
                 <ul className="list-disc pl-5 space-y-1">
-                  <li><strong>デジタル機能・有料サブスクリプション特典：</strong>決済手続き完了後、直ちにご利用いただけます。</li>
+                  <li><strong>デジタル機能・有料サブスクリプション特典・買い切りチケット：</strong>決済手続き完了後、直ちにご利用いただけます。</li>
                   <li><strong>郵送紙証明書（実物到達証明書）：</strong>決済完了後、通常3〜7営業日以内に発送いたします（離島・遠隔地への配送や天候状況により、お届けにお時間をいただく場合がございます）。</li>
                 </ul>
               </div>
@@ -147,9 +157,9 @@ export default function TokushohoPage() {
               <div className="md:w-1/3 font-bold text-slate-900 mb-2 md:mb-0">返品・交換・解約に関する特約</div>
               <div className="md:w-2/3 text-slate-600 space-y-3">
                 <div>
-                  <p className="font-bold text-slate-800 mb-1">1. デジタルコンテンツおよび物理到達証明書の返品・交換</p>
+                  <p className="font-bold text-slate-800 mb-1">1. デジタルコンテンツ・買い切りチケットおよび物理到達証明書の返品・交換</p>
                   <p>
-                    デジタル機能の性質上、ならびに物理到達証明書がお客様の旅人ネーム・到達日・固有シリアルナンバー等を個別に印字する受注生産品である性質上、決済完了後のお客様都合による返品・交換・キャンセルはお受けできません。ただし、配送中の破損や印字不良等の初期不良がある場合は、商品到着後7日以内にサポート窓口（support@kira-tabi.com）までご連絡いただければ、当社送料負担にて無償で良品との交換または返金いたします。
+                    デジタル機能・公式高画質証明書チケットの性質上、ならびに物理到達証明書がお客様の旅人ネーム・到達日・固有シリアルナンバー等を個別に印字する受注生産品である性質上、決済完了後のお客様都合による返品・交換・キャンセル・返金はお受けできません（なお、公式高画質証明書チケットに有効期限はありません）。ただし、物理到達証明書に配送中の破損や印字不良等の初期不良がある場合は、商品到着後7日以内にサポート窓口（support@kira-tabi.com）までご連絡いただければ、当社送料負担にて無償で良品との交換または返金いたします。
                   </p>
                 </div>
                 <div>

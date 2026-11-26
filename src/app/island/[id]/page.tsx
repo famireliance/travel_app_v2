@@ -6,6 +6,7 @@ import IslandClient from './IslandClient';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 import { getIslandInfrastructure } from '@/lib/islandInfrastructure';
+import { getIslandAccessSpecs } from '@/lib/islandAccessSpecs';
 import { getPrefectureByName, FEATURE_SEO_LIST } from '@/data/seoTaxonomies';
 import regionsData from '@/data/regions.json';
 
@@ -298,29 +299,16 @@ export default async function Page({ params }: { params: any }) {
     }
   }
 
-  const infra = getIslandInfrastructure(mergedInitialIsland || { name: islandName });
+  const specs = getIslandAccessSpecs(
+    mergedInitialIsland || {
+      id: internalId,
+      name: islandName,
+      prefecture: masterEntry?.prefecture,
+      region_id: masterEntry?.region_id,
+    }
+  );
   const prefEntry = getPrefectureByName(masterEntry?.prefecture);
   const regionEntry = regionsData.find((r) => r.id === (mergedInitialIsland?.region_id || masterEntry?.region_id));
-  const accessSummary = mergedInitialIsland?.access || masterEntry?.access || '最寄り港より定期船・フェリーまたは連絡橋にてアクセス可能';
-
-  const islandFaqs = [
-    {
-      q: `${islandName}への行き方・アクセス方法は？`,
-      a: `${islandName}（${masterEntry?.prefecture || '日本'}）への主なアクセスは「${accessSummary}」です。${islandDesc}`,
-    },
-    {
-      q: `${islandName}は日帰り観光できますか？それとも宿泊が必要ですか？`,
-      a: `訪問スタイル目安は「${infra.day_trip_status}」です。${infra.day_trip_desc}`,
-    },
-    {
-      q: `${islandName}にコンビニ・売店やATM・医療機関はありますか？`,
-      a: `商店・売店は「${infra.store_status}」（${infra.store_desc}）、ATM・金融機関は「${infra.atm_status}」（${infra.atm_desc}）、診療所・医療機関は「${infra.clinic_status}」（${infra.clinic_desc}）となっています。${infra.cash_advice_text}`,
-    },
-    {
-      q: `${islandName}の携帯電波やネット通信環境はどうですか？`,
-      a: `携帯電波状況の目安は「${infra.signal_status}」です。${infra.signal_desc}`,
-    },
-  ];
 
   const breadcrumbElements = [
     { '@type': 'ListItem', position: 1, name: 'ホーム', item: 'https://island.kira-tabi.com/' },
@@ -363,12 +351,12 @@ export default async function Page({ params }: { params: any }) {
       },
       {
         "@type": "FAQPage",
-        "mainEntity": islandFaqs.map((f) => ({
+        "mainEntity": specs.seoFaqs.map((f) => ({
           "@type": "Question",
-          "name": f.q,
+          "name": f.question,
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": f.a
+            "text": f.answer
           }
         }))
       }
@@ -397,23 +385,9 @@ export default async function Page({ params }: { params: any }) {
         initialAccommodations={safePublicAccommodations} 
       />
 
-      {/* SSR FAQ & 関連エリア回遊セクション（Google構造化データガイドライン準拠の可視FAQ＋内部リンク強化） */}
-      <section className="bg-[#F8FAFC] border-t border-slate-200 py-12 px-6 font-sans">
-        <div className="max-w-4xl mx-auto space-y-8">
-          <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm">
-            <h2 className="text-lg md:text-xl font-serif font-bold text-slate-900 mb-5">
-              {islandName}の行き方・日帰り観光・島内設備に関するよくある質問（FAQ）
-            </h2>
-            <div className="space-y-4">
-              {islandFaqs.map((f, idx) => (
-                <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-100">
-                  <h3 className="font-bold text-slate-900 text-sm mb-1.5">Q. {f.q}</h3>
-                  <p className="text-xs md:text-sm text-slate-600 leading-relaxed">A. {f.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-
+      {/* 関連エリア回遊セクション（内部リンク強化） */}
+      <section className="bg-[#F8FAFC] border-t border-slate-200 pt-10 pb-28 px-6 font-sans">
+        <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
             <h2 className="text-sm font-bold text-slate-800">
               {islandName}に関連する諸島・都道府県・テーマから探す

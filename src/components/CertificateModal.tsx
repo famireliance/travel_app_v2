@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -18,6 +18,8 @@ import {
   Smartphone,
   Crown,
   Loader2,
+  Ticket,
+  ExternalLink,
 } from 'lucide-react';
 import imageCompression from 'browser-image-compression';
 
@@ -25,11 +27,30 @@ import { useTravel } from '@/context/TravelContext';
 import { getIslandDifficulty } from '@/lib/difficulty';
 import { getVerifiedIslandPhotos } from '@/lib/islandPhoto';
 import { drawOfficialSquareHanko, drawOfficialMedallionSeal } from '@/lib/officialSeal';
+import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import regionsData from '@/data/regions.json';
 import { supabase } from '@/lib/supabase';
 import { toast } from 'react-hot-toast';
 import AuthModal from './AuthModal';
 import { PlanChangeModal } from './PlanChangeModal';
+
+interface ActiveSponsorInfo {
+  id: string;
+  name: string;
+  type: string;
+  category_detail: string;
+  logo_url: string;
+  banner_photo_url: string;
+  official_website_url: string;
+  perk_text: string;
+  sponsor_tier: string;
+}
+
+function isValidSponsorMediaOrUrl(raw?: string | null): raw is string {
+  if (!raw || typeof raw !== 'string') return false;
+  const trimmed = raw.trim();
+  return trimmed.startsWith('https://') || (trimmed.startsWith('/') && !trimmed.startsWith('//'));
+}
 
 interface ServerCertificateRecord {
   id: string;
@@ -165,10 +186,39 @@ export default function CertificateModal({
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isOrdering, setIsOrdering] = useState(false);
-  const [orderPlan, setOrderPlan] = useState<'standard' | 'frame_simple' | 'frame_wood' | 'frame_acrylic'>('standard');
+  const [orderPlan, setOrderPlan] = useState<
+    'standard' | 'bundle_3' | 'frame_simple' | 'frame_wood' | 'frame_acrylic'
+  >('standard');
+  const [bundleIsland2, setBundleIsland2] = useState('');
+  const [bundleIsland3, setBundleIsland3] = useState('');
   const [orderDesign, setOrderDesign] = useState<'horizontal' | 'vertical'>('horizontal');
   const [isLaminated, setIsLaminated] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
+
+  // Active local sponsor CM & Ticket Pack checkout state
+  const [activeSponsor, setActiveSponsor] = useState<ActiveSponsorInfo | null>(null);
+  const [buyingTicketPack, setBuyingTicketPack] = useState<'pack_3' | 'pack_10' | null>(null);
+
+  const visitedIslandOptions = useMemo(() => {
+    const names = new Set<string>();
+    const currentName = String(island?.name || '').trim();
+    Object.entries(islandStatuses || {}).forEach(([key, st]) => {
+      if (st !== 'visited' && st !== 'verified_visited') return;
+      const trimmed = key.trim();
+      if (!trimmed) return;
+      const lower = trimmed.toLowerCase();
+      const found =
+        ALL_ISLANDS_MASTER_DICTIONARY[trimmed] ||
+        Object.values(ALL_ISLANDS_MASTER_DICTIONARY).find(
+          (m) => m.slug === lower || m.name === trimmed
+        );
+      const label = String(found?.name || trimmed).trim();
+      if (label && label !== currentName) {
+        names.add(label);
+      }
+    });
+    return Array.from(names);
+  }, [islandStatuses, island?.name]);
 
   // Mailing Form Fields
   const [recipientCountry, setRecipientCountry] = useState('Japan');
@@ -259,6 +309,7 @@ export default function CertificateModal({
         setIssuedCertMap({});
         setServerQuota(null);
         setServerHasVisited(false);
+        setActiveSponsor(null);
         return;
       }
       setIsLoadingQuota(true);
@@ -287,6 +338,7 @@ export default function CertificateModal({
         if (typeof data.tickets === 'number') setServerTickets(data.tickets);
         if (data.quota) setServerQuota(data.quota);
         setServerHasVisited(Boolean(data.hasVisited));
+        setActiveSponsor(data.activeSponsor || null);
 
         const nextMap: { card?: ServerCertificateRecord; high_quality?: ServerCertificateRecord } = {};
         for (const row of (data.existingCertificates || []) as ServerCertificateRecord[]) {
@@ -373,6 +425,9 @@ export default function CertificateModal({
       setLimitErrorMessage(null);
       setJustIssuedCert(null);
       setShowSaveGuidePanel(false);
+      setActiveSponsor(null);
+      setBundleIsland2('');
+      setBundleIsland3('');
       if (!user) {
         setCertificateType('card');
         setAssignedSerial('No.----');
@@ -403,6 +458,73 @@ export default function CertificateModal({
     }
   }, [isPlayingAd, adTimeLeft]);
 
+  const handleSponsorClick = useCallback(
+    (sponsor: ActiveSponsorInfo, placement = 'certificate_5s_cm') => {
+      try {
+        void fetch('/api/tracking', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            event_type: 'partner_cm_click',
+            target_id: sponsor.id,
+            island_id: String(island?.id || ''),
+            metadata: {
+              partner_name: sponsor.name,
+              sponsor_tier: sponsor.sponsor_tier,
+              placement,
+            },
+          }),
+        }).catch(() => {});
+      } catch {
+        // Best-effort analytics
+      }
+    },
+    [island?.id]
+  );
+
+  const handleBuyTicketPack = useCallback(
+    async (pack: 'pack_3' | 'pack_10') => {
+      if (!user) {
+        setIsAuthModalOpen(true);
+        return;
+      }
+      setBuyingTicketPack(pack);
+      try {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        const token = session?.access_token || '';
+        if (!token) {
+          toast.error('ログインセッションの確認に失敗しました。再度ログインしてください。');
+          return;
+        }
+        const res = await fetch('/api/tickets/checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            pack,
+            cancelPath: typeof window !== 'undefined' ? window.location.pathname : '/mypage',
+          }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (res.ok && data.url) {
+          window.location.href = data.url;
+        } else {
+          toast.error(data.error || 'チケット決済ページの準備に失敗しました。');
+        }
+      } catch (err) {
+        console.error('Ticket pack checkout error:', err);
+        toast.error('通信エラーが発生しました。');
+      } finally {
+        setBuyingTicketPack(null);
+      }
+    },
+    [user]
+  );
+
   const handleOrderSubmit = async () => {
     if (!hasVisitedIsland) {
       setErrorMessage('未訪問の島の公式紙証明書はオーダーできません。');
@@ -424,6 +546,11 @@ export default function CertificateModal({
         headers['Authorization'] = `Bearer ${token}`;
       }
 
+      const bundleIslandNames =
+        orderPlan === 'bundle_3'
+          ? [bundleIsland2.trim(), bundleIsland3.trim()].filter(Boolean)
+          : undefined;
+
       const res = await fetch('/api/order/checkout', {
         method: 'POST',
         headers,
@@ -441,6 +568,7 @@ export default function CertificateModal({
           islandName: island?.name,
           visitDate,
           userId: user?.id,
+          ...(bundleIslandNames && bundleIslandNames.length > 0 ? { bundleIslandNames } : {}),
         }),
       });
       const rawCheckoutText = await res.text();
@@ -1715,14 +1843,29 @@ export default function CertificateModal({
                       </p>
                     </div>
                     {effectiveTier !== 'ultimate' && (
-                      <button
-                        type="button"
-                        onClick={() => setIsPlanModalOpen(true)}
-                        className="shrink-0 px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 border border-amber-400/40 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
-                      >
-                        <Crown className="w-3.5 h-3.5" />
-                        枠を増やす
-                      </button>
+                      <div className="flex flex-wrap items-center gap-2 shrink-0">
+                        <button
+                          type="button"
+                          disabled={buyingTicketPack !== null}
+                          onClick={() => handleBuyTicketPack('pack_3')}
+                          className="px-3 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/40 text-emerald-300 font-bold text-[11px] sm:text-xs flex items-center justify-center gap-1.5 transition-colors disabled:opacity-50"
+                        >
+                          {buyingTicketPack === 'pack_3' ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Ticket className="w-3.5 h-3.5" />
+                          )}
+                          🎫 買い切りチケット3枚 ¥450（期限なし）
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsPlanModalOpen(true)}
+                          className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-500/20 to-yellow-500/20 hover:from-amber-500/30 hover:to-yellow-500/30 border border-amber-400/40 text-amber-300 font-bold text-xs flex items-center justify-center gap-1.5 transition-colors"
+                        >
+                          <Crown className="w-3.5 h-3.5" />
+                          枠を増やす
+                        </button>
+                      </div>
                     )}
                   </div>
                 )}
@@ -2002,6 +2145,37 @@ export default function CertificateModal({
                         </button>
                       </div>
 
+                      {activeSponsor && (
+                        <div className="bg-gradient-to-r from-amber-500/15 via-slate-800/90 to-amber-500/10 border border-amber-400/40 rounded-xl p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                          <div className="space-y-1 min-w-0">
+                            <div className="flex flex-wrap items-center gap-1.5">
+                              <span className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] font-extrabold border border-amber-400/30">
+                                {island.name} 公式パートナー特典
+                              </span>
+                              <span className="text-xs font-extrabold text-white truncate">
+                                {activeSponsor.name}
+                              </span>
+                            </div>
+                            {activeSponsor.perk_text && (
+                              <p className="text-xs font-bold text-amber-200 leading-snug">
+                                🎁 到達証明書ご提示特典: {activeSponsor.perk_text}
+                              </p>
+                            )}
+                          </div>
+                          {isValidSponsorMediaOrUrl(activeSponsor.official_website_url) && (
+                            <a
+                              href={activeSponsor.official_website_url.trim()}
+                              target="_blank"
+                              rel="noopener noreferrer sponsored"
+                              onClick={() => handleSponsorClick(activeSponsor, 'certificate_post_save_reminder')}
+                              className="shrink-0 px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs inline-flex items-center justify-center gap-1 shadow transition-colors"
+                            >
+                              店舗・特典詳細を見る ↗
+                            </a>
+                          )}
+                        </div>
+                      )}
+
                       {/* Switch to High-Quality CTA if user currently only has Card issued and HQ is available */}
                       {certificateType === 'card' && !issuedCertMap.high_quality && (
                         <div className="pt-2 border-t border-slate-800 flex items-center justify-between gap-3">
@@ -2030,28 +2204,53 @@ export default function CertificateModal({
                             ）を使い切りました
                           </p>
                           <p className="text-xs text-slate-300 leading-relaxed">
-                            無料の「カード版」に切り替えて今すぐ発行・保存するか、プランのアップグレード（Premium: 月5枚 / Ultimate: 無制限）をご検討ください。
+                            無料の「カード版」への切り替え、有効期限なしの「買い切り高画質チケット」、またはプランのアップグレード（Premium: 月5枚 / Ultimate: 無制限）をご利用いただけます。
                           </p>
                         </div>
                       </div>
-                      <div className="flex flex-col sm:flex-row gap-2.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <button
+                          type="button"
+                          disabled={buyingTicketPack !== null}
+                          onClick={() => handleBuyTicketPack('pack_3')}
+                          className="py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 shadow-lg transition-all disabled:opacity-50"
+                        >
+                          {buyingTicketPack === 'pack_3' ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Ticket className="w-4 h-4" />
+                          )}
+                          🎫 買い切りチケット3枚 ¥450（期限なし）
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setIsPlanModalOpen(true)}
+                          className="py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors"
+                        >
+                          <Crown className="w-4 h-4" />
+                          プランをアップグレード
+                        </button>
+                      </div>
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-2 pt-1">
                         <button
                           type="button"
                           onClick={() => {
                             setCertificateType('card');
                             setLimitErrorMessage(null);
                           }}
-                          className="flex-1 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm transition-colors"
+                          className="w-full sm:w-auto py-2.5 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-colors"
                         >
                           カード版（無料）に切り替えて発行・保存
                         </button>
                         <button
                           type="button"
-                          onClick={() => setIsPlanModalOpen(true)}
-                          className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-colors"
+                          disabled={buyingTicketPack !== null}
+                          onClick={() => handleBuyTicketPack('pack_10')}
+                          className="text-xs font-bold text-emerald-300 hover:text-emerald-200 underline disabled:opacity-50"
                         >
-                          <Crown className="w-4 h-4" />
-                          プランをアップグレード
+                          {buyingTicketPack === 'pack_10'
+                            ? '決済ページを準備中...'
+                            : '10枚周遊お得パック ¥1,200（1枚あたり¥120・期限なし）はこちら →'}
                         </button>
                       </div>
                     </div>
@@ -2210,6 +2409,25 @@ export default function CertificateModal({
                         <p className="text-[10px] text-slate-300">A4高品質印刷・特製台紙付き。</p>
                       </div>
                       <div
+                        onClick={() => setOrderPlan('bundle_3')}
+                        className={`p-4 rounded-2xl border cursor-pointer transition-all relative ${
+                          orderPlan === 'bundle_3'
+                            ? 'border-emerald-400 bg-emerald-500/15 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                            : 'border-slate-700 bg-slate-800'
+                        }`}
+                      >
+                        <span className="text-xs font-extrabold text-emerald-400 block mb-1">
+                          3島まとめ刷りセット割 (¥3,800・¥700お得)
+                        </span>
+                        <div className="flex items-baseline gap-2 mb-2">
+                          <span className="text-lg font-bold text-white">¥3,800</span>
+                          <span className="text-[10px] text-slate-400 line-through">¥4,500</span>
+                        </div>
+                        <p className="text-[10px] text-slate-300">
+                          訪問済み最大3島分のA4高品質印刷・特製台紙セット。
+                        </p>
+                      </div>
+                      <div
                         onClick={() => setOrderPlan('frame_simple')}
                         className={`p-4 rounded-2xl border cursor-pointer transition-all ${
                           orderPlan === 'frame_simple'
@@ -2241,7 +2459,7 @@ export default function CertificateModal({
                       </div>
                       <div
                         onClick={() => setOrderPlan('frame_acrylic')}
-                        className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                        className={`p-4 rounded-2xl border cursor-pointer transition-all sm:col-span-2 ${
                           orderPlan === 'frame_acrylic'
                             ? 'border-amber-500 bg-amber-500/10 shadow-[0_0_15px_rgba(245,158,11,0.2)]'
                             : 'border-slate-700 bg-slate-800'
@@ -2254,6 +2472,82 @@ export default function CertificateModal({
                         <p className="text-[10px] text-slate-300">浮き出し加工の最高級アクリル額。</p>
                       </div>
                     </div>
+
+                    {orderPlan === 'bundle_3' && (
+                      <div className="bg-emerald-950/30 border border-emerald-500/30 p-4 rounded-2xl space-y-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-xs font-extrabold text-emerald-300">
+                            🏝️ 3島まとめ刷りセットの対象島（1枚目: {island.name}）
+                          </span>
+                          <span className="text-[10px] text-slate-400">任意指定</span>
+                        </div>
+                        <datalist id="kiratabi-visited-islands-datalist">
+                          {visitedIslandOptions.map((islName) => (
+                            <option key={islName} value={islName} />
+                          ))}
+                        </datalist>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <label className="block text-[11px] font-bold text-slate-300">
+                              追加する訪問済みの島 2枚目
+                            </label>
+                            {visitedIslandOptions.length > 0 && (
+                              <select
+                                value={visitedIslandOptions.includes(bundleIsland2) ? bundleIsland2 : ''}
+                                onChange={(e) => {
+                                  if (e.target.value) setBundleIsland2(e.target.value);
+                                }}
+                                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-400"
+                              >
+                                <option value="">訪問履歴から選択...</option>
+                                {visitedIslandOptions.map((islName) => (
+                                  <option key={`b2-${islName}`} value={islName}>
+                                    {islName}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                            <input
+                              type="text"
+                              list="kiratabi-visited-islands-datalist"
+                              value={bundleIsland2}
+                              onChange={(e) => setBundleIsland2(e.target.value)}
+                              placeholder="例: 池間島（訪問済みの島名）"
+                              className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-400"
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="block text-[11px] font-bold text-slate-300">
+                              追加する訪問済みの島 3枚目
+                            </label>
+                            {visitedIslandOptions.length > 0 && (
+                              <select
+                                value={visitedIslandOptions.includes(bundleIsland3) ? bundleIsland3 : ''}
+                                onChange={(e) => {
+                                  if (e.target.value) setBundleIsland3(e.target.value);
+                                }}
+                                className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-400"
+                              >
+                                <option value="">訪問履歴から選択...</option>
+                                {visitedIslandOptions.map((islName) => (
+                                  <option key={`b3-${islName}`} value={islName}>
+                                    {islName}
+                                  </option>
+                                ))}
+                              </select>
+                            )}
+                            <input
+                              type="text"
+                              list="kiratabi-visited-islands-datalist"
+                              value={bundleIsland3}
+                              onChange={(e) => setBundleIsland3(e.target.value)}
+                              placeholder="例: 大神島（訪問済みの島名）"
+                              className="w-full bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs focus:outline-none focus:border-emerald-400"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="bg-slate-800 p-4 rounded-2xl border border-slate-700">
@@ -2455,31 +2749,121 @@ export default function CertificateModal({
             </div>
 
             {/* Official Sponsor & Premium PR Card */}
-            <div className="w-full max-w-lg bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl overflow-hidden border border-amber-500/40 relative shadow-2xl p-6 flex flex-col items-center justify-center text-center">
-              <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold tracking-widest uppercase mb-3">
-                KIRATABI OFFICIAL SPONSOR PR
-              </span>
-              <Sparkles className="w-10 h-10 mb-3 text-amber-400 animate-pulse" />
-              <h2 className="text-lg sm:text-2xl font-bold font-serif text-white mb-2 tracking-wide">
-                輝旅 島専科 プレミアムパスポート
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-300 max-w-md leading-relaxed">
-                Premiumなら待ち時間ゼロ＆公式高画質版を月5枚まで、Ultimateなら無制限に即時発行！さらに特製の金箔調・公式紙証明書の郵送オーダー（1枚 ¥1,500〜）もご注文いただけます。
-              </p>
-              {(adTimeLeft > 0 || isIssuingServer) && (
-                <div className="mt-5 flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-                  <div
-                    className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
-                    style={{ animationDelay: '0.2s' }}
-                  />
-                  <div
-                    className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
-                    style={{ animationDelay: '0.4s' }}
-                  />
+            {activeSponsor ? (
+              <div className="w-full max-w-lg bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl overflow-hidden border border-amber-500/50 relative shadow-2xl flex flex-col items-center text-center">
+                {(() => {
+                  const mediaUrl = isValidSponsorMediaOrUrl(activeSponsor.banner_photo_url)
+                    ? activeSponsor.banner_photo_url.trim()
+                    : isValidSponsorMediaOrUrl(activeSponsor.logo_url)
+                    ? activeSponsor.logo_url.trim()
+                    : null;
+                  return mediaUrl ? (
+                    <div className="w-full h-44 sm:h-52 bg-slate-950 overflow-hidden relative border-b border-amber-500/30">
+                      <img
+                        src={mediaUrl}
+                        alt={activeSponsor.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  ) : null;
+                })()}
+
+                <div className="p-5 sm:p-6 w-full flex flex-col items-center space-y-3">
+                  <div className="flex flex-wrap items-center justify-center gap-2">
+                    <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-extrabold tracking-wider">
+                      {island.name} 公式パートナー PR
+                    </span>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider border ${
+                        activeSponsor.sponsor_tier === 'GOLD'
+                          ? 'bg-amber-400 text-slate-950 border-amber-300'
+                          : activeSponsor.sponsor_tier === 'SILVER'
+                          ? 'bg-slate-700 text-slate-100 border-slate-500'
+                          : 'bg-slate-800 text-slate-300 border-slate-700'
+                      }`}
+                    >
+                      {activeSponsor.sponsor_tier === 'GOLD'
+                        ? 'GOLD SPONSOR'
+                        : activeSponsor.sponsor_tier === 'SILVER'
+                        ? 'SILVER SPONSOR'
+                        : 'OFFICIAL PARTNER'}
+                    </span>
+                  </div>
+
+                  <div>
+                    <h2 className="text-lg sm:text-2xl font-bold font-serif text-white tracking-wide">
+                      {activeSponsor.name}
+                    </h2>
+                    {activeSponsor.category_detail && (
+                      <p className="text-xs font-bold text-sky-300 mt-1">
+                        {activeSponsor.category_detail}
+                      </p>
+                    )}
+                  </div>
+
+                  {activeSponsor.perk_text && (
+                    <div className="w-full bg-amber-500/15 border border-amber-400/50 rounded-xl px-4 py-3 text-left shadow-inner">
+                      <p className="text-xs sm:text-sm font-extrabold text-amber-200 leading-relaxed">
+                        🎁 到達証明書ご提示特典: {activeSponsor.perk_text}
+                      </p>
+                    </div>
+                  )}
+
+                  {isValidSponsorMediaOrUrl(activeSponsor.official_website_url) && (
+                    <a
+                      href={activeSponsor.official_website_url.trim()}
+                      target="_blank"
+                      rel="noopener noreferrer sponsored"
+                      onClick={() => handleSponsorClick(activeSponsor, 'certificate_5s_cm')}
+                      className="mt-1 inline-flex items-center justify-center gap-1.5 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg transition-all"
+                    >
+                      <span>店舗・特典詳細を見る ↗</span>
+                      <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    </a>
+                  )}
+
+                  {(adTimeLeft > 0 || isIssuingServer) && (
+                    <div className="pt-2 flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                      <div
+                        className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
+                        style={{ animationDelay: '0.2s' }}
+                      />
+                      <div
+                        className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
+                        style={{ animationDelay: '0.4s' }}
+                      />
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="w-full max-w-lg bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl overflow-hidden border border-amber-500/40 relative shadow-2xl p-6 flex flex-col items-center justify-center text-center">
+                <span className="px-3 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold tracking-widest uppercase mb-3">
+                  KIRATABI OFFICIAL SPONSOR PR
+                </span>
+                <Sparkles className="w-10 h-10 mb-3 text-amber-400 animate-pulse" />
+                <h2 className="text-lg sm:text-2xl font-bold font-serif text-white mb-2 tracking-wide">
+                  輝旅 島専科 プレミアムパスポート
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-300 max-w-md leading-relaxed">
+                  Premiumなら待ち時間ゼロ＆公式高画質版を月5枚まで、Ultimateなら無制限に即時発行！さらに特製の金箔調・公式紙証明書の郵送オーダー（1枚 ¥1,500〜）もご注文いただけます。
+                </p>
+                {(adTimeLeft > 0 || isIssuingServer) && (
+                  <div className="mt-5 flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+                    <div
+                      className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
+                      style={{ animationDelay: '0.2s' }}
+                    />
+                    <div
+                      className="w-2 h-2 rounded-full bg-amber-400 animate-ping"
+                      style={{ animationDelay: '0.4s' }}
+                    />
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Fresh Synchronous User-Gesture Save Buttons once countdown & server issuance finish */}
             {adTimeLeft === 0 && !isIssuingServer && justIssuedCert && (
@@ -2487,6 +2871,33 @@ export default function CertificateModal({
                 <p className="text-center text-emerald-300 font-bold text-sm">
                   ✓ マイページへのクラウド保存完了（{assignedSerial}）
                 </p>
+
+                {activeSponsor && (
+                  <div className="bg-amber-500/10 border border-amber-400/40 rounded-xl px-3.5 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-left">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-extrabold text-amber-300 truncate">
+                        🎁 {activeSponsor.name}
+                      </p>
+                      {activeSponsor.perk_text && (
+                        <p className="text-[11px] text-slate-200 line-clamp-2">
+                          到達証明書ご提示特典: {activeSponsor.perk_text}
+                        </p>
+                      )}
+                    </div>
+                    {isValidSponsorMediaOrUrl(activeSponsor.official_website_url) && (
+                      <a
+                        href={activeSponsor.official_website_url.trim()}
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        onClick={() => handleSponsorClick(activeSponsor, 'certificate_save_box_reminder')}
+                        className="shrink-0 px-3 py-1.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-slate-950 font-extrabold text-[11px] text-center"
+                      >
+                        店舗・特典詳細を見る ↗
+                      </a>
+                    )}
+                  </div>
+                )}
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {isMobileDevice && (
                     <button

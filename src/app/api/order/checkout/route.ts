@@ -12,10 +12,20 @@ const PLANS: Record<string, { name: string; amount: number; description: string 
     amount: 1500,
     description: 'A4サイズ・高品質印刷・シリアルナンバー入り',
   },
+  bundle_3: {
+    name: 'KIRATABI公式到達証明書【3島まとめ刷りセット割・台紙付】',
+    amount: 3800,
+    description: '訪問済み最大3島分のA4高品質印刷・特製台紙セット（通常4,500円より700円お得）',
+  },
   frame_simple: {
     name: 'KIRATABI公式到達証明書（簡易フレーム装飾）',
     amount: 3000,
     description: 'A4サイズ・簡易フレーム付き',
+  },
+  archipelago_complete: {
+    name: 'KIRATABI 群島完全制覇・公式額装公認証',
+    amount: 4800,
+    description: '対象エリア全島到達記念・特別仕様フレーム額装公認証',
   },
   frame_wood: {
     name: 'KIRATABI公式到達証明書（高級木製フレーム）',
@@ -63,6 +73,7 @@ export async function POST(req: NextRequest) {
       islandId,
       islandName,
       visitDate,
+      bundleIslandNames,
     } = body || {};
 
     if (authHeader && body?.userId && body.userId !== verifiedUserId) {
@@ -84,11 +95,28 @@ export async function POST(req: NextRequest) {
         (isl) => isl.slug === rawIdStr.toLowerCase() || isl.name === islandName
       );
     const canonicalIslandId = String(masterEntry?.id || rawIdStr || 'unknown');
-    const resolvedIslandName = String(masterEntry?.name || islandName || canonicalIslandId);
+    const baseIslandName = String(masterEntry?.name || islandName || canonicalIslandId);
 
     const { stripe } = await getStripeConfig();
     const planKey = plan && PLANS[plan] ? plan : 'standard';
     const planInfo = PLANS[planKey];
+
+    const cleanedBundleNames: string[] = Array.isArray(bundleIslandNames)
+      ? bundleIslandNames
+          .map((n: unknown) => String(n || '').trim())
+          .filter((n: string) => n.length > 0 && n !== baseIslandName)
+          .slice(0, 2)
+      : [];
+
+    const resolvedIslandName =
+      planKey === 'bundle_3' && cleanedBundleNames.length > 0
+        ? `${baseIslandName} ほか計${1 + cleanedBundleNames.length}島セット（${cleanedBundleNames.join('・')}）`
+        : planKey === 'bundle_3'
+        ? `${baseIslandName}（3島まとめ刷りセット）`
+        : cleanedBundleNames.length > 0
+        ? `${baseIslandName}（${cleanedBundleNames.join('・')}）`
+        : baseIslandName;
+
     const isLaminated = laminated === true;
     const unitAmount = planInfo.amount + (isLaminated ? 300 : 0);
 
@@ -98,7 +126,7 @@ export async function POST(req: NextRequest) {
 
     // 注文番号・シリアルナンバー生成
     const orderNumber = `ORD-${Date.now().toString(36).toUpperCase()}`;
-    const islandKey = (canonicalIslandId || resolvedIslandName || 'ISL').toString().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6) || 'ISL';
+    const islandKey = (canonicalIslandId || baseIslandName || 'ISL').toString().toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6) || 'ISL';
     const timestampSuffix = Date.now().toString(36).toUpperCase().slice(-4);
     const pendingSerial = `KT-${new Date().getFullYear()}-${islandKey}-${timestampSuffix}`;
 
@@ -115,7 +143,7 @@ export async function POST(req: NextRequest) {
             currency: 'jpy',
             product_data: {
               name: `${planInfo.name}${isLaminated ? '（ラミネート加工付き）' : ''}`,
-              description: `${resolvedIslandName} の到達証明書 / 旅人ネーム: ${travelerName}`,
+              description: `${resolvedIslandName} の到達証明書（${planInfo.description}） / 旅人ネーム: ${travelerName}`,
               images: [],
             },
             unit_amount: unitAmount,
@@ -138,7 +166,8 @@ export async function POST(req: NextRequest) {
         address: String(address).slice(0, 500),
         phone: String(phone || '').slice(0, 40),
         island_id: canonicalIslandId,
-        island_name: resolvedIslandName,
+        island_name: resolvedIslandName.slice(0, 450),
+        bundle_islands: cleanedBundleNames.join('・').slice(0, 300),
         visit_date: String(visitDate || new Date().toISOString().slice(0, 10)),
         user_id: verifiedUserId,
         pending_serial: pendingSerial,
@@ -238,6 +267,8 @@ export async function POST(req: NextRequest) {
           visit_date: String(visitDate || new Date().toISOString().slice(0, 10)),
           order_number: orderNumber,
           serial_number: pendingSerial,
+          resolved_island_name: resolvedIslandName,
+          bundle_island_names: cleanedBundleNames,
         };
         for (const key of savedIds) {
           if (!key) continue;

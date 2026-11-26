@@ -12,6 +12,7 @@ import SearchModal from '@/components/SearchModal';
 import AuthModal from '@/components/AuthModal';
 import CompanionModal from '@/components/CompanionModal';
 import NearbyIslandsModal, { NearbyIslandItem } from '@/components/NearbyIslandsModal';
+import QuickIslandDiagnostic from '@/components/QuickIslandDiagnostic';
 import { useTravel } from '@/context/TravelContext';
 import { supabase, fetchAllIslands, fetchSiteSettings, fetchAdCampaigns } from '@/lib/supabase';
 import BannerCarousel from '@/components/BannerCarousel';
@@ -776,7 +777,10 @@ export default function Home() {
       </div>
 
       {/* Sticky Navigation for Mobile */}
-      <div className="sticky top-[env(safe-area-inset-top)] sm:top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm py-3 px-4 flex gap-4 overflow-x-auto hide-scrollbar snap-x">
+      <div className="sticky top-[env(safe-area-inset-top)] sm:top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm py-3 px-4 flex gap-3 sm:gap-4 overflow-x-auto hide-scrollbar snap-x">
+        <button onClick={() => document.getElementById('quick-diagnostic')?.scrollIntoView({ behavior: 'smooth', block: 'start' })} className="whitespace-nowrap px-4 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold text-xs rounded-full snap-start transition-colors flex items-center gap-1.5 shadow-sm border border-amber-200">
+          <span>🏝️</span> 30秒離島診断
+        </button>
         <button onClick={() => router.push('/map')} className="whitespace-nowrap px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs rounded-full snap-start transition-colors flex items-center gap-1.5 shadow-sm border border-slate-200">
           <Map className="w-3.5 h-3.5" /> マップから探す
         </button>
@@ -790,6 +794,9 @@ export default function Home() {
           <Trophy className="w-3.5 h-3.5" /> ランキング
         </button>
       </div>
+
+      {/* 30-Second No-Login Island Check Onboarding */}
+      <QuickIslandDiagnostic onOpenAuth={() => setIsAuthOpen(true)} />
 
       {/* Top Ranking Widget */}
       {isMounted && topRankers.length > 0 && (
@@ -1280,13 +1287,40 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      {/* App Coming Soon Banner */}
-      <div className="max-w-5xl mx-auto px-6 lg:px-12 pb-16">
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-8 border border-slate-700 shadow-xl flex flex-col md:flex-row items-center justify-between gap-8">
+      {/* PWA & B2G / Local Business Partnership Callout Section */}
+      <div className="max-w-6xl mx-auto px-6 lg:px-12 pb-16 space-y-6">
+        <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-slate-900 rounded-3xl p-7 lg:p-9 border border-amber-400/35 shadow-xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+          <div className="space-y-2 max-w-3xl">
+            <span className="text-[0.65rem] font-bold text-amber-300 tracking-widest uppercase bg-amber-400/15 px-2.5 py-1 rounded border border-amber-400/30 inline-block">
+              FOR MUNICIPALITIES &amp; ISLAND PARTNERS
+            </span>
+            <h3 className="font-serif text-lg sm:text-xl lg:text-2xl text-white leading-relaxed font-bold">
+              🏛️ 離島自治体・観光協会・島内事業者様へ：デジタル来島証明・周遊スタンプラリー・5秒クーポンCM掲載のご案内
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+              来島者への公式タイアップ到達証明書の発行、島内飲食店・宿・アクティビティへの送客クーポンCM、ご当地妖精スタンプラリーを初期費用ゼロから導入いただけます。
+            </p>
+          </div>
+          <Link
+            href="/partners"
+            className="shrink-0 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg flex items-center gap-2 transition-transform hover:scale-[1.02]"
+          >
+            <span>詳細・掲載プランを見る</span>
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+        </div>
+
+        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 rounded-3xl p-6 lg:p-8 border border-slate-700 shadow-lg flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
-            <span className="text-[0.65rem] font-bold text-amber-400 tracking-widest uppercase bg-amber-400/10 px-2.5 py-1 rounded border border-amber-400/30 mb-4 inline-block">近日公開予定</span>
-            <h3 className="font-serif text-xl lg:text-2xl text-white tracking-widest mb-2">公式ネイティブアプリ</h3>
-            <p className="text-sm text-slate-400">iOS / Androidアプリを現在開発中です。GPSチェックインがよりスムーズに、より楽しくなります。</p>
+            <span className="text-[0.65rem] font-bold text-emerald-300 tracking-widest uppercase bg-emerald-400/15 px-2.5 py-1 rounded border border-emerald-400/30 mb-3 inline-block">
+              📲 PWAホーム画面アプリ対応
+            </span>
+            <h3 className="font-serif text-lg lg:text-xl text-white tracking-wider mb-1.5">
+              船上や圏外の離島でも安心のオフラインGPS記録保護
+            </h3>
+            <p className="text-xs sm:text-sm text-slate-400">
+              スマホのブラウザから「ホーム画面に追加」するだけでアプリとして即利用可能。電波の届かない離島でもGPSチェックインを端末内に保護し、電波復帰時に自動同期します。
+            </p>
           </div>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import GlobalMap from './MapPageClient';
+import { MapConquestShareOverlay } from '@/components/ConquestMapShareModal';
 
 export const metadata: Metadata = {
   title: '全国離島マップ',
@@ -20,5 +21,10 @@ export const metadata: Metadata = {
 };
 
 export default function MapPage() {
-  return <GlobalMap />;
+  return (
+    <>
+      <GlobalMap />
+      <MapConquestShareOverlay />
+    </>
+  );
 }

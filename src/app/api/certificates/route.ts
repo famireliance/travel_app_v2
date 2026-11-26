@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { verifyUserAuth } from '@/lib/userAuth';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
+import { getFallbackJson } from '@/lib/adminConfigFallback';
 
 const ALLOWED_CERTIFICATE_TYPES = ['card', 'standard', 'high_quality'] as const;
 const FREE_HIGH_QUALITY_MONTHLY_LIMIT = 1;
@@ -173,6 +174,128 @@ async function computeUserQuotaAndTier(supabase: SupabaseClient, userId: string)
   };
 }
 
+interface ActiveSponsorPayload {
+  id: string;
+  name: string;
+  type: string;
+  category_detail: string;
+  logo_url: string;
+  banner_photo_url: string;
+  official_website_url: string;
+  perk_text: string;
+  sponsor_tier: string;
+}
+
+function getSponsorTierRank(tier: unknown): number {
+  const upper = String(tier || 'STANDARD').toUpperCase();
+  if (upper === 'GOLD') return 3;
+  if (upper === 'SILVER') return 2;
+  return 1;
+}
+
+function parseContractBoundMs(raw: unknown, isEnd: boolean): number | null {
+  if (!raw || typeof raw !== 'string') return null;
+  const trimmed = raw.trim();
+  if (!trimmed) return null;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    const iso = isEnd ? `${trimmed}T23:59:59+09:00` : `${trimmed}T00:00:00+09:00`;
+    const ms = new Date(iso).getTime();
+    return Number.isNaN(ms) ? null : ms;
+  }
+  const ms = new Date(trimmed).getTime();
+  return Number.isNaN(ms) ? null : ms;
+}
+
+async function pickActiveSponsorForIsland(
+  supabase: SupabaseClient,
+  islandId: string,
+  candidateIslandIds: string[]
+): Promise<ActiveSponsorPayload | null> {
+  try {
+    let dbPartners: Record<string, unknown>[] = [];
+    try {
+      const { data, error } = await supabase
+        .from('b2b_partners')
+        .select('*')
+        .eq('is_active', true);
+      if (!error && Array.isArray(data)) {
+        dbPartners = data as Record<string, unknown>[];
+      }
+    } catch {
+      // Ignore if b2b_partners table does not exist
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fbPartners = await getFallbackJson<any[]>('fallback_b2b_partners', []);
+    const safeFb = Array.isArray(fbPartners) ? fbPartners : [];
+
+    const seenIds = new Set<string>();
+    const combined: Record<string, unknown>[] = [];
+    for (const row of [...dbPartners, ...safeFb]) {
+      if (!row || typeof row !== 'object') continue;
+      const rid = row.id ? String(row.id) : '';
+      if (rid && seenIds.has(rid)) continue;
+      if (rid) seenIds.add(rid);
+      combined.push(row as Record<string, unknown>);
+    }
+
+    const candidateLowerSet = new Set(
+      [islandId, ...candidateIslandIds].map((c) => String(c || '').trim().toLowerCase()).filter(Boolean)
+    );
+    const nowMs = Date.now();
+
+    const matching = combined.filter((p) => {
+      if (p.is_active === false) return false;
+      const rawPartnerIsland = String(p.island_id || '').trim();
+      if (!rawPartnerIsland) return false;
+
+      const partnerLower = rawPartnerIsland.toLowerCase();
+      let islandMatches = candidateLowerSet.has(partnerLower);
+      if (!islandMatches) {
+        const resolvedPartner = resolveCanonicalIsland(rawPartnerIsland);
+        islandMatches =
+          candidateLowerSet.has(resolvedPartner.islandId.toLowerCase()) ||
+          resolvedPartner.candidateIslandIds.some((cid) => candidateLowerSet.has(cid.toLowerCase()));
+      }
+      if (!islandMatches) return false;
+
+      const startMs = parseContractBoundMs(p.contract_start, false);
+      if (startMs !== null && nowMs < startMs) return false;
+
+      const endMs = parseContractBoundMs(p.contract_end, true);
+      if (endMs !== null && nowMs > endMs) return false;
+
+      return Boolean(p.name && String(p.name).trim());
+    });
+
+    if (matching.length === 0) return null;
+
+    let maxRank = 0;
+    for (const p of matching) {
+      const rank = getSponsorTierRank(p.sponsor_tier);
+      if (rank > maxRank) maxRank = rank;
+    }
+    const topTied = matching.filter((p) => getSponsorTierRank(p.sponsor_tier) === maxRank);
+    const picked = topTied[Math.floor(Math.random() * topTied.length)];
+    if (!picked) return null;
+
+    return {
+      id: String(picked.id || ''),
+      name: String(picked.name || ''),
+      type: String(picked.type || 'shop'),
+      category_detail: String(picked.category_detail || ''),
+      logo_url: String(picked.logo_url || ''),
+      banner_photo_url: String(picked.banner_photo_url || ''),
+      official_website_url: String(picked.official_website_url || ''),
+      perk_text: String(picked.perk_text || ''),
+      sponsor_tier: String(picked.sponsor_tier || 'STANDARD'),
+    };
+  } catch (err) {
+    console.warn('Sponsor lookup warning:', err);
+    return null;
+  }
+}
+
 export async function GET(request: Request) {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -193,12 +316,19 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const rawIslandId = searchParams.get('islandId');
 
-    const { tier, tickets, quota } = await computeUserQuotaAndTier(supabase, userId);
+    const [{ tier, tickets, quota }, photographersMap] = await Promise.all([
+      computeUserQuotaAndTier(supabase, userId),
+      getFallbackJson<Record<string, { count: number; islands: string[] }>>(
+        'fallback_certified_photographers',
+        {}
+      ),
+    ]);
+    const adoptedPhotosCount = Number(photographersMap?.[userId]?.count || 0);
 
     if (rawIslandId && rawIslandId.trim()) {
       const { islandId, candidateIslandIds } = resolveCanonicalIsland(rawIslandId);
 
-      const [{ data: visitRows }, { data: certRows }] = await Promise.all([
+      const [{ data: visitRows }, { data: certRows }, activeSponsor] = await Promise.all([
         supabase
           .from('island_visits')
           .select('island_id, status')
@@ -210,6 +340,7 @@ export async function GET(request: Request) {
           .eq('user_id', userId)
           .in('island_id', candidateIslandIds)
           .order('created_at', { ascending: false }),
+        pickActiveSponsorForIsland(supabase, islandId, candidateIslandIds),
       ]);
 
       const hasVisited =
@@ -225,6 +356,8 @@ export async function GET(request: Request) {
         quota,
         hasVisited,
         existingCertificates: certRows || [],
+        activeSponsor,
+        adoptedPhotosCount,
       });
     }
 
@@ -239,6 +372,7 @@ export async function GET(request: Request) {
       tickets,
       quota,
       certificates: allCerts || [],
+      adoptedPhotosCount,
     });
   } catch (error) {
     console.error('Certificate status GET error:', error);

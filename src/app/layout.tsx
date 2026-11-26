@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import { TravelProvider } from "@/context/TravelContext";
 import FairyDiscoveryModal from "@/components/FairyDiscoveryModal";
 import AuthReminderBanner from "@/components/AuthReminderBanner";
+import PwaOfflineBanner from "@/components/PwaOfflineBanner";
 import { Toaster } from 'react-hot-toast';
 import GlobalRadar from '@/components/GlobalRadar';
 import Footer from '@/components/Footer';
@@ -118,6 +119,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
         <TravelProvider>
+          <PwaOfflineBanner />
           <AuthReminderBanner />
           {children}
           <FairyDiscoveryModal />

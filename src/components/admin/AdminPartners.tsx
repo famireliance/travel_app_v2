@@ -4,6 +4,10 @@ import imageCompression from 'browser-image-compression';
 import {
   Ship,
   Hotel,
+  Utensils,
+  ShoppingBag,
+  Compass,
+  Landmark,
   Plus,
   Trash2,
   Upload,
@@ -13,13 +17,83 @@ import {
   Calendar,
   AlertTriangle,
   Edit3,
-  RefreshCw
+  ExternalLink,
+  Sparkles,
+  Film,
 } from 'lucide-react';
+
+type PartnerBusinessType =
+  | 'transport'
+  | 'lodging'
+  | 'dining'
+  | 'shop'
+  | 'activity'
+  | 'municipality';
+
+const PARTNER_TYPE_META: Record<
+  PartnerBusinessType,
+  { label: string; shortLabel: string; defaultCategory: string; pillActiveClass: string }
+> = {
+  transport: {
+    label: '🚢 交通機関・レンタカー',
+    shortLabel: '交通・レンタカー',
+    defaultCategory: '交通・レンタカー',
+    pillActiveClass: 'bg-sky-600 text-white shadow',
+  },
+  lodging: {
+    label: '🏨 宿泊施設',
+    shortLabel: '宿泊施設',
+    defaultCategory: '宿泊施設',
+    pillActiveClass: 'bg-indigo-600 text-white shadow',
+  },
+  dining: {
+    label: '🍽️ 飲食店・カフェ・居酒屋',
+    shortLabel: '飲食・カフェ',
+    defaultCategory: '飲食店・カフェ',
+    pillActiveClass: 'bg-orange-600 text-white shadow',
+  },
+  shop: {
+    label: '🛍️ お土産・特産ショップ',
+    shortLabel: 'お土産・特産店',
+    defaultCategory: 'お土産・特産店',
+    pillActiveClass: 'bg-pink-600 text-white shadow',
+  },
+  activity: {
+    label: '🤿 マリン・アクティビティ',
+    shortLabel: 'マリン・体験',
+    defaultCategory: 'マリン・体験',
+    pillActiveClass: 'bg-teal-600 text-white shadow',
+  },
+  municipality: {
+    label: '🏛️ 自治体・観光協会・公式タイアップ',
+    shortLabel: '自治体・観光協会',
+    defaultCategory: '自治体・観光協会',
+    pillActiveClass: 'bg-emerald-600 text-white shadow',
+  },
+};
+
+function renderPartnerTypeIcon(type: string, className = 'w-5 h-5') {
+  switch (type) {
+    case 'lodging':
+      return <Hotel className={className} />;
+    case 'dining':
+      return <Utensils className={className} />;
+    case 'shop':
+      return <ShoppingBag className={className} />;
+    case 'activity':
+      return <Compass className={className} />;
+    case 'municipality':
+      return <Landmark className={className} />;
+    case 'transport':
+    default:
+      return <Ship className={className} />;
+  }
+}
 
 interface PartnerData {
   id?: string;
   name: string;
-  type: 'transport' | 'lodging' | string;
+  type: PartnerBusinessType | string;
   category_detail: string;
   island_id: string;
   logo_url?: string;
@@ -38,7 +112,7 @@ export default function AdminPartners({ password }: { password: string }) {
   const [loading, setLoading] = useState(true);
 
   // Filters & Search
-  const [typeFilter, setTypeFilter] = useState<'all' | 'transport' | 'lodging' | 'gold'>('all');
+  const [typeFilter, setTypeFilter] = useState<'all' | PartnerBusinessType | 'gold'>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
   // Selected for edit
@@ -253,9 +327,11 @@ export default function AdminPartners({ password }: { password: string }) {
   });
 
   const filteredPartners = partners.filter(p => {
-    if (typeFilter === 'transport' && p.type !== 'transport') return false;
-    if (typeFilter === 'lodging' && p.type !== 'lodging') return false;
-    if (typeFilter === 'gold' && p.sponsor_tier !== 'GOLD') return false;
+    if (typeFilter === 'gold') {
+      if (p.sponsor_tier !== 'GOLD') return false;
+    } else if (typeFilter !== 'all') {
+      if (p.type !== typeFilter) return false;
+    }
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       const name = (p.name || '').toLowerCase();
@@ -266,6 +342,14 @@ export default function AdminPartners({ password }: { password: string }) {
     return true;
   });
 
+  const previewImageUrl =
+    (formData.banner_photo_url && (formData.banner_photo_url.startsWith('https://') || formData.banner_photo_url.startsWith('/'))
+      ? formData.banner_photo_url
+      : '') ||
+    (formData.logo_url && (formData.logo_url.startsWith('https://') || formData.logo_url.startsWith('/'))
+      ? formData.logo_url
+      : '');
+
   return (
     <div className="space-y-6 animate-in fade-in duration-300">
       {/* Top Header */}
@@ -273,10 +357,10 @@ export default function AdminPartners({ password }: { password: string }) {
         <div>
           <h2 className="text-2xl font-black text-white flex items-center gap-2">
             <Ship className="w-6 h-6 text-sky-400" />
-            宿・交通機関タイアップパートナー管理 (B2B)
+            島内店舗・自治体DMO・宿・交通 5秒CM＆タイアップ管理
           </h2>
           <p className="text-xs text-gray-400 mt-1">
-            離島旅の必須インフラ「フェリー・航空・バス・レンタカー」および「宿・ホテル」のスポンサー契約・優待特典管理
+            到達証明書の発行時5秒CM枠・ご提示特典クーポン・宿・交通・飲食店・ショップ・自治体タイアップの一元管理
           </p>
         </div>
         <button
@@ -327,7 +411,7 @@ export default function AdminPartners({ password }: { password: string }) {
       )}
 
       {/* Filter Tabs & Search Bar */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+      <div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
         <div className="flex flex-wrap gap-1.5 bg-gray-900 p-1.5 rounded-xl border border-gray-800">
           <button
             onClick={() => setTypeFilter('all')}
@@ -337,37 +421,39 @@ export default function AdminPartners({ password }: { password: string }) {
           >
             すべて ({partners.length})
           </button>
-          <button
-            onClick={() => setTypeFilter('transport')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-              typeFilter === 'transport' ? 'bg-sky-600 text-white shadow' : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            <Ship className="w-3.5 h-3.5" /> 交通機関 ({partners.filter(p => p.type === 'transport').length})
-          </button>
-          <button
-            onClick={() => setTypeFilter('lodging')}
-            className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
-              typeFilter === 'lodging' ? 'bg-indigo-600 text-white shadow' : 'text-gray-400 hover:text-white'
-            }`}
-          >
-            <Hotel className="w-3.5 h-3.5" /> 宿・ホテル ({partners.filter(p => p.type === 'lodging').length})
-          </button>
+          {(Object.keys(PARTNER_TYPE_META) as PartnerBusinessType[]).map((tKey) => {
+            const meta = PARTNER_TYPE_META[tKey];
+            const count = partners.filter((p) => p.type === tKey).length;
+            return (
+              <button
+                key={tKey}
+                onClick={() => setTypeFilter(tKey)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                  typeFilter === tKey ? meta.pillActiveClass : 'text-gray-400 hover:text-white'
+                }`}
+              >
+                {renderPartnerTypeIcon(tKey, 'w-3.5 h-3.5')}
+                <span>
+                  {meta.shortLabel} ({count})
+                </span>
+              </button>
+            );
+          })}
           <button
             onClick={() => setTypeFilter('gold')}
             className={`px-3 py-1.5 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
               typeFilter === 'gold' ? 'bg-amber-500 text-black shadow' : 'text-gray-400 hover:text-white'
             }`}
           >
-            <Crown className="w-3.5 h-3.5" /> GOLDパートナー ({partners.filter(p => p.sponsor_tier === 'GOLD').length})
+            <Crown className="w-3.5 h-3.5" /> GOLD ({partners.filter(p => p.sponsor_tier === 'GOLD').length})
           </button>
         </div>
 
-        <div className="relative w-full lg:w-72">
+        <div className="relative w-full xl:w-72">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
           <input
             type="text"
-            placeholder="企業名・島ID・業種で検索..."
+            placeholder="企業名・店舗名・島ID・業種で検索..."
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
             className="w-full bg-gray-950 border border-gray-800 rounded-xl pl-9 pr-4 py-2 text-xs text-white focus:outline-none focus:border-sky-500"
@@ -422,7 +508,7 @@ export default function AdminPartners({ password }: { password: string }) {
                         <img src={p.logo_url || p.banner_photo_url} alt={p.name} className="w-10 h-10 rounded-xl object-cover border border-gray-700 shrink-0" />
                       ) : (
                         <div className="w-10 h-10 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 shrink-0">
-                          {p.type === 'transport' ? <Ship className="w-5 h-5" /> : <Hotel className="w-5 h-5" />}
+                          {renderPartnerTypeIcon(p.type, 'w-5 h-5')}
                         </div>
                       )}
                       <div>
@@ -474,10 +560,26 @@ export default function AdminPartners({ password }: { password: string }) {
                 <select
                   className="w-full bg-gray-950 border border-gray-800 rounded-xl p-2.5 text-white focus:outline-none focus:border-sky-500"
                   value={formData.type}
-                  onChange={e => setFormData({ ...formData, type: e.target.value as any })}
+                  onChange={e => {
+                    const nextType = e.target.value as PartnerBusinessType;
+                    const defaultCatList = [
+                      '高速フェリー',
+                      '交通機関',
+                      ...Object.values(PARTNER_TYPE_META).map(m => m.defaultCategory),
+                    ];
+                    const nextCategory =
+                      !formData.category_detail.trim() || defaultCatList.includes(formData.category_detail.trim())
+                        ? PARTNER_TYPE_META[nextType]?.defaultCategory || formData.category_detail
+                        : formData.category_detail;
+                    setFormData({ ...formData, type: nextType, category_detail: nextCategory });
+                  }}
                 >
-                  <option value="transport">🚢 交通機関 (フェリー・航空・バス・レンタカー)</option>
-                  <option value="lodging">🏨 宿泊施設 (ホテル・リゾート・民宿・ゲストハウス)</option>
+                  <option value="transport">🚢 交通機関・レンタカー</option>
+                  <option value="lodging">🏨 宿泊施設</option>
+                  <option value="dining">🍽️ 飲食店・カフェ・居酒屋</option>
+                  <option value="shop">🛍️ お土産・特産ショップ</option>
+                  <option value="activity">🤿 マリン・アクティビティ</option>
+                  <option value="municipality">🏛️ 自治体・観光協会・公式タイアップ</option>
                 </select>
               </div>
               <div>
@@ -680,6 +782,93 @@ export default function AdminPartners({ password }: { password: string }) {
                       <Upload className="w-3.5 h-3.5 text-sky-400" />
                       <input type="file" accept="image/*" onChange={e => handleFileUpload(e, 'banner_photo_url')} disabled={uploading} className="hidden" />
                     </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Live 5-Second Certificate CM Preview Box */}
+            <div className="bg-gradient-to-br from-slate-950 via-indigo-950/60 to-slate-950 p-5 rounded-2xl border border-amber-500/40 space-y-3 shadow-xl">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-amber-500/20 pb-2.5">
+                <h4 className="font-extrabold text-amber-300 text-xs sm:text-sm flex items-center gap-2">
+                  <Film className="w-4 h-4 text-amber-400" />
+                  🎬 到達証明書 5秒CM枠プレビュー
+                </h4>
+                <span className="text-[10px] text-gray-400">
+                  島ID「<span className="text-amber-300 font-mono font-bold">{formData.island_id || '未設定'}</span>」の証明書発行時＆保存後に表示
+                </span>
+              </div>
+
+              <div className="bg-slate-950/90 border border-slate-800 rounded-2xl p-4 flex flex-col items-center text-center space-y-3">
+                <div className="text-[11px] font-mono text-white bg-slate-900 px-3 py-1 rounded-lg border border-amber-500/30">
+                  公認シリアル採番＆証明書を生成中... 残り 5秒
+                </div>
+
+                <div className="w-full max-w-md bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl overflow-hidden border border-amber-500/40 shadow-2xl">
+                  {previewImageUrl && (
+                    <div className="w-full h-36 bg-slate-950 overflow-hidden relative border-b border-amber-500/30">
+                      <img
+                        src={previewImageUrl}
+                        alt={formData.name || 'CMプレビュー'}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                  )}
+                  <div className="p-4 flex flex-col items-center text-center space-y-2.5">
+                    <div className="flex flex-wrap items-center justify-center gap-1.5">
+                      <span className="px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-300 text-[10px] font-bold tracking-wider">
+                        {formData.island_id || '対象島'} 公式パートナー PR
+                      </span>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-black border ${
+                          formData.sponsor_tier === 'GOLD'
+                            ? 'bg-amber-400 text-slate-950 border-amber-300'
+                            : formData.sponsor_tier === 'SILVER'
+                            ? 'bg-slate-700 text-slate-100 border-slate-500'
+                            : 'bg-slate-800 text-slate-300 border-slate-700'
+                        }`}
+                      >
+                        {formData.sponsor_tier === 'GOLD'
+                          ? '👑 GOLD SPONSOR'
+                          : formData.sponsor_tier === 'SILVER'
+                          ? '⭐ SILVER SPONSOR'
+                          : 'OFFICIAL PARTNER'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h5 className="text-base sm:text-lg font-extrabold text-white tracking-wide">
+                        {formData.name || '（店舗・団体名を入力してください）'}
+                      </h5>
+                      <p className="text-[11px] text-sky-300 font-bold mt-0.5">
+                        {formData.category_detail || 'カテゴリー未設定'}
+                      </p>
+                    </div>
+
+                    {formData.perk_text?.trim() ? (
+                      <div className="w-full bg-amber-500/15 border border-amber-400/50 rounded-xl px-3.5 py-2.5 text-left">
+                        <p className="text-[11px] sm:text-xs font-extrabold text-amber-300 leading-relaxed">
+                          🎁 到達証明書ご提示特典: {formData.perk_text}
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-[11px] text-gray-500 italic">
+                        ※優待・特典テキストを入力するとクーポン枠が強調表示されます
+                      </p>
+                    )}
+
+                    {formData.official_website_url?.trim() && (
+                      <a
+                        href={formData.official_website_url}
+                        target="_blank"
+                        rel="noopener noreferrer sponsored"
+                        className="mt-1 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-extrabold text-xs shadow hover:from-amber-300 hover:to-yellow-400 transition"
+                      >
+                        <Sparkles className="w-3.5 h-3.5" />
+                        店舗・特典詳細を見る ↗
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    )}
                   </div>
                 </div>
               </div>

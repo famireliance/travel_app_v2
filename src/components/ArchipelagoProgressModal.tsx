@@ -1,8 +1,9 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Award, CheckCircle2, Sparkles } from 'lucide-react';
+import { X, Award, CheckCircle2, Sparkles, ArrowRight } from 'lucide-react';
 import { ALL_ISLANDS_MASTER_DICTIONARY } from '@/data/allIslandsMaster';
 import { useTravel } from '@/context/TravelContext';
 
@@ -208,7 +209,7 @@ export default function ArchipelagoProgressModal({ isOpen, onClose }: Archipelag
                 }
 
                 const percent = Math.round((visitedInGroup / Math.max(totalInGroup, 1)) * 100);
-                const isGoldComplete = percent >= 100;
+                const isGoldComplete = visitedInGroup === totalInGroup && totalInGroup > 0;
 
                 return (
                   <div key={group.id} className={`p-5 rounded-2xl border transition-all ${
@@ -216,7 +217,7 @@ export default function ArchipelagoProgressModal({ isOpen, onClose }: Archipelag
                       ? 'bg-gradient-to-br from-amber-500/20 via-slate-800 to-amber-900/30 border-amber-500/60 shadow-lg shadow-amber-500/10' 
                       : 'bg-slate-800/60 border-slate-700/60'
                   }`}>
-                    <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-start justify-between gap-2 mb-3">
                       <div className="flex items-center gap-3">
                         <span className="text-3xl">{group.icon}</span>
                         <div>
@@ -229,8 +230,8 @@ export default function ArchipelagoProgressModal({ isOpen, onClose }: Archipelag
                       </div>
                       
                       {isGoldComplete && (
-                        <div className="shrink-0 flex items-center gap-1 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-extrabold text-[10px] px-2.5 py-1 rounded-full shadow-md animate-pulse">
-                          <Sparkles size={12} /> GOLD COMPLETE
+                        <div className="shrink-0 flex items-center gap-1 bg-gradient-to-r from-amber-400 to-yellow-500 text-slate-950 font-extrabold text-[10px] px-2.5 py-1 rounded-full shadow-md">
+                          <Sparkles size={12} /> 🏆 群島完全制覇達成！
                         </div>
                       )}
                     </div>
@@ -258,6 +259,33 @@ export default function ArchipelagoProgressModal({ isOpen, onClose }: Archipelag
                         />
                       </div>
                     </div>
+
+                    {isGoldComplete && (
+                      <div className="mt-4 pt-3 border-t border-amber-500/30 flex flex-wrap items-center justify-between gap-2">
+                        <span className="text-[11px] font-bold text-amber-300">
+                          ✨ {group.name} 全{totalInGroup}島コンプリートおめでとうございます！
+                        </span>
+                        <div className="flex items-center gap-2">
+                          {group.islandIds[0] && (
+                            <Link
+                              href={`/island/${group.islandIds[0]}`}
+                              onClick={onClose}
+                              className="px-3 py-1.5 rounded-xl bg-slate-900/90 hover:bg-slate-900 text-amber-300 border border-amber-400/40 text-[11px] font-bold transition-colors"
+                            >
+                              代表島ページへ
+                            </Link>
+                          )}
+                          <Link
+                            href="/mypage"
+                            onClick={onClose}
+                            className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-amber-400 to-yellow-500 hover:from-amber-300 hover:to-yellow-400 text-slate-950 text-[11px] font-extrabold shadow flex items-center gap-1 transition-all"
+                          >
+                            <span>公式証明書を発行・注文</span>
+                            <ArrowRight size={12} />
+                          </Link>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 );
               })}
